@@ -1,0 +1,32 @@
+<table class="item-list effects-list">
+  <tr>
+    <th>Active Effects</th>
+    <th>
+      <a class="effect-control" data-action="create">
+        <i class="fas fa-plus"></i>
+      </a>
+    </th>
+  </tr>
+  {{#each effects as |effect|}}
+    <tr class="item effect" data-effect-id="{{effect.id}}">
+      <td class="item-name effect-name">
+        <h4>{{effect.name}}</h4>
+      </td>
+      <td class="effect-controls">
+        <a class="effect-control" data-action="toggle" title="Toggle">
+          {{#if effect.disabled}}
+            <i class="fas fa-toggle-off"></i>
+          {{else}}
+            <i class="fas fa-toggle-on"></i>
+          {{/if}}
+        </a>
+        <a class="effect-control" data-action="edit" title="Edit">
+          <i class="fas fa-edit"></i>
+        </a>
+        <a class="effect-control" data-action="delete" title="Delete">
+          <i class="fas fa-trash"></i>
+        </a>
+      </td>
+    </tr>
+  {{/each}}
+</table>

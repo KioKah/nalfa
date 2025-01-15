@@ -1,0 +1,22 @@
+<h2>Attributs</h2>
+<div class="attributes">
+  <div class="initiative">
+    <label for="initiative">Initiative
+      (2 &times;
+      <select class="initiative-stat" name="system.attributes.initiative.stat">
+        {{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
+      </select>)
+    </label>
+    <input type="number" id="initiative" value="{{sysData.attributes.initiative.value}}" data-dtype="Number" disabled/>
+  </div>
+  <div class="passive-percep">
+    <label for="passive-percep">Perception passive
+      (<input name="system.attributes.passive_percep.base" type="number" value="{{sysData.attributes.passive_percep.base}}" data-dtype="Number"/>
+      +
+      <select class="passive-percep-stat" name="system.attributes.passive_percep.stat">
+        {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
+      </select>)
+    </label>
+    <input type="number" id="passive-percep" value="{{sysData.attributes.passive_percep.value}}" disabled/>
+  </div>
+</div>

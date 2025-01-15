@@ -1,0 +1,41 @@
+<h2>Action</h2>
+<ul>
+  <li>actionType : <input name="system.action.actionType" type="text" value="{{sysData.action.actionType}}"/></li>
+  <li>attackBonus : <input name="system.action.attackBonus" type="text" value="{{sysData.action.attackBonus}}"/></li>
+  <li>hit :
+    <ul>
+      <li>.stat : 
+        <select name="system.hit.stat">
+          {{selectOptions config.stats selected=sysData.hit.stat}}
+        </select>
+      </li>
+      <li>.formula : <input name="system.action.hit.formula" type="text" value="{{sysData.action.hit.formula}}"/></li>
+    </ul>
+  </li>
+  <li>rolls : <input name="system.action.rolls" type="text" value="{{sysData.action.rolls}}" data-type="Number"/></li>
+  <li>damage :
+    <ul>
+      <li>.formula1 : <input name="system.action.damage.formula1" type="text" value="{{sysData.action.damage.formula1}}"/></li>
+      <li>.formula2 : <input name="system.action.damage.formula2" type="text" value="{{sysData.action.damage.formula2}}"/></li>
+      <li>.formula3 : <input name="system.action.damage.formula3" type="text" value="{{sysData.action.damage.formula3}}"/></li>
+    </ul>
+  </li>
+  <li>critical :
+    <ul>
+      <li>.formula1 : <input name="system.action.critical.formula1" type="text" value="{{sysData.action.critical.formula1}}"/></li>
+      <li>.formula2 : <input name="system.action.critical.formula2" type="text" value="{{sysData.action.critical.formula2}}"/></li>
+      <li>.formula3 : <input name="system.action.critical.formula3" type="text" value="{{sysData.action.critical.formula3}}"/></li>
+    </ul>
+  </li>
+  <li>isSave : <input name="system.action.isSave" type="checkbox" {{checked sysData.action.isSave}}/></li>
+  <li>save :
+    <ul>
+      <li>.stat : 
+        <select name="system.save.stat">
+          {{selectOptions config.stats selected=sysData.save.stat}}
+        </select>
+      </li>
+      <li>.dc : <input name="system.action.save.dc" type="text" value="{{sysData.action.save.dc}}" data-type="Number"/></li>
+    </ul>
+  </li>
+</ul>

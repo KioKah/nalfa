@@ -1,0 +1,30 @@
+<h2>Physical item</h2>
+<ul>
+  <li>wear : 
+    <select name="system.wear">
+      {{selectOptions config.wear selected=sysData.wear}}
+    </select>
+  </li>
+  <li>
+    quantity : <input name="system.quantity" type="text" value="{{sysData.quantity}}" data-type="Number"/>
+  </li>
+  <li>
+    weight : <input name="system.weight" type="text" value="{{sysData.weight}}" data-type="Number"/>
+  </li>
+  <li>price : 
+    <ul>
+      <li>.value : <input name="system.price.value" type="text" value="{{sysData.price.value}}" data-type="Number"/></li>
+      <li>.denomination : 
+        <select name="system.price.denomination">
+          {{selectOptions config.denomination selected=sysData.price.denomination}}
+        </select>
+      </li>
+    </ul>
+  </li>
+  <li>
+    rarity : <input name="system.rarity" type="text" value="{{sysData.rarity}}"/>
+  </li>
+  <li>
+    identified : <input name="system.identified" type="checkbox" {{checked sysData.identified}}/>
+  </li>
+</ul>

@@ -1,0 +1,19 @@
+{
+	"nalfa": {
+		"stats-short": {
+			"str": "FOR",
+			"dex": "DEX",
+			"int": "INT",
+			"wis": "SAG",
+			"cha": "CHA",
+			"con": "CON"
+		},
+		"element": {
+			"none": "",
+			"fire": "Feu",
+			"water": "Eau",
+			"air": "Air",
+			"earth": "Terre"
+		}
+	}
+}

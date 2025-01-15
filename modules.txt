@@ -1,0 +1,42 @@
+alternative-rotation
+always-hp
+autocomplete-mentions
+autocomplete-whisper
+barbrawl
+bulk-tasks
+# card-hands-list
+condition-lab-triggler
+dfreds-convenient-effects
+# dfreds-effects-panel
+dfreds-effects-to-chat
+dfreds-obvious-settings
+dice-calculator
+dice-so-nice
+dice-soup
+dice-stats
+gamemaster-title-editor
+heart-containers
+initiative-double-click
+lib-wrapper
+monks-active-tiles
+# monks-bloodsplats
+monks-chat-timer
+monks-combat-details
+monks-enhanced-journal
+monks-little-details
+monks-scene-navigation
+monks-sound-enhancements
+monks-tokenbar
+monks-wall-enhancement
+multiple-document-selection
+popout
+smarttarget
+socketlib
+# status-halo
+statuscounter
+sticky-folders
+# times-up
+token-aura-ring
+visual-active-effects
+vtta-tokenizer
+_chatcommands

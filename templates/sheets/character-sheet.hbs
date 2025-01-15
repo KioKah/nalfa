@@ -1,0 +1,218 @@
+<form class="character {{cssClass}}" autocomplete="off">
+  <div class="nalfa-sheet">
+    <div class="nalfa-sheet-header">
+      <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="64" width="64"/>
+      <div class="nalfa-sheet-header-info">
+        <div class="sheet-name">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+        </div>
+        <span class="level">
+          LV : <input name="system.attributes.level" type="number" value="{{sysData.attributes.level}}" data-dtype="Number"/>
+        </span> 
+      </div>
+    </div>
+    
+    <h2>Stats {{numberFormat sysData.stats.str.value decimals=0 sign=true}}</h2>
+    <div class="stats-container">
+      {{!-- STR --}}
+      <div class="stat-container">
+        <div class="stat-box">
+          <h2>
+            <span class="stat-name">{{localize "nalfa.stats-short.str"}}</span>
+            <label>
+              <input class="hidden" name="system.stats.str.proficient" type="checkbox" {{checked sysData.stats.str.proficient}}/>
+              {{#if sysData.stats.str.proficient}}
+                <i class="fa-solid fa-star fa-sm"></i>
+              {{else}}
+                <i class="fa-regular fa-star fa-sm"></i>
+              {{/if}}
+            </label>
+          </h2>
+          <input class="stat" name="system.stats.str.value" type="number" value="{{sysData.stats.str.value}}" data-dtype="Number"/>
+          <div class="stat-bonuses">
+            <div class="stat-bonus">
+              <p>Check</p>
+              <input name="system.stats.str.bonuses.check" type="number" value="{{sysData.stats.str.bonuses.check}}" data-dtype="Number"/>
+            </div>
+            <div class="stat-bonus">
+              <p>Save</p>
+              <input name="system.stats.str.bonuses.save" type="number" value="{{sysData.stats.str.bonuses.save}}" data-dtype="Number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{!-- DEX --}}
+      <div class="stat-container">
+        <div class="stat-box">
+          <h2>
+            <span class="stat-name">{{localize "nalfa.stats-short.dex"}}</span>
+            <label>
+              <input class="hidden" name="system.stats.dex.proficient" type="checkbox" {{checked sysData.stats.dex.proficient}}/>
+              {{#if sysData.stats.dex.proficient}}
+                <i class="fa-solid fa-star fa-sm"></i>
+              {{else}}
+                <i class="fa-regular fa-star fa-sm"></i>
+              {{/if}}
+            </label>
+          </h2>
+          <input class="stat" name="system.stats.dex.value" type="number" value="{{sysData.stats.dex.value}}" data-dtype="Number"/>
+          <div class="stat-bonuses">
+            <div class="stat-bonus">
+              <p>Check</p>
+              <input name="system.stats.dex.bonuses.check" type="number" value="{{sysData.stats.dex.bonuses.check}}" data-dtype="Number"/>
+            </div>
+            <div class="stat-bonus">
+              <p>Save</p>
+              <input name="system.stats.dex.bonuses.save" type="number" value="{{sysData.stats.dex.bonuses.save}}" data-dtype="Number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{!-- INT --}}
+      <div class="stat-container">
+        <div class="stat-box">
+          <h2>
+            <span class="stat-name">{{localize "nalfa.stats-short.int"}}</span>
+            <label>
+              <input class="hidden" name="system.stats.int.proficient" type="checkbox" {{checked sysData.stats.int.proficient}}/>
+              {{#if sysData.stats.int.proficient}}
+                <i class="fa-solid fa-star fa-sm"></i>
+              {{else}}
+                <i class="fa-regular fa-star fa-sm"></i>
+              {{/if}}
+            </label>
+          </h2>
+          <input class="stat" name="system.stats.int.value" type="number" value="{{sysData.stats.int.value}}" data-dtype="Number"/>
+          <div class="stat-bonuses">
+            <div class="stat-bonus">
+              <p>Check</p>
+              <input name="system.stats.int.bonuses.check" type="number" value="{{sysData.stats.int.bonuses.check}}" data-dtype="Number"/>
+            </div>
+            <div class="stat-bonus">
+              <p>Save</p>
+              <input name="system.stats.int.bonuses.save" type="number" value="{{sysData.stats.int.bonuses.save}}" data-dtype="Number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{!-- WIS --}}
+      <div class="stat-container">
+        <div class="stat-box">
+          <h2>
+            <span class="stat-name">{{localize "nalfa.stats-short.wis"}}</span>
+            <label>
+              <input class="hidden" name="system.stats.wis.proficient" type="checkbox" {{checked sysData.stats.wis.proficient}}/>
+              {{#if sysData.stats.wis.proficient}}
+                <i class="fa-solid fa-star fa-sm"></i>
+              {{else}}
+                <i class="fa-regular fa-star fa-sm"></i>
+              {{/if}}
+            </label>
+          </h2>
+          <input class="stat" name="system.stats.wis.value" type="number" value="{{sysData.stats.wis.value}}" data-dtype="Number"/>
+          <div class="stat-bonuses">
+            <div class="stat-bonus">
+              <p>Check</p>
+              <input name="system.stats.wis.bonuses.check" type="number" value="{{sysData.stats.wis.bonuses.check}}" data-dtype="Number"/>
+            </div>
+            <div class="stat-bonus">
+              <p>Save</p>
+              <input name="system.stats.wis.bonuses.save" type="number" value="{{sysData.stats.wis.bonuses.save}}" data-dtype="Number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{!-- CHA --}}
+      <div class="stat-container">
+        <div class="stat-box">
+          <h2>
+            <span class="stat-name">{{localize "nalfa.stats-short.cha"}}</span>
+            <label>
+              <input class="hidden" name="system.stats.cha.proficient" type="checkbox" {{checked sysData.stats.cha.proficient}}/>
+              {{#if sysData.stats.cha.proficient}}
+                <i class="fa-solid fa-star fa-sm"></i>
+              {{else}}
+                <i class="fa-regular fa-star fa-sm"></i>
+              {{/if}}
+            </label>
+          </h2>
+          <input class="stat" name="system.stats.cha.value" type="number" value="{{sysData.stats.cha.value}}" data-dtype="Number"/>
+          <div class="stat-bonuses">
+            <div class="stat-bonus">
+              <p>Check</p>
+              <input name="system.stats.cha.bonuses.check" type="number" value="{{sysData.stats.cha.bonuses.check}}" data-dtype="Number"/>
+            </div>
+            <div class="stat-bonus">
+              <p>Save</p>
+              <input name="system.stats.cha.bonuses.save" type="number" value="{{sysData.stats.cha.bonuses.save}}" data-dtype="Number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{!-- CON --}}
+      <div class="stat-container">
+        <div class="stat-box">
+          <h2>
+            <span class="stat-name">{{localize "nalfa.stats-short.con"}}</span>
+            <label>
+              <input class="hidden" name="system.stats.con.proficient" type="checkbox" {{checked sysData.stats.con.proficient}}/>
+              {{#if sysData.stats.con.proficient}}
+                <i class="fa-solid fa-star fa-sm"></i>
+              {{else}}
+                <i class="fa-regular fa-star fa-sm"></i>
+              {{/if}}
+            </label>
+          </h2>
+          <input class="stat" name="system.stats.con.value" type="number" value="{{sysData.stats.con.value}}" data-dtype="Number"/>
+          <div class="stat-bonuses">
+            <div class="stat-bonus">
+              <p>Check</p>
+              <input name="system.stats.con.bonuses.check" type="number" value="{{sysData.stats.con.bonuses.check}}" data-dtype="Number"/>
+            </div>
+            <div class="stat-bonus">
+              <p>Save</p>
+              <input name="system.stats.con.bonuses.save" type="number" value="{{sysData.stats.con.bonuses.save}}" data-dtype="Number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="attributes-container">
+      <h2>Attributes</h2>
+      {{!-- HP --}}
+      <p>
+        HP: <input name="system.attributes.hp.value" type="number" value="{{sysData.attributes.hp.value}}" data-dtype="Number"/> / <input name="system.attributes.hp.max" type="number" value="{{sysData.attributes.hp.max}}" data-dtype="Number"/>
+      </p>
+      {{!-- Currencies --}}
+      <div>
+        <h3>Monnaies :</h3>
+        {{#if currencies}}
+        <div class="currencies">
+          {{#each currencies as |currency|}}
+            {{> "systems/nalfa/templates/partials/character-sheet/currency.hbs" currency=currency}}
+          {{/each}}
+        </div>
+        {{else}}
+        (Pas de monnaies)
+        {{/if}}
+      </div>
+    </div>
+    <div class="Inventory">
+      <h2>
+        <div>
+          Weapon
+          <a class="item-create" data-dtype="Weapon" title="Create weapon">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </h2> 
+      <section class="weapon-list">
+        {{#each weapons as |weapon index|}}
+        {{!-- index va de 0 à n-1 --}}
+        {{> "systems/nalfa/templates/partials/weapon.hbs" item=weapon id=index}}
+        {{/each}}
+      </section>
+    </div>
+  </div>
+</form>

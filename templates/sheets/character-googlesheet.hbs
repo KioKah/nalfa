@@ -1,0 +1,145 @@
+<form class="character {{cssClass}}" autocomplete="off">
+  <div class="nalfa-sheet">
+    <header class="nalfa-sheet-header">
+      <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="64" width="64"/>
+      
+      <div class="nalfa-sheet-header-info">
+        <div class="sheet-secondary-info">
+          <input name="race" type="text" value="" placeholder="Race"/>
+          <input name="class" type="text" value="" placeholder="Classe"/>
+        </div>
+        <div class="sheet-primary-info">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+        </div>
+      </div>
+
+      <div class="level">
+        <span>Niveau</span>
+        <input name="level" type="number" value="" placeholder="Niv."/>
+      </div>
+    </header>
+
+    <hr/>
+
+    <div class="character-header">
+      <div class="character-health">
+        <div class="health-flexbox">
+          <span>PV :</span>
+          <input name="system.attributes.hp.value" type="number" value="{{sysData.attributes.hp.value}}" placeholder="PV"/>
+          <span>/</span>
+          <input name="system.attributes.hp.max" type="number" value="{{sysData.attributes.hp.max}}" placeholder="PV Max"/>
+        </div>
+
+        {{#if (gt sysData.attributes.hp.value 0)}}
+          <div class="temp-health-flexbox">
+            <span>PV temp :</span>
+            <input name="system.attributes.temp_hp.value" type="number" value="{{sysData.attributes.temp_hp.value}}" placeholder="PVtemp"/>
+            {{#unless (isEmptyArray sysData.attributes.temp_hp.list)}}
+              <span class="temp-health">
+                ({{{listTypedValues sysData.attributes.temp_hp.list}}})
+              </span>
+            {{/unless}}
+          </div>
+        {{else}}
+          <div class="death-flexbox">
+            <span>Lutte contre la mort</span>
+            <div class="death-icons">
+              <i class="fas fa-skull {{onoff (gt sysData.attributes.death.failure 0)}}"></i>
+              <i class="fas fa-skull {{onoff (gt sysData.attributes.death.failure 1)}}"></i>
+              <i class="fas fa-skull {{onoff (gt sysData.attributes.death.failure 2)}}"></i>
+            </div>
+            <div class="life-icons">
+              <i class="fas fa-heart {{onoff (gt sysData.attributes.death.success 0)}}"></i>
+              <i class="fas fa-heart {{onoff (gt sysData.attributes.death.success 1)}}"></i>
+              <i class="fas fa-heart {{onoff (gt sysData.attributes.death.success 2)}}"></i>
+            </div>
+          </div>
+        {{/if}}
+      </div>
+
+      <div class="character-scores">
+        <div class="score-flexbox">
+          <span>Défense</span>
+          {{!-- <input name="system.attributes.defence.value" type="number" value="{{!sysData.attributes.defence.value}}" placeholder="Défense"/> --}}
+          <div class="score">{{sysData.attributes.defence.value}}</div>
+        </div>
+        <div class="score-flexbox">
+          <span>Initiative</span>
+          {{!-- <input name="system.attributes.initiative.value" type="number" value="{{!sysData.attributes.initiative.value}}" placeholder="Initiative"/> --}}
+          <div class="score">{{sysData.attributes.initiative.value}}</div>
+        </div>
+        <div class="score-flexbox">
+          <span>Percep passive</span>
+          {{!-- <input name="system.attributes.passive_percep.value" type="number" value="{{!sysData.attributes.passive_percep.value}}" placeholder="Percep passive"/> --}}
+          <div class="score">{{sysData.attributes.passive_percep.value}}</div>
+        </div>
+        <div class="score-flexbox">
+          <span>Stat d'Ester</span>
+          {{!-- <input name="system.attributes.jdt.value" type="number" value="{{!sysData.attributes.jdt.value}}" placeholder="JdT"/> --}}
+          <div class="score">{{sysData.attributes.jdt.value}}</div>
+        </div>
+      </div>
+  
+      <div class="character-saves">
+        <span>Sauvegarde :</span>
+        <div class="saves-grid">
+          {{#each sysData.stats as |stat_object stat_name|}}
+            <div class="{{stat_name}} save-cell">
+              <span>{{statName stat_name}}</span>
+              <div class="save">{{stat_object.save.value}}</div>
+              {{!-- <input name="system.stats.{{!stat_name}}.save.value" type="number" value="{{!stat_object.save.value}}"/> --}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab selection : -->
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="character">Personnage</a>
+      <a class="item" data-tab="tracker">Tracker</a>
+      <a class="item" data-tab="class">Classe</a>
+      <a class="item" data-tab="inventory">Inventaire</a>
+      <a class="item" data-tab="esters">Esters</a>
+    </nav>
+
+    <!-- Tab sections : -->
+    <section class="sheet-body">
+      <div class="tab info" data-group="primary" data-tab="character">
+        {{> "systems/nalfa/templates/partials/character-googlesheet/character.hbs"}}
+      </div>
+      <div class="tab info" data-group="primary" data-tab="tracker">
+        {{> "systems/nalfa/templates/partials/character-googlesheet/tracker.hbs"}}
+      </div>
+      <div class="tab info" data-group="primary" data-tab="class">
+        {{> "systems/nalfa/templates/partials/character-googlesheet/class.hbs"}}
+      </div>
+      <div class="tab info" data-group="primary" data-tab="inventory">
+        {{> "systems/nalfa/templates/partials/character-googlesheet/inventory.hbs"}}
+      </div>
+      <div class="tab info" data-group="primary" data-tab="esters">
+        {{> "systems/nalfa/templates/partials/character-googlesheet/esters.hbs"}}
+      </div>
+    </section>
+  </div>
+</form>
+
+{{!-- `
+      @font-face {
+        font-family: "Lexend";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/lexend/v19/wlptgwvFAVdoq2_F94zlCfv0bz1WCzsWzLdneg.woff2)
+          format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+          U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+          U+2215, U+FEFF, U+FFFD;
+      }
+
+      body {
+        font-family: "Lexend" !important;
+        font-size: 14px !important;
+        color: #FFF !important;
+      }
+    ` --}}

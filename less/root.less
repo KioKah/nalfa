@@ -1,0 +1,158 @@
+@font-face {
+	font-family: "Lexend";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url(https://fonts.gstatic.com/s/lexend/v19/wlptgwvFAVdoq2_F94zlCfv0bz1WCzsWzLdneg.woff2)
+		format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+		U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: "Lexend ExtraLight";
+	font-style: italic;
+	font-weight: 200;
+	font-display: swap;
+	src: url(https://fonts.gstatic.com/s/lexend/v19/wlptgwvFAVdoq2_F94zlCfv0bz1WC7sWzLdneg.woff2)
+		format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+		U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: "Cinzel Decorative";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url(https://fonts.gstatic.com/s/cinzeldecorative/v16/daaCSScvJGqLYhG8nNt8KPPswUAPni7TTMw.woff2)
+		format("woff2");
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+		U+2215, U+FEFF, U+FFFD;
+}
+// MedievalSharp: https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap
+// Lobster Two: https://fonts.googleapis.com/css2?family=Lobster+Two&display=swap
+// IM Fell English SC: https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap
+// Merienda: https://fonts.googleapis.com/css2?family=Merienda&display=swap
+
+:root {
+	--item-width: 600px;
+	--actor-width: 780px;
+	--nalfa-padding: 16px;
+
+	--font-primary: "Lexend" !important;
+	// --mej-font-family: "Lexend ExtraLight" !important;
+	// --color-text-primary: #f0f0f0;
+	--nalfa-font-primary: "Lexend";
+	--nalfa-font-stats: "Cinzel Decorative";
+	--nalfa-color-background: #2d2d2d;
+	--nalfa-color-back-background: #131313;
+
+	// Statistiques :
+	--nalfa-color-stat-str: #e06666; // [x] Force
+	--nalfa-color-stat-dex: #93c47d; // [x] Dextérité
+	--nalfa-color-stat-int: #ffd966; // [x] Intelligence
+	--nalfa-color-stat-wis: #6d9eeb; // [x] Sagesse
+	--nalfa-color-stat-cha: #ff9ae6; // [x] Charisme
+	--nalfa-color-stat-con: #ffa66f; // [x] Constitution
+
+	--nalfa-color-stat-major: #34a853; // [x] Majeure
+	--nalfa-color-stat-powerful: #93c47d; // [.] Puissante
+	--nalfa-color-stat-neutral: #ffd966; // [.] Neutre
+	--nalfa-color-stat-weak: #e06666; // [.] Faible
+
+	// Attributs :
+	--nalfa-color-attr-hp: #e06666; // [.] PV
+	--nalfa-color-attr-init: #93c47d; // [.] Initiative
+	--nalfa-color-attr-defence: #b7b7b7; // [.] Armure
+
+	// Raretés :
+	--nalfa-color-rarity-common: #b7b7b7; // [x] Commun
+	--nalfa-color-rarity-rare: #34a853; // [x] Rare
+	--nalfa-color-rarity-epic: #6d9eeb; // [x] Épique
+	--nalfa-color-rarity-heroic: #8771c8; // [x] Héroïque
+	--nalfa-color-rarity-mythic: #ffa66f; // [x] Mythique
+
+	--nalfa-color-key-text: #76a5af; // [x] Texte important
+	--nalfa-color-mastery-bonus: #fbe9b6; // [x] Bonus de maîtrise
+
+	// Dégâts :
+	//* Physiques :
+	--nalfa-color-type-phys-tran: #ccc; // [x] Tranchant
+	--nalfa-color-type-phys-perf: #ccc; // [x] Perforant
+	--nalfa-color-type-phys-cont: #ccc; // [x] Contondant
+	--nalfa-color-type-phys-soni: #a4c2f4; // [x] Sonique
+	--nalfa-color-type-phys-sang: #e06666; // [x] Saignement
+	//* Élémentaires :
+	--nalfa-color-type-elem-feu: #ff8d46; // [x] Feu
+	--nalfa-color-type-elem-eau: #6d9eeb; // [x] Eau
+	--nalfa-color-type-elem-terr: #aa835b; // [x] Terre
+	--nalfa-color-type-elem-air: #b7b7b7; // [x] Air
+	--nalfa-color-type-elem-natu: #34a853; // [x] Nature
+	--nalfa-color-type-elem-givr: #55dfff; // [x] Givre
+	--nalfa-color-type-elem-foud: #6161ff; // [x] Foudre
+	//* Magiques :
+	--nalfa-color-type-magi-radt: #fbe9b6; // [x] Radiant
+	--nalfa-color-type-magi-obsc: #666666; // [x] Obscur
+	--nalfa-color-type-magi-arca: #fc5a4d; // [x] Arcane
+	--nalfa-color-type-magi-chao: #8771c8; // [x] Chaos
+	--nalfa-color-type-magi-necr: #6be0bb; // [x] Nécrotique
+	--nalfa-color-type-magi-psyc: #ff9ae6; // [x] Psychique
+	//* Spéciaux :
+	--nalfa-color-type-spec-arme: #b7b7b7; // [x] Arme
+	--nalfa-color-type-spec-soin: #87ff9a; // [x] Soins
+	--nalfa-color-type-spec-abso: #ffd966; // [x] Absorption
+
+	// Actions :
+	--nalfa-color-action-main: #34a853; // [x] Principale
+	--nalfa-color-throw-jdt: #34a853; // [.] Jet de toucher
+	--nalfa-color-action-bonus: #ffa66f; // [x] Bonus
+	--nalfa-color-action-reaction: #8e7cc3; // [x] Réaction
+	--nalfa-color-action-concentration: #6d9eeb; // [x] Concentration
+	--nalfa-color-action-movement: #e06666; // [.] Déplacement
+
+	// Classes:
+	--nalfa-color-class-ombre: #2d2d2d; // [x] Ombre
+	--nalfa-color-class-assassin: #434343; // [x] Assassin
+	--nalfa-color-class-occultiste: #666666; // [x] Occultiste
+	--nalfa-color-class-menestrel: #999999; // [x] Ménestrel
+	--nalfa-color-class-danselame: #b7b7b7; // [x] Danselame
+	--nalfa-color-class-maitre-lins: #efefef; // [x] Maître lins
+	--nalfa-color-class-guerrier-totem: #e1bf9a; // [x] Guerrier Totem
+	--nalfa-color-class-duelliste: #bfa07f; // [x] Duelliste
+	--nalfa-color-class-geomancien: #aa835b; // [x] Géomancien
+	--nalfa-color-class-gardien: #846647; // [x] Gardien
+	--nalfa-color-class-sanguinogarde: #a25656; // [x] Sanguinogarde
+	--nalfa-color-class-hematomancien: #e06666; // [x] Hématomancien
+	--nalfa-color-class-arcaniste: #f6675b; // [x] Arcaniste
+	--nalfa-color-class-berserker: #dd7e6b; // [x] Berserker
+	--nalfa-color-class-metamorphe: #ffa66f; // [x] Métamorphe
+	--nalfa-color-class-pyromancien: #ff8d46; // [x] Pyromancien
+	--nalfa-color-class-paladin: #ffca6f; // [x] Paladin
+	--nalfa-color-class-sentinelle: #ffdf87; // [x] Sentinelle
+	--nalfa-color-class-sage: #fbe9b6; // [x] Sage
+	--nalfa-color-class-sagittaire: #93c47d; // [x] Sagittaire
+	--nalfa-color-class-rodeur: #6aa84f; // [x] Rôdeur
+	--nalfa-color-class-druide: #34a853; // [x] Druide
+	--nalfa-color-class-veilleur: #21823b; // [x] Veilleur
+	--nalfa-color-class-fantome: #1c6574; // [x] Fantôme
+	--nalfa-color-class-ancestral: #45818e; // [x] Ancestral
+	--nalfa-color-class-necromancien: #40a182; // [x] Nécromancien
+	--nalfa-color-class-spirit: #03b793; // [x] Spirit
+	--nalfa-color-class-martialiste: #71e0c9; // [x] Martialiste
+	--nalfa-color-class-cryomancien: #7de6ff; // [x] Cryomancien
+	--nalfa-color-class-aeromancien: #c9daf8; // [x] Aéromancien
+	--nalfa-color-class-bretteur: #9fc5e8; // [x] Bretteur
+	--nalfa-color-class-aquamancien: #6d9eeb; // [x] Aquamancien
+	--nalfa-color-class-suneki: #3c78d8; // [x] Suneki
+	--nalfa-color-class-fulguromancien: #6161ff; // [x] Fulguromancien
+	--nalfa-color-class-cabaliste: #4d398b; // [x] Cabaliste
+	--nalfa-color-class-chaomancien: #8771c8; // [x] Chaomancien
+	--nalfa-color-class-astromancien: #d494ef; // [x] Astromancien
+	--nalfa-color-class-barde: #ff9ae6; // [x] Barde
+	--nalfa-color-class-illusionniste: #ffbeef; // [x] Illusionniste
+	--nalfa-color-class-demoniste: #a64d79; // [x] Démoniste
+}

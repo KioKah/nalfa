@@ -1,0 +1,95 @@
+.nalfa.sheet.item {
+	min-width: 132px;
+	max-width: calc(var(--item-width) + 2 * var(--nalfa-padding));
+	min-height: 132px;
+
+	.nalfa-sheet {
+		.nalfa-sheet-setup(@width: var(--item-width));
+	}
+
+	.test-item {
+		overflow: hidden;
+		font-size: 14px;
+
+		.tab {
+			height: 100%;
+			overflow-y: auto;
+		}
+
+		input,
+		select,
+		textarea {
+			margin-left: 5px;
+		}
+
+		input[type="text"] {
+			width: 120px;
+			padding: 5px;
+			box-sizing: border-box; /* Ensures the input field's width includes padding and border */
+		}
+
+		textarea {
+			width: 380px;
+			padding: 5px;
+			box-sizing: border-box; /* Ensures the input field's width includes padding and border */
+		}
+
+		ul {
+			padding-left: 0px;
+			width: 100%;
+			white-space: nowrap;
+		}
+		li {
+			display: flex;
+			align-items: center;
+			white-space: nowrap;
+			margin-top: 2px;
+			margin-bottom: 2px;
+			ul {
+				/* clockwise */
+				margin: 0 0 0 10px;
+			}
+		}
+
+		.editor-container {
+			width: 450px;
+			margin-left: 5px;
+			background: rgba(0, 0, 0, 0.05);
+			border: 1px solid;
+			border-radius: 3px;
+			padding: 0 5px;
+		}
+
+		.editor {
+			height: 100%;
+			width: 100%;
+		} //? utile ?
+
+		.editor.tinymce {
+			height: 163px;
+
+			.tox.tox-tinymce {
+				height: 100% !important;
+			}
+		}
+
+		.editor-content {
+			min-height: 35px;
+			height: 100%;
+			width: 100%;
+
+			li {
+				display: list-item;
+			}
+		}
+
+		.editor-edit {
+			right: 0;
+			background: rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.test-item.item-description .editor-container {
+		width: 500px;
+	}
+}

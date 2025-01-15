@@ -1,0 +1,96 @@
+<h2>Stats &amp; Compétences</h2>
+<div class="skills-by-stat">
+  {{#each sysData.stats as |stat_object stat_name|}}
+    <div class="skill-by-stat {{stat_name}}">
+      <h3 class="stat">
+        <div class="stat-info">
+          <label class="stat-name">
+            {{statName stat_name}}
+            <input class="hidden" name="system.stats.{{stat_name}}.dropdown" type="checkbox" {{checked stat_object.dropdown}}/>
+          </label>
+          <div class="stat-value">{{stat_object.value}}</div>
+        </div>
+        {{#if stat_object.dropdown}}
+          <div class="stat-dropdown">
+            <span>Base :</span>
+            <input name="system.stats.{{stat_name}}.base" type="number" value="{{stat_object.base}}" data-dtype="Number"/>
+          </div>
+        {{/if}}
+      </h3>
+      {{log ../sysData.attributes.skills}}
+      {{#each ../sysData.attributes.skills as |skill_object skill_name|}}
+        {{#if (eq skill_object.stats stat_name)}}
+          <div class="skill {{skill_object.default_stat}}">
+            <div class="skill-info">
+              <label class="skill-name">
+                {{skillName skill_name}}
+                <input class="hidden" name="system.attributes.skills.{{skill_name}}.dropdown" type="checkbox" {{checked skill_object.dropdown}}/>
+              </label>
+              <div class="skill-value">{{skill_object.value}}</div>
+            </div>
+            {{#if skill_object.dropdown}}
+              <div class="skill-dropdown">
+                <div>
+                  <span>Base :</span>
+                  <input name="system.attributes.skills.{{skill_name}}.base" type="number" value="{{skill_object.base}}" data-dtype="Number"/>
+                </div>
+                <div>
+                  <span>Stat :</span>
+                  <select class="skill-stat" name="system.attributes.skills.{{skill_name}}.stats">
+                    {{selectOptions ../../config.stats selected=skill_object.stats}}
+                  </select>
+                </div>
+              </div>
+            {{/if}}
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  {{/each}}
+</div>
+
+<h2>Bio</h2>
+<div class="bio">
+  <div class="r1c12">
+    <label for="full_name">Nom complet :</label>
+    <input name="system.description.full_name" type="text" id="full_name" value="{{sysData.description.full_name}}"/>
+  </div>
+  <div class="r1c34">
+    <label for="place_of_birth">Lieu de naissance :</label>
+    <input name="system.description.place_of_birth" type="text" id="place_of_birth" value="{{sysData.description.place_of_birth}}"/>
+  </div>
+  <div class="r2c1">
+    <label for="sex">Sexe :</label>
+    <input name="system.description.sex" type="text" id="sex" value="{{sysData.description.sex}}"/>
+  </div>
+  <div class="r2c2">
+    <label for="age">Âge :</label>
+    <input name="system.description.age" type="text" id="age" value="{{sysData.description.age}}"/>
+  </div>
+  <div class="r2c3">
+    <label for="height">Taille :</label>
+    <input name="system.description.height" type="text" id="height" value="{{sysData.description.height}}"/>
+  </div>
+  <div class="r2c4">
+    <label for="weight">Poids :</label>
+    <input name="system.description.weight" type="text" id="weight" value="{{sysData.description.weight}}"/>
+  </div>
+  <div class="r3c12">
+    <h3><label for="physical">Description physique</label></h3>
+    <div class="editor-box">
+      {{editor enrichedHTML.description.physical target="system.description.physical" button=true collaborate=false}}
+    </div>
+  </div>
+  <div class="r3c34">
+    <h3><label for="psychic">Description psychique</label></h3>
+    <div class="editor-box">
+      {{editor enrichedHTML.description.psychic target="system.description.psychic" button=true collaborate=false}}
+    </div>
+  </div>
+  <div class="r4c1234">
+    <h3><label for="story">Histoire</label></h3>
+    <div class="editor-box">
+      {{editor enrichedHTML.description.story target="system.description.story" button=true collaborate=false}}
+    </div>
+  </div>
+</div>

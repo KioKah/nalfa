@@ -1,0 +1,168 @@
+.nalfa-sheet-setup(@width) {
+	font-family: var(--nalfa-font-primary), var(--font-primary);
+	font-size: 16px;
+	color: var(--color-text-light-0);
+	width: @width;
+	padding: var(--nalfa-padding);
+	border: 1px solid var(--color-border-light-primary);
+	background-image: url(http://localhost:30000/ui/parchment.jpg);
+	background-color: var(--nalfa-color-background);
+	background-blend-mode: multiply;
+}
+
+.input-box(@font-size: 18px) {
+	border: 1px solid var(--color-border-light-primary);
+	border-radius: 3px;
+	box-sizing: border-box;
+	font-size: @font-size;
+}
+
+.input-block(@font-size: 18px, @padding: initial) {
+	@height: calc(@font-size + 8px);
+	height: calc(@font-size + 8px);
+	line-height: calc(@height - 2px);
+	padding: @padding;
+
+	text-align: center;
+	.input-box(@font-size);
+}
+
+.chr-input-block(@chr: 2, @font-size: 18px) {
+	@width: calc((1px * @chr + 2px) * (unit(@font-size) / 2));
+	width: @width;
+	min-width: @width;
+	max-width: @width;
+
+	.input-block(@font-size);
+}
+
+.select-block(@font-size: 18px) {
+	height: calc(@font-size + 9px);
+	border: 1px solid var(--color-border-light-primary);
+	border-radius: 3px;
+	box-sizing: border-box;
+	font-size: @font-size;
+	text-align: center;
+}
+
+.color-stats() {
+	.str {
+		color: var(--nalfa-color-stat-str);
+	}
+	.dex {
+		color: var(--nalfa-color-stat-dex);
+	}
+	.int {
+		color: var(--nalfa-color-stat-int);
+	}
+	.wis {
+		color: var(--nalfa-color-stat-wis);
+	}
+	.cha {
+		color: var(--nalfa-color-stat-cha);
+	}
+	.con {
+		color: var(--nalfa-color-stat-con);
+	}
+}
+
+.color-types() {
+	.none {
+		color: var(--nalfa-color-text-dark-0);
+	}
+	.tran {
+		color: var(--nalfa-color-type-phys-tran);
+	}
+	.perf {
+		color: var(--nalfa-color-type-phys-perf);
+	}
+	.cont {
+		color: var(--nalfa-color-type-phys-cont);
+	}
+	.soni {
+		color: var(--nalfa-color-type-phys-soni);
+	}
+	.sang {
+		color: var(--nalfa-color-type-phys-sang);
+	}
+	.feu {
+		color: var(--nalfa-color-type-elem-feu);
+	}
+	.eau {
+		color: var(--nalfa-color-type-elem-eau);
+	}
+	.terr {
+		color: var(--nalfa-color-type-elem-terr);
+	}
+	.air {
+		color: var(--nalfa-color-type-elem-air);
+	}
+	.natu {
+		color: var(--nalfa-color-type-elem-natu);
+	}
+	.givr {
+		color: var(--nalfa-color-type-elem-givr);
+	}
+	.foud {
+		color: var(--nalfa-color-type-elem-foud);
+	}
+	.radt {
+		color: var(--nalfa-color-type-magi-radt);
+	}
+	.obsc {
+		color: var(--nalfa-color-type-magi-obsc);
+	}
+	.arca {
+		color: var(--nalfa-color-type-magi-arca);
+	}
+	.chao {
+		color: var(--nalfa-color-type-magi-chao);
+	}
+	.necr {
+		color: var(--nalfa-color-type-magi-necr);
+	}
+	.psyc {
+		color: var(--nalfa-color-type-magi-psyc);
+	}
+	.arme {
+		color: var(--nalfa-color-type-spec-arme);
+	}
+	.soin {
+		color: var(--nalfa-color-type-spec-soin);
+	}
+	.abso {
+		color: var(--nalfa-color-type-spec-abso);
+	}
+}
+
+.color-keyword(@keyword) {
+	@color: var(--color-text-light-0);
+	@color: var(--nalfa-color-stat-str) when (@keyword = "str");
+	@color: var(--nalfa-color-stat-dex) when (@keyword = "dex");
+	@color: var(--nalfa-color-stat-int) when (@keyword = "int");
+	@color: var(--nalfa-color-stat-wis) when (@keyword = "wis");
+	@color: var(--nalfa-color-stat-cha) when (@keyword = "cha");
+	@color: var(--nalfa-color-stat-con) when (@keyword = "con");
+	@color: var(--nalfa-color-type-phys-tran) when (@keyword = "tran");
+	@color: var(--nalfa-color-type-phys-perf) when (@keyword = "perf");
+	@color: var(--nalfa-color-type-phys-cont) when (@keyword = "cont");
+	@color: var(--nalfa-color-type-phys-soni) when (@keyword = "soni");
+	@color: var(--nalfa-color-type-phys-sang) when (@keyword = "sang");
+	@color: var(--nalfa-color-type-elem-feu) when (@keyword = "feu");
+	@color: var(--nalfa-color-type-elem-eau) when (@keyword = "eau");
+	@color: var(--nalfa-color-type-elem-terr) when (@keyword = "terr");
+	@color: var(--nalfa-color-type-elem-air) when (@keyword = "air");
+	@color: var(--nalfa-color-type-elem-natu) when (@keyword = "natu");
+	@color: var(--nalfa-color-type-elem-givr) when (@keyword = "givr");
+	@color: var(--nalfa-color-type-elem-foud) when (@keyword = "foud");
+	@color: var(--nalfa-color-type-magi-radt) when (@keyword = "radt");
+	@color: var(--nalfa-color-type-magi-obsc) when (@keyword = "obsc");
+	@color: var(--nalfa-color-type-magi-arca) when (@keyword = "arca");
+	@color: var(--nalfa-color-type-magi-chao) when (@keyword = "chao");
+	@color: var(--nalfa-color-type-magi-necr) when (@keyword = "necr");
+	@color: var(--nalfa-color-type-magi-psyc) when (@keyword = "psyc");
+	@color: var(--nalfa-color-type-spec-arme) when (@keyword = "arme");
+	@color: var(--nalfa-color-type-spec-soin) when (@keyword = "soin");
+	@color: var(--nalfa-color-type-spec-abso) when (@keyword = "abso");
+	color: @color;
+}

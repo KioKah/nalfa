@@ -1,0 +1,179 @@
+(headings)
+<h1>h1</h1>
+<h2>h2</h2>
+<h3>h3</h3>
+<h4>h4</h4>
+<h5>h5</h5>
+<h6>h6</h6>
+
+hr <h6>The hr element represents a paragraph-level thematic break, e.g. a scene change in a story, or a transition to another topic within a section of a reference book.</h6> <hr/>
+
+br (line break)<br/>
+
+<p>p (paragraph)</p>
+
+<q>q (short quote)</q><br/>
+
+<u>u (underlined)</u><br/>
+
+<s>s (cross out)</s><br/>
+
+<mark>mark (highlight)</mark><br/>
+
+<sub>sub (subscript)</sub> <sup>sup (superscript)</sup><br/>
+
+<samp>samp (sample output from a computer program - monospace)</samp><br/>
+
+<code>code (computer code - monospace)</code><br/>
+
+<kbd>kbd (keyboard key input - monospace)</kbd>
+
+<pre>pre     :)
+        (pre-formatted text)</pre>
+
+ul (unordered list)
+<ul>
+  <li>
+    li (list item)
+  </li>
+  <li>
+    li
+  </li>
+</ul><br/>
+
+ol (ordered list)
+<ol>
+  <li>
+    li
+  </li>
+  <li>
+    li
+  </li>
+</ol><br/>
+
+dl (description list)
+<dl>
+  <dt>dt (term in dl)</dt>
+  <dd>dd (description of dt in dl)</dd>
+  <dt>dt</dt>
+  <dd>dd</dd>
+</dl><br/>
+
+table with colgroup
+<table>
+  <colgroup>
+    <col span="2" style="background-color:rgba(255, 0, 0, 0.2)"/>
+    <col style="background-color:rgba(255, 255, 0, 0.2)"/>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>thead (table head)</th>
+      <th>→tr (table row) </tr>
+      <th>→→th (table header cell)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tbody (table body)</td>
+      <td>→tr (table row) </td>
+      <td>→→th (table cell)</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>tbody (table body)</td>
+      <td>→tr (table row) </td>
+      <td>→→th (table cell)</td>
+    </tr>
+  </tfoot>
+</table><br/>
+
+<a href="https://google.com">a (hyperlink)</a><br/>
+
+{{!-- <button onclick="showContent()">button to create template</button><br/> --}}
+
+{{!-- <template>
+  <p>template (hidden - can be used by js)</p>
+</template>
+
+<script>
+//function showContent() {
+//  let temp = document.getElementsByTagName("template")[0];
+//  let clone = temp.content.cloneNode(true);
+//  document.body.appendChild(clone);
+//}
+</script> --}}
+
+{{!-- img
+<img src="img"><br/> --}}
+
+<form>
+  <label for="select">[select] label</label>
+  <select name="select" id="select" aria-placeholder="select">
+    <optgroup label="optgroup 1">
+      <option value="option1-1">option 1-1</option>
+      <option value="option1-2">option 1-2</option>
+    </optgroup>
+    <optgroup label="optgroup 2">
+      <option value="option2-1">option 2-1</option>
+      <option value="option2-2">option 2-2</option>
+    </optgroup>
+  </select><br/>
+
+  <textarea id="textarea" name="textarea" rows="2" cols="9">textarea</textarea><br/>
+
+  <label for="progress">[progress] label : </label>
+  <progress id="progress" value="32" max="100">progress</progress><br/>
+
+  <label for="meter">[meter] label : </label>
+  <meter id="meter" value="0.6">meter [0.6]</meter><br/>
+
+  <h2>All input types</h2>
+
+  text
+  <input type="text" id="text-input" name="text-input" placeholder="text input"/><br/>
+  button
+  <input type="button"/><br/>
+  checkbox
+  <input type="checkbox"/><br/>
+  color
+  <input type="color"/><br/>
+  date
+  <input type="date"/><br/>
+  datetime-local
+  <input type="datetime-local"/><br/>
+  email
+  <input type="email"/><br/>
+  file
+  <input type="file"/><br/>
+  hidden
+  <input type="hidden"/><br/>
+  image
+  <input type="image"/><br/>
+  month
+  <input type="month"/><br/>
+  password
+  <input type="password"/><br/>
+  radio
+  <input type="radio" name="radio1"/><br/>
+  radio 2 : le retour
+  <input type="radio" name="radio1"/><br/>
+  number
+  <input type="number"/><br/>
+  range
+  <input type="range" value="4" min="1" max="10" step="1" oninput="this.nextElementSibling.value = this.value"/> Value : <output>4</output><br/>
+  reset
+  <input type="reset"/><br/>
+  search
+  <input type="search"/><br/>
+  submit
+  <input type="submit"/><br/>
+  tel
+  <input type="tel"/><br/>
+  time
+  <input type="time"/><br/>
+  url
+  <input type="url"/><br/>
+  week
+  <input type="week"/><br/>
+</form>

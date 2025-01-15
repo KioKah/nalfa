@@ -1,0 +1,9 @@
+<h2>Equippable</h2>
+<ul>
+  <li>equipped : <input name="system.equipped" type="checkbox" {{checked sysData.equipped}}/></li>
+  <li>hands :
+    <select name="system.hands">
+      {{selectOptions config.hands selected=sysData.hands}}
+    </select>
+  </li>
+</ul>
