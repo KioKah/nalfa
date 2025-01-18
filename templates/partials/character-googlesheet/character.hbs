@@ -1,34 +1,34 @@
 <h2>Stats &amp; Compétences</h2>
 <div class="skills-by-stat">
+  {{!log sysData.attributes.skills}}
   {{#each sysData.stats as |stat_object stat_name|}}
     <div class="skill-by-stat {{stat_name}}">
       <h3 class="stat">
         <div class="stat-info">
           <label class="stat-name">
             {{statName stat_name}}
-            <input class="hidden" name="system.stats.{{stat_name}}.dropdown" type="checkbox" {{checked stat_object.dropdown}}/>
+            <input class="hidden" name="system.stats.{{stat_name}}.ui.dropdown" type="checkbox" {{checked stat_object.ui.dropdown}}/>
           </label>
           <div class="stat-value">{{stat_object.value}}</div>
         </div>
-        {{#if stat_object.dropdown}}
+        {{#if stat_object.ui.dropdown}}
           <div class="stat-dropdown">
             <span>Base :</span>
             <input name="system.stats.{{stat_name}}.base" type="number" value="{{stat_object.base}}" data-dtype="Number"/>
           </div>
         {{/if}}
       </h3>
-      {{log ../sysData.attributes.skills}}
       {{#each ../sysData.attributes.skills as |skill_object skill_name|}}
-        {{#if (eq skill_object.stats stat_name)}}
+        {{#if (eq skill_object.stat stat_name)}}
           <div class="skill {{skill_object.default_stat}}">
             <div class="skill-info">
               <label class="skill-name">
                 {{skillName skill_name}}
-                <input class="hidden" name="system.attributes.skills.{{skill_name}}.dropdown" type="checkbox" {{checked skill_object.dropdown}}/>
+                <input class="hidden" name="system.attributes.skills.{{skill_name}}.ui.dropdown" type="checkbox" {{checked skill_object.ui.dropdown}}/>
               </label>
               <div class="skill-value">{{skill_object.value}}</div>
             </div>
-            {{#if skill_object.dropdown}}
+            {{#if skill_object.ui.dropdown}}
               <div class="skill-dropdown">
                 <div>
                   <span>Base :</span>
@@ -36,8 +36,8 @@
                 </div>
                 <div>
                   <span>Stat :</span>
-                  <select class="skill-stat" name="system.attributes.skills.{{skill_name}}.stats">
-                    {{selectOptions ../../config.stats selected=skill_object.stats}}
+                  <select class="skill-stat" name="system.attributes.skills.{{skill_name}}.stat">
+                    {{selectOptions ../../config.stats selected=skill_object.stat}}
                   </select>
                 </div>
               </div>

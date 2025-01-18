@@ -18,7 +18,8 @@ export default class NalfaCharacterSheet extends ActorSheet {
 	}
 
 	get template() {
-		return `systems/nalfa/templates/sheets/character-googlesheet.hbs`; // TEMP character-googlesheet instead of character-sheet
+		return `systems/nalfa/templates/sheets/character-googlesheet.hbs`; // TEMP
+		// character-googlesheet instead of character-sheet
 	}
 
 	// this.actor.owner → this.actor.isOwner
@@ -312,12 +313,11 @@ export default class NalfaCharacterSheet extends ActorSheet {
 			statMap[sheetData.sysData.attributes.passive_percep.stat];
 		// TODO : add bonuses
 
-		// FIXME : Cannot open the sheet because of code below
 		for (const skill in CONFIG.nalfa.skills) {
 			if (Object.hasOwnProperty.call(sheetData.sysData.attributes.skills, skill)) {
 				sheetData.sysData.attributes.skills[skill].value =
 					sheetData.sysData.attributes.skills[skill].base +
-					statMap[sheetData.sysData.attributes.skills[skill].stats];
+					statMap[sheetData.sysData.attributes.skills[skill].stat];
 				// TODO : add bonuses
 			}
 		}

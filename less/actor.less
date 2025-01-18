@@ -22,6 +22,7 @@
 
 			.character-health {
 				flex: 3;
+				margin-right: var(--nalfa-padding);
 				.health-flexbox {
 					display: flex;
 					flex-direction: row;
@@ -77,17 +78,19 @@
 			}
 
 			.character-scores {
-				display: flex;
-				flex-direction: row;
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				grid-template-rows: repeat(2, auto);
+				grid-gap: 4px;
 				flex: 4;
 
 				.score-flexbox {
 					display: flex;
 					flex-direction: column;
-					justify-content: space-between;
+					justify-content: center;
+					align-items: center;
 					span {
-						// font-weight: bold;
-						margin-right: 5px;
+						margin-bottom: 5px;
 					}
 					.score {
 						.chr-input-block(@chr: 4, @font-size: 18px);
@@ -100,6 +103,7 @@
 				flex-direction: column;
 				align-items: center;
 				flex: 3;
+				margin-left: var(--nalfa-padding);
 				span {
 					// font-weight: bold;
 					margin-bottom: 5px;
@@ -275,10 +279,15 @@
 					.stat-dropdown {
 						display: flex;
 						flex-direction: row;
+						justify-content: center;
 						color: var(--color-text-light-0);
 						margin: 4px 0;
 						> span {
 							margin-right: 4px;
+							white-space: nowrap;
+						}
+						> input {
+							.chr-input-block(@chr: 2);
 						}
 					}
 				}

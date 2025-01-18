@@ -7,44 +7,50 @@
 					"str": {
 						"base": 0,
 						"value": null,
-						"check": null,
 						"save": null,
-						"dropdown": false
+						"ui": {
+							"dropdown": false
+						}
 					},
 					"dex": {
 						"base": 0,
 						"value": null,
-						"check": null,
 						"save": null,
-						"dropdown": false
+						"ui": {
+							"dropdown": false
+						}
 					},
 					"int": {
 						"base": 0,
 						"value": null,
-						"check": null,
 						"save": null,
-						"dropdown": false
+						"ui": {
+							"dropdown": false
+						}
 					},
 					"wis": {
 						"base": 0,
 						"value": null,
-						"check": null,
 						"save": null,
-						"dropdown": false
+						"ui": {
+							"dropdown": false
+						}
 					},
 					"cha": {
 						"base": 0,
 						"value": null,
-						"check": null,
 						"save": null,
-						"dropdown": false
+						"ui": {
+							"dropdown": false
+						}
 					},
 					"con": {
 						"base": 0,
 						"value": null,
-						"check": null,
 						"save": null,
-						"dropdown": false
+						"ui": {
+							"dropdown": false
+						}
 					}
 				},
 				"attributes": {
@@ -61,7 +67,8 @@
 						"value": null,
 						"stat": null
 					},
-					"defence": {
+					"armor_score": {
+						"base": 0,
 						"value": null
 					},
 					"initiative": {
@@ -85,126 +92,162 @@
 							"value": null,
 							"stat": "str",
 							"default_stat": "str",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"robust": {
 							"base": 0,
 							"value": null,
 							"stat": "str",
 							"default_stat": "str",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"adress": {
 							"base": 0,
 							"value": null,
 							"stat": "dex",
 							"default_stat": "dex",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"discre": {
 							"base": 0,
 							"value": null,
 							"stat": "dex",
 							"default_stat": "dex",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"acroba": {
 							"base": 0,
 							"value": null,
 							"stat": "dex",
 							"default_stat": "dex",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"cultur": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
 							"default_stat": "int",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
-						"ester": {
+						"magie": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
 							"default_stat": "int",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"nature": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
 							"default_stat": "int",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"medeci": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
 							"default_stat": "int",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"percep": {
 							"base": 0,
 							"value": null,
 							"stat": "wis",
 							"default_stat": "wis",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
-						"dressa": {
+						"sereni": {
 							"base": 0,
 							"value": null,
 							"stat": "wis",
 							"default_stat": "wis",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"intuit": {
 							"base": 0,
 							"value": null,
 							"stat": "wis",
 							"default_stat": "wis",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"intimi": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
 							"default_stat": "cha",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"trompe": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
 							"default_stat": "cha",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"persua": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
 							"default_stat": "cha",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"perfor": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
 							"default_stat": "cha",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"sante": {
 							"base": 0,
 							"value": null,
 							"stat": "con",
 							"default_stat": "con",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						},
 						"endura": {
 							"base": 0,
 							"value": null,
 							"stat": "con",
 							"default_stat": "con",
-							"dropdown": false
+							"ui": {
+								"dropdown": false
+							}
 						}
 					},
 					"resistances": {
@@ -342,10 +385,11 @@
 				"death": {
 					"passing_throw": {
 						"base": 11,
+						"stat": "none",
 						"value": null
 					},
-					"success": 0,
-					"failure": 0
+					"successes": 0,
+					"failures": 0
 				}
 			}
 		},
@@ -354,10 +398,6 @@
 			"attributes": {
 				"hp": {
 					"formula": ""
-				},
-				"defence": {
-					"base": 0,
-					"value": null
 				},
 				"elite": false
 			},
@@ -389,7 +429,11 @@
 		"templates": {
 			"ITEM_DESC": {
 				"description": {
-					"value": "<p>html</p>",
+					"value": "<p>html</p>"
+				}
+			},
+			"ITEM_SOURCE": {
+				"description": {
 					"source": "<p>html</p>"
 				}
 			},
@@ -399,15 +443,20 @@
 			"PHYSICAL": {
 				"weight": 0,
 				"quantity": 1,
+				"equippable": {
+					"main_hand": false,
+					"off_hand": false,
+					"body": false
+				},
 				"equipped": {
 					"main_hand": false,
 					"off_hand": false,
 					"body": false
 				},
+				"cursed": false,
 				"identification": {
 					"mechanic": false,
 					"identified": false,
-					"true_name": "",
 					"unidentified": {
 						"name": "",
 						"description": "<p>html</p>"
@@ -448,33 +497,54 @@
 			}
 		},
 		"Weapon": {
-			"templates": ["ITEM_DESC", "RARITY", "PHYSICAL", "RECOM_LEVEL", "ACTIONABLE"],
+			"templates": [
+				"ITEM_DESC",
+				"ITEM_SOURCE",
+				"RARITY",
+				"PHYSICAL",
+				"RECOM_LEVEL",
+				"ACTIONABLE"
+			],
 			"weapon_attributes": []
 		},
 		"Trinket": {
-			"templates": ["ITEM_DESC", "RARITY", "PHYSICAL", "RECOM_LEVEL", "ACTIONABLE"],
+			"templates": [
+				"ITEM_DESC",
+				"ITEM_SOURCE",
+				"RARITY",
+				"PHYSICAL",
+				"RECOM_LEVEL",
+				"ACTIONABLE"
+			],
 			"trinket_type": ""
 		},
 		"Tool": {
-			"templates": ["ITEM_DESC", "RARITY", "PHYSICAL", "RECOM_LEVEL"]
+			"templates": ["ITEM_DESC", "ITEM_SOURCE", "RARITY", "PHYSICAL", "RECOM_LEVEL"]
 		},
 		"Backpack": {
-			"templates": ["ITEM_DESC", "RARITY", "RECOM_LEVEL"],
+			"templates": ["ITEM_DESC", "ITEM_SOURCE", "RARITY", "RECOM_LEVEL"],
 			"capacity": 20000
 		},
 		"Consumable": {
-			"templates": ["ITEM_DESC", "RARITY", "PHYSICAL", "RECOM_LEVEL", "ACTIONABLE"],
+			"templates": [
+				"ITEM_DESC",
+				"ITEM_SOURCE",
+				"RARITY",
+				"PHYSICAL",
+				"RECOM_LEVEL",
+				"ACTIONABLE"
+			],
 			"consumable_type": "Autre",
 			"auto_destroy": false
 		},
 		"Loot": {
-			"templates": ["ITEM_DESC", "RARITY", "PHYSICAL", "RECOM_LEVEL"]
+			"templates": ["ITEM_DESC", "ITEM_SOURCE", "RARITY", "PHYSICAL", "RECOM_LEVEL"]
 		},
 		"Book": {
-			"templates": ["ITEM_DESC", "RARITY", "PHYSICAL"]
+			"templates": ["ITEM_DESC", "ITEM_SOURCE", "RARITY", "PHYSICAL"]
 		},
 		"Action": {
-			"templates": ["ITEM_DESC", "ACTIONABLE"],
+			"templates": ["ITEM_DESC", "ITEM_SOURCE", "ACTIONABLE"],
 			"prerequisites": {
 				"verbal": false,
 				"somatic": false,
@@ -512,6 +582,7 @@
 			"next_level_up": -1
 		},
 		"Currency": {
+			"templates": ["ITEM_DESC", "ITEM_SOURCE"],
 			"denominations": [
 				{
 					"amount": 0,
@@ -569,15 +640,16 @@
 				}
 			},
 			"attributes": {
-				"action": {
+				"actions": {
 					"main": 1,
 					"bonus": 1,
 					"reaction": 1,
 					"concentration": 1,
 					"movement": 6
 				},
-				"defence": {
-					"value": 10,
+				"armor_score": {
+					"base": 0,
+					"value": null,
 					"stat": "none"
 				}
 			}
