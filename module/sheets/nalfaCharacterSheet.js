@@ -54,7 +54,6 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		};
 
 		//* Enrich HTML :
-
 		sheetData.enrichedHTML = {};
 		sheetData.enrichedHTML.description = {};
 
@@ -148,7 +147,6 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		sheetData.currencies = baseData.items.filter(function (item) {
 			return item.type == "Currency" && item.system.done;
 		});
-		console.error(sheetData.currencies);
 
 		// Remove unfinished currencies
 		const unfinishedCurrencies = baseData.items.filter(function (item) {
@@ -321,6 +319,12 @@ export default class NalfaCharacterSheet extends ActorSheet {
 				// TODO : add bonuses
 			}
 		}
+
+		sheetData.sysData.attributes.armor_score.value = sheetData.class
+			? sheetData.sysData.attributes.armor_score.base +
+			  sheetData.class.sysData.attributes.armor_score.base +
+			  statMap[sheetData.class.sysData.attributes.armor_score.stat]
+			: sheetData.sysData.attributes.armor_score.base;
 
 		console.warn("🚀 ~ NalfaCharacterSheet ~ sheetData.sysData:\n", sheetData.sysData);
 

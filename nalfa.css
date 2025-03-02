@@ -168,18 +168,22 @@
   margin-bottom: var(--nalfa-padding);
 }
 .nalfa.sheet.actor .nalfa-sheet .character-header .character-health {
-  flex: 3;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   margin-right: var(--nalfa-padding);
 }
 .nalfa.sheet.actor .nalfa-sheet .character-header .character-health .health-flexbox {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
 }
-.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .health-flexbox span {
-  margin-right: 5px;
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .health-flexbox > span {
+  margin: 0 5px;
 }
-.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .health-flexbox input {
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .health-flexbox > input {
   width: calc((1px * 2 + 2px) * (18 / 2));
   min-width: calc((1px * 2 + 2px) * (18 / 2));
   max-width: calc((1px * 2 + 2px) * (18 / 2));
@@ -200,7 +204,7 @@
 .nalfa.sheet.actor .nalfa-sheet .character-header .character-health .temp-health-flexbox > span {
   margin-right: 5px;
 }
-.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .temp-health-flexbox input {
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .temp-health-flexbox > input {
   width: calc((1px * 2 + 2px) * (18 / 2));
   min-width: calc((1px * 2 + 2px) * (18 / 2));
   max-width: calc((1px * 2 + 2px) * (18 / 2));
@@ -283,20 +287,30 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 26px;
 }
-.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox span {
-  margin-right: 5px;
-}
-.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .death-icons i.on {
-  color: var(--color-text-light-0);
-}
-.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .death-icons i.off {
-  color: var(--color-text-light-1);
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .life-icons {
+  display: flex;
+  gap: 5px;
+  margin: 0 5px;
 }
 .nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .life-icons i.on {
   color: var(--color-text-light-0);
 }
 .nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .life-icons i.off {
+  color: var(--color-text-light-1);
+}
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .death-icons {
+  display: flex;
+  gap: 5px;
+  margin: 0 5px;
+}
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .death-icons i.on {
+  color: var(--color-text-light-0);
+}
+.nalfa.sheet.actor .nalfa-sheet .character-header .character-health .death-flexbox .death-icons i.off {
   color: var(--color-text-light-1);
 }
 .nalfa.sheet.actor .nalfa-sheet .character-header .character-scores {

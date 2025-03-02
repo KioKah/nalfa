@@ -1,5 +1,5 @@
 import { nalfa } from "./module/config.js";
-import { getHbsFiles, applyMutationObserver } from "./module/utils.js";
+import { applyMutationObserver } from "./module/utils.js";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.js";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.js";
 import NalfaItem from "./module/sheets/nalfaItem.js";
@@ -7,8 +7,51 @@ import NalfaItem from "./module/sheets/nalfaItem.js";
 import { DiceSystem } from "../../modules/dice-so-nice/api.js";
 
 async function preloadHandlebarsTemplates() {
-	const templatePaths = await getHbsFiles("systems/nalfa/templates/partials");
-	console.log("nalfa | Preloading Handlebars Templates", templatePaths);
+	console.log("nalfa | Preloading Handlebars Templates");
+
+	const templatePaths = [
+		"systems/nalfa/templates/partials/item-sheet-header.hbs",
+		"systems/nalfa/templates/partials/weapon.hbs",
+
+		"systems/nalfa/templates/partials/item-sheets/actionable.hbs",
+		"systems/nalfa/templates/partials/item-sheets/effects.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-desc.hbs",
+		"systems/nalfa/templates/partials/item-sheets/physical.hbs",
+		"systems/nalfa/templates/partials/item-sheets/rarity.hbs",
+		"systems/nalfa/templates/partials/item-sheets/recom-level.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/action.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/backpack.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/book.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/class.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/combat-style.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/consumable.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/currency.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/job.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/loot.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/race.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/status.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/tool.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/trinket.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/weapon-attribute.hbs",
+		"systems/nalfa/templates/partials/item-sheets/item-specific/weapon.hbs",
+		// "systems/nalfa/templates/partials/item-sheets/item-specific/test-item.hbs",
+
+		"systems/nalfa/templates/partials/test-item/action.hbs",
+		"systems/nalfa/templates/partials/test-item/activated-effect.hbs",
+		"systems/nalfa/templates/partials/test-item/equippable.hbs",
+		"systems/nalfa/templates/partials/test-item/identifiable-item.hbs",
+		"systems/nalfa/templates/partials/test-item/info.hbs",
+		"systems/nalfa/templates/partials/test-item/item-description.hbs",
+		"systems/nalfa/templates/partials/test-item/physical-item.hbs",
+
+		"systems/nalfa/templates/partials/character-googlesheet/inventory/currency.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/character.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/class.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/esters.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/inventory.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/tracker.hbs",
+	];
+
 	return loadTemplates(templatePaths);
 }
 

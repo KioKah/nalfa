@@ -8,17 +8,6 @@ export function clamp(value, minValue, maxValue) {
 	return Math.min(Math.max(value, minValue), maxValue);
 }
 
-export async function getHbsFiles(directory) {
-	let files = await FilePicker.browse("data", directory);
-	let hbsFiles = files.files.filter((file) => file.endsWith(".hbs"));
-
-	// If there are subdirectories, recursively search them
-	for (let subdirectory of files.dirs) {
-		hbsFiles = hbsFiles.concat(await getHbsFiles(subdirectory));
-	}
-	return hbsFiles;
-}
-
 export async function enrichHTML(string, owner) {
 	if (string === undefined) return undefined;
 	return await TextEditor.enrichHTML(string, {
@@ -38,7 +27,7 @@ export function prepareItem(sysData, itemType) {
 		Book: () => {} /* Future implementation */,
 		Spell: () => {} /* Future implementation */,
 		Currency: prepareCurrency,
-		Race: () => {},
+		Race: () => {} /* Future implementation */,
 		Class: () => {} /* Future implementation */,
 		Job: () => {} /* Future implementation */,
 		CombatStyle: () => {} /* Future implementation */,

@@ -649,7 +649,6 @@
 				},
 				"armor_score": {
 					"base": 0,
-					"value": null,
 					"stat": "none"
 				}
 			}
