@@ -1,4 +1,4 @@
-import { round } from "../utils.js";
+import { round } from "../utils.mjs";
 
 export function prepareCurrency(sysData) {
 	if (!sysData.quantity) {

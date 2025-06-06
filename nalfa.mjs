@@ -1,8 +1,8 @@
-import { nalfa } from "./module/config.js";
-import { applyMutationObserver } from "./module/utils.js";
-import NalfaItemSheet from "./module/sheets/nalfaItemSheet.js";
-import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.js";
-import NalfaItem from "./module/sheets/nalfaItem.js";
+import { nalfa } from "./module/config.mjs";
+import { applyMutationObserver } from "./module/utils.mjs";
+import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
+import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
+import NalfaItem from "./module/sheets/nalfaItem.mjs";
 
 import { DiceSystem } from "../../modules/dice-so-nice/api.js";
 
@@ -52,7 +52,7 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/partials/character-googlesheet/tracker.hbs",
 	];
 
-	return loadTemplates(templatePaths);
+	return foundry.applications.handlebars.loadTemplates(templatePaths);
 }
 
 Hooks.once("init", function () {
@@ -62,11 +62,33 @@ Hooks.once("init", function () {
 	CONFIG.nalfa = nalfa;
 	CONFIG.Item.documentClass = NalfaItem;
 
-	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("nalfa", NalfaItemSheet, { makeDefault: true });
+	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
+		foundry.documents.Actor,
+		"core",
+		foundry.applications.sheets.ActorSheetV2
+	);
+	foundry.applications.apps.DocumentSheetConfig.registerSheet(
+		foundry.documents.Actor,
+		"nalfa",
+		NalfaCharacterSheet,
+		{
+			makeDefault: true,
+		}
+	);
 
-	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("nalfa", NalfaCharacterSheet, { makeDefault: true });
+	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
+		foundry.documents.Item,
+		"core",
+		foundry.applications.sheets.ItemSheetV2
+	);
+	foundry.applications.apps.DocumentSheetConfig.registerSheet(
+		foundry.documents.Item,
+		"nalfa",
+		NalfaItemSheet,
+		{
+			makeDefault: true,
+		}
+	);
 
 	preloadHandlebarsTemplates();
 

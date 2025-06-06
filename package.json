@@ -1,0 +1,26 @@
+{
+	"name": "nalfa",
+	"version": "1.0.0",
+	"main": "nalfa.mjs",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"createSymlinks": "node ./tools/create-symlinks.mjs",
+		"postinstall": "npm run createSymlinks"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/KioKah/nalfa.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/KioKah/nalfa/issues"
+	},
+	"homepage": "https://github.com/KioKah/nalfa#readme",
+	"description": "",
+	"dependencies": {
+		"js-yaml": "^4.1.0",
+		"nalfa": "file:"
+	}
+}

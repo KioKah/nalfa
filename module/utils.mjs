@@ -1,16 +1,17 @@
-import { prepareCurrency } from "./prepareItems/currency.js";
+import { prepareCurrency } from "./prepareItems/currency.mjs";
+
+const { enrichHTML: foundryEnrichHTML } = foundry.applications.ux.TextEditor.implementation;
 
 export function round(value, decimals = 6) {
 	return Number(Math.round(value * 10 ** decimals) / 10 ** decimals);
 }
-
 export function clamp(value, minValue, maxValue) {
 	return Math.min(Math.max(value, minValue), maxValue);
 }
 
 export async function enrichHTML(string, owner) {
 	if (string === undefined) return undefined;
-	return await TextEditor.enrichHTML(string, {
+	return await foundryEnrichHTML(string, {
 		secrets: owner,
 		async: true,
 	});

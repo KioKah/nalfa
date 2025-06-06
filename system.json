@@ -7,13 +7,13 @@
 			"name": "KioKah"
 		}
 	],
-	"version": "0.10.0",
+	"version": "0.0.1",
 	"compatibility": {
 		"minimum": 12,
 		"verified": "12.331",
-		"maximum": 12
+		"maximum": 13
 	},
-	"esmodules": ["nalfa.js"],
+	"esmodules": ["nalfa.mjs"],
 	"styles": ["nalfa.css"],
 	"packs": [],
 	"languages": [

@@ -1,7 +1,7 @@
 .nalfa-sheet-setup(@width) {
 	font-family: var(--nalfa-font-primary), var(--font-primary);
 	font-size: 16px;
-	color: var(--color-text-light-0);
+	color: var(--color-text-primary);
 	width: @width;
 	padding: var(--nalfa-padding);
 	border: 1px solid var(--color-border-light-primary);
@@ -136,7 +136,7 @@
 }
 
 .color-keyword(@keyword) {
-	@color: var(--color-text-light-0);
+	@color: var(--color-text-primary);
 	@color: var(--nalfa-color-stat-str) when (@keyword = "str");
 	@color: var(--nalfa-color-stat-dex) when (@keyword = "dex");
 	@color: var(--nalfa-color-stat-int) when (@keyword = "int");

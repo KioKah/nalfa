@@ -1,55 +1,130 @@
-import { prepareCurrency } from "../prepareItems/currency.js";
-import { enrichHTML, prepareItem } from "../utils.js";
+import { prepareCurrency } from "../prepareItems/currency.mjs";
+import { enrichHTML, prepareItem } from "../utils.mjs";
 
-export default class NalfaCharacterSheet extends ActorSheet {
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["nalfa", "sheet", "actor"],
-			height: 882, // 820 + 2*16 padding + 30 fenêtre = 882
-			width: 812, // 780 + 2*16 padding = 812
-			tabs: [
-				{
-					navSelector: ".sheet-tabs",
-					contentSelector: ".sheet-body",
-					initial: "character", // NOTE Assujetti à des changements futurs
-				},
-			],
-		});
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ActorSheetV2 } = foundry.applications.sheets;
+
+export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+	/** ─── DEFAULT OPTIONS ───────────────────────────────────────────────────────── */
+	static DEFAULT_OPTIONS = {
+		classes: ["nalfa", "sheet", "actor"],
+		position: {
+			width: 812,
+			height: 882,
+		},
+		tabGroups: [
+			{
+				navSelector: ".sheet-tabs",
+				contentSelector: ".sheet-body",
+				initial: "character",
+			},
+		],
+		window: {
+			title: "Character Sheet",
+		},
+		dragDrop: [{ dragSelector: "[data-drag]", dropSelector: null }],
+		form: {
+			submitOnChange: true,
+		},
+	};
+
+	/** ─── TEMPLATE ───────────────────────────────────────────────────────────────── */
+	static PARTS = {
+		nalfa: {
+			template: `systems/nalfa/templates/sheets/character-googlesheet.hbs`,
+		},
+	};
+
+	static TABS = {
+		initial: "character",
+		tabs: [
+			{
+				id: "character",
+				label: "nalfa.sheet.tabs.character",
+				icon: "fa-solid fa-user",
+			},
+			{
+				id: "inventory",
+				label: "nalfa.sheet.tabs.inventory",
+				icon: "fa-solid fa-boxes-stacked",
+			},
+			{
+				id: "esters",
+				label: "nalfa.sheet.tabs.esters",
+				icon: "fa-solid fa-coins",
+			},
+			{
+				id: "tracker",
+				label: "nalfa.sheet.tabs.tracker",
+				icon: "fa-solid fa-list-check",
+			},
+		],
+	};
+
+	// TODO
+	_getTabs(parts) {
+		// If you have sub-tabs this is necessary to change
+		const tabGroup = "primary";
+		// Default tab for first time it's rendered this session
+		if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = "biography";
+		return parts.reduce((tabs, partId) => {
+			const tab = {
+				cssClass: "",
+				group: tabGroup,
+				// Matches tab property to
+				id: "",
+				// FontAwesome Icon, if you so choose
+				icon: "",
+				// Run through localization
+				label: "BOILERPLATE.Actor.Tabs.",
+			};
+			switch (partId) {
+				case "header":
+				case "tabs":
+					return tabs;
+				case "biography":
+					tab.id = "biography";
+					tab.label += "Biography";
+					break;
+				case "features":
+					tab.id = "features";
+					tab.label += "Features";
+					break;
+				case "gear":
+					tab.id = "gear";
+					tab.label += "Gear";
+					break;
+				case "spells":
+					tab.id = "spells";
+					tab.label += "Spells";
+					break;
+				case "effects":
+					tab.id = "effects";
+					tab.label += "Effects";
+					break;
+			}
+			if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = "active";
+			tabs[partId] = tab;
+			return tabs;
+		}, {});
 	}
+	// get template() {
+	// 	   TEMP: using "character-googlesheet" instead of "character-sheet"
+	// 	return `systems/nalfa/templates/sheets/character-googlesheet.hbs`;
+	// }
 
-	get template() {
-		return `systems/nalfa/templates/sheets/character-googlesheet.hbs`; // TEMP
-		// character-googlesheet instead of character-sheet
-	}
+	/** ─── PREPARE CONTEXT ──────────────────────────────────────── */
+	async _prepareContext(options) {
+		const baseData = await super._prepareContext(options);
+		console.warn("🚀 ~ _prepareContext ~ baseData:\n", baseData);
 
-	// this.actor.owner → this.actor.isOwner
-	// ItemContextMenu = ...
-	//! this.actor.getOwnedItems() → this.actor.items.get()
-	//! this.actor.deleteOwnedItem(...) → this.actor.deleteEmbeddedDocument("Item", [element.data("item-id")]);
-	//! this.actor.createOwnedItems(itemData) → this.actor.createEmbeddedDocuments("Item", [itemData]);
-	async getData() {
-		const baseData = super.getData();
-		console.warn("🚀 ~ NalfaCharacterSheet ~ getData ~ baseData:\n", baseData);
-		/* OUTPUT
-			actor: Actor {name: "test character actor", type: 'character', img: 'icons/svg/mystery-man.svg', system: {…}, #validationFailures: {…}, …}
-			cssClass: "editable"
-			data : {_id: '47v5dPr8104doC4v', name: "test character actor", type: 'character', img: 'icons/svg/mystery-man.svg', system: {…}, …}
-			document: Actor {name: "test character actor", type: 'character', img: 'icons/svg/mystery-man.svg', system: {…}, #validationFailures: {…}, …}
-			editable: true
-			effects: []
-			items: [{...},{...},{...}]
-			limited: false
-			options: {baseApplication: 'ActorSheet', width: 736, height: 800, top: null, left: null, …}
-			owner: true
-			title: "test character actor"
-		*/
+		const items = baseData.items || [];
 
-		//* Redefine sheet :
-		let sheetData = {
+		const sheetData = {
 			isOwner: this.actor.isOwner,
 			isEditable: this.isEditable,
-			actor: baseData.actor,
-			sysData: baseData.actor.system,
+			actor: baseData.document,
+			sysData: baseData.document.system,
 			config: CONFIG.nalfa,
 		};
 
@@ -78,7 +153,7 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		}
 
 		//* Prepare all items
-		baseData.items.forEach((item) => {
+		items.forEach((item) => {
 			prepareItem(item.system, item.type);
 		});
 
@@ -104,52 +179,52 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		] */
 
 		//* WEAPONS :
-		sheetData.weapons = baseData.items.filter(function (item) {
+		sheetData.weapons = items.filter(function (item) {
 			return item.type == "Weapon";
 		});
 
 		//* TRINKETS :
-		sheetData.trinkets = baseData.items.filter(function (item) {
+		sheetData.trinkets = items.filter(function (item) {
 			return item.type == "Trinket";
 		});
 
 		//* TOOLS :
-		sheetData.tools = baseData.items.filter(function (item) {
+		sheetData.tools = items.filter(function (item) {
 			return item.type == "Tool";
 		});
 
 		//* BACKPACKS :
-		sheetData.backpacks = baseData.items.filter(function (item) {
+		sheetData.backpacks = items.filter(function (item) {
 			return item.type == "Backpack";
 		});
 
 		//* CONSUMABLES :
-		sheetData.consumables = baseData.items.filter(function (item) {
+		sheetData.consumables = items.filter(function (item) {
 			return item.type == "Consumable";
 		});
 
 		//* LOOTS :
-		sheetData.loots = baseData.items.filter(function (item) {
+		sheetData.loots = items.filter(function (item) {
 			return item.type == "Loot";
 		});
 
 		//* BOOKS :
-		sheetData.books = baseData.items.filter(function (item) {
+		sheetData.books = items.filter(function (item) {
 			return item.type == "Book";
 		});
 
 		//* SPELLS :
-		sheetData.spells = baseData.items.filter(function (item) {
+		sheetData.spells = items.filter(function (item) {
 			return item.type == "Spell";
 		});
 
 		//* CURRENCIES :
-		sheetData.currencies = baseData.items.filter(function (item) {
+		sheetData.currencies = items.filter(function (item) {
 			return item.type == "Currency" && item.system.done;
 		});
 
 		// Remove unfinished currencies
-		const unfinishedCurrencies = baseData.items.filter(function (item) {
+		const unfinishedCurrencies = items.filter(function (item) {
 			return item.type == "Currency" && !item.system.done;
 		});
 		const currenciesToRemove = Object.values(unfinishedCurrencies).map(
@@ -240,7 +315,7 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		}
 
 		//* RACE :
-		const races = baseData.items.filter((item) => item.type === "Race");
+		const races = items.filter((item) => item.type === "Race");
 
 		// Only keep the first race
 		if (races.length > 1) {
@@ -250,7 +325,7 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		sheetData.race = races.length > 0 ? races[0] : null;
 
 		//* CLASS :
-		const classes = baseData.items.filter((item) => item.type === "Class");
+		const classes = items.filter((item) => item.type === "Class");
 
 		// Only keep the first class
 		if (classes.length > 1) {
@@ -260,12 +335,12 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		sheetData.class = classes.length > 0 ? classes[0] : null;
 
 		//* JOBS :
-		sheetData.jobs = baseData.items.filter(function (item) {
+		sheetData.jobs = items.filter(function (item) {
 			return item.type == "Job";
 		});
 
 		//* COMBAT_STYLE :
-		const combatStyles = baseData.items.filter((item) => item.type === "CombatStyle");
+		const combatStyles = items.filter((item) => item.type === "CombatStyle");
 
 		// Only keep the first combat style
 		if (combatStyles.length > 1) {
@@ -275,7 +350,7 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		sheetData.combat_style = combatStyles.length > 0 ? combatStyles[0] : null;
 
 		//* STATUS :
-		sheetData.status = baseData.items.filter(function (item) {
+		sheetData.status = items.filter(function (item) {
 			return item.type == "Status";
 		});
 
@@ -331,80 +406,86 @@ export default class NalfaCharacterSheet extends ActorSheet {
 		return sheetData;
 	}
 
-	activateListeners(html) {
-		// https://youtu.be/9CTgto_sBGA?t=98&si=y-WKvTHfe-g9xc67
-		// html.find(cssSelector).event(this._someCallBack.bind(this));
-		html.find(".item-create").click(this._onItemCreate.bind(this));
-		html.find(".item-delete").click(this._onItemDelete.bind(this));
-		html.find(".item-edit").click(this._onItemEdit.bind(this));
+	/** ─── ON RENDER (replaces activateListeners) ───────────────────────────────── */
+	_onRender(context, options) {
+		super._onRender(context, options);
 
-		// Owner only
+		// ITEM CREATE
+		this.element
+			.querySelectorAll(".item-create")
+			.forEach((btn) => btn.addEventListener("click", this._onItemCreate.bind(this)));
+
+		// ITEM DELETE
+		this.element
+			.querySelectorAll(".item-delete")
+			.forEach((btn) => btn.addEventListener("click", this._onItemDelete.bind(this)));
+
+		// ITEM EDIT
+		this.element
+			.querySelectorAll(".item-edit")
+			.forEach((btn) => btn.addEventListener("click", this._onItemEdit.bind(this)));
+
+		// ITEM ROLL (owner only)
 		if (this.actor.isOwner) {
-			html.find(".item-roll").click(this._onItemRoll.bind(this));
+			this.element
+				.querySelectorAll(".item-roll")
+				.forEach((btn) => btn.addEventListener("click", this._onItemRoll.bind(this)));
 		}
-
-		super.activateListeners(html);
 	}
 
+	/** ─── ITEM CREATE HANDLER ───────────────────────────────────────────────────── */
 	_onItemCreate(event) {
-		console.log("nalfa | nalfaCharacterSheet | _onItemCreate");
 		event.preventDefault();
-		let element = event.currentTarget;
-
-		let itemData = {
+		const type = event.currentTarget.dataset.type;
+		const itemData = {
 			name: "New Item",
-			type: element.dataset.type,
+			type: type,
 		};
-
 		return Item.createDocuments([itemData], { parent: this.actor });
 	}
 
+	/** ─── ITEM DELETE HANDLER ───────────────────────────────────────────────────── */
 	_onItemDelete(event) {
-		console.log("nalfa | nalfaCharacterSheet | _onItemDelete");
 		event.preventDefault();
-		const element = event.currentTarget;
-		const elementId = element.closest(".item").dataset.itemId;
-		Item.deleteDocuments([elementId], { parent: this.actor });
+		const element = event.currentTarget.closest(".item");
+		const itemId = element.dataset.itemId;
+		return Item.deleteDocuments([itemId], { parent: this.actor });
 	}
 
+	/** ─── ITEM EDIT HANDLER ─────────────────────────────────────────────────────── */
 	_onItemEdit(event) {
-		console.log("nalfa | nalfaCharacterSheet | _onItemEdit");
 		event.preventDefault();
-		let element = event.currentTarget;
-		let elementId = element.closest(".item").dataset.itemId;
-		let item = this.actor.items.get(elementId);
-		item.sheet.render(true);
+		const element = event.currentTarget.closest(".item");
+		const itemId = element.dataset.itemId;
+		const item = this.actor.items.get(itemId);
+		return item.sheet.render(true);
 	}
 
-	// Owner only
+	/** ─── ITEM ROLL HANDLER (OWNER ONLY) ─────────────────────────────────────────── */
 	_onItemRoll(event) {
-		// NOTE : Unused
-		const itemID = event.currentTarget.closest(".item").dataset.itemId;
-		const item = this.actor.items.get(itemID);
-
-		// NOTE : Pour les jets, cliquer lance directement le jet et les modificateurs "à la main" peuvent être ajoutés après. Pareil pour avantage / désavantage : laisser un bouton pour reroll en gardant le meilleur / pire.
-
-		item.roll();
+		event.preventDefault();
+		const element = event.currentTarget.closest(".item");
+		const itemId = element.dataset.itemId;
+		const item = this.actor.items.get(itemId);
+		return item.roll();
 	}
 
-	// NOTE : Copié sans test
+	/** ─── OPTIONAL DIALOG PROMPT (UNTESTED) ─────────────────────────────────────── */
 	async _onTest(event) {
-		console.log("nalfa | nalfaCharacterSheet | _onTest");
 		event.preventDefault();
-
 		return await Dialog.prompt({
 			content: `
-			<form>
-			  <div class="form-group">
-				<label>Modifier</label>
-				<div class="form-fields">
-				  <input type="text" name="mod" autofocus>
-				</div>
-			  </div>
-			</form>`,
+        <form>
+          <div class="form-group">
+            <label>Modifier</label>
+            <div class="form-fields">
+              <input type="text" name="mod" autofocus>
+            </div>
+          </div>
+        </form>`,
 			label: "OK",
 			title: "Get Modifier",
-			callback: ([html]) => new FormDataExtended(html.querySelector("FORM")).object.mod,
+			callback: ([html]) => new FormDataExtended(html.querySelector("form")).object.mod,
 		});
 	}
 }

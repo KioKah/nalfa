@@ -1,21 +1,33 @@
-import { enrichHTML, prepareItem } from "../utils.js";
+import { enrichHTML, prepareItem } from "../utils.mjs";
 
-export default class NalfaItemSheet extends ItemSheet {
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ItemSheetV2 } = foundry.applications.sheets;
+
+export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+	/**
+	 * ─── DEFAULT OPTIONS ──────────────────────────────────────────────────────────
+	 * Merge in your CSS classes, initial width/height, and tabGroups exactly like V1.
+	 */
+	static get DEFAULT_OPTIONS() {
+		return foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
 			classes: ["nalfa", "sheet", "item"],
-			height: 462, // 400 + 2*16 padding + 30 fenêtre = 462
-			width: 632, // 600 + 16*2 (padding) = 632
-			tabs: [
+			width: 632,
+			height: 462,
+			tabGroups: [
 				{
 					navSelector: ".sheet-tabs",
 					contentSelector: ".sheet-body",
-					initial: "item-specific", // NOTE Assujetti à des changements futurs
+					initial: "item-specific",
 				},
 			],
 		});
 	}
 
+	/**
+	 * ─── DYNAMIC TEMPLATE SELECTION ───────────────────────────────────────────────
+	 * We keep the same mapping logic from V1. Foundry will call this getter to know
+	 * which .hbs to use.
+	 */
 	get template() {
 		const conversionMap = {
 			Weapon: "weapon",
@@ -34,27 +46,20 @@ export default class NalfaItemSheet extends ItemSheet {
 			Status: "status",
 			WeaponAttribute: "weapon-attribute",
 		};
-		const sheetName = conversionMap[this.item.type] || "test-item";
+		const sheetName = conversionMap[this.document.type] || "test-item";
 		return `systems/nalfa/templates/sheets/${sheetName}-sheet.hbs`;
 	}
 
-	async getData() {
-		const baseData = await super.getData();
-		console.warn("🚀 ~ NalfaItemSheet ~ getData ~ baseData:\n", baseData);
-		/* OUTPUT
-			cssClass: "editable"
-			data: {_id: 'eBvwSrON4cOQxZho', name: 'test money', type: 'currency', img: 'systems/nalfa/icons/base_icons/currency.svg', system: {…}, …}
-			document: NalfaItem {name: 'test money', type: 'currency', img: 'systems/nalfa/icons/base_icons/currency.svg', system: {…}, #validationFailures: {…}, …}
-			editable: true
-			item: NalfaItem {name: 'test money', type: 'currency', img: 'systems/nalfa/icons/base_icons/currency.svg', system: {…}, #validationFailures: {…}, …}
-			limited: false
-			options: {baseApplication: 'ItemSheet', width: 616, height: null, top: null, left: null, …}
-			owner: true
-			title: "test money"
-		*/
+	/**
+	 * ─── PREPARE CONTEXT (replaces getData in V1) ─────────────────────────────────
+	 * Build the exact same sheetData that you did in V1’s getData().
+	 */
+	async _prepareContext(options) {
+		const baseData = await super._prepareContext(options);
+		console.warn("🚀 ~ NalfaItemSheet ~ _prepareContext ~ baseData:\n", baseData);
 
 		// Redefine sheet :
-		const item = baseData.item;
+		const item = baseData.document;
 		let sheetData = {
 			isOwner: this.item.isOwner,
 			isEditable: this.isEditable,
@@ -112,20 +117,37 @@ export default class NalfaItemSheet extends ItemSheet {
 		return sheetData;
 	}
 
-	activateListeners(html) {
+	/**
+	 * ─── ON RENDER (replaces activateListeners in V1) ─────────────────────────────
+	 * Once the HTML is in the DOM, bind your `.effect‐control` click handlers with vanilla JS.
+	 */
+	_onRender(context, options) {
+		// Always call super first
+		super._onRender(context, options);
+
+		// If editable, attach click listeners to any `.effect-control` button
 		if (this.isEditable) {
-			html.find(".effect-control").click(this._onEffectControl.bind(this));
+			this.element.querySelectorAll(".effect-control").forEach((button) => {
+				button.addEventListener("click", this._onEffectControl.bind(this));
+			});
 		}
 	}
 
+	/**
+	 * ─── EFFECT CONTROL HANDLER ───────────────────────────────────────────────────
+	 * Same logic as V1’s _onEffectControl, but reference `this.document` (the Item) instead of `this.object`.
+	 */
 	_onEffectControl(event) {
 		event.preventDefault();
-		const item = this.object;
-		console.warn("🚀 ~ NalfaItemSheet ~ _onEffectControl ~ this:\n", this);
+
+		// The Item document
+		const item = this.document;
+
+		// Find which <tr> row and effect ID was clicked
 		const a = event.currentTarget;
 		const tr = a.closest("tr");
-		const effect = tr.dataset.effectId ? item.effects.get(tr.dataset.effectId) : null;
-		console.warn("🚀 ~ NalfaItemSheet ~ _onEffectControl ~ effect:\n", effect);
+		const effectId = tr?.dataset.effectId;
+		const effect = effectId ? item.effects.get(effectId) : null;
 
 		switch (a.dataset.action) {
 			case "create":
@@ -137,10 +159,13 @@ export default class NalfaItemSheet extends ItemSheet {
 						disabled: true,
 					},
 				]);
+
 			case "toggle":
 				return effect.update({ disabled: !effect.disabled });
+
 			case "edit":
 				return effect.sheet.render(true);
+
 			case "delete":
 				return effect.delete();
 		}
