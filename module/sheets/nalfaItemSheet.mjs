@@ -126,7 +126,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		super._onRender(context, options);
 		if (this.tabGroups) {
 			for (const [group, active] of Object.entries(this.tabGroups)) {
-				if (active) this.changeTab(active, { group });
+				if (active) this.changeTab(active, group);
 			}
 		}
 

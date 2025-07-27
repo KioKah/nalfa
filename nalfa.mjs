@@ -48,15 +48,10 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/partials/character-googlesheet/character.hbs",
 		"systems/nalfa/templates/partials/character-googlesheet/class.hbs",
 		"systems/nalfa/templates/partials/character-googlesheet/esters.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/header.hbs",
 		"systems/nalfa/templates/partials/character-googlesheet/inventory.hbs",
+		"systems/nalfa/templates/partials/character-googlesheet/tabs.hbs",
 		"systems/nalfa/templates/partials/character-googlesheet/tracker.hbs",
-		"systems/nalfa/templates/parts/character-v2/header.hbs",
-		"systems/nalfa/templates/parts/character-v2/tabs.hbs",
-		"systems/nalfa/templates/parts/character-v2/character.hbs",
-		"systems/nalfa/templates/parts/character-v2/tracker.hbs",
-		"systems/nalfa/templates/parts/character-v2/class.hbs",
-		"systems/nalfa/templates/parts/character-v2/inventory.hbs",
-		"systems/nalfa/templates/parts/character-v2/esters.hbs",
 	];
 
 	return foundry.applications.handlebars.loadTemplates(templatePaths);
