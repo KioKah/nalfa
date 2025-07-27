@@ -29,37 +29,62 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	};
 
 	/** ─── TEMPLATE ───────────────────────────────────────────────────────────────── */
-	static PARTS = {
-		nalfa: {
-			template: `systems/nalfa/templates/sheets/character-googlesheet.hbs`,
-		},
-	};
+       static PARTS = {
+               header: {
+                       template: `systems/nalfa/templates/parts/character-v2/header.hbs`,
+               },
+               tabs: {
+                       template: `systems/nalfa/templates/parts/character-v2/tabs.hbs`,
+               },
+               character: {
+                       template: `systems/nalfa/templates/parts/character-v2/character.hbs`,
+               },
+               tracker: {
+                       template: `systems/nalfa/templates/parts/character-v2/tracker.hbs`,
+               },
+               class: {
+                       template: `systems/nalfa/templates/parts/character-v2/class.hbs`,
+               },
+               inventory: {
+                       template: `systems/nalfa/templates/parts/character-v2/inventory.hbs`,
+               },
+               esters: {
+                       template: `systems/nalfa/templates/parts/character-v2/esters.hbs`,
+               },
+       };
 
-	static TABS = {
-		initial: "character",
-		tabs: [
-			{
-				id: "character",
-				label: "nalfa.sheet.tabs.character",
-				icon: "fa-solid fa-user",
-			},
-			{
-				id: "inventory",
-				label: "nalfa.sheet.tabs.inventory",
-				icon: "fa-solid fa-boxes-stacked",
-			},
-			{
-				id: "esters",
-				label: "nalfa.sheet.tabs.esters",
-				icon: "fa-solid fa-coins",
-			},
-			{
-				id: "tracker",
-				label: "nalfa.sheet.tabs.tracker",
-				icon: "fa-solid fa-list-check",
-			},
-		],
-	};
+       static TABS = {
+               primary: {
+                       initial: "character",
+                       tabs: [
+                               {
+                                       id: "character",
+                                       label: "nalfa.sheet.tabs.character",
+                                       icon: "fa-solid fa-user",
+                               },
+                               {
+                                       id: "tracker",
+                                       label: "nalfa.sheet.tabs.tracker",
+                                       icon: "fa-solid fa-list-check",
+                               },
+                               {
+                                       id: "class",
+                                       label: "nalfa.sheet.tabs.class",
+                                       icon: "fa-solid fa-boxes-stacked",
+                               },
+                               {
+                                       id: "inventory",
+                                       label: "nalfa.sheet.tabs.inventory",
+                                       icon: "fa-solid fa-boxes-stacked",
+                               },
+                               {
+                                       id: "esters",
+                                       label: "nalfa.sheet.tabs.esters",
+                                       icon: "fa-solid fa-coins",
+                               },
+                       ],
+               },
+       };
 
 	// TODO
 	_getTabs(parts) {
@@ -114,19 +139,20 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	// }
 
 	/** ─── PREPARE CONTEXT ──────────────────────────────────────── */
-	async _prepareContext(options) {
-		const baseData = await super._prepareContext(options);
-		console.warn("🚀 ~ _prepareContext ~ baseData:\n", baseData);
+       async _prepareContext(options) {
+               const baseData = await super._prepareContext(options);
+               console.warn("🚀 ~ _prepareContext ~ baseData:\n", baseData);
 
-		const items = baseData.items || [];
+               const items = baseData.items || [];
 
-		const sheetData = {
-			isOwner: this.actor.isOwner,
-			isEditable: this.isEditable,
-			actor: baseData.document,
-			sysData: baseData.document.system,
-			config: CONFIG.nalfa,
-		};
+               const sheetData = {
+                       isOwner: this.actor.isOwner,
+                       isEditable: this.isEditable,
+                       actor: baseData.document,
+                       sysData: baseData.document.system,
+                       config: CONFIG.nalfa,
+               };
+               sheetData.tabs = this._prepareTabs("primary");
 
 		//* Enrich HTML :
 		sheetData.enrichedHTML = {};
@@ -401,14 +427,33 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			  statMap[sheetData.class.sysData.attributes.armor_score.stat]
 			: sheetData.sysData.attributes.armor_score.base;
 
-		console.warn("🚀 ~ NalfaCharacterSheet ~ sheetData.sysData:\n", sheetData.sysData);
+               console.warn("🚀 ~ NalfaCharacterSheet ~ sheetData.sysData:\n", sheetData.sysData);
 
-		return sheetData;
-	}
+               return sheetData;
+       }
+
+       async _preparePartContext(partId, context) {
+               switch (partId) {
+                       case "character":
+                       case "tracker":
+                       case "class":
+                       case "inventory":
+                       case "esters":
+                               context.tab = context.tabs[partId];
+                               break;
+                       default:
+               }
+               return context;
+       }
 
 	/** ─── ON RENDER (replaces activateListeners) ───────────────────────────────── */
-	_onRender(context, options) {
-		super._onRender(context, options);
+        _onRender(context, options) {
+               super._onRender(context, options);
+               if (this.tabGroups) {
+                       for (const [group, active] of Object.entries(this.tabGroups)) {
+                               if (active) this.changeTab(active, { group });
+                       }
+               }
 
 		// ITEM CREATE
 		this.element
