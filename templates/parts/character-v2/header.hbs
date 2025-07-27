@@ -1,0 +1,95 @@
+  <div class="nalfa-sheet">
+    <header class="nalfa-sheet-header">
+      <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="64" width="64"/>
+      
+      <div class="nalfa-sheet-header-info">
+        <div class="sheet-secondary-info">
+          <input name="race" type="text" value="" placeholder="Race"/>
+          <input name="class" type="text" value="" placeholder="Classe"/>
+        </div>
+        <div class="sheet-primary-info">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+        </div>
+      </div>
+
+      <div class="level">
+        <span>Niveau</span>
+        <input name="level" type="number" value="" placeholder="Niv."/>
+      </div>
+    </header>
+
+    <hr/>
+
+    <div class="character-header">
+      <div class="character-health">
+        <span>PV :</span>
+        <div class="health-flexbox">
+          <input name="system.attributes.hp.value" type="number" value="{{sysData.attributes.hp.value}}" placeholder="PV"/>
+          <span>/</span>
+          <input name="system.attributes.hp.max" type="number" value="{{sysData.attributes.hp.max}}" placeholder="PV Max"/>
+        </div>
+
+        {{#if (gt sysData.attributes.hp.value 0)}}
+          <span>PV temp :</span>
+          <div class="temp-health-flexbox">
+            <input name="system.attributes.temp_hp.value" type="number" value="{{sysData.attributes.temp_hp.value}}" placeholder="PVtemp"/>
+            {{#unless (isEmptyArray sysData.attributes.temp_hp.list)}}
+              <span class="temp-health">
+                ({{{listTypedValues sysData.attributes.temp_hp.list}}})
+              </span>
+            {{/unless}}
+          </div>
+        {{else}}
+          <span>Lutte contre la mort</span>
+          <div class="death-flexbox">
+            <div class="life-icons">
+              <i class="fas fa-heart {{onoff (gt sysData.attributes.death.success 0)}}"></i>
+              <i class="fas fa-heart {{onoff (gt sysData.attributes.death.success 1)}}"></i>
+              <i class="fas fa-heart {{onoff (gt sysData.attributes.death.success 2)}}"></i>
+            </div>
+            <div class="death-icons">
+              <i class="fas fa-skull {{onoff (gt sysData.attributes.death.failure 2)}}"></i>
+              <i class="fas fa-skull {{onoff (gt sysData.attributes.death.failure 1)}}"></i>
+              <i class="fas fa-skull {{onoff (gt sysData.attributes.death.failure 0)}}"></i>
+            </div>
+          </div>
+        {{/if}}
+      </div>
+
+      <div class="character-scores">
+        <div class="score-flexbox">
+          <span>Score d'armure</span>
+          {{!-- <input name="system.attributes.armor_score.value" type="number" value="{{!sysData.attributes.armor_score.value}}" placeholder="Défense"/> --}}
+          <div class="score">{{sysData.attributes.armor_score.value}}</div>
+        </div>
+        <div class="score-flexbox">
+          <span>Initiative</span>
+          {{!-- <input name="system.attributes.initiative.value" type="number" value="{{!sysData.attributes.initiative.value}}" placeholder="Initiative"/> --}}
+          <div class="score">{{sysData.attributes.initiative.value}}</div>
+        </div>
+        <div class="score-flexbox">
+          <span>Percep passive</span>
+          {{!-- <input name="system.attributes.passive_percep.value" type="number" value="{{!sysData.attributes.passive_percep.value}}" placeholder="Percep passive"/> --}}
+          <div class="score">{{sysData.attributes.passive_percep.value}}</div>
+        </div>
+        <div class="score-flexbox">
+          <span>Stat d'Ester</span>
+          {{!-- <input name="system.attributes.jdt.value" type="number" value="{{!sysData.attributes.jdt.value}}" placeholder="JdT"/> --}}
+          <div class="score">{{sysData.attributes.jdt.value}}</div>
+        </div>
+      </div>
+  
+      <div class="character-saves">
+        <span>Sauvegarde :</span>
+        <div class="saves-grid">
+          {{#each sysData.stats as |stat_object stat_name|}}
+            <div class="{{stat_name}} save-cell">
+              <span>{{statName stat_name}}</span>
+              <div class="save">{{stat_object.save.value}}</div>
+              {{!-- <input name="system.stats.{{!stat_name}}.save.value" type="number" value="{{!stat_object.save.value}}"/> --}}
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+</div>
