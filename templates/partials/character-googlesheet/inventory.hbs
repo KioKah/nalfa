@@ -1,15 +1,17 @@
-<div>
-  <h3>Équipement :</h3>
-</div>
-<div>
-  <h3>Monnaies :</h3>
-  {{#if currencies}}
-  <div class="currencies">
-    {{#each currencies as |currency|}}
-      {{> "systems/nalfa/templates/partials/character-googlesheet/inventory/currency.hbs" currency=currency}}
-    {{/each}}
+<section class="tab inventory {{tab.cssClass}}" data-group="primary" data-tab="inventory">
+  <div>
+    <h3>Équipement :</h3>
   </div>
-  {{else}}
-  (Pas de monnaies)
-  {{/if}}
-</div>
+  <div>
+    <h3>Monnaies :</h3>
+    {{#if currencies}}
+    <div class="currencies">
+      {{#each currencies as |currency|}}
+        {{> "systems/nalfa/templates/partials/character-googlesheet/inventory/currency.hbs" currency=currency}}
+      {{/each}}
+    </div>
+    {{else}}
+    (Pas de monnaies)
+    {{/if}}
+  </div>
+</section>
