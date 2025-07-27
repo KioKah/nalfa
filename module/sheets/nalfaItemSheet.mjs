@@ -121,14 +121,14 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 	 * ─── ON RENDER (replaces activateListeners in V1) ─────────────────────────────
 	 * Once the HTML is in the DOM, bind your `.effect‐control` click handlers with vanilla JS.
 	 */
-        _onRender(context, options) {
-               // Always call super first
-               super._onRender(context, options);
-               if (this.tabGroups) {
-                       for (const [group, active] of Object.entries(this.tabGroups)) {
-                               if (active) this.changeTab(active, { group });
-                       }
-               }
+	_onRender(context, options) {
+		// Always call super first
+		super._onRender(context, options);
+		if (this.tabGroups) {
+			for (const [group, active] of Object.entries(this.tabGroups)) {
+				if (active) this.changeTab(active, { group });
+			}
+		}
 
 		// If editable, attach click listeners to any `.effect-control` button
 		if (this.isEditable) {
