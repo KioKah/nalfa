@@ -3,7 +3,7 @@
   <div class="skills-by-stat">
     {{!log sysData.attributes.skills}}
     {{#each sysData.stats as |stat_object stat_name|}}
-      <div class="skill-by-stat {{stat_name}}">
+      <div class="skill-by-stat color-{{stat_name}}">
         <h3 class="stat">
           <div class="stat-info">
             <label class="stat-name">
@@ -14,7 +14,7 @@
           </div>
           {{#if stat_object.ui.dropdown}}
             <div class="stat-dropdown">
-              <span>Base :</span>
+              <span class="nowrap">Base :</span>
               <input name="system.stats.{{stat_name}}.base" type="number" value="{{stat_object.base}}" data-dtype="Number"/>
             </div>
           {{/if}}
@@ -27,16 +27,16 @@
                   {{skillName skill_name}}
                   <input class="hidden" name="system.attributes.skills.{{skill_name}}.ui.dropdown" type="checkbox" {{checked skill_object.ui.dropdown}}/>
                 </label>
-                <div class="skill-value">{{skill_object.value}}</div>
+                <div class="skill-value border-color-{{stat_name}}">{{skill_object.value}}</div>
               </div>
               {{#if skill_object.ui.dropdown}}
                 <div class="skill-dropdown">
                   <div>
-                    <span>Base :</span>
+                    <span class="nowrap">Base :</span>
                     <input name="system.attributes.skills.{{skill_name}}.base" type="number" value="{{skill_object.base}}" data-dtype="Number"/>
                   </div>
                   <div>
-                    <span>Stat :</span>
+                    <span class="nowrap">Stat :</span>
                     <select class="skill-stat" name="system.attributes.skills.{{skill_name}}.stat">
                       {{selectOptions ../../config.stats selected=skill_object.stat}}
                     </select>
@@ -79,19 +79,19 @@
     <div class="r3c12">
       <h3><label for="physical">Description physique</label></h3>
       <div class="editor-box">
-        {{editor enrichedHTML.description.physical target="system.description.physical" button=true collaborate=false}}
+        <prose-mirror name="system.description.physical" value="{{ sysData.description.physical }}" toggled="true">{{{ enrichedHTML.description.physical }}}</prose-mirror>
       </div>
     </div>
     <div class="r3c34">
       <h3><label for="psychic">Description psychique</label></h3>
       <div class="editor-box">
-        {{editor enrichedHTML.description.psychic target="system.description.psychic" button=true collaborate=false}}
+        <prose-mirror name="system.description.psychic" value="{{ sysData.description.psychic }}" toggled="true">{{{ enrichedHTML.description.psychic }}}</prose-mirror>
       </div>
     </div>
     <div class="r4c1234">
       <h3><label for="story">Histoire</label></h3>
       <div class="editor-box">
-        {{editor enrichedHTML.description.story target="system.description.story" button=true collaborate=false}}
+        <prose-mirror name="system.description.story" value="{{ sysData.description.story }}" toggled="true">{{{ enrichedHTML.description.story }}}</prose-mirror>
       </div>
     </div>
   </div>

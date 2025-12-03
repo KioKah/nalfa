@@ -83,7 +83,7 @@
       <span>Sauvegarde :</span>
       <div class="saves-grid">
         {{#each sysData.stats as |stat_object stat_name|}}
-          <div class="{{stat_name}} save-cell">
+          <div class="color-{{stat_name}} save-cell">
             <span>{{statName stat_name}}</span>
             <div class="save">{{stat_object.save.value}}</div>
             {{!-- <input name="system.stats.{{!stat_name}}.save.value" type="number" value="{{!stat_object.save.value}}"/> --}}

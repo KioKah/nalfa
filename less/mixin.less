@@ -1,17 +1,18 @@
 .nalfa-sheet-setup(@width) {
-	font-family: var(--nalfa-font-primary), var(--font-primary);
+	font-family: var(--nalfa-font-primary), var(--font-sans);
 	font-size: 16px;
 	color: var(--color-text-primary);
 	width: @width;
+	margin: var(--nalfa-padding);
 	padding: var(--nalfa-padding);
-	border: 1px solid var(--color-border-light-primary);
+	border: 1px solid var(--color-text-subtle);
 	background-image: url(http://localhost:30000/ui/parchment.jpg);
 	background-color: var(--background); //--nalfa-color-background);
 	background-blend-mode: multiply;
 }
 
 .input-box(@font-size: 18px) {
-	border: 1px solid var(--color-border-light-primary);
+	border: 1px solid var(--color-text-subtle);
 	border-radius: 3px;
 	box-sizing: border-box;
 	font-size: @font-size;
@@ -38,100 +39,110 @@
 
 .select-block(@font-size: 18px) {
 	height: calc(@font-size + 9px);
-	border: 1px solid var(--color-border-light-primary);
+	border: 1px solid var(--color-text-subtle);
 	border-radius: 3px;
 	box-sizing: border-box;
 	font-size: @font-size;
 	text-align: center;
 }
 
-.color-stats() {
-	.str {
-		color: var(--nalfa-color-stat-str);
+.chr-select-block(@chr: 3, @font-size: 18px,) {
+	height: calc(@font-size + 9px);
+	width: calc((1px * @chr + 8px) * (unit(@font-size) / 2));
+	border: 1px solid var(--color-text-subtle);
+	border-radius: 3px;
+	box-sizing: border-box;
+	font-size: @font-size;
+	text-align: center;
+}
+
+.stats-set-color-property(@property) {
+	.@{property}-str {
+		@{property}: var(--nalfa-color-stat-str);
 	}
-	.dex {
-		color: var(--nalfa-color-stat-dex);
+	.@{property}-dex {
+		@{property}: var(--nalfa-color-stat-dex);
 	}
-	.int {
-		color: var(--nalfa-color-stat-int);
+	.@{property}-int {
+		@{property}: var(--nalfa-color-stat-int);
 	}
-	.wis {
-		color: var(--nalfa-color-stat-wis);
+	.@{property}-wis {
+		@{property}: var(--nalfa-color-stat-wis);
 	}
-	.cha {
-		color: var(--nalfa-color-stat-cha);
+	.@{property}-cha {
+		@{property}: var(--nalfa-color-stat-cha);
 	}
-	.con {
-		color: var(--nalfa-color-stat-con);
+	.@{property}-con {
+		@{property}: var(--nalfa-color-stat-con);
 	}
 }
 
-.color-types() {
-	.none {
-		color: var(--nalfa-color-text-dark-0);
+.types-set-color-property(@property) {
+	.@{property}-none {
+		@{property}: var(--nalfa-color-text-dark-0);
 	}
-	.tran {
-		color: var(--nalfa-color-type-phys-tran);
+	.@{property}-tran {
+		@{property}: var(--nalfa-color-type-phys-tran);
 	}
-	.perf {
-		color: var(--nalfa-color-type-phys-perf);
+	.@{property}-perf {
+		@{property}: var(--nalfa-color-type-phys-perf);
 	}
-	.cont {
-		color: var(--nalfa-color-type-phys-cont);
+	.@{property}-cont {
+		@{property}: var(--nalfa-color-type-phys-cont);
 	}
-	.soni {
-		color: var(--nalfa-color-type-phys-soni);
+	.@{property}-soni {
+		@{property}: var(--nalfa-color-type-phys-soni);
 	}
-	.sang {
-		color: var(--nalfa-color-type-phys-sang);
+	.@{property}-sang {
+		@{property}: var(--nalfa-color-type-phys-sang);
 	}
-	.feu {
-		color: var(--nalfa-color-type-elem-feu);
+	.@{property}-feu {
+		@{property}: var(--nalfa-color-type-elem-feu);
 	}
-	.eau {
-		color: var(--nalfa-color-type-elem-eau);
+	.@{property}-eau {
+		@{property}: var(--nalfa-color-type-elem-eau);
 	}
-	.terr {
-		color: var(--nalfa-color-type-elem-terr);
+	.@{property}-terr {
+		@{property}: var(--nalfa-color-type-elem-terr);
 	}
-	.air {
-		color: var(--nalfa-color-type-elem-air);
+	.@{property}-air {
+		@{property}: var(--nalfa-color-type-elem-air);
 	}
-	.natu {
-		color: var(--nalfa-color-type-elem-natu);
+	.@{property}-natu {
+		@{property}: var(--nalfa-color-type-elem-natu);
 	}
-	.givr {
-		color: var(--nalfa-color-type-elem-givr);
+	.@{property}-givr {
+		@{property}: var(--nalfa-color-type-elem-givr);
 	}
-	.foud {
-		color: var(--nalfa-color-type-elem-foud);
+	.@{property}-foud {
+		@{property}: var(--nalfa-color-type-elem-foud);
 	}
-	.radt {
-		color: var(--nalfa-color-type-magi-radt);
+	.@{property}-radt {
+		@{property}: var(--nalfa-color-type-magi-radt);
 	}
-	.obsc {
-		color: var(--nalfa-color-type-magi-obsc);
+	.@{property}-obsc {
+		@{property}: var(--nalfa-color-type-magi-obsc);
 	}
-	.arca {
-		color: var(--nalfa-color-type-magi-arca);
+	.@{property}-arca {
+		@{property}: var(--nalfa-color-type-magi-arca);
 	}
-	.chao {
-		color: var(--nalfa-color-type-magi-chao);
+	.@{property}-chao {
+		@{property}: var(--nalfa-color-type-magi-chao);
 	}
-	.necr {
-		color: var(--nalfa-color-type-magi-necr);
+	.@{property}-necr {
+		@{property}: var(--nalfa-color-type-magi-necr);
 	}
-	.psyc {
-		color: var(--nalfa-color-type-magi-psyc);
+	.@{property}-psyc {
+		@{property}: var(--nalfa-color-type-magi-psyc);
 	}
-	.arme {
-		color: var(--nalfa-color-type-spec-arme);
+	.@{property}-arme {
+		@{property}: var(--nalfa-color-type-spec-arme);
 	}
-	.soin {
-		color: var(--nalfa-color-type-spec-soin);
+	.@{property}-soin {
+		@{property}: var(--nalfa-color-type-spec-soin);
 	}
-	.abso {
-		color: var(--nalfa-color-type-spec-abso);
+	.@{property}-abso {
+		@{property}: var(--nalfa-color-type-spec-abso);
 	}
 }
 

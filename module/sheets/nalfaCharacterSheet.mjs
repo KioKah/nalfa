@@ -3,15 +3,16 @@ import { enrichHTML, prepareItem } from "../utils.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
+const { Item } = foundry.documents;
 
 export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	/** ─── DEFAULT OPTIONS ───────────────────────────────────────────────────────── */
 	static DEFAULT_OPTIONS = {
-		classes: ["nalfa", "sheet", "actor"],
+		classes: ["nalfa", "sheet", "actor-sheet"],
 		position: {
 			width: 812,
 		},
-		dragDrop: [{ dragSelector: "[data-drag]", dropSelector: null }],
+		// dragDrop: [{ dragSelector: "[data-drag]", dropSelector: null }],
 		form: {
 			submitOnChange: true,
 		},
@@ -82,59 +83,6 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		},
 	};
 
-	// TODO
-	// _getTabs(parts) {
-	// 	// If you have sub-tabs this is necessary to change
-	// 	const tabGroup = "primary";
-	// 	// Default tab for first time it's rendered this session
-	// 	if (!this.tabGroups[tabGroup]) this.tabGroups[tabGroup] = "biography";
-	// 	return parts.reduce((tabs, partId) => {
-	// 		const tab = {
-	// 			cssClass: "",
-	// 			group: tabGroup,
-	// 			// Matches tab property to
-	// 			id: "",
-	// 			// FontAwesome Icon, if you so choose
-	// 			icon: "",
-	// 			// Run through localization
-	// 			label: "BOILERPLATE.Actor.Tabs.",
-	// 		};
-	// 		switch (partId) {
-	// 			case "header":
-	// 			case "tabs":
-	// 				return tabs;
-	// 			case "biography":
-	// 				tab.id = "biography";
-	// 				tab.label += "Biography";
-	// 				break;
-	// 			case "features":
-	// 				tab.id = "features";
-	// 				tab.label += "Features";
-	// 				break;
-	// 			case "gear":
-	// 				tab.id = "gear";
-	// 				tab.label += "Gear";
-	// 				break;
-	// 			case "spells":
-	// 				tab.id = "spells";
-	// 				tab.label += "Spells";
-	// 				break;
-	// 			case "effects":
-	// 				tab.id = "effects";
-	// 				tab.label += "Effects";
-	// 				break;
-	// 		}
-	// 		if (this.tabGroups[tabGroup] === tab.id) tab.cssClass = "active";
-	// 		tabs[partId] = tab;
-	// 		return tabs;
-	// 	}, {});
-	// }
-
-	// get template() {
-	// 	   TEMP: using "character-googlesheet" instead of "character-sheet"
-	// 	return `systems/nalfa/templates/sheets/character-googlesheet.hbs`;
-	// }
-
 	/** ─── PREPARE CONTEXT ──────────────────────────────────────── */
 	async _prepareContext(options) {
 		const baseData = await super._prepareContext(options);
@@ -148,8 +96,8 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			actor: baseData.document,
 			sysData: baseData.document.system,
 			config: CONFIG.nalfa,
+			tabs: this._prepareTabs("primary"),
 		};
-		sheetData.tabs = this._prepareTabs("primary");
 
 		//* Enrich HTML :
 		sheetData.enrichedHTML = {};
@@ -424,7 +372,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			  statMap[sheetData.class.sysData.attributes.armor_score.stat]
 			: sheetData.sysData.attributes.armor_score.base;
 
-		console.warn("🚀 ~ NalfaCharacterSheet ~ sheetData.sysData:\n", sheetData.sysData);
+		console.warn("🚀 ~ NalfaCharacterSheet ~ sheetData:\n", sheetData);
 
 		return sheetData;
 	}
@@ -436,6 +384,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	 * you may wish to do that here, rather than in the main _prepareContext
 	 */
 	async _preparePartContext(partId, context) {
+		console.error(partId, context);
 		switch (partId) {
 			case "character":
 			case "tracker":

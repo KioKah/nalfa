@@ -1,5 +1,5 @@
 import { nalfa } from "./module/config.mjs";
-import { applyMutationObserver } from "./module/utils.mjs";
+// import { applyMutationObserver } from "./module/utils.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
@@ -137,10 +137,10 @@ Hooks.once("init", function () {
 	});
 });
 
-Hooks.on("renderActorSheet", (app, html, data) => {
-	console.warn("🚀 ~ Hooks.on ~ renderActorSheet:\n", html);
-	applyMutationObserver(html[0]);
-});
+// Hooks.on("renderActorSheet", (app, html, data) => {
+// 	console.warn("🚀 ~ Hooks.on ~ renderActorSheet:\n", html);
+// 	applyMutationObserver(html[0]);
+// });
 
 Hooks.on("renderItemSheet", (app, html, data) => {
 	console.warn("🚀 ~ Hooks.on ~ renderItemSheet:\n", html);
