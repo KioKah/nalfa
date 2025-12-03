@@ -1,5 +1,34 @@
 @import "mixin.less";
 
+// * From foundry2.css
+// body.theme-dark {
+//   --color-scheme: dark;
+//   --color-text-emphatic: var(--color-light-1);
+//   --color-text-primary: var(--color-light-2);
+//   --color-text-secondary: var(--color-light-3);
+//   --color-text-subtle: var(--color-light-5);
+//   --color-text-selection: var(--color-light-1);
+//   --color-text-selection-bg: var(--color-cool-3);
+//   /* Applications */
+//   /* Forms */
+//   --table-background-color: var(--color-cool-5-50);
+//   --table-header-bg-color: var(--color-cool-4);
+//   --table-header-border-color: var(--color-cool-4);
+//   --table-header-text-color: inherit;
+//   --table-row-color-even: rgba(255, 255, 255, 0.1);
+//   --table-row-color-odd: transparent;
+//   --table-row-color-highlight: var(--color-cool-3);
+//   /* Context Menu */
+//   --content-link-background: var(--color-cool-5-90);
+//   --content-link-border-color: var(--color-light-6);
+//   --content-link-icon-color: var(--color-light-4);
+//   --content-link-text-color: var(--color-light-2);
+//   /* UI */
+//   --sidebar-background: var(--color-cool-5-90);
+//   --sidebar-separator: 1px solid var(--color-cool-4);
+//   --sidebar-entry-hover-bg: rgba(255, 255, 255, 0.1);
+//   --sidebar-folder-color: var(--color-dark-1);
+
 // .tox-tinymce-aux {
 // 	.tox-menu.tox-collection.tox-collection--list {
 // 		background-color: gray !important;
@@ -140,9 +169,27 @@
 	}
 
 	.editor-box {
+		display: flex;
+		flex-direction: column;
+		max-height: 600px;
+		overflow: hidden;
 		min-height: 36px;
 		.input-box(@font-size: 14px);
 		padding: 1px 3px;
+	}
+
+	.editor-menu {
+		flex-shrink: 0; /* don’t allow shrinking */
+	}
+
+	.editor-container {
+		overflow: auto;
+		flex-shrink: 1;
+		flex-grow: 1;
+	}
+
+	.nowrap {
+		white-space: nowrap;
 	}
 
 	.hidden {

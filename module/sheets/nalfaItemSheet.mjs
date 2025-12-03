@@ -4,56 +4,52 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
 export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
-	/**
-	 * ─── DEFAULT OPTIONS ──────────────────────────────────────────────────────────
-	 * Merge in your CSS classes, initial width/height, and tabGroups exactly like V1.
-	 */
-	static get DEFAULT_OPTIONS() {
-		return foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
-			classes: ["nalfa", "sheet", "item"],
+	/** ─── DEFAULT OPTIONS ───────────────────────────────────────────────────────── */
+	static DEFAULT_OPTIONS = {
+		classes: ["nalfa", "sheet", "item-sheet"],
+		position: {
 			width: 632,
 			height: 462,
-			tabGroups: [
-				{
-					navSelector: ".sheet-tabs",
-					contentSelector: ".sheet-body",
-					initial: "item-specific",
-				},
-			],
-		});
+		},
+		form: {
+			submitOnChange: true,
+		},
+	};
+
+	static conversionMap = {
+		Weapon: "weapon",
+		Trinket: "trinket",
+		Tool: "tool",
+		Backpack: "backpack",
+		Consumable: "consumable",
+		Loot: "loot",
+		Book: "book",
+		Action: "action",
+		Currency: "currency",
+		Race: "race",
+		Class: "class",
+		Job: "job",
+		CombatStyle: "combat-style",
+		Status: "status",
+		WeaponAttribute: "weapon-attribute",
+	};
+
+	get title() {
+		console.warn("🚀 ~ NalfaItemSheet ~ get title ~ this.document:\n", this.document);
+		return `Feuille de ${this.document.type} - ${this.item.name}`;
 	}
 
-	/**
-	 * ─── DYNAMIC TEMPLATE SELECTION ───────────────────────────────────────────────
-	 * We keep the same mapping logic from V1. Foundry will call this getter to know
-	 * which .hbs to use.
-	 */
-	get template() {
-		const conversionMap = {
-			Weapon: "weapon",
-			Trinket: "trinket",
-			Tool: "tool",
-			Backpack: "backpack",
-			Consumable: "consumable",
-			Loot: "loot",
-			Book: "book",
-			Action: "action",
-			Currency: "currency",
-			Race: "race",
-			Class: "class",
-			Job: "job",
-			CombatStyle: "combat-style",
-			Status: "status",
-			WeaponAttribute: "weapon-attribute",
-		};
-		const sheetName = conversionMap[this.document.type] || "test-item";
-		return `systems/nalfa/templates/sheets/${sheetName}-sheet.hbs`;
-	}
+	static PARTS = {
+		sheet: {
+			template: `systems/nalfa/templates/sheets/${
+				NalfaItemSheet.conversionMap[this] || "test-item"
+			}-sheet.hbs`,
+			classes: ["nalfa-sheet"],
+		},
+	};
 
-	/**
-	 * ─── PREPARE CONTEXT (replaces getData in V1) ─────────────────────────────────
-	 * Build the exact same sheetData that you did in V1’s getData().
-	 */
+	/** ─── PREPARE CONTEXT ──────────────────────────────────────── */
+
 	async _prepareContext(options) {
 		const baseData = await super._prepareContext(options);
 		console.warn("🚀 ~ NalfaItemSheet ~ _prepareContext ~ baseData:\n", baseData);

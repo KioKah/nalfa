@@ -1,11 +1,11 @@
 @import "mixin.less";
 
-.nalfa.sheet.actor {
+.nalfa.sheet.actor-sheet {
 	min-width: 132px;
 	max-width: calc(var(--actor-width) + 2 * var(--nalfa-padding));
 	min-height: 132px;
 
-	.nalfa-sheet {
+	> section.window-content {
 		.nalfa-sheet-setup(@width: var(--actor-width));
 
 		> hr {
@@ -55,7 +55,7 @@
 						.chr-input-block(@chr: 2);
 					}
 					.temp-health {
-						.color-types();
+						.types-set-color-property(color);
 					}
 				}
 				.death-flexbox {
@@ -126,7 +126,7 @@
 					grid-template-columns: repeat(3, 1fr);
 					grid-template-rows: repeat(2, auto);
 					grid-gap: 10px;
-					.color-stats();
+					.stats-set-color-property(color);
 
 					.save-cell {
 						display: flex;
@@ -268,7 +268,7 @@
 			display: flex;
 			flex-direction: row;
 			justify-content: space-between;
-			.color-stats();
+			.stats-set-color-property(color);
 			.stat {
 				display: flex;
 				flex-direction: column;
@@ -331,6 +331,7 @@
 						.skill-value {
 							.chr-input-block(@chr: 2, @font-size: 12px);
 						}
+						.stats-set-color-property(border-color);
 					}
 					.skill-dropdown {
 						display: flex;
@@ -348,7 +349,7 @@
 								padding: 0;
 							}
 							> select {
-								.select-block(@font-size: 12px);
+								.chr-select-block(@chr:3, @font-size: 12px);
 							}
 						}
 					}

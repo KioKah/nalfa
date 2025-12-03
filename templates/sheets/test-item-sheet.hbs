@@ -4,68 +4,6 @@
     {{> "systems/nalfa/templates/partials/item-sheet-header.hbs"}}
     <i class="fa-light fa-dice-d12"></i> // TEMPORARY test : fa-dice d4 d6 d8 d10 d12 d20 https://fontawesome.com/search?q=die&o=r
 
-    <nav class="sheet-tabs tabs" data-group="primary">
-      {{#if sysData.template.itemDescription}}
-        <a class="item" data-tab="item-description">Item Description</a>
-      {{/if}}
-      {{#if sysData.template.identifiableItem}}
-        <a class="item" data-tab="identifiable-item">Identifiable Item</a>
-      {{/if}}
-      {{#if sysData.template.physicalItem}}
-        <a class="item" data-tab="physical-item">Physical Item</a>
-      {{/if}}
-      {{#if sysData.template.activatedEffect}}
-        <a class="item" data-tab="activated-effect">Activated Effect</a>
-      {{/if}}
-      {{#if sysData.template.action}}
-        <a class="item" data-tab="action">Action</a>
-      {{/if}}
-      {{#if sysData.template.equippable}}
-        <a class="item" data-tab="equippable">Equippable</a>
-      {{/if}}
-      <a class="item" data-tab="info">Info</a>
-    </nav>
-
-    <section class="sheet-body">
-      {{#if sysData.template.itemDescription}}
-        <div class="tab item-description test-item" data-group="primary" data-tab="item-description">
-          {{> "systems/nalfa/templates/partials/test-item/item-description.hbs"}}
-        </div>
-      {{/if}}
-
-      {{#if sysData.template.identifiableItem}}
-        <div class="tab identifiable-item test-item" data-group="primary" data-tab="identifiable-item">
-          {{> "systems/nalfa/templates/partials/test-item/identifiable-item.hbs"}}
-        </div>
-      {{/if}}
-
-      {{#if sysData.template.physicalItem}}
-        <div class="tab physical-item test-item" data-group="primary" data-tab="physical-item">
-          {{> "systems/nalfa/templates/partials/test-item/physical-item.hbs"}}
-        </div>
-      {{/if}}
-
-      {{#if sysData.template.activatedEffect}}
-        <div class="tab activated-effect test-item" data-group="primary" data-tab="activated-effect">
-          {{> "systems/nalfa/templates/partials/test-item/activated-effect.hbs"}}
-        </div>
-      {{/if}}
-
-      {{#if sysData.template.action}}
-        <div class="tab action test-item" data-group="primary" data-tab="action">
-          {{> "systems/nalfa/templates/partials/test-item/action.hbs"}}
-        </div>
-      {{/if}}
-
-      {{#if sysData.template.equippable}}
-        <div class="tab equippable test-item" data-group="primary" data-tab="equippable">
-          {{> "systems/nalfa/templates/partials/test-item/equippable.hbs"}}
-        </div>
-      {{/if}}
-
-      <div class="tab info" data-group="primary" data-tab="info">
-        {{> "systems/nalfa/templates/partials/test-item/info.hbs"}}
-      </div>
-    </section>
+    {{editor enrichedHTML.description.value target="system.description.value" button=true collaborate=false engine="prosemirror"}}
   </div>
 </form>
