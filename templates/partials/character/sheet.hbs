@@ -1,4 +1,5 @@
-<section class="sheet-body">
+<section class="sheet-body" data-value-mode="{{sysData.ui.valueMode}}">
+  <input type="hidden" name="system.ui.valueMode" value="{{sysData.ui.valueMode}}"/>
   <div class="sheet-section">
     <h2>Santé &amp; Défense</h2>
     <div class="grid grid--four">
@@ -11,18 +12,20 @@
           data-dtype="Number"
         />
       </label>
-      <label class="field">
+      <label class="field" data-has-alt="false">
         <span class="field__label">PV max</span>
           <input
+            class="field__value"
             name="system.attributes.hp.max"
             type="number"
             value="{{sysData.attributes.hp.max}}"
             data-dtype="Number"
           />
       </label>
-      <label class="field">
+      <label class="field" data-has-alt="false">
         <span class="field__label">PV base</span>
           <input
+            class="field__base"
             name="system.attributes.hp.base"
             type="number"
             value="{{sysData.attributes.hp.base}}"
@@ -40,41 +43,45 @@
       </label>
     </div>
     <div class="grid grid--three">
-      <div class="field field--inline">
+      <div class="field field--inline" data-has-alt="true">
         <span class="field__label">Défense</span>
-        <span class="field__total">{{sysData.attributes.defense.value}}</span>
+        <span class="field__total field__value">{{sysData.attributes.defense.value}}</span>
         <input
+          class="field__base"
           name="system.attributes.defense.base"
           type="number"
           value="{{sysData.attributes.defense.base}}"
           data-dtype="Number"
         />
         <input
+          class="field__alt"
           name="system.attributes.defense.alt"
           type="number"
           value="{{sysData.attributes.defense.alt}}"
           data-dtype="Number"
         />
       </div>
-      <div class="field field--inline">
+      <div class="field field--inline" data-has-alt="true">
         <span class="field__label">Évasion</span>
-        <span class="field__total">{{sysData.attributes.evasion.value}}</span>
+        <span class="field__total field__value">{{sysData.attributes.evasion.value}}</span>
         <input
+          class="field__base"
           name="system.attributes.evasion.base"
           type="number"
           value="{{sysData.attributes.evasion.base}}"
           data-dtype="Number"
         />
         <input
+          class="field__alt"
           name="system.attributes.evasion.alt"
           type="number"
           value="{{sysData.attributes.evasion.alt}}"
           data-dtype="Number"
         />
       </div>
-      <div class="field field--inline">
+      <div class="field field--inline" data-has-alt="true">
         <span class="field__label">Initiative</span>
-        <span class="field__total">{{sysData.attributes.initiative.value}}</span>
+        <span class="field__total field__value">{{sysData.attributes.initiative.value}}</span>
         <select class="stat" name="system.attributes.initiative.stat">
           {{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
         </select>
@@ -85,12 +92,14 @@
           data-dtype="Number"
         />
         <input
+          class="field__base"
           name="system.attributes.initiative.base"
           type="number"
           value="{{sysData.attributes.initiative.base}}"
           data-dtype="Number"
         />
         <input
+          class="field__alt"
           name="system.attributes.initiative.alt"
           type="number"
           value="{{sysData.attributes.initiative.alt}}"
@@ -99,19 +108,21 @@
       </div>
     </div>
     <div class="grid grid--three">
-      <div class="field field--inline">
+      <div class="field field--inline" data-has-alt="true">
         <span class="field__label">Perception passive</span>
-        <span class="field__total">{{sysData.attributes.passive_percep.value}}</span>
+        <span class="field__total field__value">{{sysData.attributes.passive_percep.value}}</span>
         <select class="stat" name="system.attributes.passive_percep.stat">
           {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
         </select>
         <input
+          class="field__base"
           name="system.attributes.passive_percep.base"
           type="number"
           value="{{sysData.attributes.passive_percep.base}}"
           data-dtype="Number"
         />
         <input
+          class="field__alt"
           name="system.attributes.passive_percep.alt"
           type="number"
           value="{{sysData.attributes.passive_percep.alt}}"
@@ -159,13 +170,14 @@
           data-dtype="Number"
         />
       </label>
-      <div class="field field--inline">
+      <div class="field field--inline" data-has-alt="false">
         <span class="field__label">Jet de mort</span>
-        <span class="field__total">{{sysData.attributes.death.passing_throw.value}}</span>
+        <span class="field__total field__value">{{sysData.attributes.death.passing_throw.value}}</span>
         <select class="stat" name="system.attributes.death.passing_throw.stat">
           {{selectOptions config.stats_optional selected=sysData.attributes.death.passing_throw.stat}}
         </select>
         <input
+          class="field__base"
           name="system.attributes.death.passing_throw.base"
           type="number"
           value="{{sysData.attributes.death.passing_throw.base}}"
@@ -199,16 +211,18 @@
     <h2>Caractéristiques</h2>
     <div class="grid grid--six">
       {{#each sysData.stats}}
-        <div class="field field--inline">
+        <div class="field field--inline" data-has-alt="true">
           <span class="field__label">{{lookup ../config.stats @key}}</span>
-          <span class="field__total">{{value}}</span>
+          <span class="field__total field__value">{{value}}</span>
           <input
+            class="field__base"
             name="system.stats.{{@key}}.base"
             type="number"
             value="{{base}}"
             data-dtype="Number"
           />
           <input
+            class="field__alt"
             name="system.stats.{{@key}}.alt"
             type="number"
             value="{{alt}}"
@@ -223,16 +237,18 @@
     <h2>Sauvegardes</h2>
     <div class="grid grid--six">
       {{#each sysData.stats}}
-        <div class="field field--inline">
+        <div class="field field--inline" data-has-alt="true">
           <span class="field__label">{{lookup ../config.stats @key}}</span>
-          <span class="field__total">{{save.value}}</span>
+          <span class="field__total field__value">{{save.value}}</span>
           <input
+            class="field__base"
             name="system.stats.{{@key}}.save.base"
             type="number"
             value="{{save.base}}"
             data-dtype="Number"
           />
           <input
+            class="field__alt"
             name="system.stats.{{@key}}.save.alt"
             type="number"
             value="{{save.alt}}"
@@ -247,14 +263,15 @@
     <h2>Compétences</h2>
     <div class="grid grid--three">
       {{#each sysData.attributes.skills}}
-        <div class="field field--inline">
+        <div class="field field--inline" data-has-alt="false">
           <span class="field__label">{{@key}} ({{lookup ../config.stats stat}})</span>
-          <span class="field__total">{{value}} :</span>
+          <span class="field__total field__value">{{value}} :</span>
           <select class="stat" name="system.attributes.skills.{{@key}}.stat">
             {{selectOptions ../config.stats selected=stat}}
           </select>
           +
           <input
+            class="field__base"
             name="system.attributes.skills.{{@key}}.base"
             type="number"
             value="{{base}}"
@@ -302,19 +319,21 @@
     <h2>Bonus</h2>
     <div class="grid grid--three">
       {{#each sysData.attributes.bonuses}}
-        <div class="field field--inline">
+        <div class="field field--inline" data-has-alt="true">
           <span class="field__label">{{@key}}</span>
-          <span class="field__total">{{value}}</span>
+          <span class="field__total field__value">{{value}}</span>
           <select class="stat" name="system.attributes.bonuses.{{@key}}.stat">
             {{selectOptions ../config.stats selected=stat}}
           </select>
           <input
+            class="field__base"
             name="system.attributes.bonuses.{{@key}}.base"
             type="number"
             value="{{base}}"
             data-dtype="Number"
           />
           <input
+            class="field__alt"
             name="system.attributes.bonuses.{{@key}}.alt"
             type="number"
             value="{{alt}}"
@@ -353,7 +372,7 @@
     <h2>Actions</h2>
     <div class="grid grid--three">
       {{#each sysData.actions}}
-        <div class="field field--inline">
+        <div class="field field--inline" data-has-alt="true">
           <span class="field__label">{{@key}}</span>
           <div class="field__row">
             <input
@@ -363,8 +382,16 @@
               data-dtype="Number"
             />
             <span>/</span>
-            <span class="field__total">{{max}}</span>
+            <span class="field__total field__value">{{max}}</span>
             <input
+              class="field__base"
+              name="system.actions.{{@key}}.base"
+              type="number"
+              value="{{base}}"
+              data-dtype="Number"
+            />
+            <input
+              class="field__alt"
               name="system.actions.{{@key}}.alt"
               type="number"
               value="{{alt}}"
@@ -372,6 +399,7 @@
             />
             {{#if alt_mult}}
               <input
+                class="field__alt"
                 name="system.actions.{{@key}}.alt_mult"
                 type="number"
                 value="{{alt_mult}}"
@@ -410,5 +438,17 @@
       </label>
     </div>
   </div>
+  <div class="value-mode-toggle">
+    <button type="button" class="value-mode-toggle__button" data-mode="{{sysData.ui.valueMode}}">
+      {{#if (eq sysData.ui.valueMode "base")}}
+        Base
+      {{else}}
+        {{#if (eq sysData.ui.valueMode "alt")}}
+          Alt
+        {{else}}
+          Values
+        {{/if}}
+      {{/if}}
+    </button>
+  </div>
 </section>
-{{sysData.race}}

@@ -113,9 +113,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			lvl3: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2],
 			special: [0, 0, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4],
 		};
-		for (const [key, slot] of Object.entries(
-			baseData.document.system.spell_charges ?? {}
-		)) {
+		for (const [key, slot] of Object.entries(baseData.document.system.spell_charges ?? {})) {
 			slot.max = maxChargeTable[key][charLevel] ?? 0;
 		}
 
@@ -129,6 +127,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			}
 		}
 
+		const uiObj = baseData.document.system.ui ?? {};
+		uiObj.valueMode ??= "values";
+
 		return {
 			isOwner: this.actor.isOwner,
 			isEditable: this.isEditable,
@@ -136,5 +137,48 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			sysData: baseData.document.system,
 			config: CONFIG.nalfa,
 		};
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+
+		const modeInput = html.querySelector('input[name="system.ui.valueMode"]');
+		const modeButton = html.querySelector(".value-mode-toggle__button");
+		const modeHost = html.querySelector("[data-value-mode]");
+
+		const applyMode = (mode) => {
+			const modeValue = mode || "values";
+			if (modeInput) modeInput.value = modeValue;
+			if (modeHost) modeHost.dataset.valueMode = modeValue;
+			if (modeButton) {
+				modeButton.dataset.mode = modeValue;
+				modeButton.textContent = this._getValueModeLabel(modeValue);
+			}
+		};
+
+		if (modeHost && modeInput) {
+			applyMode(modeInput.value);
+		}
+
+		if (modeButton && modeInput) {
+			modeButton.addEventListener("click", () => {
+				const modes = ["values", "base", "alt"];
+				const currentIndex = modes.indexOf(modeInput.value);
+				const next = modes[(currentIndex + 1) % modes.length];
+				applyMode(next);
+				modeInput.dispatchEvent(new Event("change", { bubbles: true }));
+			});
+		}
+	}
+
+	_getValueModeLabel(mode) {
+		switch (mode) {
+		case "base":
+			return "Base";
+		case "alt":
+			return "Alt";
+		default:
+			return "Values";
+		}
 	}
 }
