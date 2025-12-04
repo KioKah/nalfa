@@ -2,7 +2,7 @@
   <input type="hidden" name="system.ui.valueMode" value="{{sysData.ui.valueMode}}"/>
   <div class="sheet-section">
     <h2>Santé &amp; Défense</h2>
-    <div class="grid grid--four">
+    <div class="grid grid--five">
       <label class="field">
         <span class="field__label">PV</span>
         <input
@@ -40,6 +40,12 @@
             value="{{sysData.attributes.hp.temp}}"
             data-dtype="Number"
           />
+      </label>
+      <label class="field">
+        <span class="field__label">Profile</span>
+        <select name="system.profile">
+          {{selectOptions config.profiles selected=sysData.profile}}
+        </select>
       </label>
     </div>
     <div class="grid grid--three">
