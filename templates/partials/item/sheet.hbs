@@ -1,0 +1,9 @@
+<form class="{{cssClass}}" autocomplete="off">
+  
+  <div class="nalfa-sheet">
+    {{> "systems/nalfa/templates/partials/item-sheet-header.hbs"}}
+    <i class="fa-light fa-dice-d12"></i> // TEMPORARY test : fa-dice d4 d6 d8 d10 d12 d20 https://fontawesome.com/search?q=die&o=r
+
+    {{editor enrichedHTML.description.value target="system.description.value" button=true collaborate=false engine="prosemirror"}}
+  </div>
+</form>

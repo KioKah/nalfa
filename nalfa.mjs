@@ -10,44 +10,12 @@ async function preloadHandlebarsTemplates() {
 	console.log("nalfa | Preloading Handlebars Templates");
 
 	const templatePaths = [
-		"systems/nalfa/templates/partials/item-sheet-header.hbs",
-		"systems/nalfa/templates/partials/weapon.hbs",
-
-		"systems/nalfa/templates/partials/item-sheets/actionable.hbs",
-		"systems/nalfa/templates/partials/item-sheets/effects.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-desc.hbs",
-		"systems/nalfa/templates/partials/item-sheets/physical.hbs",
-		"systems/nalfa/templates/partials/item-sheets/rarity.hbs",
-		"systems/nalfa/templates/partials/item-sheets/recom-level.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/action.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/backpack.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/book.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/class.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/combat-style.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/consumable.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/currency.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/job.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/loot.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/race.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/status.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/tool.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/trinket.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/weapon-attribute.hbs",
-		"systems/nalfa/templates/partials/item-sheets/item-specific/weapon.hbs",
-		// "systems/nalfa/templates/partials/item-sheets/item-specific/test-item.hbs",
-
-		"systems/nalfa/templates/partials/test-item/action.hbs",
-		"systems/nalfa/templates/partials/test-item/activated-effect.hbs",
-		"systems/nalfa/templates/partials/test-item/equippable.hbs",
-		"systems/nalfa/templates/partials/test-item/identifiable-item.hbs",
-		"systems/nalfa/templates/partials/test-item/info.hbs",
-		"systems/nalfa/templates/partials/test-item/item-description.hbs",
-		"systems/nalfa/templates/partials/test-item/physical-item.hbs",
-
 		"systems/nalfa/templates/partials/character/header.hbs",
 		"systems/nalfa/templates/partials/character/sheet.hbs",
-		// Legacy Google Sheet partials remain in templates/partials/character-googlesheet
-		// for future reference.
+		"systems/nalfa/templates/partials/character/tabs.hbs",
+
+		"systems/nalfa/templates/partials/item/header.hbs",
+		"systems/nalfa/templates/partials/item/sheet.hbs",
 	];
 
 	return foundry.applications.handlebars.loadTemplates(templatePaths);

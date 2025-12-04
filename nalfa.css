@@ -76,7 +76,7 @@
   align-items: center;
 }
 .nalfa.sheet .nalfa-sheet-header .level > span {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 6px;
 }
 .nalfa.sheet .nalfa-sheet-header .level > input {
@@ -167,10 +167,6 @@
   align-items: center;
   gap: var(--nalfa-padding);
   margin-bottom: var(--nalfa-padding);
-}
-.nalfa.sheet.actor-sheet .level {
-  display: flex;
-  align-items: center;
 }
 .nalfa.sheet.actor-sheet input[type="number"] {
   width: calc((1px * 2 + 2px) * (18 / 2));
@@ -685,24 +681,4 @@ body {
   --font-h1: "Lexend" !important;
   --font-h2: "Lexend" !important;
   --font-h3: "Lexend" !important;
-}
-.nalfa.item > * > .currency .nalfa-sheet .sheet-body input[type="number"] {
-  width: calc((1px * 4 + 2px) * (18 / 2));
-  min-width: calc((1px * 4 + 2px) * (18 / 2));
-  max-width: calc((1px * 4 + 2px) * (18 / 2));
-  height: calc(18px + 8px);
-  line-height: calc(calc(18px + 8px) - 2px);
-  padding: initial;
-  text-align: center;
-  font-size: 18px;
-}
-.nalfa.item > * > .currency .nalfa-sheet .sheet-body input[type="text"] {
-  width: calc((1px * 2 + 2px) * (18 / 2));
-  min-width: calc((1px * 2 + 2px) * (18 / 2));
-  max-width: calc((1px * 2 + 2px) * (18 / 2));
-  height: calc(18px + 8px);
-  line-height: calc(calc(18px + 8px) - 2px);
-  padding: initial;
-  text-align: center;
-  font-size: 18px;
 }
