@@ -76,11 +76,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		const initiativeObj = baseData.document.system.attributes.initiative ?? {};
 		initiativeObj.value = statBased(initiativeObj);
 
-		const passivePerceptionObj = baseData.document.system.attributes.passive_percep ?? {};
-		passivePerceptionObj.value = statBased(passivePerceptionObj);
+                const passivePerceptionObj = baseData.document.system.attributes.passive_percep ?? {};
+                passivePerceptionObj.value = statBased(passivePerceptionObj);
 
-		// Bonuses (casting, concentration, weapon, ...)
-		const bonusesObj = baseData.document.system.attributes.bonuses ?? {};
+                // Bonuses (casting, concentration, weapon, ...)
+                const bonusesObj = baseData.document.system.attributes.bonuses ?? {};
 		for (const [key, bonusObj] of Object.entries(bonusesObj)) {
 			const computed = statBased(bonusObj);
 			bonusObj.value = computed;
@@ -129,12 +129,58 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			}
 		}
 
+		const uiState = baseData.document.system.ui ?? {};
+		uiState.displayMode ??= "values";
+		const displayModeLabel =
+			{
+				values: "Values",
+				base: "Base",
+				alt: "Alt",
+			}[uiState.displayMode] ?? "Values";
+
 		return {
 			isOwner: this.actor.isOwner,
 			isEditable: this.isEditable,
 			actor: baseData.document,
 			sysData: baseData.document.system,
 			config: CONFIG.nalfa,
+			displayModeLabel,
 		};
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+		html.querySelector("[data-action='cycle-display']")?.addEventListener(
+			"click",
+			this.#onCycleDisplay.bind(this),
+		);
+	}
+
+	#onCycleDisplay(event) {
+		event.preventDefault();
+		const modes = ["values", "base", "alt"];
+		const input = this.element.querySelector(
+			"input[name='system.ui.displayMode']",
+		);
+		const current = input?.value ?? modes[0];
+		const next = modes[(modes.indexOf(current) + 1) % modes.length];
+		const labelMap = {
+			values: "Values",
+			base: "Base",
+			alt: "Alt",
+		};
+
+		if (input) {
+			input.value = next;
+			input.dispatchEvent(new Event("change", { bubbles: true }));
+		}
+
+		this.element
+			?.querySelector(".sheet-body")
+			?.setAttribute("data-display", next);
+
+		if (event.currentTarget) {
+			event.currentTarget.textContent = labelMap[next] ?? next;
+		}
 	}
 }
