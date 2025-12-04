@@ -114,7 +114,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			special: [0, 0, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4],
 		};
 		for (const [key, slot] of Object.entries(
-			baseData.document.system.spell_charges ?? {}
+		baseData.document.system.spell_charges ?? {}
 		)) {
 			slot.max = maxChargeTable[key][charLevel] ?? 0;
 		}
@@ -129,6 +129,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			}
 		}
 
+		// UI state
+		const uiState = baseData.document.system.ui ?? {};
+		uiState.view ??= "values";
+		baseData.document.system.ui = uiState;
+
 		return {
 			isOwner: this.actor.isOwner,
 			isEditable: this.isEditable,
@@ -136,5 +141,23 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			sysData: baseData.document.system,
 			config: CONFIG.nalfa,
 		};
+	}
+
+	_onRender(context, options) {
+		super._onRender(context, options);
+
+		const viewButton = this.element.querySelector("[data-action=\"cycle-view\"]");
+		const viewInput = this.element.querySelector("input[name=\"system.ui.view\"]");
+
+		if (viewButton && viewInput) {
+			viewButton.addEventListener("click", (event) => {
+				event.preventDefault();
+				const modes = ["values", "base", "alt"];
+				const current = viewInput.value || "values";
+				const next = modes[(modes.indexOf(current) + 1) % modes.length];
+				viewInput.value = next;
+				void this.document.update({ "system.ui.view": next });
+			});
+		}
 	}
 }

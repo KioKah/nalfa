@@ -1,6 +1,9 @@
 {
 	"Actor": {
-		"types": ["Character", "NPC"],
+		"types": [
+			"Character",
+			"NPC"
+		],
 		"templates": {
 			"BASE": {
 				"race": "",
@@ -14,9 +17,6 @@
 							"base": 0,
 							"alt": 0,
 							"value": null
-						},
-						"ui": {
-							"dropdown": false
 						}
 					},
 					"dex": {
@@ -27,9 +27,6 @@
 							"base": 0,
 							"alt": 0,
 							"value": null
-						},
-						"ui": {
-							"dropdown": false
 						}
 					},
 					"int": {
@@ -40,9 +37,6 @@
 							"base": 0,
 							"alt": 0,
 							"value": null
-						},
-						"ui": {
-							"dropdown": false
 						}
 					},
 					"wis": {
@@ -53,9 +47,6 @@
 							"base": 0,
 							"alt": 0,
 							"value": null
-						},
-						"ui": {
-							"dropdown": false
 						}
 					},
 					"cha": {
@@ -66,9 +57,6 @@
 							"base": 0,
 							"alt": 0,
 							"value": null
-						},
-						"ui": {
-							"dropdown": false
 						}
 					},
 					"con": {
@@ -79,9 +67,6 @@
 							"base": 0,
 							"alt": 0,
 							"value": null
-						},
-						"ui": {
-							"dropdown": false
 						}
 					}
 				},
@@ -125,163 +110,109 @@
 							"base": 0,
 							"value": null,
 							"stat": "str",
-							"default_stat": "str",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "str"
 						},
 						"robust": {
 							"base": 0,
 							"value": null,
 							"stat": "str",
-							"default_stat": "str",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "str"
 						},
 						"adress": {
 							"base": 0,
 							"value": null,
 							"stat": "dex",
-							"default_stat": "dex",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "dex"
 						},
 						"discre": {
 							"base": 0,
 							"value": null,
 							"stat": "dex",
-							"default_stat": "dex",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "dex"
 						},
 						"acroba": {
 							"base": 0,
 							"value": null,
 							"stat": "dex",
-							"default_stat": "dex",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "dex"
 						},
 						"cultur": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
-							"default_stat": "int",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "int"
 						},
 						"magie": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
-							"default_stat": "int",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "int"
 						},
 						"nature": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
-							"default_stat": "int",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "int"
 						},
 						"medeci": {
 							"base": 0,
 							"value": null,
 							"stat": "int",
-							"default_stat": "int",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "int"
 						},
 						"percep": {
 							"base": 0,
 							"value": null,
 							"stat": "wis",
-							"default_stat": "wis",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "wis"
 						},
 						"sereni": {
 							"base": 0,
 							"value": null,
 							"stat": "wis",
-							"default_stat": "wis",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "wis"
 						},
 						"intuit": {
 							"base": 0,
 							"value": null,
 							"stat": "wis",
-							"default_stat": "wis",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "wis"
 						},
 						"intimi": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
-							"default_stat": "cha",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "cha"
 						},
 						"trompe": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
-							"default_stat": "cha",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "cha"
 						},
 						"persua": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
-							"default_stat": "cha",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "cha"
 						},
 						"perfor": {
 							"base": 0,
 							"value": null,
 							"stat": "cha",
-							"default_stat": "cha",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "cha"
 						},
 						"sante": {
 							"base": 0,
 							"value": null,
 							"stat": "con",
-							"default_stat": "con",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "con"
 						},
 						"endura": {
 							"base": 0,
 							"value": null,
 							"stat": "con",
-							"default_stat": "con",
-							"ui": {
-								"dropdown": false
-							}
+							"default_stat": "con"
 						}
 					},
 					"resistances": {
@@ -434,11 +365,16 @@
 					"dA": "",
 					"stat": "",
 					"damage_type": ""
+				},
+				"ui": {
+					"view": "values"
 				}
 			}
 		},
 		"Character": {
-			"templates": ["BASE"],
+			"templates": [
+				"BASE"
+			],
 			"profile": "",
 			"attributes": {
 				"level": 1,
@@ -455,7 +391,9 @@
 			}
 		},
 		"NPC": {
-			"templates": ["BASE"],
+			"templates": [
+				"BASE"
+			],
 			"attributes": {
 				"hp": {
 					"formula": ""
@@ -467,7 +405,9 @@
 		}
 	},
 	"Item": {
-		"types": ["Item"],
+		"types": [
+			"Item"
+		],
 		"Weapon": {
 			"description": "",
 			"formula": ""

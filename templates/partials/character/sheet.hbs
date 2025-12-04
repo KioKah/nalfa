@@ -1,414 +1,479 @@
-<section class="sheet-body">
-  <div class="sheet-section">
-    <h2>Santé &amp; Défense</h2>
-    <div class="grid grid--four">
-      <label class="field">
-        <span class="field__label">PV</span>
-        <input
-          name="system.attributes.hp.value"
-          type="number"
-          value="{{sysData.attributes.hp.value}}"
-          data-dtype="Number"
-        />
-      </label>
-      <label class="field">
-        <span class="field__label">PV max</span>
-          <input
-            name="system.attributes.hp.max"
-            type="number"
-            value="{{sysData.attributes.hp.max}}"
-            data-dtype="Number"
-          />
-      </label>
-      <label class="field">
-        <span class="field__label">PV base</span>
-          <input
-            name="system.attributes.hp.base"
-            type="number"
-            value="{{sysData.attributes.hp.base}}"
-            data-dtype="Number"
-          />
-      </label>
-      <label class="field">
-        <span class="field__label">PV temp.</span>
-          <input
-            name="system.attributes.hp.temp"
-            type="number"
-            value="{{sysData.attributes.hp.temp}}"
-            data-dtype="Number"
-          />
-      </label>
-    </div>
-    <div class="grid grid--three">
-      <div class="field field--inline">
-        <span class="field__label">Défense</span>
-        <span class="field__total">{{sysData.attributes.defense.value}}</span>
-        <input
-          name="system.attributes.defense.base"
-          type="number"
-          value="{{sysData.attributes.defense.base}}"
-          data-dtype="Number"
-        />
-        <input
-          name="system.attributes.defense.alt"
-          type="number"
-          value="{{sysData.attributes.defense.alt}}"
-          data-dtype="Number"
-        />
-      </div>
-      <div class="field field--inline">
-        <span class="field__label">Évasion</span>
-        <span class="field__total">{{sysData.attributes.evasion.value}}</span>
-        <input
-          name="system.attributes.evasion.base"
-          type="number"
-          value="{{sysData.attributes.evasion.base}}"
-          data-dtype="Number"
-        />
-        <input
-          name="system.attributes.evasion.alt"
-          type="number"
-          value="{{sysData.attributes.evasion.alt}}"
-          data-dtype="Number"
-        />
-      </div>
-      <div class="field field--inline">
-        <span class="field__label">Initiative</span>
-        <span class="field__total">{{sysData.attributes.initiative.value}}</span>
-        <select class="stat" name="system.attributes.initiative.stat">
-          {{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
-        </select>
-        <input
-          name="system.attributes.initiative.coef"
-          type="number"
-          value="{{sysData.attributes.initiative.coef}}"
-          data-dtype="Number"
-        />
-        <input
-          name="system.attributes.initiative.base"
-          type="number"
-          value="{{sysData.attributes.initiative.base}}"
-          data-dtype="Number"
-        />
-        <input
-          name="system.attributes.initiative.alt"
-          type="number"
-          value="{{sysData.attributes.initiative.alt}}"
-          data-dtype="Number"
-        />
-      </div>
-    </div>
-    <div class="grid grid--three">
-      <div class="field field--inline">
-        <span class="field__label">Perception passive</span>
-        <span class="field__total">{{sysData.attributes.passive_percep.value}}</span>
-        <select class="stat" name="system.attributes.passive_percep.stat">
-          {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
-        </select>
-        <input
-          name="system.attributes.passive_percep.base"
-          type="number"
-          value="{{sysData.attributes.passive_percep.base}}"
-          data-dtype="Number"
-        />
-        <input
-          name="system.attributes.passive_percep.alt"
-          type="number"
-          value="{{sysData.attributes.passive_percep.alt}}"
-          data-dtype="Number"
-        />
-      </div>
-      <label class="field">
-        <span class="field__label">Capacité</span>
-        <input
-          name="system.attributes.carrying_capacity"
-          type="number"
-          value="{{sysData.attributes.carrying_capacity}}"
-          data-dtype="Number"
-        />
-      </label>
-      <div class="field field--inline">
-        <span class="field__label">Mod. de portée</span>
-        <span class="field__separator">x</span>
-        <input
-          name="system.attributes.range_modifier.mult"
-          type="number"
-          value="{{sysData.attributes.range_modifier.mult}}"
-          data-dtype="Number"
-        />
-        <span class="field__separator"> +</span>
-        <input
-          name="system.attributes.range_modifier.flat"
-          type="number"
-          value="{{sysData.attributes.range_modifier.flat}}"
-          data-dtype="Number"
-        />
-      </div>
-    </div>
-  </div>
+	<section class="sheet-body">
+	<input type="hidden" name="system.ui.view" value="{{sysData.ui.view}}" />
+	<div class="sheet-section">
+	<h2>Santé &amp; Défense</h2>
+	<div class="grid grid--four">
+	<label class="field">
+	<span class="field__label">PV</span>
+	<input
+	name="system.attributes.hp.value"
+	type="number"
+	value="{{sysData.attributes.hp.value}}"
+	data-dtype="Number"
+	/>
+	</label>
+	<label class="field">
+	<span class="field__label">PV max</span>
+	<span class="field__total">{{sysData.attributes.hp.max}}</span>
+	</label>
+	<label class="field">
+	<span class="field__label">PV base</span>
+	{{#if (eq sysData.ui.view "base")}}
+	<input
+	name="system.attributes.hp.base"
+	type="number"
+	value="{{sysData.attributes.hp.base}}"
+	data-dtype="Number"
+	/>
+	{{else}}
+	<span class="field__placeholder">—</span>
+	{{/if}}
+	</label>
+	<label class="field">
+	<span class="field__label">PV temp.</span>
+	<input
+	name="system.attributes.hp.temp"
+	type="number"
+	value="{{sysData.attributes.hp.temp}}"
+	data-dtype="Number"
+	/>
+	</label>
+	</div>
+	<div class="grid grid--three">
+	<div class="field field--inline">
+	<span class="field__label">Défense</span>
+	{{#if (eq sysData.ui.view "values")}}
+	<span class="field__total">{{sysData.attributes.defense.value}}</span>
+	{{/if}}
+	{{#if (eq sysData.ui.view "base")}}
+	<input
+	name="system.attributes.defense.base"
+	type="number"
+	value="{{sysData.attributes.defense.base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq sysData.ui.view "alt")}}
+	<input
+	name="system.attributes.defense.alt"
+	type="number"
+	value="{{sysData.attributes.defense.alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	<div class="field field--inline">
+	<span class="field__label">Évasion</span>
+	{{#if (eq sysData.ui.view "values")}}
+	<span class="field__total">{{sysData.attributes.evasion.value}}</span>
+	{{/if}}
+	{{#if (eq sysData.ui.view "base")}}
+	<input
+	name="system.attributes.evasion.base"
+	type="number"
+	value="{{sysData.attributes.evasion.base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq sysData.ui.view "alt")}}
+	<input
+	name="system.attributes.evasion.alt"
+	type="number"
+	value="{{sysData.attributes.evasion.alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	<div class="field field--inline">
+	<span class="field__label">Initiative</span>
+	{{#if (eq sysData.ui.view "values")}}
+	<span class="field__total">{{sysData.attributes.initiative.value}}</span>
+	{{/if}}
+	<select class="stat" name="system.attributes.initiative.stat">
+	{{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
+	</select>
+	<input
+	name="system.attributes.initiative.coef"
+	type="number"
+	value="{{sysData.attributes.initiative.coef}}"
+	data-dtype="Number"
+	/>
+	{{#if (eq sysData.ui.view "base")}}
+	<input
+	name="system.attributes.initiative.base"
+	type="number"
+	value="{{sysData.attributes.initiative.base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq sysData.ui.view "alt")}}
+	<input
+	name="system.attributes.initiative.alt"
+	type="number"
+	value="{{sysData.attributes.initiative.alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	</div>
+	<div class="grid grid--three">
+	<div class="field field--inline">
+	<span class="field__label">Perception passive</span>
+	{{#if (eq sysData.ui.view "values")}}
+	<span class="field__total">{{sysData.attributes.passive_percep.value}}</span>
+	{{/if}}
+	<select class="stat" name="system.attributes.passive_percep.stat">
+	{{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
+	</select>
+	{{#if (eq sysData.ui.view "base")}}
+	<input
+	name="system.attributes.passive_percep.base"
+	type="number"
+	value="{{sysData.attributes.passive_percep.base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq sysData.ui.view "alt")}}
+	<input
+	name="system.attributes.passive_percep.alt"
+	type="number"
+	value="{{sysData.attributes.passive_percep.alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	<label class="field">
+	<span class="field__label">Capacité</span>
+	<input
+	name="system.attributes.carrying_capacity"
+	type="number"
+	value="{{sysData.attributes.carrying_capacity}}"
+	data-dtype="Number"
+	/>
+	</label>
+	<div class="field field--inline">
+	<span class="field__label">Mod. de portée</span>
+	<span class="field__separator">x</span>
+	<input
+	name="system.attributes.range_modifier.mult"
+	type="number"
+	value="{{sysData.attributes.range_modifier.mult}}"
+	data-dtype="Number"
+	/>
+	<span class="field__separator">+</span>
+	<input
+	name="system.attributes.range_modifier.flat"
+	type="number"
+	value="{{sysData.attributes.range_modifier.flat}}"
+	data-dtype="Number"
+	/>
+	</div>
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Survie</h2>
-    <div class="grid grid--two">
-      <label class="field">
-        <span class="field__label">Fatigue</span>
-        <input
-          name="system.attributes.exhaustion"
-          type="number"
-          value="{{sysData.attributes.exhaustion}}"
-          data-dtype="Number"
-        />
-      </label>
-      <div class="field field--inline">
-        <span class="field__label">Jet de mort</span>
-        <span class="field__total">{{sysData.attributes.death.passing_throw.value}}</span>
-        <select class="stat" name="system.attributes.death.passing_throw.stat">
-          {{selectOptions config.stats_optional selected=sysData.attributes.death.passing_throw.stat}}
-        </select>
-        <input
-          name="system.attributes.death.passing_throw.base"
-          type="number"
-          value="{{sysData.attributes.death.passing_throw.base}}"
-          data-dtype="Number"
-        />
-      </div>
-    </div>
-    <div class="grid grid--two">
-      <label class="field">
-        <span class="field__label">Réussites</span>
-        <input
-          name="system.attributes.death.successes"
-          type="number"
-          value="{{sysData.attributes.death.successes}}"
-          data-dtype="Number"
-        />
-      </label>
-      <label class="field">
-        <span class="field__label">Échecs</span>
-        <input
-          name="system.attributes.death.failures"
-          type="number"
-          value="{{sysData.attributes.death.failures}}"
-          data-dtype="Number"
-        />
-      </label>
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Survie</h2>
+	<div class="grid grid--two">
+	<label class="field">
+	<span class="field__label">Fatigue</span>
+	<input
+	name="system.attributes.exhaustion"
+	type="number"
+	value="{{sysData.attributes.exhaustion}}"
+	data-dtype="Number"
+	/>
+	</label>
+	<div class="field field--inline">
+	<span class="field__label">Jet de mort</span>
+	{{#if (eq sysData.ui.view "values")}}
+	<span class="field__total">{{sysData.attributes.death.passing_throw.value}}</span>
+	{{/if}}
+	<select class="stat" name="system.attributes.death.passing_throw.stat">
+	{{selectOptions config.stats_optional selected=sysData.attributes.death.passing_throw.stat}}
+	</select>
+	{{#if (eq sysData.ui.view "base")}}
+	<input
+	name="system.attributes.death.passing_throw.base"
+	type="number"
+	value="{{sysData.attributes.death.passing_throw.base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	</div>
+	<div class="grid grid--two">
+	<label class="field">
+	<span class="field__label">Réussites</span>
+	<input
+	name="system.attributes.death.successes"
+	type="number"
+	value="{{sysData.attributes.death.successes}}"
+	data-dtype="Number"
+	/>
+	</label>
+	<label class="field">
+	<span class="field__label">Échecs</span>
+	<input
+	name="system.attributes.death.failures"
+	type="number"
+	value="{{sysData.attributes.death.failures}}"
+	data-dtype="Number"
+	/>
+	</label>
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Caractéristiques</h2>
-    <div class="grid grid--six">
-      {{#each sysData.stats}}
-        <div class="field field--inline">
-          <span class="field__label">{{lookup ../config.stats @key}}</span>
-          <span class="field__total">{{value}}</span>
-          <input
-            name="system.stats.{{@key}}.base"
-            type="number"
-            value="{{base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.stats.{{@key}}.alt"
-            type="number"
-            value="{{alt}}"
-            data-dtype="Number"
-          />
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Caractéristiques</h2>
+	<div class="grid grid--six">
+	{{#each sysData.stats}}
+	<div class="field field--inline">
+	<span class="field__label">{{lookup ../config.stats @key}}</span>
+	{{#if (eq ../sysData.ui.view "values")}}
+	<span class="field__total">{{value}}</span>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "base")}}
+	<input
+	name="system.stats.{{@key}}.base"
+	type="number"
+	value="{{base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "alt")}}
+	<input
+	name="system.stats.{{@key}}.alt"
+	type="number"
+	value="{{alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Sauvegardes</h2>
-    <div class="grid grid--six">
-      {{#each sysData.stats}}
-        <div class="field field--inline">
-          <span class="field__label">{{lookup ../config.stats @key}}</span>
-          <span class="field__total">{{save.value}}</span>
-          <input
-            name="system.stats.{{@key}}.save.base"
-            type="number"
-            value="{{save.base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.stats.{{@key}}.save.alt"
-            type="number"
-            value="{{save.alt}}"
-            data-dtype="Number"
-          />
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Sauvegardes</h2>
+	<div class="grid grid--six">
+	{{#each sysData.stats}}
+	<div class="field field--inline">
+	<span class="field__label">{{lookup ../config.stats @key}}</span>
+	{{#if (eq ../sysData.ui.view "values")}}
+	<span class="field__total">{{save.value}}</span>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "base")}}
+	<input
+	name="system.stats.{{@key}}.save.base"
+	type="number"
+	value="{{save.base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "alt")}}
+	<input
+	name="system.stats.{{@key}}.save.alt"
+	type="number"
+	value="{{save.alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Compétences</h2>
-    <div class="grid grid--three">
-      {{#each sysData.attributes.skills}}
-        <div class="field field--inline">
-          <span class="field__label">{{@key}} ({{lookup ../config.stats stat}})</span>
-          <span class="field__total">{{value}} :</span>
-          <select class="stat" name="system.attributes.skills.{{@key}}.stat">
-            {{selectOptions ../config.stats selected=stat}}
-          </select>
-          +
-          <input
-            name="system.attributes.skills.{{@key}}.base"
-            type="number"
-            value="{{base}}"
-            data-dtype="Number"
-          />
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Compétences</h2>
+	<div class="grid grid--three">
+	{{#each sysData.attributes.skills}}
+	<div class="field field--inline">
+	<span class="field__label">{{@key}} ({{lookup ../config.stats stat}})</span>
+	{{#if (eq ../sysData.ui.view "values")}}
+	<span class="field__total">{{value}}</span>
+	{{/if}}
+	<select class="stat" name="system.attributes.skills.{{@key}}.stat">
+	{{selectOptions ../config.stats selected=stat}}
+	</select>
+	{{#if (eq ../sysData.ui.view "base")}}
+	+
+	<input
+	name="system.attributes.skills.{{@key}}.base"
+	type="number"
+	value="{{base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "alt")}}
+	<span class="field__placeholder">—</span>
+	{{/if}}
+	</div>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Résistances</h2>
-    <div
-      class="resistances-table"
-      style="display:grid;grid-template-columns:repeat(9, 1fr);grid-auto-rows:minmax(4rem, auto);gap:0.5rem;"
-    >
-      {{#each sysData.attributes.resistances}}
-        <label
-          class="resistance-cell field"
-          style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--border-color,#ccc);padding:0.5rem;"
-        >
-          <label>
-            <div>{{@key}}</div>
-            <input
-              name="system.attributes.resistances.{{@key}}.value"
-              type="number"
-              value="{{value}}"
-              data-dtype="Number"
-            />
-          </label>
-          <label class="checkbox" style="display:flex;align-items:center;gap:0.25rem;">
-            <input
-              type="checkbox"
-              name="system.attributes.resistances.{{@key}}.immune"
-              {{checked immune}}
-            />
-            <span>Immun.</span>
-          </label>
-        </label>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Résistances</h2>
+	<div class="resistances-table">
+	{{#each sysData.attributes.resistances}}
+	<label class="resistance-cell field">
+	<label>
+	<div>{{@key}}</div>
+	<input
+	name="system.attributes.resistances.{{@key}}.value"
+	type="number"
+	value="{{value}}"
+	data-dtype="Number"
+	/>
+	</label>
+	<label class="checkbox">
+	<input type="checkbox" name="system.attributes.resistances.{{@key}}.immune" {{checked immune}} />
+	<span>Immun.</span>
+	</label>
+	</label>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Bonus</h2>
-    <div class="grid grid--three">
-      {{#each sysData.attributes.bonuses}}
-        <div class="field field--inline">
-          <span class="field__label">{{@key}}</span>
-          <span class="field__total">{{value}}</span>
-          <select class="stat" name="system.attributes.bonuses.{{@key}}.stat">
-            {{selectOptions ../config.stats selected=stat}}
-          </select>
-          <input
-            name="system.attributes.bonuses.{{@key}}.base"
-            type="number"
-            value="{{base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.bonuses.{{@key}}.alt"
-            type="number"
-            value="{{alt}}"
-            data-dtype="Number"
-          />
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Bonus</h2>
+	<div class="grid grid--three">
+	{{#each sysData.attributes.bonuses}}
+	<div class="field field--inline">
+	<span class="field__label">{{@key}}</span>
+	{{#if (eq ../sysData.ui.view "values")}}
+	<span class="field__total">{{value}}</span>
+	{{/if}}
+	<select class="stat" name="system.attributes.bonuses.{{@key}}.stat">
+	{{selectOptions ../config.stats selected=stat}}
+	</select>
+	{{#if (eq ../sysData.ui.view "base")}}
+	<input
+	name="system.attributes.bonuses.{{@key}}.base"
+	type="number"
+	value="{{base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "alt")}}
+	<input
+	name="system.attributes.bonuses.{{@key}}.alt"
+	type="number"
+	value="{{alt}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	</div>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Ressources</h2>
-    <div class="grid grid--three">
-      {{#each sysData.spell_charges}}
-        <div class="field field--inline">
-          <span class="field__label">Sorts {{@key}}</span>
-          <input
-            name="system.spell_charges.{{@key}}.value"
-            type="number"
-            value="{{value}}"
-            data-dtype="Number"
-          />
-          <span>/</span>
-          <input
-            name="system.spell_charges.{{@key}}.max"
-            type="number"
-            value="{{max}}"
-            data-dtype="Number"
-          />
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Ressources</h2>
+	<div class="grid grid--three">
+	{{#each sysData.spell_charges}}
+	<div class="field field--inline">
+	<span class="field__label">Sorts {{@key}}</span>
+	<input
+	name="system.spell_charges.{{@key}}.value"
+	type="number"
+	value="{{value}}"
+	data-dtype="Number"
+	/>
+	<span>/</span>
+	<span class="field__total">{{max}}</span>
+	</div>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Actions</h2>
-    <div class="grid grid--three">
-      {{#each sysData.actions}}
-        <div class="field field--inline">
-          <span class="field__label">{{@key}}</span>
-          <div class="field__row">
-            <input
-              name="system.actions.{{@key}}.value"
-              type="number"
-              value="{{value}}"
-              data-dtype="Number"
-            />
-            <span>/</span>
-            <span class="field__total">{{max}}</span>
-            <input
-              name="system.actions.{{@key}}.alt"
-              type="number"
-              value="{{alt}}"
-              data-dtype="Number"
-            />
-            {{#if alt_mult}}
-              <input
-                name="system.actions.{{@key}}.alt_mult"
-                type="number"
-                value="{{alt_mult}}"
-                data-dtype="Number"
-              />
-            {{/if}}
-          </div>
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+	<h2>Actions</h2>
+	<div class="grid grid--three">
+	{{#each sysData.actions}}
+	<div class="field field--inline">
+	<span class="field__label">{{@key}}</span>
+	<div class="field__row">
+	<input
+	name="system.actions.{{@key}}.value"
+	type="number"
+	value="{{value}}"
+	data-dtype="Number"
+	/>
+	<span>/</span>
+	{{#if (eq ../sysData.ui.view "values")}}
+	<span class="field__total">{{max}}</span>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "base")}}
+	<input
+	name="system.actions.{{@key}}.base"
+	type="number"
+	value="{{base}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{#if (eq ../sysData.ui.view "alt")}}
+	<input
+	name="system.actions.{{@key}}.alt"
+	type="number"
+	value="{{alt}}"
+	data-dtype="Number"
+	/>
+	{{#if alt_mult}}
+	<input
+	name="system.actions.{{@key}}.alt_mult"
+	type="number"
+	value="{{alt_mult}}"
+	data-dtype="Number"
+	/>
+	{{/if}}
+	{{/if}}
+	</div>
+	</div>
+	{{/each}}
+	</div>
+	</div>
 
-  <div class="sheet-section">
-    <h2>Arme</h2>
-    <div class="grid grid--three">
-      <label class="field">
-        <span class="field__label">Dés d'arme</span>
-        <input
-          name="system.weapon.dA"
-          type="text"
-          value="{{sysData.weapon.dA}}"
-          placeholder="Dés"
-        />
-      </label>
-      <label class="field">
-        <span class="field__label">Stat</span>
-        <select class="stat" name="system.weapon.stat">
-          {{selectOptions config.stats_optional selected=sysData.weapon.stat}}
-        </select>
-      </label>
-      <label class="field">
-        <span class="field__label">Type de dégâts</span>
-        <select name="system.weapon.damage_type">
-          {{selectOptions config.all_damage_types selected=sysData.weapon.damage_type}}
-        </select>
-      </label>
-    </div>
-  </div>
-</section>
-{{sysData.race}}
+	<div class="sheet-section">
+	<h2>Arme</h2>
+	<div class="grid grid--three">
+	<label class="field">
+	<span class="field__label">Dés d'arme</span>
+	<input
+	name="system.weapon.dA"
+	type="text"
+	value="{{sysData.weapon.dA}}"
+	placeholder="Dés"
+	/>
+	</label>
+	<label class="field">
+	<span class="field__label">Stat</span>
+	<select class="stat" name="system.weapon.stat">
+	{{selectOptions config.stats_optional selected=sysData.weapon.stat}}
+	</select>
+	</label>
+	<label class="field">
+	<span class="field__label">Type de dégâts</span>
+	<select name="system.weapon.damage_type">
+	{{selectOptions config.all_damage_types selected=sysData.weapon.damage_type}}
+	</select>
+	</label>
+	</div>
+	</div>
+	</section>
+	<div class="view-switch">
+	<button type="button" class="view-switch__control" data-action="cycle-view">
+	<span>Affichage :</span>
+	<span class="view-switch__label">
+	{{#if (eq sysData.ui.view "base")}}
+	Base
+	{{else}}
+	{{#if (eq sysData.ui.view "alt")}}
+	Alt
+	{{else}}
+	Valeurs
+	{{/if}}
+	{{/if}}
+	</span>
+	</button>
+	</div>
