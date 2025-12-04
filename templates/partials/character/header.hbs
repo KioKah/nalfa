@@ -1,0 +1,27 @@
+<section class="character-header">
+  <div class="character-identity">
+    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="96" width="96"/>
+    <div class="character-identity__fields">
+      <label class="field">
+        <span class="field__label">Nom</span>
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du personnage"/>
+      </label>
+      <label class="field">
+        <span class="field__label">Race</span>
+        <input name="system.description.race" type="text" value="{{sysData.description.race}}" placeholder="Race"/>
+      </label>
+      <label class="field">
+        <span class="field__label">Classe</span>
+        <input name="system.description.class" type="text" value="{{sysData.description.class}}" placeholder="Classe"/>
+      </label>
+      <label class="field">
+        <span class="field__label">Profil</span>
+        <input name="system.description.profil" type="text" value="{{sysData.description.profil}}" placeholder="Profil"/>
+      </label>
+      <label class="field">
+        <span class="field__label">DA</span>
+        <input name="system.description.da" type="text" value="{{sysData.description.da}}" placeholder="DA"/>
+      </label>
+    </div>
+  </div>
+</section>

@@ -44,14 +44,10 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/partials/test-item/item-description.hbs",
 		"systems/nalfa/templates/partials/test-item/physical-item.hbs",
 
-		"systems/nalfa/templates/partials/character-googlesheet/inventory/currency.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/character.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/class.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/esters.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/header.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/inventory.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/tabs.hbs",
-		"systems/nalfa/templates/partials/character-googlesheet/tracker.hbs",
+		"systems/nalfa/templates/partials/character/header.hbs",
+		"systems/nalfa/templates/partials/character/sheet.hbs",
+		// Legacy Google Sheet partials remain in templates/partials/character-googlesheet
+		// for future reference.
 	];
 
 	return foundry.applications.handlebars.loadTemplates(templatePaths);
