@@ -1,0 +1,300 @@
+<section class="sheet-body">
+  <div class="sheet-section">
+    <h2>Santé &amp; Défense</h2>
+    <div class="grid grid--three">
+      <label class="field">
+        <span class="field__label">PV</span>
+        <input
+          name="system.attributes.hp.value"
+          type="number"
+          value="{{sysData.attributes.hp.value}}"
+          data-dtype="Number"
+        />
+      </label>
+      <label class="field">
+        <span class="field__label">PV max (base)</span>
+        <input
+          name="system.attributes.hp.max"
+          type="number"
+          value="{{sysData.attributes.hp.max}}"
+          data-dtype="Number"
+        />
+      </label>
+      <label class="field">
+        <span class="field__label">Abso</span>
+        <input
+          name="system.attributes.temp_hp.list.0.value"
+          type="number"
+          value="{{lookup (lookup sysData.attributes.temp_hp.list 0) 'value'}}"
+          data-dtype="Number"
+        />
+      </label>
+    </div>
+    <div class="grid grid--three">
+      <div class="field field--stacked">
+        <span class="field__label">Défense</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.defense.total}}</span>
+          <input
+            name="system.attributes.armor_score.base"
+            type="number"
+            value="{{derived.defense.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.armor_score.alt"
+            type="number"
+            value="{{derived.defense.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+      <div class="field field--stacked">
+        <span class="field__label">Évasion</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.evasion.total}}</span>
+          <input
+            name="system.attributes.evasion.base"
+            type="number"
+            value="{{derived.evasion.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.evasion.alt"
+            type="number"
+            value="{{derived.evasion.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+      <div class="field field--stacked">
+        <span class="field__label">Initiative</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.initiative.total}}</span>
+          <select name="system.attributes.initiative.stat">
+            {{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
+          </select>
+          <input
+            name="system.attributes.initiative.base"
+            type="number"
+            value="{{derived.initiative.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.initiative.alt"
+            type="number"
+            value="{{derived.initiative.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="grid grid--three">
+      <div class="field field--stacked">
+        <span class="field__label">Perception passive</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.passivePerception.total}}</span>
+          <select name="system.attributes.passive_percep.stat">
+            {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
+          </select>
+          <input
+            name="system.attributes.passive_percep.base"
+            type="number"
+            value="{{derived.passivePerception.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.passive_percep.alt"
+            type="number"
+            value="{{derived.passivePerception.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+      <div class="field field--stacked">
+        <span class="field__label">Stat Incant.</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.spellcasting.total}}</span>
+          <select name="system.attributes.spellcasting_stat.stat">
+            {{selectOptions config.stats selected=sysData.attributes.spellcasting_stat.stat}}
+          </select>
+          <input
+            name="system.attributes.spellcasting_stat.base"
+            type="number"
+            value="{{derived.spellcasting.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.spellcasting_stat.alt"
+            type="number"
+            value="{{derived.spellcasting.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+      <div class="field field--stacked">
+        <span class="field__label">Stat Concentr.</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.concentration.total}}</span>
+          <select name="system.attributes.concentration_stat.stat">
+            {{selectOptions config.stats selected=sysData.attributes.concentration_stat.stat}}
+          </select>
+          <input
+            name="system.attributes.concentration_stat.base"
+            type="number"
+            value="{{derived.concentration.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.concentration_stat.alt"
+            type="number"
+            value="{{derived.concentration.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="grid grid--three">
+      <div class="field field--stacked">
+        <span class="field__label">Stat Arme</span>
+        <div class="field__row">
+          <span class="field__total">{{derived.weaponStat.total}}</span>
+          <select name="system.attributes.weapon_stat.stat">
+            {{selectOptions config.stats selected=sysData.attributes.weapon_stat.stat}}
+          </select>
+          <input
+            name="system.attributes.weapon_stat.base"
+            type="number"
+            value="{{derived.weaponStat.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.weapon_stat.alt"
+            type="number"
+            value="{{derived.weaponStat.alt}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-section">
+    <h2>Caractéristiques</h2>
+    <div class="grid grid--six">
+      {{#each derived.stats}}
+        <div class="field field--stacked">
+          <span class="field__label">{{label}}</span>
+          <div class="field__row">
+            <span class="field__total">{{total}}</span>
+            <input
+              name="system.stats.{{key}}.base"
+              type="number"
+              value="{{base}}"
+              data-dtype="Number"
+            />
+            <input
+              name="system.stats.{{key}}.alt"
+              type="number"
+              value="{{alt}}"
+              data-dtype="Number"
+            />
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="sheet-section">
+    <h2>Sauvegardes</h2>
+    <div class="grid grid--six">
+      {{#each derived.saves}}
+        <div class="field field--stacked">
+          <span class="field__label">{{label}}</span>
+          <div class="field__row">
+            <span class="field__total">{{total}}</span>
+            <input
+              name="system.stats.{{key}}.save.base"
+              type="number"
+              value="{{base}}"
+              data-dtype="Number"
+            />
+            <input
+              name="system.stats.{{key}}.save.alt"
+              type="number"
+              value="{{alt}}"
+              data-dtype="Number"
+            />
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="sheet-section">
+    <h2>Compétences</h2>
+    <div class="grid grid--three">
+      {{#each derived.skills}}
+        <div class="field field--stacked">
+          <span class="field__label">{{label}} ({{statLabel}})</span>
+          <div class="field__row">
+            <span class="field__total">{{total}}</span>
+            <select name="system.attributes.skills.{{key}}.stat">
+              {{selectOptions ../config.stats selected=stat}}
+            </select>
+            <input
+              name="system.attributes.skills.{{key}}.base"
+              type="number"
+              value="{{base}}"
+              data-dtype="Number"
+            />
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="sheet-section">
+    <h2>Charges</h2>
+    <div class="grid grid--three">
+      {{#each derived.spellCharges}}
+        <div class="field field--stacked">
+          <span class="field__label">Sorts niveau {{level}}</span>
+          <div class="field__row">
+            <input
+              name="system.ester_slots.lvl{{level}}.value"
+              type="number"
+              value="{{value}}"
+              data-dtype="Number"
+            />
+            <span>/</span>
+            <input
+              name="system.ester_slots.lvl{{level}}.max"
+              type="number"
+              value="{{max}}"
+              data-dtype="Number"
+            />
+          </div>
+        </div>
+      {{/each}}
+      <div class="field field--stacked">
+        <span class="field__label">Charges spé</span>
+        <div class="field__row">
+          <input
+            name="system.attributes.special_charge.value"
+            type="number"
+            value="{{sysData.attributes.special_charge.value}}"
+            data-dtype="Number"
+          />
+          <span>/</span>
+          <input
+            name="system.attributes.special_charge.max"
+            type="number"
+            value="{{sysData.attributes.special_charge.max}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
