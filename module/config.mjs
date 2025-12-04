@@ -47,6 +47,13 @@ nalfa.skills = {
 	endura: "Endurance",
 };
 
+nalfa.profiles = {
+	squishy: "Squishy",
+	soft: "Soft",
+	sturdy: "Sturdy",
+	tanky: "Tanky",
+};
+
 nalfa.actions = {
 	main: "Action principale",
 	bonus: "Action bonus",

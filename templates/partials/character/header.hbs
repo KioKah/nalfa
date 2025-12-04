@@ -1,27 +1,18 @@
-<section class="character-header">
-  <div class="character-identity">
-    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="96" width="96"/>
-    <div class="character-identity__fields">
-      <label class="field">
-        <span class="field__label">Nom</span>
-        <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du personnage"/>
-      </label>
-      <label class="field">
-        <span class="field__label">Race</span>
-        <input name="system.race" type="text" value="{{sysData.race}}" placeholder="Race"/>
-      </label>
-      <label class="field">
-        <span class="field__label">Classe</span>
-        <input name="system.class" type="text" value="{{sysData.class}}" placeholder="Classe"/>
-      </label>
-      <label class="field">
-        <span class="field__label">Profil</span>
-        <input name="system.profile" type="text" value="{{sysData.profile}}" placeholder="Profil"/>
-      </label>
-      <label class="field">
-        <span class="field__label">DA</span>
-        <input name="system.weapon.dA" type="text" value="{{sysData.weapon.dA}}" placeholder="Dés d'arme"/>
-      </label>
+<header class="nalfa-sheet-header">
+  <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="64" width="64"/>
+
+  <div class="nalfa-sheet-header-info">
+    <div class="sheet-secondary-info">
+      <input class="fixed" name="system.race" type="text" value="{{sysData.race}}" placeholder="Race"/>
+      <input class="fixed" name="system.class" type="text" value="{{sysData.class}}" placeholder="Classe"/>
+    </div>
+    <div class="sheet-primary-info">
+      <input name="name" type="text" value="{{actor.name}}" placeholder="Nom"/>
     </div>
   </div>
-</section>
+
+  <div class="level">
+    <span>Niveau</span>
+    <input name="system.attributes.level" type="number" value="{{sysData.attributes.level}}" placeholder="Niv."/>
+  </div>
+</header>
