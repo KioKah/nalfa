@@ -89,7 +89,7 @@
 					"hp": {
 						"value": 1,
 						"max": null,
-						"base": 1,
+						"base": 0,
 						"temp": 0
 					},
 					"defense": {
@@ -106,7 +106,7 @@
 						"base": 0,
 						"value": null,
 						"stat": "dex",
-						"coef": 2,
+						"stat_coef": 2,
 						"alt": 0
 					},
 					"passive_percep": {
@@ -394,34 +394,38 @@
 					},
 					"special": {
 						"value": 0,
-						"max": null,
-						"alt": 0
+						"max": null
 					}
 				},
 				"actions": {
 					"main": {
 						"value": 0,
 						"max": null,
+						"base": 1,
 						"alt": 0
 					},
 					"bonus": {
 						"value": 0,
 						"max": null,
+						"base": 1,
 						"alt": 0
 					},
 					"concentration": {
 						"value": 0,
 						"max": null,
+						"base": 1,
 						"alt": 0
 					},
 					"reaction": {
 						"value": 0,
 						"max": null,
+						"base": 1,
 						"alt": 0
 					},
 					"movement": {
 						"value": 0,
 						"max": null,
+						"base": 6,
 						"alt": 0,
 						"alt_mult": 1
 					}

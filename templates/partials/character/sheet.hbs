@@ -7,196 +7,170 @@
         <input
           name="system.attributes.hp.value"
           type="number"
-          value="{{derived.hp.value}}"
+          value="{{sysData.attributes.hp.value}}"
           data-dtype="Number"
         />
       </label>
       <label class="field">
         <span class="field__label">PV max</span>
-        <input
-          name="system.attributes.hp.max"
-          type="number"
-          value="{{derived.hp.max}}"
-          data-dtype="Number"
-        />
+          <input
+            name="system.attributes.hp.max"
+            type="number"
+            value="{{sysData.attributes.hp.max}}"
+            data-dtype="Number"
+          />
       </label>
       <label class="field">
         <span class="field__label">PV base</span>
-        <input
-          name="system.attributes.hp.base"
-          type="number"
-          value="{{derived.hp.base}}"
-          data-dtype="Number"
-        />
+          <input
+            name="system.attributes.hp.base"
+            type="number"
+            value="{{sysData.attributes.hp.base}}"
+            data-dtype="Number"
+          />
       </label>
       <label class="field">
         <span class="field__label">PV temp.</span>
-        <input
-          name="system.attributes.hp.temp"
-          type="number"
-          value="{{derived.hp.temp}}"
-          data-dtype="Number"
-        />
+          <input
+            name="system.attributes.hp.temp"
+            type="number"
+            value="{{sysData.attributes.hp.temp}}"
+            data-dtype="Number"
+          />
       </label>
     </div>
     <div class="grid grid--three">
-      <div class="field field--stacked">
+      <div class="field field--inline">
         <span class="field__label">Défense</span>
-        <div class="field__row">
-          <span class="field__total">{{derived.defense.total}}</span>
-          <input
-            name="system.attributes.defense.base"
-            type="number"
-            value="{{derived.defense.base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.defense.alt"
-            type="number"
-            value="{{derived.defense.alt}}"
-            data-dtype="Number"
-          />
-        </div>
+        <span class="field__total">{{sysData.attributes.defense.value}}</span>
+        <input
+          name="system.attributes.defense.base"
+          type="number"
+          value="{{sysData.attributes.defense.base}}"
+          data-dtype="Number"
+        />
+        <input
+          name="system.attributes.defense.alt"
+          type="number"
+          value="{{sysData.attributes.defense.alt}}"
+          data-dtype="Number"
+        />
       </div>
-      <div class="field field--stacked">
+      <div class="field field--inline">
         <span class="field__label">Évasion</span>
-        <div class="field__row">
-          <span class="field__total">{{derived.evasion.total}}</span>
-          <input
-            name="system.attributes.evasion.base"
-            type="number"
-            value="{{derived.evasion.base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.evasion.alt"
-            type="number"
-            value="{{derived.evasion.alt}}"
-            data-dtype="Number"
-          />
-        </div>
+        <span class="field__total">{{sysData.attributes.evasion.value}}</span>
+        <input
+          name="system.attributes.evasion.base"
+          type="number"
+          value="{{sysData.attributes.evasion.base}}"
+          data-dtype="Number"
+        />
+        <input
+          name="system.attributes.evasion.alt"
+          type="number"
+          value="{{sysData.attributes.evasion.alt}}"
+          data-dtype="Number"
+        />
       </div>
-      <div class="field field--stacked">
+      <div class="field field--inline">
         <span class="field__label">Initiative</span>
-        <div class="field__row">
-          <span class="field__total">{{derived.initiative.total}}</span>
-          <select name="system.attributes.initiative.stat">
-            {{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
-          </select>
-          <input
-            name="system.attributes.initiative.coef"
-            type="number"
-            value="{{derived.initiative.coef}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.initiative.base"
-            type="number"
-            value="{{derived.initiative.base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.initiative.alt"
-            type="number"
-            value="{{derived.initiative.alt}}"
-            data-dtype="Number"
-          />
-        </div>
+        <span class="field__total">{{sysData.attributes.initiative.value}}</span>
+        <select class="stat" name="system.attributes.initiative.stat">
+          {{selectOptions config.stats selected=sysData.attributes.initiative.stat}}
+        </select>
+        <input
+          name="system.attributes.initiative.coef"
+          type="number"
+          value="{{sysData.attributes.initiative.coef}}"
+          data-dtype="Number"
+        />
+        <input
+          name="system.attributes.initiative.base"
+          type="number"
+          value="{{sysData.attributes.initiative.base}}"
+          data-dtype="Number"
+        />
+        <input
+          name="system.attributes.initiative.alt"
+          type="number"
+          value="{{sysData.attributes.initiative.alt}}"
+          data-dtype="Number"
+        />
       </div>
     </div>
     <div class="grid grid--three">
-      <div class="field field--stacked">
+      <div class="field field--inline">
         <span class="field__label">Perception passive</span>
-        <div class="field__row">
-          <span class="field__total">{{derived.passivePerception.total}}</span>
-          <select name="system.attributes.passive_percep.stat">
-            {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
-          </select>
-          <input
-            name="system.attributes.passive_percep.base"
-            type="number"
-            value="{{derived.passivePerception.base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.passive_percep.alt"
-            type="number"
-            value="{{derived.passivePerception.alt}}"
-            data-dtype="Number"
-          />
-        </div>
+        <span class="field__total">{{sysData.attributes.passive_percep.value}}</span>
+        <select class="stat" name="system.attributes.passive_percep.stat">
+          {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
+        </select>
+        <input
+          name="system.attributes.passive_percep.base"
+          type="number"
+          value="{{sysData.attributes.passive_percep.base}}"
+          data-dtype="Number"
+        />
+        <input
+          name="system.attributes.passive_percep.alt"
+          type="number"
+          value="{{sysData.attributes.passive_percep.alt}}"
+          data-dtype="Number"
+        />
       </div>
       <label class="field">
-        <span class="field__label">Capacité de port</span>
+        <span class="field__label">Capacité</span>
         <input
           name="system.attributes.carrying_capacity"
           type="number"
-          value="{{derived.carryingCapacity}}"
+          value="{{sysData.attributes.carrying_capacity}}"
           data-dtype="Number"
         />
       </label>
-      <div class="field field--stacked">
+      <div class="field field--inline">
         <span class="field__label">Mod. de portée</span>
-        <div class="field__row">
-          <input
-            name="system.attributes.range_modifier.flat"
-            type="number"
-            value="{{derived.rangeModifier.flat}}"
-            data-dtype="Number"
-          />
-          <span class="field__separator">x</span>
-          <input
-            name="system.attributes.range_modifier.mult"
-            type="number"
-            value="{{derived.rangeModifier.mult}}"
-            data-dtype="Number"
-          />
-        </div>
+        <span class="field__separator">x</span>
+        <input
+          name="system.attributes.range_modifier.mult"
+          type="number"
+          value="{{sysData.attributes.range_modifier.mult}}"
+          data-dtype="Number"
+        />
+        <span class="field__separator"> +</span>
+        <input
+          name="system.attributes.range_modifier.flat"
+          type="number"
+          value="{{sysData.attributes.range_modifier.flat}}"
+          data-dtype="Number"
+        />
       </div>
     </div>
   </div>
 
   <div class="sheet-section">
-    <h2>Progression &amp; survie</h2>
-    <div class="grid grid--three">
-      <label class="field">
-        <span class="field__label">Niveau</span>
-        <input
-          name="system.attributes.level"
-          type="number"
-          value="{{derived.progression.level}}"
-          data-dtype="Number"
-        />
-      </label>
+    <h2>Survie</h2>
+    <div class="grid grid--two">
       <label class="field">
         <span class="field__label">Fatigue</span>
         <input
           name="system.attributes.exhaustion"
           type="number"
-          value="{{derived.progression.exhaustion}}"
+          value="{{sysData.attributes.exhaustion}}"
           data-dtype="Number"
         />
       </label>
-      <div class="field field--stacked">
+      <div class="field field--inline">
         <span class="field__label">Jet de mort</span>
-        <div class="field__row">
-          <span class="field__total">{{derived.death.save.total}}</span>
-          <select name="system.attributes.death.passing_throw.stat">
-            {{selectOptions config.stats_optional selected=sysData.attributes.death.passing_throw.stat}}
-          </select>
-          <input
-            name="system.attributes.death.passing_throw.base"
-            type="number"
-            value="{{derived.death.save.base}}"
-            data-dtype="Number"
-          />
-          <input
-            name="system.attributes.death.passing_throw.value"
-            type="number"
-            value="{{sysData.attributes.death.passing_throw.value}}"
-            data-dtype="Number"
-          />
-        </div>
+        <span class="field__total">{{sysData.attributes.death.passing_throw.value}}</span>
+        <select class="stat" name="system.attributes.death.passing_throw.stat">
+          {{selectOptions config.stats_optional selected=sysData.attributes.death.passing_throw.stat}}
+        </select>
+        <input
+          name="system.attributes.death.passing_throw.base"
+          type="number"
+          value="{{sysData.attributes.death.passing_throw.base}}"
+          data-dtype="Number"
+        />
       </div>
     </div>
     <div class="grid grid--two">
@@ -205,7 +179,7 @@
         <input
           name="system.attributes.death.successes"
           type="number"
-          value="{{derived.death.successes}}"
+          value="{{sysData.attributes.death.successes}}"
           data-dtype="Number"
         />
       </label>
@@ -214,7 +188,7 @@
         <input
           name="system.attributes.death.failures"
           type="number"
-          value="{{derived.death.failures}}"
+          value="{{sysData.attributes.death.failures}}"
           data-dtype="Number"
         />
       </label>
@@ -224,24 +198,22 @@
   <div class="sheet-section">
     <h2>Caractéristiques</h2>
     <div class="grid grid--six">
-      {{#each derived.stats}}
-        <div class="field field--stacked">
-          <span class="field__label">{{label}}</span>
-          <div class="field__row">
-            <span class="field__total">{{total}}</span>
-            <input
-              name="system.stats.{{key}}.base"
-              type="number"
-              value="{{base}}"
-              data-dtype="Number"
-            />
-            <input
-              name="system.stats.{{key}}.alt"
-              type="number"
-              value="{{alt}}"
-              data-dtype="Number"
-            />
-          </div>
+      {{#each sysData.stats}}
+        <div class="field field--inline">
+          <span class="field__label">{{lookup ../config.stats @key}}</span>
+          <span class="field__total">{{value}}</span>
+          <input
+            name="system.stats.{{@key}}.base"
+            type="number"
+            value="{{base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.stats.{{@key}}.alt"
+            type="number"
+            value="{{alt}}"
+            data-dtype="Number"
+          />
         </div>
       {{/each}}
     </div>
@@ -250,24 +222,22 @@
   <div class="sheet-section">
     <h2>Sauvegardes</h2>
     <div class="grid grid--six">
-      {{#each derived.saves}}
-        <div class="field field--stacked">
-          <span class="field__label">{{label}}</span>
-          <div class="field__row">
-            <span class="field__total">{{total}}</span>
-            <input
-              name="system.stats.{{key}}.save.base"
-              type="number"
-              value="{{base}}"
-              data-dtype="Number"
-            />
-            <input
-              name="system.stats.{{key}}.save.alt"
-              type="number"
-              value="{{alt}}"
-              data-dtype="Number"
-            />
-          </div>
+      {{#each sysData.stats}}
+        <div class="field field--inline">
+          <span class="field__label">{{lookup ../config.stats @key}}</span>
+          <span class="field__total">{{save.value}}</span>
+          <input
+            name="system.stats.{{@key}}.save.base"
+            type="number"
+            value="{{save.base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.stats.{{@key}}.save.alt"
+            type="number"
+            value="{{save.alt}}"
+            data-dtype="Number"
+          />
         </div>
       {{/each}}
     </div>
@@ -276,25 +246,20 @@
   <div class="sheet-section">
     <h2>Compétences</h2>
     <div class="grid grid--three">
-      {{#each derived.skills}}
-        <div class="field field--stacked">
-          <span class="field__label">{{label}} ({{statLabel}})</span>
-          <div class="field__row">
-            <span class="field__total">{{total}}</span>
-            {{#if canChooseStat}}
-              <select name="system.attributes.skills.{{key}}.stat">
-                {{selectOptions ../config.stats selected=stat}}
-              </select>
-            {{else}}
-              <span class="field__text">{{statLabel}}</span>
-            {{/if}}
-            <input
-              name="system.attributes.skills.{{key}}.base"
-              type="number"
-              value="{{base}}"
-              data-dtype="Number"
-            />
-          </div>
+      {{#each sysData.attributes.skills}}
+        <div class="field field--inline">
+          <span class="field__label">{{@key}} ({{lookup ../config.stats stat}})</span>
+          <span class="field__total">{{value}} :</span>
+          <select class="stat" name="system.attributes.skills.{{@key}}.stat">
+            {{selectOptions ../config.stats selected=stat}}
+          </select>
+          +
+          <input
+            name="system.attributes.skills.{{@key}}.base"
+            type="number"
+            value="{{base}}"
+            data-dtype="Number"
+          />
         </div>
       {{/each}}
     </div>
@@ -302,27 +267,33 @@
 
   <div class="sheet-section">
     <h2>Résistances</h2>
-    <div class="grid grid--four">
-      {{#each derived.resistances}}
-        <div class="field field--stacked">
-          <span class="field__label">{{label}}</span>
-          <div class="field__row">
+    <div
+      class="resistances-table"
+      style="display:grid;grid-template-columns:repeat(9, 1fr);grid-auto-rows:minmax(4rem, auto);gap:0.5rem;"
+    >
+      {{#each sysData.attributes.resistances}}
+        <label
+          class="resistance-cell field"
+          style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--border-color,#ccc);padding:0.5rem;"
+        >
+          <label>
+            <div>{{@key}}</div>
             <input
-              name="system.attributes.resistances.{{key}}.value"
+              name="system.attributes.resistances.{{@key}}.value"
               type="number"
               value="{{value}}"
               data-dtype="Number"
             />
-            <label class="checkbox">
-              <input
-                type="checkbox"
-                name="system.attributes.resistances.{{key}}.immune"
-                {{checked immune}}
-              />
-              <span>Immun.</span>
-            </label>
-          </div>
-        </div>
+          </label>
+          <label class="checkbox" style="display:flex;align-items:center;gap:0.25rem;">
+            <input
+              type="checkbox"
+              name="system.attributes.resistances.{{@key}}.immune"
+              {{checked immune}}
+            />
+            <span>Immun.</span>
+          </label>
+        </label>
       {{/each}}
     </div>
   </div>
@@ -330,27 +301,25 @@
   <div class="sheet-section">
     <h2>Bonus</h2>
     <div class="grid grid--three">
-      {{#each derived.bonuses}}
-        <div class="field field--stacked">
-          <span class="field__label">{{label}}</span>
-          <div class="field__row">
-            <span class="field__total">{{total}}</span>
-            <select name="system.attributes.bonuses.{{key}}.stat">
-              {{selectOptions ../config.stats selected=stat}}
-            </select>
-            <input
-              name="system.attributes.bonuses.{{key}}.base"
-              type="number"
-              value="{{base}}"
-              data-dtype="Number"
-            />
-            <input
-              name="system.attributes.bonuses.{{key}}.alt"
-              type="number"
-              value="{{alt}}"
-              data-dtype="Number"
-            />
-          </div>
+      {{#each sysData.attributes.bonuses}}
+        <div class="field field--inline">
+          <span class="field__label">{{@key}}</span>
+          <span class="field__total">{{value}}</span>
+          <select class="stat" name="system.attributes.bonuses.{{@key}}.stat">
+            {{selectOptions ../config.stats selected=stat}}
+          </select>
+          <input
+            name="system.attributes.bonuses.{{@key}}.base"
+            type="number"
+            value="{{base}}"
+            data-dtype="Number"
+          />
+          <input
+            name="system.attributes.bonuses.{{@key}}.alt"
+            type="number"
+            value="{{alt}}"
+            data-dtype="Number"
+          />
         </div>
       {{/each}}
     </div>
@@ -359,32 +328,22 @@
   <div class="sheet-section">
     <h2>Ressources</h2>
     <div class="grid grid--three">
-      {{#each derived.spellCharges}}
-        <div class="field field--stacked">
-          <span class="field__label">Sorts {{label}}</span>
-          <div class="field__row">
-            <input
-              name="system.spell_charges.{{key}}.value"
-              type="number"
-              value="{{value}}"
-              data-dtype="Number"
-            />
-            <span>/</span>
-            <input
-              name="system.spell_charges.{{key}}.max"
-              type="number"
-              value="{{max}}"
-              data-dtype="Number"
-            />
-            {{#if hasAlt}}
-              <input
-                name="system.spell_charges.{{key}}.alt"
-                type="number"
-                value="{{alt}}"
-                data-dtype="Number"
-              />
-            {{/if}}
-          </div>
+      {{#each sysData.spell_charges}}
+        <div class="field field--inline">
+          <span class="field__label">Sorts {{@key}}</span>
+          <input
+            name="system.spell_charges.{{@key}}.value"
+            type="number"
+            value="{{value}}"
+            data-dtype="Number"
+          />
+          <span>/</span>
+          <input
+            name="system.spell_charges.{{@key}}.max"
+            type="number"
+            value="{{max}}"
+            data-dtype="Number"
+          />
         </div>
       {{/each}}
     </div>
@@ -393,34 +352,29 @@
   <div class="sheet-section">
     <h2>Actions</h2>
     <div class="grid grid--three">
-      {{#each derived.actions}}
-        <div class="field field--stacked">
-          <span class="field__label">{{label}}</span>
+      {{#each sysData.actions}}
+        <div class="field field--inline">
+          <span class="field__label">{{@key}}</span>
           <div class="field__row">
-            <span class="field__total">{{total}}</span>
             <input
-              name="system.actions.{{key}}.value"
+              name="system.actions.{{@key}}.value"
               type="number"
-              value="{{base}}"
+              value="{{value}}"
               data-dtype="Number"
             />
+            <span>/</span>
+            <span class="field__total">{{max}}</span>
             <input
-              name="system.actions.{{key}}.max"
-              type="number"
-              value="{{max}}"
-              data-dtype="Number"
-            />
-            <input
-              name="system.actions.{{key}}.alt"
+              name="system.actions.{{@key}}.alt"
               type="number"
               value="{{alt}}"
               data-dtype="Number"
             />
-            {{#if hasAltMult}}
+            {{#if alt_mult}}
               <input
-                name="system.actions.{{key}}.alt_mult"
+                name="system.actions.{{@key}}.alt_mult"
                 type="number"
-                value="{{altMult}}"
+                value="{{alt_mult}}"
                 data-dtype="Number"
               />
             {{/if}}
@@ -438,22 +392,23 @@
         <input
           name="system.weapon.dA"
           type="text"
-          value="{{derived.weapon.dA}}"
+          value="{{sysData.weapon.dA}}"
           placeholder="Dés"
         />
       </label>
       <label class="field">
         <span class="field__label">Stat</span>
-        <select name="system.weapon.stat">
-          {{selectOptions config.stats_optional selected=derived.weapon.stat}}
+        <select class="stat" name="system.weapon.stat">
+          {{selectOptions config.stats_optional selected=sysData.weapon.stat}}
         </select>
       </label>
       <label class="field">
         <span class="field__label">Type de dégâts</span>
         <select name="system.weapon.damage_type">
-          {{selectOptions config.all_damage_types selected=derived.weapon.damageType}}
+          {{selectOptions config.all_damage_types selected=sysData.weapon.damage_type}}
         </select>
       </label>
     </div>
   </div>
 </section>
+{{sysData.race}}
