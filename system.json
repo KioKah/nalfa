@@ -9,8 +9,8 @@
 	],
 	"version": "0.0.1",
 	"compatibility": {
-		"minimum": 12,
-		"verified": "12.331",
+		"minimum": 13,
+		"verified": "12.351",
 		"maximum": 13
 	},
 	"esmodules": ["nalfa.mjs"],

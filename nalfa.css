@@ -28,12 +28,12 @@
 .nalfa.sheet .nalfa-sheet-header img {
   height: 64px;
   width: 64px;
-  margin-right: 10px;
   background-color: rgba(0, 0, 0, 0.05);
 }
 .nalfa.sheet .nalfa-sheet-header .nalfa-sheet-header-info {
   display: flex;
   flex: 1;
+  gap: calc(var(--nalfa-padding) / 2);
   align-items: center;
   justify-content: space-between;
 }
@@ -43,7 +43,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
 }
 .nalfa.sheet .nalfa-sheet-header .nalfa-sheet-header-info .sheet-secondary-info > input {
   height: calc(14px + 8px);
@@ -75,7 +74,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 10px;
 }
 .nalfa.sheet .nalfa-sheet-header .level > span {
   font-size: 16px;
@@ -170,24 +168,9 @@
   gap: var(--nalfa-padding);
   margin-bottom: var(--nalfa-padding);
 }
-.nalfa.sheet.actor-sheet .nalfa-sheet-header-info {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 6px;
-}
-.nalfa.sheet.actor-sheet .nalfa-sheet-header-info .sheet-secondary-info {
-  display: flex;
-  gap: var(--nalfa-padding);
-}
-.nalfa.sheet.actor-sheet .nalfa-sheet-header-info .sheet-primary-info input {
-  width: 100%;
-}
 .nalfa.sheet.actor-sheet .level {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 600;
 }
 .nalfa.sheet.actor-sheet input[type="number"] {
   width: calc((1px * 2 + 2px) * (18 / 2));
@@ -219,7 +202,7 @@
   min-width: calc((1px * 7 + 2px) * (18 / 2));
   max-width: calc((1px * 7 + 2px) * (18 / 2));
 }
-.nalfa.sheet.actor-sheet select.profile {
+.nalfa.sheet.actor-sheet select.fixed {
   width: calc((1px * 20 + 2px) * (18 / 2));
   min-width: calc((1px * 20 + 2px) * (18 / 2));
   max-width: calc((1px * 20 + 2px) * (18 / 2));
@@ -415,7 +398,6 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  padding: var(--nalfa-padding) 0;
   background: linear-gradient(0deg, var(--color-bg) 60%, color-mix(in srgb, var(--color-bg), transparent 100%));
 }
 .nalfa.sheet.actor-sheet .value-mode-toggle__label {

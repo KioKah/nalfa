@@ -42,7 +42,7 @@
       </label>
       <label class="field">
         <span class="field__label">Profil</span>
-        <select name="system.attributes.profile">
+        <select class="fixed" name="system.attributes.profile">
           {{selectOptions config.profiles selected=sysData.attributes.profile}}
         </select>
       </label>
@@ -480,7 +480,7 @@
   </div>
   <div class="value-mode-toggle">
     <label class="value-mode-toggle__label" for="value-mode-select">Mode d'affichage</label>
-    <select id="value-mode-select" name="system.ui.valueMode">
+    <select class="fixed" id="value-mode-select" name="system.ui.valueMode">
       {{selectOptions config.valueMode selected=sysData.ui.valueMode}}
     </select>
   </div>

@@ -17,18 +17,18 @@ nalfa.valueMode = {
 };
 
 nalfa.stats_optional = {
-	...nalfa.stats,
 	none: "",
+	...nalfa.stats,
 };
 
 // "Bonus pour [...]"
 nalfa.stats_conditional = {
-	str: "FOR uniquement",
-	dex: "DEX uniquement",
-	int: "INT uniquement",
-	wis: "SAG uniquement",
-	cha: "CHA uniquement",
-	con: "CON uniquement",
+	str: "FOR uniq",
+	dex: "DEX uniq",
+	int: "INT uniq",
+	wis: "SAG uniq",
+	cha: "CHA uniq",
+	con: "CON uniq",
 	all: "Toutes les stats",
 };
 
@@ -113,8 +113,8 @@ nalfa.consumable_types = {
 
 nalfa.range_types = {
 	melee: "Corps à corps",
-	ranged: "Distance (Désavantage au corps à corps)",
-	both: "Distance (Pas de désavantage au corps à corps)",
+	ranged: "Distance",
+	both: "CaC & Distance",
 	pure_ranged: "Distance pur", //range doesn't allow attacks in melee range
 };
 
