@@ -152,6 +152,43 @@
   max-width: calc(var(--actor-width) + 2 * var(--nalfa-padding));
   min-height: 132px;
 }
+.nalfa.sheet.actor-sheet > section.window-content {
+  font-family: var(--nalfa-font-primary), var(--font-sans);
+  font-size: 18px;
+  color: var(--color-text-primary);
+  width: var(--actor-width);
+  margin: var(--nalfa-padding);
+  padding: var(--nalfa-padding);
+  border: 1px solid var(--color-text-subtle);
+  background-image: url(http://localhost:30000/ui/parchment.jpg);
+  background-color: var(--background);
+  background-blend-mode: multiply;
+}
+.nalfa.sheet.actor-sheet header {
+  display: flex;
+  align-items: center;
+  gap: var(--nalfa-padding);
+  margin-bottom: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .nalfa-sheet-header-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+.nalfa.sheet.actor-sheet .nalfa-sheet-header-info .sheet-secondary-info {
+  display: flex;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .nalfa-sheet-header-info .sheet-primary-info input {
+  width: 100%;
+}
+.nalfa.sheet.actor-sheet .level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
 .nalfa.sheet.actor-sheet input[type="number"] {
   width: calc((1px * 2 + 2px) * (18 / 2));
   min-width: calc((1px * 2 + 2px) * (18 / 2));
@@ -187,28 +224,240 @@
   min-width: calc((1px * 20 + 2px) * (18 / 2));
   max-width: calc((1px * 20 + 2px) * (18 / 2));
 }
-.nalfa.sheet.actor-sheet > section.window-content {
-  font-family: var(--nalfa-font-primary), var(--font-sans);
-  font-size: 18px;
-  color: var(--color-text-primary);
-  width: var(--actor-width);
-  margin: var(--nalfa-padding);
-  padding: var(--nalfa-padding);
-  border: 1px solid var(--color-text-subtle);
-  background-image: url(http://localhost:30000/ui/parchment.jpg);
-  background-color: var(--background);
-  background-blend-mode: multiply;
-}
-.nalfa.sheet.actor-sheet > section.window-content > hr {
-  border: none;
-  margin: var(--nalfa-padding) 0;
-  background-image: linear-gradient(90deg, transparent 0%, var(--color-text-secondary) 50%, transparent 100%);
-}
-.nalfa.sheet.actor-sheet > section.window-content .character-header {
+.nalfa.sheet.actor-sheet .sheet-body {
+  position: relative;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .sheet-section {
   margin-bottom: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nalfa.sheet.actor-sheet .field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.nalfa.sheet.actor-sheet .field__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nalfa.sheet.actor-sheet .field__label {
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .field__total {
+  min-width: 2.5rem;
+  text-align: center;
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .grid {
+  display: grid;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .grid--five {
+  grid-template-columns: repeat(5, 1fr);
+}
+.nalfa.sheet.actor-sheet .grid--four {
+  grid-template-columns: repeat(4, 1fr);
+}
+.nalfa.sheet.actor-sheet .grid--three {
+  grid-template-columns: repeat(3, 1fr);
+}
+.nalfa.sheet.actor-sheet .grid--two {
+  grid-template-columns: repeat(2, 1fr);
+}
+.nalfa.sheet.actor-sheet .grid--six {
+  grid-template-columns: repeat(6, 1fr);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat .color-str {
+  color: var(--nalfa-color-stat-str);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat .color-dex {
+  color: var(--nalfa-color-stat-dex);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat .color-int {
+  color: var(--nalfa-color-stat-int);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat .color-wis {
+  color: var(--nalfa-color-stat-wis);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat .color-cha {
+  color: var(--nalfa-color-stat-cha);
+}
+.nalfa.sheet.actor-sheet .skills-by-stat .color-con {
+  color: var(--nalfa-color-stat-con);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--nalfa-padding);
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-name {
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-value {
+  width: calc((1px * 2 + 2px) * (16 / 2));
+  min-width: calc((1px * 2 + 2px) * (16 / 2));
+  max-width: calc((1px * 2 + 2px) * (16 / 2));
+  height: calc(16px + 8px);
+  line-height: calc(calc(16px + 8px) - 2px);
+  padding: initial;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-dropdown,
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-dropdown > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-str {
+  border-color: var(--nalfa-color-stat-str);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-dex {
+  border-color: var(--nalfa-color-stat-dex);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-int {
+  border-color: var(--nalfa-color-stat-int);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-wis {
+  border-color: var(--nalfa-color-stat-wis);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-cha {
+  border-color: var(--nalfa-color-stat-cha);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-con {
+  border-color: var(--nalfa-color-stat-con);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-name {
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value {
+  width: calc((1px * 2 + 2px) * (12 / 2));
+  min-width: calc((1px * 2 + 2px) * (12 / 2));
+  max-width: calc((1px * 2 + 2px) * (12 / 2));
+  height: calc(12px + 8px);
+  line-height: calc(calc(12px + 8px) - 2px);
+  padding: initial;
+  text-align: center;
+  font-size: 12px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-str {
+  border-color: var(--nalfa-color-stat-str);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-dex {
+  border-color: var(--nalfa-color-stat-dex);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-int {
+  border-color: var(--nalfa-color-stat-int);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-wis {
+  border-color: var(--nalfa-color-stat-wis);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-cha {
+  border-color: var(--nalfa-color-stat-cha);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-con {
+  border-color: var(--nalfa-color-stat-con);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-primary);
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: var(--nalfa-padding) 0;
+  background: linear-gradient(0deg, var(--color-bg) 60%, color-mix(in srgb, var(--color-bg), transparent 100%));
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle__label {
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet [data-value-mode] .field__base,
+.nalfa.sheet.actor-sheet [data-value-mode] .field__alt,
+.nalfa.sheet.actor-sheet [data-value-mode] .value-mode--base,
+.nalfa.sheet.actor-sheet [data-value-mode] .value-mode--alt {
+  display: none;
+}
+.nalfa.sheet.actor-sheet [data-value-mode] .field__value {
+  display: inline-flex;
+  align-items: center;
+}
+.nalfa.sheet.actor-sheet [data-value-mode="base"] .field__base,
+.nalfa.sheet.actor-sheet [data-value-mode="base"] .value-mode--base {
+  display: inline-flex;
+  align-items: center;
+}
+.nalfa.sheet.actor-sheet [data-value-mode="base"] .field__value,
+.nalfa.sheet.actor-sheet [data-value-mode="base"] .field__alt,
+.nalfa.sheet.actor-sheet [data-value-mode="base"] .value-mode--alt {
+  display: none;
+}
+.nalfa.sheet.actor-sheet [data-value-mode="alt"] .field[data-has-alt="true"] .field__alt,
+.nalfa.sheet.actor-sheet [data-value-mode="alt"] .value-mode--alt {
+  display: inline-flex;
+  align-items: center;
+}
+.nalfa.sheet.actor-sheet [data-value-mode="alt"] .field[data-has-alt="true"] .field__value,
+.nalfa.sheet.actor-sheet [data-value-mode="alt"] .field__base,
+.nalfa.sheet.actor-sheet [data-value-mode="alt"] .value-mode--base {
+  display: none;
+}
+.nalfa.sheet.actor-sheet [data-value-mode="alt"] .field[data-has-alt="false"] .field__value {
+  display: inline-flex;
+  align-items: center;
+}
+.nalfa.sheet.actor-sheet .field__alt,
+.nalfa.sheet.actor-sheet .field__base {
+  width: max-content;
 }
 .nalfa.sheet.item {
   min-width: 132px;
