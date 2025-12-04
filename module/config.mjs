@@ -10,6 +10,12 @@ nalfa.stats = {
 	con: "CON",
 };
 
+nalfa.valueMode = {
+	values: "Valeurs",
+	base: "Base",
+	alt: "Alt",
+};
+
 nalfa.stats_optional = {
 	...nalfa.stats,
 	none: "",
