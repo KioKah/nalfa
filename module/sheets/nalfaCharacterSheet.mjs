@@ -142,9 +142,12 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	activateListeners(html) {
 		super.activateListeners(html);
 
-		const modeInput = html.querySelector('input[name="system.ui.valueMode"]');
-		const modeButton = html.querySelector(".value-mode-toggle__button");
-		const modeHost = html.querySelector("[data-value-mode]");
+		const element = this.element;
+		if (!element) return;
+
+		const modeInput = element.querySelector('input[name=\"system.ui.valueMode\"]');
+		const modeButton = element.querySelector(".value-mode-toggle__button");
+		const modeHost = element.querySelector(".sheet-body[data-value-mode]");
 
 		const applyMode = (mode) => {
 			const modeValue = mode || "values";
@@ -156,9 +159,14 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			}
 		};
 
-		if (modeHost && modeInput) {
-			applyMode(modeInput.value);
-		}
+		const initialMode = modeInput?.value || this.actor.system?.ui?.valueMode;
+		applyMode(initialMode);
+
+		modeInput?.addEventListener("change", (event) => {
+			const target = event.currentTarget;
+			if (!(target instanceof HTMLInputElement)) return;
+			applyMode(target.value);
+		});
 
 		if (modeButton && modeInput) {
 			modeButton.addEventListener("click", () => {
