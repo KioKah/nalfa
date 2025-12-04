@@ -1,794 +1,472 @@
 {
-  "Actor": {
-    "types": [
-      "Character",
-      "NPC"
-    ],
-    "templates": {
-      "BASE": {
-        "stats": {
-          "str": {
-            "base": 0,
-            "value": null,
-            "save": {
-              "base": 0,
-              "alt": 0,
-              "value": null
-            },
-            "ui": {
-              "dropdown": false
-            },
-            "alt": 0
-          },
-          "dex": {
-            "base": 0,
-            "value": null,
-            "save": {
-              "base": 0,
-              "alt": 0,
-              "value": null
-            },
-            "ui": {
-              "dropdown": false
-            },
-            "alt": 0
-          },
-          "int": {
-            "base": 0,
-            "value": null,
-            "save": {
-              "base": 0,
-              "alt": 0,
-              "value": null
-            },
-            "ui": {
-              "dropdown": false
-            },
-            "alt": 0
-          },
-          "wis": {
-            "base": 0,
-            "value": null,
-            "save": {
-              "base": 0,
-              "alt": 0,
-              "value": null
-            },
-            "ui": {
-              "dropdown": false
-            },
-            "alt": 0
-          },
-          "cha": {
-            "base": 0,
-            "value": null,
-            "save": {
-              "base": 0,
-              "alt": 0,
-              "value": null
-            },
-            "ui": {
-              "dropdown": false
-            },
-            "alt": 0
-          },
-          "con": {
-            "base": 0,
-            "value": null,
-            "save": {
-              "base": 0,
-              "alt": 0,
-              "value": null
-            },
-            "ui": {
-              "dropdown": false
-            },
-            "alt": 0
-          }
-        },
-        "attributes": {
-          "hp": {
-            "value": 1,
-            "max": null
-          },
-          "temp_hp": {
-            "value": null,
-            "list": [
-              {
-                "value": 0,
-                "type": "abso"
-              }
-            ]
-          },
-          "jdt": {
-            "base": 0,
-            "value": null,
-            "stat": null,
-            "alt": 0
-          },
-          "armor_score": {
-            "base": 0,
-            "value": null,
-            "alt": 0
-          },
-          "initiative": {
-            "base": 0,
-            "value": null,
-            "stat": "dex",
-            "alt": 0
-          },
-          "passive_percep": {
-            "base": 7,
-            "value": null,
-            "stat": "wis",
-            "alt": 0
-          },
-          "range_modifier": {
-            "flat": 0,
-            "mult": 1
-          },
-          "carrying_capacity": null,
-          "skills": {
-            "athlet": {
-              "base": 0,
-              "value": null,
-              "stat": "str",
-              "default_stat": "str",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "robust": {
-              "base": 0,
-              "value": null,
-              "stat": "str",
-              "default_stat": "str",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "adress": {
-              "base": 0,
-              "value": null,
-              "stat": "dex",
-              "default_stat": "dex",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "discre": {
-              "base": 0,
-              "value": null,
-              "stat": "dex",
-              "default_stat": "dex",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "acroba": {
-              "base": 0,
-              "value": null,
-              "stat": "dex",
-              "default_stat": "dex",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "cultur": {
-              "base": 0,
-              "value": null,
-              "stat": "int",
-              "default_stat": "int",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "magie": {
-              "base": 0,
-              "value": null,
-              "stat": "int",
-              "default_stat": "int",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "nature": {
-              "base": 0,
-              "value": null,
-              "stat": "int",
-              "default_stat": "int",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "medeci": {
-              "base": 0,
-              "value": null,
-              "stat": "int",
-              "default_stat": "int",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "percep": {
-              "base": 0,
-              "value": null,
-              "stat": "wis",
-              "default_stat": "wis",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "sereni": {
-              "base": 0,
-              "value": null,
-              "stat": "wis",
-              "default_stat": "wis",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "intuit": {
-              "base": 0,
-              "value": null,
-              "stat": "wis",
-              "default_stat": "wis",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "intimi": {
-              "base": 0,
-              "value": null,
-              "stat": "cha",
-              "default_stat": "cha",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "trompe": {
-              "base": 0,
-              "value": null,
-              "stat": "cha",
-              "default_stat": "cha",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "persua": {
-              "base": 0,
-              "value": null,
-              "stat": "cha",
-              "default_stat": "cha",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "perfor": {
-              "base": 0,
-              "value": null,
-              "stat": "cha",
-              "default_stat": "cha",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "sante": {
-              "base": 0,
-              "value": null,
-              "stat": "con",
-              "default_stat": "con",
-              "ui": {
-                "dropdown": false
-              }
-            },
-            "endura": {
-              "base": 0,
-              "value": null,
-              "stat": "con",
-              "default_stat": "con",
-              "ui": {
-                "dropdown": false
-              }
-            }
-          },
-          "resistances": {
-            "tran": {
-              "value": 0,
-              "immune": false
-            },
-            "perf": {
-              "value": 0,
-              "immune": false
-            },
-            "cont": {
-              "value": 0,
-              "immune": false
-            },
-            "soni": {
-              "value": 0,
-              "immune": false
-            },
-            "sang": {
-              "value": 0,
-              "immune": false
-            },
-            "feu": {
-              "value": 0,
-              "immune": false
-            },
-            "eau": {
-              "value": 0,
-              "immune": false
-            },
-            "terr": {
-              "value": 0,
-              "immune": false
-            },
-            "air": {
-              "value": 0,
-              "immune": false
-            },
-            "natu": {
-              "value": 0,
-              "immune": false
-            },
-            "givr": {
-              "value": 0,
-              "immune": false
-            },
-            "foud": {
-              "value": 0,
-              "immune": false
-            },
-            "radt": {
-              "value": 0,
-              "immune": false
-            },
-            "obsc": {
-              "value": 0,
-              "immune": false
-            },
-            "arca": {
-              "value": 0,
-              "immune": false
-            },
-            "chao": {
-              "value": 0,
-              "immune": false
-            },
-            "necr": {
-              "value": 0,
-              "immune": false
-            },
-            "psyc": {
-              "value": 0,
-              "immune": false
-            }
-          },
-          "evasion": {
-            "base": 0,
-            "alt": 0,
-            "value": null
-          },
-          "weapon_stat": {
-            "stat": "str",
-            "base": 0,
-            "alt": 0,
-            "value": null
-          },
-          "concentration_stat": {
-            "stat": "wis",
-            "base": 0,
-            "alt": 0,
-            "value": null
-          },
-          "spellcasting_stat": {
-            "stat": "int",
-            "base": 0,
-            "alt": 0,
-            "value": null
-          },
-          "special_charge": {
-            "value": 0,
-            "max": 0
-          },
-          "spell_charges": {
-            "levels": [
-              {
-                "value": 0,
-                "max": 0
-              },
-              {
-                "value": 0,
-                "max": 0
-              },
-              {
-                "value": 0,
-                "max": 0
-              }
-            ]
-          }
-        },
-        "ester_slots": {
-          "lvl1": {
-            "value": 0,
-            "max": null
-          },
-          "lvl2": {
-            "value": 0,
-            "max": null
-          },
-          "lvl3": {
-            "value": 0,
-            "max": null
-          }
-        },
-        "actions": {
-          "main": {
-            "value": 0,
-            "max": null
-          },
-          "bonus": {
-            "value": 0,
-            "max": null
-          },
-          "concentration": {
-            "value": 0,
-            "max": null
-          },
-          "reaction": {
-            "value": 0,
-            "max": null
-          },
-          "movement": {
-            "value": 0,
-            "max": null,
-            "max_flat": 0,
-            "max_mult": 1
-          }
-        },
-        "description": {
-          "full_name": "",
-          "place_of_birth": "",
-          "sex": "",
-          "age": "",
-          "height": "",
-          "weight": "",
-          "physical": "<p>html</p>",
-          "psychic": "<p>html</p>",
-          "story": "<p>html</p>",
-          "race": "",
-          "class": "",
-          "profil": "",
-          "da": ""
-        },
-        "currency": null
-      }
-    },
-    "Character": {
-      "templates": [
-        "BASE"
-      ],
-      "attributes": {
-        "level": 1,
-        "exhaustion": 0,
-        "death": {
-          "passing_throw": {
-            "base": 11,
-            "stat": "none",
-            "value": null
-          },
-          "successes": 0,
-          "failures": 0
-        }
-      }
-    },
-    "NPC": {
-      "templates": [
-        "BASE"
-      ],
-      "attributes": {
-        "hp": {
-          "formula": ""
-        },
-        "elite": false
-      },
-      "description": {
-        "race": "",
-        "class": "",
-        "source": ""
-      },
-      "difficulty": 1
-    }
-  },
-  "Item": {
-    "types": [
-      "Weapon",
-      "Trinket",
-      "Tool",
-      "Backpack",
-      "Consumable",
-      "Loot",
-      "Book",
-      "Action",
-      "Currency",
-      "Race",
-      "Class",
-      "Job",
-      "WeaponAttribute",
-      "TestItem"
-    ],
-    "templates": {
-      "ITEM_DESC": {
-        "description": {
-          "value": "<p>html</p>"
-        }
-      },
-      "ITEM_SOURCE": {
-        "description": {
-          "source": "<p>html</p>"
-        }
-      },
-      "RARITY": {
-        "rarity": "unknown"
-      },
-      "PHYSICAL": {
-        "weight": 0,
-        "quantity": 1,
-        "equippable": {
-          "main_hand": false,
-          "off_hand": false,
-          "body": false
-        },
-        "equipped": {
-          "main_hand": false,
-          "off_hand": false,
-          "body": false
-        },
-        "cursed": false,
-        "identification": {
-          "mechanic": false,
-          "identified": false,
-          "unidentified": {
-            "name": "",
-            "description": "<p>html</p>"
-          }
-        }
-      },
-      "RECOM_LEVEL": {
-        "recommended_level": {
-          "min": 0,
-          "max": 0
-        }
-      },
-      "ACTIONABLE": {
-        "action": {
-          "roll_type": "attack_roll",
-          "attack_stat": "default",
-          "roll_bonus": 0,
-          "damage_formulas": [
-            {
-              "formula": "",
-              "type": "none"
-            }
-          ],
-          "saving_throw": {
-            "stat": "default",
-            "versus": {
-              "base": 9,
-              "stat": "default"
-            }
-          },
-          "cost": {
-            "value": 1,
-            "action_unit": "main",
-            "ester_level": -1,
-            "materials": []
-          }
-        }
-      }
-    },
-    "Weapon": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "PHYSICAL",
-        "RECOM_LEVEL",
-        "ACTIONABLE"
-      ],
-      "weapon_attributes": []
-    },
-    "Trinket": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "PHYSICAL",
-        "RECOM_LEVEL",
-        "ACTIONABLE"
-      ],
-      "trinket_type": ""
-    },
-    "Tool": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "PHYSICAL",
-        "RECOM_LEVEL"
-      ]
-    },
-    "Backpack": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "RECOM_LEVEL"
-      ],
-      "capacity": 20000
-    },
-    "Consumable": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "PHYSICAL",
-        "RECOM_LEVEL",
-        "ACTIONABLE"
-      ],
-      "consumable_type": "Autre",
-      "auto_destroy": false
-    },
-    "Loot": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "PHYSICAL",
-        "RECOM_LEVEL"
-      ]
-    },
-    "Book": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "RARITY",
-        "PHYSICAL"
-      ]
-    },
-    "Action": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE",
-        "ACTIONABLE"
-      ],
-      "prerequisites": {
-        "verbal": false,
-        "somatic": false,
-        "material": false,
-        "ritual": false
-      },
-      "casting": {
-        "condition": "",
-        "target": {
-          "value": 0,
-          "target_unit": "Entit\u00e9s",
-          "area": {
-            "mechanic": false,
-            "value": 0,
-            "shape": ""
-          }
-        },
-        "range": {
-          "range_type": "ranged",
-          "value": 1,
-          "min_value": 0,
-          "long_value": 0,
-          "shape": ""
-        },
-        "cast_duration": {
-          "value": 0,
-          "duration_unit": "Instantan\u00e9"
-        },
-        "cooldown": "<p>html</p>",
-        "max_uses_by": {
-          "sr": -1,
-          "lr": -1
-        }
-      },
-      "next_level_up": -1
-    },
-    "Currency": {
-      "templates": [
-        "ITEM_DESC",
-        "ITEM_SOURCE"
-      ],
-      "denominations": [
-        {
-          "amount": 0,
-          "short_name": "",
-          "monetary_value": 1,
-          "weight_coefficient": 1,
-          "value": null,
-          "weight": null
-        }
-      ],
-      "base_coin_weight": 0.005,
-      "add_denomination": false,
-      "done": false,
-      "total_value": null,
-      "currency_base": null,
-      "total_weight": null,
-      "all_valid": null
-    },
-    "Race": {
-      "templates": [
-        "ITEM_DESC"
-      ],
-      "height": {
-        "min": 0,
-        "max": 0
-      },
-      "weight": {
-        "min": 0,
-        "max": 0
-      },
-      "life_expectancy": 0,
-      "size": "Moyenne",
-      "playable_classes": [],
-      "racial_traits": [],
-      "point_buy": {
-        "stat_advantage": {
-          "str": "choice",
-          "dex": "choice",
-          "int": "choice",
-          "wis": "choice",
-          "cha": "choice",
-          "con": "choice"
-        }
-      }
-    },
-    "Class": {
-      "templates": [
-        "ITEM_DESC"
-      ],
-      "stat_ester": "str",
-      "choices": {
-        "bonus_skill_points": {
-          "value": 0,
-          "max": 8
-        },
-        "malus_skill_points": {
-          "value": 0,
-          "max": 5
-        }
-      },
-      "attributes": {
-        "actions": {
-          "main": 1,
-          "bonus": 1,
-          "reaction": 1,
-          "concentration": 1,
-          "movement": 6
-        },
-        "armor_score": {
-          "base": 0,
-          "stat": "none"
-        }
-      }
-    },
-    "Job": {
-      "templates": [
-        "ITEM_DESC"
-      ]
-    },
-    "WeaponAttribute": {
-      "templates": [
-        "ITEM_DESC"
-      ]
-    },
-    "TestItem": {}
-  }
+	"Actor": {
+		"types": ["Character", "NPC"],
+		"templates": {
+			"BASE": {
+				"race": "",
+				"class": "",
+				"stats": {
+					"str": {
+						"base": 0,
+						"value": null,
+						"alt": 0,
+						"save": {
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"ui": {
+							"dropdown": false
+						}
+					},
+					"dex": {
+						"base": 0,
+						"value": null,
+						"alt": 0,
+						"save": {
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"ui": {
+							"dropdown": false
+						}
+					},
+					"int": {
+						"base": 0,
+						"value": null,
+						"alt": 0,
+						"save": {
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"ui": {
+							"dropdown": false
+						}
+					},
+					"wis": {
+						"base": 0,
+						"value": null,
+						"alt": 0,
+						"save": {
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"ui": {
+							"dropdown": false
+						}
+					},
+					"cha": {
+						"base": 0,
+						"value": null,
+						"alt": 0,
+						"save": {
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"ui": {
+							"dropdown": false
+						}
+					},
+					"con": {
+						"base": 0,
+						"value": null,
+						"alt": 0,
+						"save": {
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"ui": {
+							"dropdown": false
+						}
+					}
+				},
+				"attributes": {
+					"hp": {
+						"value": 1,
+						"max": null,
+						"base": 1,
+						"temp": 0
+					},
+					"defense": {
+						"base": 0,
+						"value": null,
+						"alt": 0
+					},
+					"evasion": {
+						"base": 0,
+						"alt": 0,
+						"value": null
+					},
+					"initiative": {
+						"base": 0,
+						"value": null,
+						"stat": "dex",
+						"coef": 2,
+						"alt": 0
+					},
+					"passive_percep": {
+						"base": 8,
+						"value": null,
+						"stat": "wis",
+						"alt": 0
+					},
+					"range_modifier": {
+						"flat": 0,
+						"mult": 1
+					},
+					"carrying_capacity": null,
+					"skills": {
+						"athlet": {
+							"base": 0,
+							"value": null,
+							"stat": "str",
+							"default_stat": "str",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"robust": {
+							"base": 0,
+							"value": null,
+							"stat": "str",
+							"default_stat": "str",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"adress": {
+							"base": 0,
+							"value": null,
+							"stat": "dex",
+							"default_stat": "dex",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"discre": {
+							"base": 0,
+							"value": null,
+							"stat": "dex",
+							"default_stat": "dex",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"acroba": {
+							"base": 0,
+							"value": null,
+							"stat": "dex",
+							"default_stat": "dex",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"cultur": {
+							"base": 0,
+							"value": null,
+							"stat": "int",
+							"default_stat": "int",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"magie": {
+							"base": 0,
+							"value": null,
+							"stat": "int",
+							"default_stat": "int",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"nature": {
+							"base": 0,
+							"value": null,
+							"stat": "int",
+							"default_stat": "int",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"medeci": {
+							"base": 0,
+							"value": null,
+							"stat": "int",
+							"default_stat": "int",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"percep": {
+							"base": 0,
+							"value": null,
+							"stat": "wis",
+							"default_stat": "wis",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"sereni": {
+							"base": 0,
+							"value": null,
+							"stat": "wis",
+							"default_stat": "wis",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"intuit": {
+							"base": 0,
+							"value": null,
+							"stat": "wis",
+							"default_stat": "wis",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"intimi": {
+							"base": 0,
+							"value": null,
+							"stat": "cha",
+							"default_stat": "cha",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"trompe": {
+							"base": 0,
+							"value": null,
+							"stat": "cha",
+							"default_stat": "cha",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"persua": {
+							"base": 0,
+							"value": null,
+							"stat": "cha",
+							"default_stat": "cha",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"perfor": {
+							"base": 0,
+							"value": null,
+							"stat": "cha",
+							"default_stat": "cha",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"sante": {
+							"base": 0,
+							"value": null,
+							"stat": "con",
+							"default_stat": "con",
+							"ui": {
+								"dropdown": false
+							}
+						},
+						"endura": {
+							"base": 0,
+							"value": null,
+							"stat": "con",
+							"default_stat": "con",
+							"ui": {
+								"dropdown": false
+							}
+						}
+					},
+					"resistances": {
+						"tran": {
+							"value": 0,
+							"immune": false
+						},
+						"perf": {
+							"value": 0,
+							"immune": false
+						},
+						"cont": {
+							"value": 0,
+							"immune": false
+						},
+						"soni": {
+							"value": 0,
+							"immune": false
+						},
+						"sang": {
+							"value": 0,
+							"immune": false
+						},
+						"feu": {
+							"value": 0,
+							"immune": false
+						},
+						"eau": {
+							"value": 0,
+							"immune": false
+						},
+						"terr": {
+							"value": 0,
+							"immune": false
+						},
+						"air": {
+							"value": 0,
+							"immune": false
+						},
+						"natu": {
+							"value": 0,
+							"immune": false
+						},
+						"givr": {
+							"value": 0,
+							"immune": false
+						},
+						"foud": {
+							"value": 0,
+							"immune": false
+						},
+						"radt": {
+							"value": 0,
+							"immune": false
+						},
+						"obsc": {
+							"value": 0,
+							"immune": false
+						},
+						"arca": {
+							"value": 0,
+							"immune": false
+						},
+						"chao": {
+							"value": 0,
+							"immune": false
+						},
+						"necr": {
+							"value": 0,
+							"immune": false
+						},
+						"psyc": {
+							"value": 0,
+							"immune": false
+						}
+					},
+					"bonuses": {
+						"weapon": {
+							"stat": "str",
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"casting": {
+							"stat": "int",
+							"base": 0,
+							"alt": 0,
+							"value": null
+						},
+						"concentration": {
+							"stat": "con",
+							"base": 0,
+							"alt": 0,
+							"value": null
+						}
+					}
+				},
+				"spell_charges": {
+					"lvl1": {
+						"value": 0,
+						"max": null
+					},
+					"lvl2": {
+						"value": 0,
+						"max": null
+					},
+					"lvl3": {
+						"value": 0,
+						"max": null
+					},
+					"special": {
+						"value": 0,
+						"max": null,
+						"alt": 0
+					}
+				},
+				"actions": {
+					"main": {
+						"value": 0,
+						"max": null,
+						"alt": 0
+					},
+					"bonus": {
+						"value": 0,
+						"max": null,
+						"alt": 0
+					},
+					"concentration": {
+						"value": 0,
+						"max": null,
+						"alt": 0
+					},
+					"reaction": {
+						"value": 0,
+						"max": null,
+						"alt": 0
+					},
+					"movement": {
+						"value": 0,
+						"max": null,
+						"alt": 0,
+						"alt_mult": 1
+					}
+				},
+				"weapon": {
+					"dA": "",
+					"stat": "",
+					"damage_type": ""
+				}
+			}
+		},
+		"Character": {
+			"templates": ["BASE"],
+			"profile": "",
+			"attributes": {
+				"level": 1,
+				"exhaustion": 0,
+				"death": {
+					"passing_throw": {
+						"base": 11,
+						"stat": "none",
+						"value": null
+					},
+					"successes": 0,
+					"failures": 0
+				}
+			}
+		},
+		"NPC": {
+			"templates": ["BASE"],
+			"attributes": {
+				"hp": {
+					"formula": ""
+				},
+				"elite": false
+			},
+			"description": "",
+			"difficulty": 1
+		}
+	},
+	"Item": {
+		"types": ["Item"],
+		"Weapon": {
+			"description": "",
+			"formula": ""
+		}
+	}
 }
