@@ -2,6 +2,14 @@
 
 This repository is a Foundry Virtual Tabletop game system named `nalfa`.
 
+## Documentation (Foundry API)
+
+If a change depends on Foundry V13 API details and you are not sure, check the official API docs:
+`https://foundryvtt.com/api/`.
+
+When working with an assistant that cannot reliably browse the docs, paste the relevant excerpt (or
+the exact class/method page + version) so the implementation can match Foundry's actual behavior.
+
 ## Primary Entry Points
 
 - `system.json`: Foundry manifest (id, title, compatibility, entry assets).
