@@ -1,5 +1,3 @@
-import { prepareCurrency } from "./prepareItems/currency.mjs";
-
 const { enrichHTML: foundryEnrichHTML } = foundry.applications.ux.TextEditor;
 
 export function round(value, decimals = 6) {
@@ -27,7 +25,7 @@ export function prepareItem(sysData, itemType) {
 		Loot: () => {} /* Future implementation */,
 		Book: () => {} /* Future implementation */,
 		Spell: () => {} /* Future implementation */,
-		Currency: prepareCurrency,
+		Currency: () => {} /* Legacy wiring removed; see _old/prepareItems */,
 		Race: () => {} /* Future implementation */,
 		Class: () => {} /* Future implementation */,
 		Job: () => {} /* Future implementation */,
