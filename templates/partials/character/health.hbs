@@ -1,0 +1,40 @@
+{{#if (eq sysData.ui.valueMode "values")}}
+  <label class="field">
+    PV : <input
+      name="system.attributes.hp.value"
+      type="number"
+      value="{{sysData.attributes.hp.value}}"
+      data-dtype="Number"
+    /> / {{sysData.attributes.hp.max}}
+  </label>
+  <label class="field">
+    (<input
+      name="system.attributes.hp.abso"
+      type="number"
+      value="{{sysData.attributes.hp.abso}}"
+      data-dtype="Number"
+    /> abso)
+  </label>
+{{else}}
+  PVmax : {{sysData.attributes.hp.max}}
+  {{#if (eq sysData.ui.valueMode "base")}}
+    (
+    <label class="field">
+      +
+      <input
+        class="base"
+        name="system.attributes.hp.base"
+        type="number"
+        value="{{sysData.attributes.hp.base}}"
+        data-dtype="Number"
+      />
+    </label>
+    <label class="field">
+      +
+      <select class="fixed" name="system.profile">
+        {{selectOptions config.profiles selected=sysData.profile}}
+      </select>
+    </label>
+    )
+  {{/if}}
+{{/if}}

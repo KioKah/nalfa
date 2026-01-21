@@ -9,33 +9,6 @@
 		.nalfa-sheet-setup(@width: var(--actor-width));
 	}
 
-	header {
-		display: flex;
-		align-items: center;
-		gap: var(--nalfa-padding);
-		margin-bottom: var(--nalfa-padding);
-	}
-
-	input[type="number"] {
-		.chr-input-block(@chr: 2);
-	}
-
-	input.fixed[type="text"] {
-		.chr-input-block(@chr: 20);
-	}
-
-	select {
-		.select-block();
-	}
-
-	select.stat {
-		.chr-block(@chr: 7);
-	}
-
-	select.fixed {
-		.chr-block(@chr: 20);
-	}
-
 	.sheet-body {
 		position: relative;
 		display: flex;
@@ -45,59 +18,6 @@
 
 	.sheet-section {
 		margin-bottom: var(--nalfa-padding);
-	}
-
-	.field {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
-
-	.field--inline {
-		flex-direction: row;
-		align-items: center;
-		gap: 6px;
-	}
-
-	.field__row {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-	}
-
-	.field__label {
-		font-weight: 600;
-	}
-
-	.field__total {
-		min-width: 2.5rem;
-		text-align: center;
-		font-weight: 700;
-	}
-
-	.grid {
-		display: grid;
-		gap: var(--nalfa-padding);
-	}
-
-	.grid--five {
-		grid-template-columns: repeat(5, 1fr);
-	}
-
-	.grid--four {
-		grid-template-columns: repeat(4, 1fr);
-	}
-
-	.grid--three {
-		grid-template-columns: repeat(3, 1fr);
-	}
-
-	.grid--two {
-		grid-template-columns: repeat(2, 1fr);
-	}
-
-	.grid--six {
-		grid-template-columns: repeat(6, 1fr);
 	}
 
 	.skills-by-stat {
@@ -196,51 +116,5 @@
 
 	.value-mode-toggle__label {
 		font-weight: 600;
-	}
-
-	[data-value-mode] .field__base,
-	[data-value-mode] .field__alt,
-	[data-value-mode] .value-mode--base,
-	[data-value-mode] .value-mode--alt {
-		display: none;
-	}
-
-	[data-value-mode] .field__value {
-		display: inline-flex;
-		align-items: center;
-	}
-
-	[data-value-mode="base"] .field__base,
-	[data-value-mode="base"] .value-mode--base {
-		display: inline-flex;
-		align-items: center;
-	}
-
-	[data-value-mode="base"] .field__value,
-	[data-value-mode="base"] .field__alt,
-	[data-value-mode="base"] .value-mode--alt {
-		display: none;
-	}
-
-	[data-value-mode="alt"] .field[data-has-alt="true"] .field__alt,
-	[data-value-mode="alt"] .value-mode--alt {
-		display: inline-flex;
-		align-items: center;
-	}
-
-	[data-value-mode="alt"] .field[data-has-alt="true"] .field__value,
-	[data-value-mode="alt"] .field__base,
-	[data-value-mode="alt"] .value-mode--base {
-		display: none;
-	}
-
-	[data-value-mode="alt"] .field[data-has-alt="false"] .field__value {
-		display: inline-flex;
-		align-items: center;
-	}
-
-	.field__alt,
-	.field__base {
-		width: max-content;
 	}
 }

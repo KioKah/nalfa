@@ -20,9 +20,13 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 	}
 
 	static PARTS = {
-		sheet: {
-			template: `systems/nalfa/templates/sheets/test-item-sheet.hbs`,
+		header: {
+			template: `systems/nalfa/templates/sheets/item/header.hbs`,
 			classes: ["nalfa-sheet"],
+		},
+		sheet: {
+			template: `systems/nalfa/templates/sheets/item/body.hbs`,
+			classes: ["nalfa-sheet", "sheet-body"],
 		},
 	};
 
@@ -45,7 +49,8 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 
 		// Change image if default :
 		if (sheetData.item.img == "icons/svg/item-bag.svg") {
-			sheetData.item.img = `systems/nalfa/icons/base_icons/${sheetData.item.type}.svg`;
+			sheetData.item.img = `systems/nalfa/icons/base_icons/loot.svg`;
+			// sheetData.item.img = `systems/nalfa/icons/base_icons/${sheetData.item.type}.svg`;
 		}
 
 		console.warn("🚀 ~ NalfaItemSheet ~ getData ~ sheetData:\n", sheetData);

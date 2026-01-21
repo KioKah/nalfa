@@ -1,9 +1,6 @@
 {
 	"Actor": {
-		"types": [
-			"Character",
-			"NPC"
-		],
+		"types": ["Character", "NPC"],
 		"templates": {
 			"BASE": {
 				"race": "",
@@ -75,30 +72,31 @@
 						"value": 1,
 						"max": null,
 						"base": 0,
-						"temp": 0
+						"alt": 0,
+						"abso": 0
 					},
 					"defense": {
-						"base": 0,
 						"value": null,
+						"base": 0,
 						"alt": 0
 					},
 					"evasion": {
+						"value": null,
 						"base": 0,
-						"alt": 0,
-						"value": null
+						"alt": 0
 					},
 					"initiative": {
-						"base": 0,
 						"value": null,
+						"base": 0,
+						"alt": 0,
 						"stat": "dex",
-						"stat_coef": 2,
-						"alt": 0
+						"stat_coef": 2
 					},
 					"passive_percep": {
-						"base": 8,
 						"value": null,
-						"stat": "wis",
-						"alt": 0
+						"base": 8,
+						"alt": 0,
+						"stat": "wis"
 					},
 					"range_modifier": {
 						"flat": 0,
@@ -107,110 +105,110 @@
 					"carrying_capacity": null,
 					"skills": {
 						"athlet": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "str",
 							"default_stat": "str"
 						},
 						"robust": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "str",
 							"default_stat": "str"
 						},
 						"adress": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "dex",
 							"default_stat": "dex"
 						},
 						"discre": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "dex",
 							"default_stat": "dex"
 						},
 						"acroba": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "dex",
 							"default_stat": "dex"
 						},
 						"cultur": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "int",
 							"default_stat": "int"
 						},
 						"magie": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "int",
 							"default_stat": "int"
 						},
 						"nature": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "int",
 							"default_stat": "int"
 						},
 						"medeci": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "int",
 							"default_stat": "int"
 						},
 						"percep": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "wis",
 							"default_stat": "wis"
 						},
 						"sereni": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "wis",
 							"default_stat": "wis"
 						},
 						"intuit": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "wis",
 							"default_stat": "wis"
 						},
 						"intimi": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "cha",
 							"default_stat": "cha"
 						},
 						"trompe": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "cha",
 							"default_stat": "cha"
 						},
 						"persua": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "cha",
 							"default_stat": "cha"
 						},
 						"perfor": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "cha",
 							"default_stat": "cha"
 						},
 						"sante": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "con",
 							"default_stat": "con"
 						},
 						"endura": {
-							"base": 0,
 							"value": null,
+							"base": 0,
 							"stat": "con",
 							"default_stat": "con"
 						}
@@ -291,22 +289,22 @@
 					},
 					"bonuses": {
 						"weapon": {
-							"stat": "str",
+							"value": null,
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"stat": "str"
 						},
 						"casting": {
-							"stat": "int",
+							"value": null,
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"stat": "int"
 						},
 						"concentration": {
-							"stat": "con",
+							"value": null,
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"stat": "con"
 						}
 					}
 				},
@@ -372,10 +370,8 @@
 			}
 		},
 		"Character": {
-			"templates": [
-				"BASE"
-			],
-			"profile": "",
+			"templates": ["BASE"],
+			"profile": "none",
 			"attributes": {
 				"level": 1,
 				"exhaustion": 0,
@@ -391,9 +387,7 @@
 			}
 		},
 		"NPC": {
-			"templates": [
-				"BASE"
-			],
+			"templates": ["BASE"],
 			"attributes": {
 				"hp": {
 					"formula": ""
@@ -405,9 +399,7 @@
 		}
 	},
 	"Item": {
-		"types": [
-			"Item"
-		],
+		"types": ["Item"],
 		"Weapon": {
 			"description": "",
 			"formula": ""

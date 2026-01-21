@@ -54,6 +54,7 @@ nalfa.skills = {
 };
 
 nalfa.profiles = {
+	none: "Sans Profil",
 	squishy: "Squishy",
 	soft: "Soft",
 	sturdy: "Sturdy",

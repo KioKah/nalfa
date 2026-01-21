@@ -1,0 +1,14 @@
+<section class="sheet-body">
+  <div class="sheet-section">
+    <div class="health flex flex-row">
+      {{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config}}
+    </div>
+
+  </div>
+  <div class="value-mode-toggle">
+    <label class="value-mode-toggle__label" for="value-mode-select">Mode d'affichage</label>
+    <select class="fixed" id="value-mode-select" name="system.ui.valueMode">
+      {{selectOptions config.valueMode selected=sysData.ui.valueMode}}
+    </select>
+  </div>
+</section>

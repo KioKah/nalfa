@@ -1,0 +1,31 @@
+.fa-spin-pulse(@steps) {
+	animation-name: fa-spin;
+	animation-direction: normal;
+	animation-duration: 0.06s * @steps;
+	animation-iteration-count: infinite;
+	animation-timing-function: steps(@steps);
+}
+
+.fa-d4-roll-hover:hover {
+	.fa-spin-pulse(@steps: 10);
+}
+
+.fa-d6-roll-hover:hover {
+	.fa-spin-pulse(@steps: 10);
+}
+
+.fa-d8-roll-hover:hover {
+	.fa-spin-pulse(@steps: 10);
+}
+
+.fa-d10-roll-hover:hover {
+	.fa-spin-pulse(@steps: 10);
+}
+
+.fa-d12-roll-hover:hover {
+	.fa-spin-pulse(@steps: 10);
+}
+
+.fa-d20-roll-hover:hover {
+	.fa-spin-pulse(@steps: 10);
+}

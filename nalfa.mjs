@@ -10,12 +10,14 @@ async function preloadHandlebarsTemplates() {
 	console.log("nalfa | Preloading Handlebars Templates");
 
 	const templatePaths = [
-		"systems/nalfa/templates/partials/character/header.hbs",
-		"systems/nalfa/templates/partials/character/sheet.hbs",
-		"systems/nalfa/templates/partials/character/tabs.hbs",
+		"systems/nalfa/templates/sheets/character/header.hbs",
+		"systems/nalfa/templates/sheets/character/tabs.hbs",
+		"systems/nalfa/templates/sheets/character/body.hbs",
 
-		"systems/nalfa/templates/partials/item/header.hbs",
-		"systems/nalfa/templates/partials/item/sheet.hbs",
+		"systems/nalfa/templates/partials/character/health.hbs",
+
+		"systems/nalfa/templates/sheets/item/header.hbs",
+		"systems/nalfa/templates/sheets/item/body.hbs",
 	];
 
 	return foundry.applications.handlebars.loadTemplates(templatePaths);
@@ -90,6 +92,29 @@ Hooks.once("init", function () {
 		return nalfa.actions[action];
 	});
 
+	Handlebars.registerHelper("valueBaseAlt", function (mode, systemPath, obj) {
+		if (mode == "values" && obj.value) return `<span class="value">${obj.value}</span>`;
+		if (mode == "base" && obj.base) {
+			return `<input
+						class="base"
+						name="${systemPath}.base"
+						type="number"
+						value="${obj.base}"
+						data-dtype="Number"
+					/>`;
+		}
+		if (mode == "alt" && obj.alt) {
+			return `<input
+						class="alt"
+						name="${systemPath}.alt"
+						type="number"
+						value="${obj.alt}"
+						data-dtype="Number"
+					/>`;
+		}
+		return "";
+	});
+
 	Handlebars.registerHelper("weightIcon", function () {
 		return `<i class="fa-solid fa-weight-hanging fa-sm weight-unit"></i>`;
 	});
@@ -106,10 +131,10 @@ Hooks.once("init", function () {
 // 	applyMutationObserver(html[0]);
 // });
 
-Hooks.on("renderItemSheet", (app, html, data) => {
-	console.warn("🚀 ~ Hooks.on ~ renderItemSheet:\n", html);
-	applyMutationObserver(html[0]);
-});
+// Hooks.on("renderItemSheet", (app, html, data) => {
+// 	console.warn("🚀 ~ Hooks.on ~ renderItemSheet:\n", html);
+// 	applyMutationObserver(html[0]);
+// });
 
 /* NOTE Unused:
 Hooks.on("createItem", (sysData) => {

@@ -36,20 +36,40 @@
 // }
 
 .nalfa.sheet {
+	hr {
+		margin: var(--nalfa-padding) 0;
+	}
 	h2 {
 		border-width: 2px;
 	}
 	img {
-		border: 1px solid var(--color-border-light-primary);
+		border: 1px solid var(--color-text-subtle);
 	}
-	input[type="text"],
-	input[type="number"],
+
+	input[type="number"] {
+		.chr-input-block(@chr: 2);
+	}
+
+	input.fixed[type="text"] {
+		.chr-input-block(@chr: 20);
+	}
+
 	select {
-		color: var(--color-text-primary);
+		.select-block();
 	}
+
+	select.stat {
+		.chr-block(@chr: 7);
+	}
+
+	select.fixed {
+		.chr-block(@chr: 20);
+	}
+
 	option {
 		background-color: var(--background); //--nalfa-color-background);
 	}
+
 	> section.window-content {
 		background-image: url(http://localhost:30000/ui/parchment.jpg);
 		background-color: var(--nalfa-color-back-background);
@@ -62,7 +82,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: var(--nalfa-padding);
+		gap: var(--nalfa-padding);
+		// margin-bottom: var(--nalfa-padding);
 
 		img {
 			height: 64px;
@@ -107,6 +128,7 @@
 		}
 
 		.level {
+			height: 64px;
 			width: 64px;
 			display: flex;
 			flex-direction: column;
@@ -114,7 +136,7 @@
 			align-items: center;
 			> span {
 				font-size: 18px;
-				margin-bottom: 6px;
+				margin-bottom: 2px;
 			}
 			> input {
 				.input-block(@font-size: 24px);
@@ -125,6 +147,13 @@
 
 	.sheet-tabs {
 		margin: 0;
+	}
+
+	label.field {
+		display: inline-flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 4px;
 	}
 
 	.tabs {
