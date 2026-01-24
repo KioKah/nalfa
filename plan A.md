@@ -7,9 +7,8 @@ Objectif : lister (très en détail) tout ce qu’il reste à faire pour que le 
 
 ## Versions
 
-Le projet est découpé en 4 versions : `vA`, `vB`, `vC`, `vD`.
-
-Note : l’automatisation avancée est regroupée dans `vD`.
+Le projet est découpé en 4 versions : `vA`, (omis : `vB`, `vC`, `vD`).
+Ce plan détaille le passage de la version actuelle à A.
 
 ---
 
@@ -21,7 +20,7 @@ Note : l’automatisation avancée est regroupée dans `vD`.
 - Templates : `templates/**`
 - Styles : `nalfa.css` (compilé depuis `less/`)
 
-Règle « docs » : quand un détail dépend de l’API Foundry, ouvrir https://foundryvtt.com/api/ et coller l’extrait (ou donner le lien exact + version) avant d’implémenter.
+Règle « docs » : quand un détail dépend de l’API Foundry, demander à l'utilisateur d'aller voir l'API: https://foundryvtt.com/api/ et de coller l’extrait (ou donner le lien exact + version) pour toi.
 
 ---
 
@@ -107,6 +106,7 @@ Règle « docs » : quand un détail dépend de l’API Foundry, ouvrir https://
 - [ ] Vérifier `system.json.initiative` (déjà présent) et sa cohérence avec `initiative.value`.
 
 QA manuel
+
 - [ ] Lancer Foundry, vérifier que le système charge sans warning de compat.
 
 ### vA.1.2 — Templates "copy" (décision : conserver)
@@ -117,6 +117,7 @@ Décision : conserver les templates `* copy.hbs` car ils servent de documentatio
 - [ ] Vérifier que `nalfa.mjs` ne précharge pas les `* copy.hbs`.
 
 QA manuel
+
 - [ ] Rendu sheet OK, pas d’erreur de template manquant.
 
 ### vA.1.3 — Import cassé `prepareItems` (décision)
@@ -129,6 +130,7 @@ Décision : mettre le code historique en `_old/` et supprimer toute référence 
   - [x] garder `prepareItem` comme routeur « futur » (ou le simplifier)
 
 QA manuel
+
 - [ ] Ouvrir une sheet qui importe `module/utils.mjs` : aucune erreur console.
 
 ### vA.1.4 — Build CSS
@@ -138,6 +140,7 @@ Décision : la compilation LESS → CSS est gérée automatiquement par un plugi
 - [ ] Ne pas ajouter de script npm.
 
 QA manuel
+
 - [ ] Modifier un fichier `less/`, vérifier que `nalfa.css` est bien régénéré par ton workflow.
 
 ---
@@ -168,6 +171,7 @@ Décisions de triage
 - Si le champ est « core règles » mais absent : vB obligatoire (et ajouter une migration si des acteurs existent déjà).
 
 QA manuel
+
 - [ ] Créer un Actor neuf : aucun champ ne casse (pas de `undefined` bloquant).
 
 ---
@@ -178,7 +182,7 @@ QA manuel
 
 - [ ] PV / PV max / Absorption
 - [ ] Défense / Évasion
-- [ ] Initiative (Dex*2) + affichage de la valeur
+- [ ] Initiative (Dex\*2) + affichage de la valeur
 - [ ] Perception passive (8 + Sag)
 - [ ] Stats (valeur, base, alt selon `valueMode`)
 - [ ] Compétences (valeur + stat associée)
@@ -215,6 +219,7 @@ Endroits à vérifier
 - Templates HBS qui utilisent `{{#if ...}}` sur des nombres.
 
 QA manuel
+
 - [ ] Passer values → base → alt : les champs attendus apparaissent et sauvegardent.
 
 ---
@@ -243,6 +248,7 @@ Format de retour (recommandé)
   - `breakdown` (détails : stat, compétence, DC, critique, etc.)
 
 QA manuel
+
 - [ ] Import du module dans une macro : pas d’erreur.
 - [ ] Un jet de chaque type : pas d’erreur console.
 
@@ -263,6 +269,7 @@ Implémentation (recommandée)
 - [ ] Ne pas toucher aux dés qui contiennent déjà `min`.
 
 QA manuel
+
 - [ ] `1d8min4` lancé 30 fois : jamais < 4.
 
 ### vA.4.3 — Sources de dégâts (pas d’items)
@@ -285,6 +292,7 @@ Logique
 - JdD : `(<dA>min<half>) + <StatArme>`
 
 QA manuel
+
 - [ ] Configurer une arme basique sur l’acteur, lancer JdT et JdD, vérifier affichage.
 
 ### vA.4.4 — Templates chat (unifiés)
@@ -306,6 +314,7 @@ Contenu minimum par chat card
 - Initiative : résultat
 
 QA manuel
+
 - [ ] 1 jet de chaque type : rendu lisible + pas d’erreur console.
 
 ### vA.4.5 — Points d’entrée (UI)
@@ -316,6 +325,7 @@ QA manuel
   - [ ] Attaque basique (JdT/JdD)
 
 QA manuel
+
 - [ ] Macro sur actor sélectionné : fonctionne.
 
 ---
@@ -326,6 +336,7 @@ QA manuel
 - [ ] Afficher un indicateur KO si PV ≤ 0 (affichage uniquement).
 
 QA manuel
+
 - [ ] Démarrer un combat, lancer initiative, vérifier l’ordre.
 
 ---
@@ -335,319 +346,5 @@ QA manuel
 - [ ] Feuille item : nom, image, description (rich text si possible), rareté si déjà modélisée.
 
 QA manuel
+
 - [ ] Créer un item, éditer description, sauvegarde OK.
-
----
-
-# vB — Fonctionnel, UX meilleure, automatisations minimales
-
-## Objectifs vB
-
-- Evoluer le modèle de données (si nécessaire) au-delà de `template.json`.
-- Améliorer l’UX de la feuille personnage (onglets, boutons de jets).
-- Rolls plus pratiques (notamment sauvegardes) sans passer par les vrais items Spell.
-- Classes : structure + verrou (pas de changement).
-
----
-
-## vB.1 — Modèle de données : évolutions
-
-- [ ] Faire évoluer `template.json` pour refléter ce dont la sheet/les rolls ont besoin.
-- [ ] Ajouter/clarifier les champs manquants plutôt que d’avoir des “undefined”.
-
-QA manuel
-- [ ] Créer un perso neuf : aucune console error liée au data model.
-- [ ] Ouvrir un perso existant : pas de régression.
-
----
-
-## vB.2 — UX feuille perso
-
-- [ ] Onglets AppV2 (stats/combat/magie/inventaire/notes).
-- [ ] Boutons de jets « 1 clic » (JdC / init / attaque basique).
-
-Détails implémentation (sheet)
-
-- [ ] Définir `static TABS` et utiliser `this._prepareTabs("primary")`.
-- [ ] Découper en `PARTS` : header, tabs, 1 part par onglet.
-- [ ] `_preparePartContext(partId, context)` : injecter `context.tab`.
-- [ ] `_onRender` : restaurer l’onglet actif via `this.tabGroups`.
-
-Détails implémentation (actions)
-
-- [ ] Utiliser `DEFAULT_OPTIONS.actions` + `data-action`.
-- [ ] `type="button"` sur les boutons.
-- [ ] Standardiser `data-*` : `data-skill`, `data-roll`, etc.
-
-QA manuel
-
-- [ ] Changer d’onglet après modification : onglet actif conservé.
-- [ ] Rerender : les boutons continuent de fonctionner.
-
----
-
-## vB.3 — Rolls « pertinents »
-
-### vB.3.1 — Sauvegardes standardisées
-
-Option choisie : `X` et la stat de sauvegarde (`StatSauv`) sont saisis via un dialog au moment du jet.
-
-- [ ] Créer une fonction `promptSave()` (ou équivalent) qui demande :
-  - [ ] `X` (DC de base)
-  - [ ] `StatSauv` (for/dex/int/sag/cha/con)
-  - [ ] (Option) un texte « effet en cas de réussite » (ex: /2, pas de CdF)
-- [ ] Calculer `DC = X + StatIncantAttaquant`.
-- [ ] Appliquer la règle d’arrondi : en cas de réduction de dégâts, arrondi supérieur.
-
-Chat card
-
-- [ ] Afficher X, StatIncant attaquant, DC finale, stat de sauvegarde, résultat, réussite/échec.
-
-QA manuel
-
-- [ ] Lancer 3 sauvegardes : vérifier la DC et l’affichage.
-
-### vB.3.2 — Dégâts critiques (décision : double dés uniquement)
-
-- [ ] Sur crit (20 naturel sur JdT) : doubler uniquement les dés de dégâts (pas les bonus stats).
-
-QA manuel
-
-- [ ] Cas normal vs crit : la partie dés double, la stat reste simple.
-
----
-
-## vB.4 — Résistances (début)
-
-Décision : `system.attributes.resistances.<type>.value` peut être négatif.
-
-- [ ] Afficher et éditer les résistances (valeur + immune).
-- [ ] Option : dans la chat card de dégâts, afficher « brut → après résistances » sans appliquer automatiquement aux PV.
-
-QA manuel
-
-- [ ] Résistance négative : affichage OK.
-- [ ] Immune : affichage OK.
-
----
-
-## vB.5 — Classes (structure + verrou)
-
-- [ ] Stocker `system.classId` / `system.className`.
-- [ ] Sélection depuis un compendium.
-
-Règle : impossibilité de changer de classe, et les classes ne sont pas cumulables.
-
-- [ ] Si `system.classId` est déjà défini :
-  - [ ] UI de sélection désactivée
-  - [ ] (GM) bouton « override » pour réinitialiser
-
-QA manuel
-
-- [ ] Choisir une classe, fermer/réouvrir : impossible de re-choisir sans override.
-
----
-
-# vC — Données riches : localisation, objets qui impactent les stats, états/CdF
-
-## Objectifs vC
-
-- Localisation complète.
-- Inventaire/objets qui interagissent avec les stats.
-- Items typés + sheets spécialisées.
-- États/CdF : structure + application simple (pas d’automatisation de déclenchement).
-
----
-
-## vC.1 — Localisation (toute localisation arrive ici)
-
-- [ ] Mettre en place `lang/fr.json` complet pour les libellés UI importants.
-- [ ] Remplacer progressivement les libellés hardcodés par `localize`.
-- [ ] Décider ce qui reste dans `module/config.mjs` (données) vs `lang/*` (texte UI).
-
-QA manuel
-
-- [ ] Recharger : labels cohérents, pas de clés affichées.
-
----
-
-## vC.2 — Inventaire qui interagit avec les stats
-
-Décision : objets qui interagissent avec les stats = minimum.
-
-- [ ] Introduire un modèle « équipement » : équipé / non équipé.
-- [ ] Effets passifs : bonus stats, bonus skills, Def/Evasion, résistances.
-
-Représentation recommandée
-
-- [ ] Générer des `ActiveEffect` depuis les items équipés.
-
-Découpage
-
-### vC.2.1 — Schéma d’item (bonus)
-
-- [ ] `system.equipped` (bool)
-- [ ] `system.bonuses.stats.<stat>` (entier)
-- [ ] `system.bonuses.skills.<skill>` (entier)
-- [ ] `system.bonuses.defense` / `system.bonuses.evasion` (entier)
-- [ ] `system.bonuses.resistances.<type>` (entier)
-- [ ] `system.bonuses.immunities.<type>` (bool)
-
-### vC.2.2 — Génération d’effets
-
-- [ ] Quand `equipped=true` : créer/activer un ActiveEffect lié à l’item.
-- [ ] Quand `equipped=false` : désactiver ou supprimer l’effet (décision).
-
-### vC.2.3 — UI inventaire
-
-- [ ] Bouton « équiper ».
-- [ ] Filtre « équipé ».
-- [ ] Section « bonus actifs ».
-
-QA manuel
-
-- [ ] Équiper 2 accessoires : les bonus s’additionnent.
-- [ ] Déséquiper 1 : seul son bonus disparaît.
-
----
-
-## vC.3 — Items typés + sheets spécialisées
-
-- [ ] Créer des types Foundry : Weapon / Trinket / Consumable / Spell / Loot.
-- [ ] Feuilles spécialisées par type.
-- [ ] Migration depuis le « type unique ».
-
-Découpage
-
-### vC.3.1 — Modèle de données (template.json)
-
-- [ ] Ajouter une section par type avec les champs utiles.
-- [ ] Standardiser : `system.description`, `system.rarity`, `system.source` (optionnel).
-
-### vC.3.2 — Feuilles
-
-- Weapon sheet : dégâts, type dégâts, propriétés, boutons JdT/JdD.
-- Trinket sheet : bonus + équipé.
-- Spell sheet : niveau, DC, concentration (pas auto), bouton « lancer ».
-- Consumable sheet : usages.
-
-### vC.3.3 — Migration
-
-- [ ] Mapper : item unique → type cible.
-- [ ] Conserver les champs non mappés en `flags.nalfa.legacy`.
-
-QA manuel
-
-- [ ] Monde existant : items migrés, aucune sheet cassée.
-- [ ] Créer un Weapon : JdT/JdD fonctionnent.
-
----
-
-## vC.4 — États / CdF (structure + application simple)
-
-Décision : minimum.
-
-- [ ] Définir le référentiel des CdF (depuis les règles) dans `module/config.mjs`.
-- [ ] Application manuelle via UI (ajouter/retirer), sans automatisme de déclenchement.
-
-Découpage
-
-### vC.4.1 — Modèle "état" interne
-
-- [ ] id, label, icon
-- [ ] modifs (def/jdt/sauv/deplacement/portee)
-- [ ] restrictions (noAction/noReaction/noConcentration/noMove)
-
-### vC.4.2 — Application Foundry
-
-- [ ] Créer un ActiveEffect par état appliqué.
-- [ ] Stocker l’id dans `flags.nalfa.statusId`.
-
-QA manuel
-
-- [ ] Appliquer Étourdissement : malus reflétés.
-- [ ] Retirer : retour normal.
-
----
-
-# vD — Automatisation + polish
-
-## Objectifs vD
-
-- Automatisation avancée (concentration, menace/opportunités, progression classes).
-- Packs de contenu, documentation, release.
-
----
-
-## vD.1 — Automatisation concentration
-
-- [ ] Si dégâts reçus et concentration active : jet de concentration proposé/automatique.
-
-Découpage
-
-- [ ] Représentation : ActiveEffect « Concentration » + flags.
-- [ ] Stocker au cast : UUID sort, stat de concentration, DC.
-- [ ] Déclenchement : pipeline dégâts (ou bouton semi-auto).
-
-QA manuel
-
-- [ ] Dégâts → prompt → jet → échec retire l’effet.
-
----
-
-## vD.2 — Menace / opportunités
-
-- [ ] Détection sortie de zone de menace.
-- [ ] Déclenchement opportunité (réaction).
-
-Découpage
-
-- [ ] Définir la portée de menace (arme équipée).
-- [ ] Hook de mouvement (à valider via docs V13).
-- [ ] Workflow réaction (prompt + respect 1 réaction par round).
-- [ ] Désengagement : flag jusqu’à fin du tour.
-
-QA manuel
-
-- [ ] Sortie sans désengagement → opportunité.
-- [ ] Sortie avec désengagement → rien.
-
----
-
-## vD.3 — Automatisation classes (sorts/passifs)
-
-- [ ] Déblocages par niveau (UI) + ajout automatique des sorts/passifs.
-
-Découpage
-
-- [ ] Format progression (level → grants).
-- [ ] Détection montée de niveau (diff avant/après).
-- [ ] UI de choix.
-- [ ] Anti-duplication.
-
-QA manuel
-
-- [ ] Monter de niveau : propose les bons déblocages, pas de duplication.
-
----
-
-## vD.4 — Polishing / release / contenu
-
-- [ ] Compendiums : classes, races, sorts, armes de base, accessoires.
-- [ ] Documentation utilisateur.
-- [ ] Packaging / release (zip).
-
-QA manuel
-
-- [ ] Installation depuis un zip : fonctionne.
-
----
-
-## Questions / trous à clarifier
-
-- Table « Valeur Statistique » : interprétation exacte + automatisation souhaitée
-- Table « Points de compétences » : rôle exact de la colonne « Malus »
-- Détails de chaque classe : progression, sorts, passifs, mécaniques
-- Repos / fatigue / inspiration : valeurs exactes
-- Armures : comment encoder proprement la défense « au jugement MJ »
-- Types combinés / immunités partielles : définition exacte en Nalfa
