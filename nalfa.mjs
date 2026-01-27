@@ -3,6 +3,8 @@ import { nalfa } from "./module/config.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
+import * as rollMacros from "./module/rolls/macros.mjs";
+import * as rollHandlers from "./module/rolls/rolls.mjs";
 
 import { DiceSystem } from "../../modules/dice-so-nice/api.js";
 
@@ -18,6 +20,13 @@ async function preloadHandlebarsTemplates() {
 
 		"systems/nalfa/templates/sheets/item/header.hbs",
 		"systems/nalfa/templates/sheets/item/body.hbs",
+
+		"systems/nalfa/templates/chat/roll/skill.hbs",
+		"systems/nalfa/templates/chat/roll/attack.hbs",
+		"systems/nalfa/templates/chat/roll/damage.hbs",
+		"systems/nalfa/templates/chat/roll/save.hbs",
+		"systems/nalfa/templates/chat/roll/initiative.hbs",
+		"systems/nalfa/templates/chat/roll/prompt-save.hbs",
 	];
 
 	return foundry.applications.handlebars.loadTemplates(templatePaths);
@@ -29,6 +38,11 @@ Hooks.once("init", function () {
 
 	CONFIG.nalfa = nalfa;
 	CONFIG.Item.documentClass = NalfaItem;
+	game.nalfa = {
+		...(game.nalfa ?? {}),
+		rolls: rollHandlers,
+		macros: rollMacros,
+	};
 
 	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
 		foundry.documents.Actor,
@@ -93,8 +107,11 @@ Hooks.once("init", function () {
 	});
 
 	Handlebars.registerHelper("valueBaseAlt", function (mode, systemPath, obj) {
-		if (mode == "values" && obj.value) return `<span class="value">${obj.value}</span>`;
-		if (mode == "base" && obj.base) {
+		const hasValue = (value) => value !== null && value !== undefined;
+		if (mode == "values" && hasValue(obj.value)) {
+			return `<span class="value">${obj.value}</span>`;
+		}
+		if (mode == "base" && hasValue(obj.base)) {
 			return `<input
 						class="base"
 						name="${systemPath}.base"
@@ -103,7 +120,7 @@ Hooks.once("init", function () {
 						data-dtype="Number"
 					/>`;
 		}
-		if (mode == "alt" && obj.alt) {
+		if (mode == "alt" && hasValue(obj.alt)) {
 			return `<input
 						class="alt"
 						name="${systemPath}.alt"
@@ -123,6 +140,39 @@ Hooks.once("init", function () {
 		return listOfTypedValues
 			.map((elem) => `<span class="${elem.type}">${elem.value} ${elem.type}</span>`)
 			.join(", ");
+	});
+});
+
+Hooks.on("renderChatMessageHTML", (message, html) => {
+	const root = html?.querySelector ? html : null;
+	if (!root) return;
+	root.querySelectorAll(".nalfa-chat-card").forEach((card) => {
+		if (card.classList.contains("nalfa-chat-card--prompt")) return;
+		if (card.dataset.nalfaToggle) return;
+		card.dataset.nalfaToggle = "true";
+		card.addEventListener("click", () => {
+			card.classList.toggle("is-open");
+		});
+	});
+	root.querySelectorAll(".nalfa-roll-prompt").forEach((button) => {
+		if (button.dataset.nalfaPrompt) return;
+		button.dataset.nalfaPrompt = "true";
+		button.addEventListener("click", (event) => {
+			event.preventDefault();
+			const target = event.currentTarget;
+			const statKey = target?.dataset?.stat ?? "";
+			const dc = Number(target?.dataset?.dc ?? 0);
+			const titleName = target?.dataset?.name ?? "";
+			const actor =
+				canvas?.tokens?.controlled?.[0]?.actor ??
+				game.user?.character ??
+				null;
+			if (!actor) {
+				ui.notifications.warn("Veuillez sélectionner une cible.");
+				return;
+			}
+			game.nalfa?.rolls?.rollSaveTarget?.(actor, statKey, dc, titleName);
+		});
 	});
 });
 

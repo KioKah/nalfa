@@ -1,0 +1,433 @@
+{
+  "exportDate": "2026-01-27T02:47:56.228Z",
+  "foundryVersion": "13.351",
+  "systemId": "nalfa",
+  "systemVersion": "0.0.1",
+  "environment": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) FoundryVirtualTabletop/13.351.0 Chrome/132.0.6834.210 Electron/34.4.0 Safari/537.36",
+    "platform": "Windows",
+    "client": "Foundry App (Electron)",
+    "browser": "Electron 34.4.0 (Chromium 132.0.6834.210)",
+    "screenResolution": "2560x1440",
+    "windowSize": "1592x1377",
+    "pixelRatio": 1,
+    "language": "fr"
+  },
+  "coreSettings": {
+    "uiConfig": {
+      "uiScale": 1,
+      "fontScale": 5,
+      "colorScheme": {
+        "applications": "dark",
+        "interface": "dark"
+      },
+      "chatNotifications": "cards",
+      "fade": {
+        "opacity": 0.4,
+        "speed": 500
+      }
+    }
+  },
+  "cuiSettings": {
+    "v2-default-settings": {
+      "_version": 1769482059795
+    },
+    "v2-setting-enforcement": {
+      "v2-dock-dh-resources": "soft"
+    },
+    "v2-bulk-lock-action": "",
+    "disable-ui": false,
+    "v2-dock-dh-resources": true,
+    "v2-nav-folders-enabled": true,
+    "v2-nav-folders-for-players": false,
+    "v2-nav-start-collapsed": false,
+    "v2-collapse-nav-during-combat": true,
+    "v2-nav-show-root-folders": false,
+    "v2-hide-inactive-on-folder-toggle": true,
+    "v2-sub-folders-layout": "parent",
+    "v2-expand-scrim-to-subfolders": false,
+    "v2-use-scene-lookup": true,
+    "v2-scene-nav-item-width": 150,
+    "v2-show-nav-on-hover": false,
+    "v2-hide-loading-scene-name": true,
+    "v2-disable-active-scene-separation": false,
+    "v2-scene-click-to-view": true,
+    "v2-use-scene-icons": true,
+    "v2-use-scene-back-button": true,
+    "v2-use-scene-preview": true,
+    "v2-scene-nav-collapsed": true,
+    "v2-scene-nav-pos": 0,
+    "v2-collapse-macro-bar": true,
+    "v2-use-folder-style": true,
+    "v2-debug-mode": false,
+    "v2-auto-hide-player-list": false,
+    "v2-player-list-avatars": true,
+    "v2-player-list-avatar-size": "small",
+    "v2-enable-font-ui": true,
+    "v2-enable-font-titles": true,
+    "v2-enable-font-journal": true,
+    "v2-enable-font-journal-titles": true,
+    "v2-ui-font-body": "Lexend",
+    "v2-ui-font-titles": "Lexend",
+    "v2-journal-font-body": "Lexend",
+    "v2-journal-font-titles": "Lexend",
+    "v2-color-theme": "crlngn-theme",
+    "v2-custom-theme-colors": {
+      "accent": "rgb(68, 147, 173)",
+      "secondaryDark": "rgb(62, 62, 88)",
+      "secondaryLight": "rgb(193, 193, 217)"
+    },
+    "v2-apply-secondary-color-to-bg": false,
+    "v2-player-apply-secondary-color-to-bg": false,
+    "v2-player-color-theme": "",
+    "v2-player-custom-theme-colors": null,
+    "v2-use-glass-effect": true,
+    "v2-glass-translucence": 0.7,
+    "v2-adjust-other-modules": true,
+    "v2-dark-theme-to-modules": false,
+    "v2-other-modules-list-1": [
+      {
+        "id": "levels-3d-preview",
+        "enabled": true
+      },
+      {
+        "id": "autoanimations",
+        "enabled": true
+      },
+      {
+        "id": "beneos-module",
+        "enabled": true
+      },
+      {
+        "id": "bg3-inspired-hotbar",
+        "enabled": true
+      },
+      {
+        "id": "breaktime",
+        "enabled": true
+      },
+      {
+        "id": "combat-tracker-dock",
+        "enabled": true
+      },
+      {
+        "id": "crux",
+        "enabled": true
+      },
+      {
+        "id": "dice-calculator",
+        "enabled": true
+      },
+      {
+        "id": "hurry-up",
+        "enabled": true
+      },
+      {
+        "id": "item-piles",
+        "enabled": true
+      },
+      {
+        "id": "monks-enhanced-journal",
+        "enabled": true
+      },
+      {
+        "id": "rest-recovery",
+        "enabled": true
+      },
+      {
+        "id": "simple-timekeeping",
+        "enabled": true
+      },
+      {
+        "id": "smalltime",
+        "enabled": true
+      },
+      {
+        "id": "touch-vtt",
+        "enabled": true
+      },
+      {
+        "id": "fvtt-youtube-player",
+        "enabled": true
+      }
+    ],
+    "v2-custom-styles": "",
+    "v2-forced-dark-theme": "",
+    "v2-chat-border-color": "playerColor",
+    "v2-chat-border-position": "right",
+    "v2-use-left-chat-border": true,
+    "v2-enable-chat-styles": true,
+    "v2-side-bar-width": 300,
+    "v2-open-chat-log-on-load": true,
+    "v2-close-sidebar-when-idle": false,
+    "v2-use-horizontal-sidebar-tabs": false,
+    "v2-show-chat-messages-on-top": false,
+    "v2-hidden-sidebar-tabs": [
+      {
+        "tabId": "chat",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "combat",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "scenes",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "actors",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "items",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "convenientEffects",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "journal",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "tables",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "cards",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "macros",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "playlists",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "compendium",
+        "hideForGM": false,
+        "hideForPlayer": false
+      },
+      {
+        "tabId": "settings",
+        "hideForGM": false,
+        "hideForPlayer": false
+      }
+    ],
+    "v2-auto-hide-secondary-controls": false,
+    "v2-camera-dock-x": 0,
+    "v2-camera-dock-y": 120,
+    "v2-camera-dock-width": 180,
+    "v2-camera-dock-height": 150,
+    "v2-dock-resize-on-user-join": "horizontal",
+    "v2-dock-cameras": false,
+    "v2-lock-dock-position": false,
+    "v2-default-video-width": 160,
+    "last-update-id": "2.18.0",
+    "v2-scene-controls-fade-out": true,
+    "v2-sidebar-tabs-fade-out": true,
+    "v2-chat-log-controls-fade-out": true,
+    "v2-player-list-fade-out": true,
+    "v2-camera-fade-out": false,
+    "v2-macro-hotbar-fade-out": true,
+    "v2-scene-nav-fade-out": true,
+    "v2-scene-controls-hide": false,
+    "v2-sidebar-tabs-hide": false,
+    "v2-chat-log-controls-hide": false,
+    "v2-player-list-hide": false,
+    "v2-camera-dock-hide": false,
+    "v2-macro-hotbar-hide": false,
+    "v2-scene-nav-hide": false,
+    "v2-hoverable-settings-hints": true,
+    "v2-prevent-hotbar-reposition": true,
+    "v2-scene-nav-enabled": true,
+    "v2-enable-scene-controls": true,
+    "v2-enable-sidebar-tabs": true,
+    "v2-enable-chat-log-controls": true,
+    "v2-enable-macro-layout": true,
+    "v2-enable-player-list": true,
+    "v2-enable-floating-dock": false,
+    "v2-apply-theme-and-styles": true,
+    "v2-enable-journal-styles": true,
+    "v2-use-horizontal-tabs": true,
+    "v2-enable-icons-on-sheets": true,
+    "v2-enable-combat-tracker-carousel": true,
+    "v2-combat-carousel-scale": 1,
+    "v2-combat-tracker-full-width": true,
+    "v2-carousel-image-source": "token",
+    "v2-carousel-show-effects": true,
+    "carouselWelcomeShown": true
+  },
+  "activeModules": [
+    {
+      "id": "autocomplete-mentions",
+      "title": "Autocomplete Mentions",
+      "version": "2.3.0"
+    },
+    {
+      "id": "barbrawl",
+      "title": "Bar Brawl",
+      "version": "1.8.13"
+    },
+    {
+      "id": "bulk-tasks",
+      "title": "Bulk Tasks",
+      "version": "0.6.3"
+    },
+    {
+      "id": "condition-lab-triggler",
+      "title": "Condition Lab & Triggler",
+      "version": "2.1.0"
+    },
+    {
+      "id": "crlngn-ui",
+      "title": "Carolingian UI",
+      "version": "2.23.2"
+    },
+    {
+      "id": "dfreds-convenient-effects",
+      "title": "DFreds Convenient Effects",
+      "version": "8.2.4"
+    },
+    {
+      "id": "dfreds-effects-panel",
+      "title": "DFreds Effects Panel",
+      "version": "5.1.5"
+    },
+    {
+      "id": "dfreds-effects-to-chat",
+      "title": "DFreds Effects to Chat",
+      "version": "2.0.3"
+    },
+    {
+      "id": "dfreds-obvious-settings",
+      "title": "DFreds Obvious Settings",
+      "version": "2.0.1"
+    },
+    {
+      "id": "dice-calculator",
+      "title": "Dice Tray",
+      "version": "3.5.4"
+    },
+    {
+      "id": "dice-so-nice",
+      "title": "Dice So Nice!",
+      "version": "5.2.4"
+    },
+    {
+      "id": "dice-soup",
+      "title": "Dice Soup",
+      "version": "3.3"
+    },
+    {
+      "id": "dice-stats",
+      "title": "Dice Stats",
+      "version": "1.22.2"
+    },
+    {
+      "id": "gamemaster-title-editor",
+      "title": "Gamemaster Title Editor",
+      "version": "1.1.2"
+    },
+    {
+      "id": "lib-dfreds-migrations",
+      "title": "Lib: DFreds Migrations",
+      "version": "1.0.2"
+    },
+    {
+      "id": "lib-dfreds-ui-extender",
+      "title": "Lib: DFreds UI Extender",
+      "version": "2.2.0"
+    },
+    {
+      "id": "lib-wrapper",
+      "title": "libWrapper",
+      "version": "1.13.4.0"
+    },
+    {
+      "id": "monks-active-tiles",
+      "title": "Monk's Active Tile Triggers",
+      "version": "13.06"
+    },
+    {
+      "id": "monks-bloodsplats",
+      "title": "Monk's Bloodsplats",
+      "version": "13.01"
+    },
+    {
+      "id": "monks-chat-timer",
+      "title": "Monk's Chat Timer",
+      "version": "13.01"
+    },
+    {
+      "id": "monks-combat-details",
+      "title": "Monk's Combat Details",
+      "version": "13.05"
+    },
+    {
+      "id": "monks-enhanced-journal",
+      "title": "Monk's Enhanced Journal",
+      "version": "13.06"
+    },
+    {
+      "id": "monks-little-details",
+      "title": "Monk's Little Details",
+      "version": "13.03"
+    },
+    {
+      "id": "monks-sound-enhancements",
+      "title": "Monk's Sound Enhancements",
+      "version": "13.02"
+    },
+    {
+      "id": "monks-tokenbar",
+      "title": "Monk's TokenBar",
+      "version": "13.02"
+    },
+    {
+      "id": "monks-wall-enhancement",
+      "title": "Monk's Wall Enhancement",
+      "version": "13.04"
+    },
+    {
+      "id": "multiple-document-selection",
+      "title": "Multiple Document Selection",
+      "version": "13.03"
+    },
+    {
+      "id": "popout",
+      "title": "PopOut!",
+      "version": "2.23"
+    },
+    {
+      "id": "socketlib",
+      "title": "socketlib",
+      "version": "v1.1.3"
+    },
+    {
+      "id": "vtta-tokenizer",
+      "title": "Tokenizer",
+      "version": "4.6.6"
+    },
+    {
+      "id": "_chatcommands",
+      "title": "Chat Commander",
+      "version": "2.0.4"
+    }
+  ]
+}

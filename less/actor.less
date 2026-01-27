@@ -20,6 +20,170 @@
 		margin-bottom: var(--nalfa-padding);
 	}
 
+	.field {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		flex-wrap: wrap;
+	}
+
+	.field--inline {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		flex-wrap: wrap;
+	}
+
+	.field__label {
+		font-weight: 600;
+	}
+
+	.field__total {
+		font-weight: 700;
+	}
+
+	.field__meta {
+		font-size: 12px;
+		opacity: 0.75;
+	}
+
+	.field__separator {
+		opacity: 0.7;
+	}
+
+	.ko-indicator {
+		font-weight: 700;
+		color: #b71c1c;
+	}
+
+	.field__row {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		flex-wrap: wrap;
+	}
+
+	.value-mode {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.sheet-body[data-value-mode="values"] .value-mode--base,
+	.sheet-body[data-value-mode="values"] .value-mode--alt {
+		display: none;
+	}
+
+	.sheet-body[data-value-mode="base"] .value-mode--values,
+	.sheet-body[data-value-mode="base"] .value-mode--alt {
+		display: none;
+	}
+
+	.sheet-body[data-value-mode="alt"] .value-mode--values,
+	.sheet-body[data-value-mode="alt"] .value-mode--base {
+		display: none;
+	}
+
+	.value-mode-help {
+		font-size: 12px;
+		opacity: 0.75;
+		flex-basis: 100%;
+		text-align: right;
+	}
+
+	.nalfa-roll-buttons {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.nalfa-roll-buttons button {
+		flex: 1 1 120px;
+		font-weight: 600;
+	}
+
+	.attack-config {
+		display: flex;
+		flex-direction: column;
+		gap: var(--nalfa-padding);
+	}
+
+	.attack-config__header {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.attack-config__name {
+		flex: 1 1 240px;
+	}
+
+	.attack-config__name-text {
+		font-weight: 600;
+		font-size: 16px;
+		flex: 1 1 240px;
+	}
+
+	.attack-config__toggles {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.attack-config__toggles button {
+		font-weight: 600;
+	}
+
+	.attack-config__toggle {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+
+	.attack-config__sections {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(0, 1fr);
+		gap: var(--nalfa-padding);
+	}
+
+	.attack-config__section {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: var(--nalfa-padding);
+		border: 1px solid var(--border-color, #ccc);
+		border-radius: 6px;
+		background: color-mix(in srgb, var(--color-bg), transparent 10%);
+		min-width: 0;
+	}
+
+	.attack-config__section-title {
+		display: flex;
+		justify-content: center;
+	}
+
+	.attack-config__fields {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.attack-config__row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+
+	.field__value {
+		font-weight: 600;
+	}
+
 	.skills-by-stat {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -55,9 +219,13 @@
 
 	.skill-by-stat .stat-value {
 		.chr-input-block(@chr: 2, @font-size: 16px);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		border: 1px solid var(--border-color, #ccc);
 		border-radius: 4px;
 		padding: 4px 8px;
+		cursor: pointer;
 	}
 
 	.skill-by-stat .stat-dropdown,
@@ -87,10 +255,14 @@
 
 	.skill-by-stat .skill-value {
 		.chr-input-block(@chr: 2, @font-size: 12px);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		border: 1px solid var(--border-color, #ccc);
 		border-radius: 4px;
 		padding: 2px 6px;
 		.stats-set-color-property(border-color);
+		cursor: pointer;
 	}
 
 	.skill-by-stat .skill-dropdown {
@@ -107,6 +279,7 @@
 		align-items: center;
 		justify-content: flex-end;
 		gap: 8px;
+		flex-wrap: wrap;
 		background: linear-gradient(
 			0deg,
 			var(--color-bg) 60%,

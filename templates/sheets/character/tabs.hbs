@@ -1,3 +1,15 @@
 <div>
-  <hr/>
+	<nav class="sheet-tabs tabs" data-application-part="tabs">
+		{{#each tabs}}
+			<a
+				class="item {{cssClass}}"
+				data-action="tab"
+				data-group="primary"
+				data-tab="{{@key}}"
+			>
+				{{label}}
+			</a>
+		{{/each}}
+	</nav>
+	<hr/>
 </div>

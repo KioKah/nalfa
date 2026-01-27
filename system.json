@@ -9,9 +9,9 @@
 	],
 	"version": "0.0.1",
 	"compatibility": {
-		"minimum": 13,
-		"verified": "12.351",
-		"maximum": 13
+		"minimum": "13",
+		"verified": "13",
+		"maximum": "13"
 	},
 	"esmodules": ["nalfa.mjs"],
 	"styles": ["nalfa.css"],
@@ -33,5 +33,5 @@
 		"units": "m"
 	},
 	"primaryTokenAttribute": "attributes.hp",
-	"initiative": "1d20 + @initiative.value"
+	"initiative": "1d20 + @attributes.initiative.value"
 }

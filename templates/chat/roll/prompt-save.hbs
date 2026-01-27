@@ -1,0 +1,23 @@
+<div class="nalfa-chat-card nalfa-roll-card nalfa-chat-card--prompt">
+	<header class="nalfa-roll-header">
+		<h3 class="nalfa-roll-title">
+			<span class="nalfa-roll-label">JdS</span>
+			{{#if titleName}}
+				<span class="nalfa-roll-separator">·</span>
+				<span class="nalfa-roll-name">{{titleName}}</span>
+			{{/if}}
+		</h3>
+	</header>
+	<div class="nalfa-roll-action">
+		<button
+			type="button"
+			class="nalfa-roll-prompt"
+			data-action="roll-jds"
+			data-dc="{{dc}}"
+			data-stat="{{statKey}}"
+			data-name="{{titleName}}"
+		>
+			Sauv {{dc}} {{statLabel}}
+		</button>
+	</div>
+</div>

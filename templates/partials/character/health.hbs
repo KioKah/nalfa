@@ -1,40 +1,133 @@
-{{#if (eq sysData.ui.valueMode "values")}}
-  <label class="field">
-    PV : <input
-      name="system.attributes.hp.value"
-      type="number"
-      value="{{sysData.attributes.hp.value}}"
-      data-dtype="Number"
-    /> / {{sysData.attributes.hp.max}}
-  </label>
-  <label class="field">
-    (<input
-      name="system.attributes.hp.abso"
-      type="number"
-      value="{{sysData.attributes.hp.abso}}"
-      data-dtype="Number"
-    /> abso)
-  </label>
-{{else}}
-  PVmax : {{sysData.attributes.hp.max}}
-  {{#if (eq sysData.ui.valueMode "base")}}
-    (
-    <label class="field">
-      +
-      <input
-        class="base"
-        name="system.attributes.hp.base"
-        type="number"
-        value="{{sysData.attributes.hp.base}}"
-        data-dtype="Number"
-      />
-    </label>
-    <label class="field">
-      +
-      <select class="fixed" name="system.profile">
-        {{selectOptions config.profiles selected=sysData.profile}}
-      </select>
-    </label>
-    )
-  {{/if}}
-{{/if}}
+<div class="grid grid--three">
+	<label class="field">
+		<span class="field__label">PV</span>
+		{{#if isKO}}
+			<span class="ko-indicator">KO</span>
+		{{/if}}
+		<input
+			name="system.attributes.hp.value"
+			type="number"
+			value="{{sysData.attributes.hp.value}}"
+			data-dtype="Number"
+		/>
+		<span class="field__separator">/</span>
+		<span class="field__total">{{sysData.attributes.hp.max}}</span>
+	</label>
+	<label class="field">
+		<span class="field__label">Absorption</span>
+		<input
+			name="system.attributes.hp.abso"
+			type="number"
+			value="{{sysData.attributes.hp.abso}}"
+			data-dtype="Number"
+		/>
+	</label>
+	<label class="field value-mode value-mode--base">
+		<span class="field__label">Profil</span>
+		<select class="fixed" name="system.profile">
+			{{selectOptions config.profiles selected=sysData.profile}}
+		</select>
+	</label>
+</div>
+
+<div class="grid grid--two">
+	<label class="field value-mode value-mode--base">
+		<span class="field__label">PV base</span>
+		<input
+			name="system.attributes.hp.base"
+			type="number"
+			value="{{sysData.attributes.hp.base}}"
+			data-dtype="Number"
+		/>
+	</label>
+	<label class="field value-mode value-mode--alt">
+		<span class="field__label">PV alt</span>
+		<input
+			name="system.attributes.hp.alt"
+			type="number"
+			value="{{sysData.attributes.hp.alt}}"
+			data-dtype="Number"
+		/>
+	</label>
+</div>
+
+<div class="grid grid--four">
+	<div class="field field--inline">
+		<span class="field__label">Défense</span>
+		<span class="field__total">{{sysData.attributes.defense.value}}</span>
+		<input
+			class="value-mode value-mode--base"
+			name="system.attributes.defense.base"
+			type="number"
+			value="{{sysData.attributes.defense.base}}"
+			data-dtype="Number"
+		/>
+		<input
+			class="value-mode value-mode--alt"
+			name="system.attributes.defense.alt"
+			type="number"
+			value="{{sysData.attributes.defense.alt}}"
+			data-dtype="Number"
+		/>
+	</div>
+	<div class="field field--inline">
+		<span class="field__label">Évasion</span>
+		<span class="field__total">{{sysData.attributes.evasion.value}}</span>
+		<input
+			class="value-mode value-mode--base"
+			name="system.attributes.evasion.base"
+			type="number"
+			value="{{sysData.attributes.evasion.base}}"
+			data-dtype="Number"
+		/>
+		<input
+			class="value-mode value-mode--alt"
+			name="system.attributes.evasion.alt"
+			type="number"
+			value="{{sysData.attributes.evasion.alt}}"
+			data-dtype="Number"
+		/>
+	</div>
+	<div class="field field--inline">
+		<span class="field__label">Initiative</span>
+		<span class="field__total">{{sysData.attributes.initiative.value}}</span>
+		<span class="field__meta">
+			({{lookup config.stats sysData.attributes.initiative.stat}} x{{sysData.attributes.initiative.stat_coef}})
+		</span>
+		<input
+			class="value-mode value-mode--base"
+			name="system.attributes.initiative.base"
+			type="number"
+			value="{{sysData.attributes.initiative.base}}"
+			data-dtype="Number"
+		/>
+		<input
+			class="value-mode value-mode--alt"
+			name="system.attributes.initiative.alt"
+			type="number"
+			value="{{sysData.attributes.initiative.alt}}"
+			data-dtype="Number"
+		/>
+	</div>
+	<div class="field field--inline">
+		<span class="field__label">Perception passive</span>
+		<span class="field__total">{{sysData.attributes.passive_percep.value}}</span>
+		<span class="field__meta">
+			({{lookup config.stats sysData.attributes.passive_percep.stat}} + {{sysData.attributes.passive_percep.base}})
+		</span>
+		<input
+			class="value-mode value-mode--base"
+			name="system.attributes.passive_percep.base"
+			type="number"
+			value="{{sysData.attributes.passive_percep.base}}"
+			data-dtype="Number"
+		/>
+		<input
+			class="value-mode value-mode--alt"
+			name="system.attributes.passive_percep.alt"
+			type="number"
+			value="{{sysData.attributes.passive_percep.alt}}"
+			data-dtype="Number"
+		/>
+	</div>
+</div>

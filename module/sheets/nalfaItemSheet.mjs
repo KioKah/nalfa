@@ -15,7 +15,6 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 	};
 
 	get title() {
-		console.warn("🚀 ~ NalfaItemSheet ~ get title ~ this.document:\n", this.document);
 		return `Feuille de ${this.document.type} - ${this.item.name}`;
 	}
 
@@ -34,17 +33,25 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 
 	async _prepareContext(options) {
 		const baseData = await super._prepareContext(options);
-		console.warn("🚀 ~ NalfaItemSheet ~ _prepareContext ~ baseData:\n", baseData);
+		const { TextEditor } = foundry.applications.ux;
 
 		// Redefine sheet :
 		const item = baseData.document;
-		let sheetData = {
+		const sheetData = {
 			isOwner: this.item.isOwner,
 			isEditable: this.isEditable,
 			item: item,
 			sysData: item.system,
 			effects: item.getEmbeddedCollection("ActiveEffect").contents,
 			config: CONFIG.nalfa,
+			enrichedHTML: {
+				description: await TextEditor.enrichHTML(
+					item.system?.description ?? "",
+					{
+						async: true,
+					}
+				),
+			},
 		};
 
 		// Change image if default :
@@ -52,8 +59,6 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			sheetData.item.img = `systems/nalfa/icons/base_icons/loot.svg`;
 			// sheetData.item.img = `systems/nalfa/icons/base_icons/${sheetData.item.type}.svg`;
 		}
-
-		console.warn("🚀 ~ NalfaItemSheet ~ getData ~ sheetData:\n", sheetData);
 
 		return sheetData;
 	}

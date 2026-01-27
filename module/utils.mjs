@@ -25,7 +25,6 @@ export function prepareItem(sysData, itemType) {
 		Loot: () => {} /* Future implementation */,
 		Book: () => {} /* Future implementation */,
 		Spell: () => {} /* Future implementation */,
-		Currency: () => {} /* Legacy wiring removed; see _old/prepareItems */,
 		Race: () => {} /* Future implementation */,
 		Class: () => {} /* Future implementation */,
 		Job: () => {} /* Future implementation */,

@@ -1,14 +1,391 @@
-<section class="sheet-body">
-  <div class="sheet-section">
-    <div class="health flex flex-row">
-      {{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config}}
-    </div>
+<section class="sheet-body" data-value-mode="{{sysData.ui.valueMode}}">
+	<div class="tab {{tabs.character.cssClass}}" data-group="primary" data-tab="character">
+		<div class="sheet-section">
+			<h2>Santé &amp; Défense</h2>
+			{{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config isKO=isKO}}
+		</div>
 
-  </div>
-  <div class="value-mode-toggle">
-    <label class="value-mode-toggle__label" for="value-mode-select">Mode d'affichage</label>
-    <select class="fixed" id="value-mode-select" name="system.ui.valueMode">
-      {{selectOptions config.valueMode selected=sysData.ui.valueMode}}
-    </select>
-  </div>
+		<div class="sheet-section">
+			<h2>Caractéristiques</h2>
+			<div class="grid grid--six">
+				{{#each sysData.stats}}
+					<div class="field field--inline">
+						<span class="field__label">{{lookup ../config.stats @key}}</span>
+						<span class="field__total">{{value}}</span>
+						<input
+							class="value-mode value-mode--base"
+							name="system.stats.{{@key}}.base"
+							type="number"
+							value="{{base}}"
+							data-dtype="Number"
+						/>
+						<input
+							class="value-mode value-mode--alt"
+							name="system.stats.{{@key}}.alt"
+							type="number"
+							value="{{alt}}"
+							data-dtype="Number"
+						/>
+					</div>
+				{{/each}}
+			</div>
+		</div>
+
+		<div class="sheet-section">
+			<h2>Compétences</h2>
+			<div class="skills-by-stat">
+				{{#each sysData.stats as |statObj statKey|}}
+					<div class="skill-by-stat color-{{statKey}}">
+						<div class="stat">
+					<div class="stat-info">
+						<span class="stat-name">{{lookup ../config.stats statKey}}</span>
+						<span
+							class="stat-value"
+							data-action="roll-stat-save"
+							data-stat="{{statKey}}"
+							role="button"
+						>
+							{{statObj.value}}
+						</span>
+					</div>
+				</div>
+						{{#each ../sysData.attributes.skills as |skillObj skillKey|}}
+							{{#if (eq skillObj.stat statKey)}}
+								<div class="skill {{skillObj.default_stat}}">
+							<div class="skill-info">
+								<span class="skill-name">{{skillName skillKey}}</span>
+								<span
+									class="skill-value border-color-{{statKey}}"
+									data-action="roll-skill"
+									data-skill="{{skillKey}}"
+									role="button"
+								>
+									{{skillObj.value}}
+								</span>
+							</div>
+								<div class="skill-dropdown">
+									<div class="value-mode value-mode--base">
+										<span class="nowrap">Base :</span>
+										<input
+											class="field__base"
+											name="system.attributes.skills.{{skillKey}}.base"
+											type="number"
+											value="{{skillObj.base}}"
+											data-dtype="Number"
+										/>
+										<span class="field__separator">+</span>
+										<select class="skill-stat" name="system.attributes.skills.{{skillKey}}.stat">
+											{{selectOptions ../../config.stats selected=skillObj.stat}}
+										</select>
+									</div>
+								</div>
+								</div>
+							{{/if}}
+						{{/each}}
+					</div>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+
+	<div class="tab {{tabs.resources.cssClass}}" data-group="primary" data-tab="resources">
+		<div class="sheet-section">
+			<h2>Charges de sorts</h2>
+			<div class="grid grid--four">
+				{{#each sysData.spell_charges}}
+					<div class="field field--inline">
+						<span class="field__label">Sorts {{@key}}</span>
+						<input
+							name="system.spell_charges.{{@key}}.value"
+							type="number"
+							value="{{value}}"
+							data-dtype="Number"
+						/>
+						<span class="field__separator">/</span>
+						<span class="field__total">{{max}}</span>
+					</div>
+				{{/each}}
+			</div>
+		</div>
+
+		<div class="sheet-section">
+			<h2>Actions</h2>
+			<div class="grid grid--three">
+				{{#each sysData.actions}}
+					<div class="field field--inline">
+						<span class="field__label">{{actionName @key}}</span>
+						<div class="field__row">
+							<input
+								name="system.actions.{{@key}}.value"
+								type="number"
+								value="{{value}}"
+								data-dtype="Number"
+							/>
+							<span class="field__separator">/</span>
+							<span class="field__total">{{max}}</span>
+							<input
+								class="value-mode value-mode--base"
+								name="system.actions.{{@key}}.base"
+								type="number"
+								value="{{base}}"
+								data-dtype="Number"
+							/>
+							<input
+								class="value-mode value-mode--alt"
+								name="system.actions.{{@key}}.alt"
+								type="number"
+								value="{{alt}}"
+								data-dtype="Number"
+							/>
+							{{#if (eq @key "movement")}}
+								<span class="value-mode value-mode--alt field__separator">x</span>
+								<input
+									class="value-mode value-mode--alt"
+									name="system.actions.{{@key}}.alt_mult"
+									type="number"
+									value="{{alt_mult}}"
+									data-dtype="Number"
+								/>
+							{{/if}}
+						</div>
+					</div>
+				{{/each}}
+			</div>
+		</div>
+	</div>
+
+	<div class="tab {{tabs.combat.cssClass}}" data-group="primary" data-tab="combat">
+		<div class="sheet-section attack-config">
+			<div class="attack-config__header">
+				{{#if (eq sysData.ui.valueMode "base")}}
+					<label class="field attack-config__name">
+						<span class="field__label">Nom</span>
+						<input
+							class="fixed"
+							name="system.attack.name"
+							type="text"
+							value="{{sysData.attack.name}}"
+							placeholder="Attaque"
+						/>
+					</label>
+					<div class="attack-config__toggles">
+						<label class="attack-config__toggle">
+							<input
+								type="checkbox"
+								name="system.attack.jdt.enabled"
+								{{checked sysData.attack.jdt.enabled}}
+							/>
+							<span>JdT?</span>
+						</label>
+						<label class="attack-config__toggle">
+							<input
+								type="checkbox"
+								name="system.attack.jds.enabled"
+								{{checked sysData.attack.jds.enabled}}
+							/>
+							<span>JdS?</span>
+						</label>
+						<label class="attack-config__toggle">
+							<input
+								type="checkbox"
+								name="system.attack.jdd.enabled"
+								{{checked sysData.attack.jdd.enabled}}
+							/>
+							<span>JdD?</span>
+						</label>
+					</div>
+				{{else}}
+					<div class="attack-config__name-text">
+						{{#if sysData.attack.name}}
+							{{sysData.attack.name}}
+						{{else}}
+							Attaque
+						{{/if}}
+					</div>
+					<div class="attack-config__toggles">
+						{{#if sysData.attack.jdt.enabled}}
+							<button type="button" data-action="roll-basic-attack">JdT</button>
+						{{/if}}
+						{{#if sysData.attack.jds.enabled}}
+							<button type="button" data-action="roll-basic-save">JdS</button>
+						{{/if}}
+						{{#if sysData.attack.jdd.enabled}}
+							<button type="button" data-action="roll-basic-damage">JdD</button>
+						{{/if}}
+					</div>
+				{{/if}}
+			</div>
+
+			<div class="attack-config__sections">
+				{{#if sysData.attack.jdt.enabled}}
+					<div class="attack-config__section">
+						{{#if (eq sysData.ui.valueMode "base")}}
+							<div class="attack-config__section-title">
+								<button type="button" data-action="roll-basic-attack">JdT</button>
+							</div>
+							<div class="attack-config__fields">
+								<label class="field">
+									<span class="field__label">Stat</span>
+									<select class="stat" name="system.attack.jdt.stat">
+										{{selectOptions config.stats_optional selected=sysData.attack.jdt.stat}}
+									</select>
+								</label>
+								<label class="field">
+									<span class="field__label">Bonus</span>
+									<input
+										name="system.attack.jdt.bonus"
+										type="number"
+										value="{{sysData.attack.jdt.bonus}}"
+										data-dtype="Number"
+									/>
+								</label>
+							</div>
+						{{else}}
+							<div class="attack-config__fields">
+								<div class="field">
+									<span class="field__label">Stat</span>
+									<span class="field__value">
+										{{lookup config.stats_optional sysData.attack.jdt.stat}}
+									</span>
+								</div>
+								<div class="field">
+									<span class="field__label">Bonus</span>
+									<span class="field__value">{{sysData.attack.jdt.bonus}}</span>
+								</div>
+							</div>
+						{{/if}}
+					</div>
+				{{/if}}
+
+				{{#if sysData.attack.jds.enabled}}
+					<div class="attack-config__section">
+						{{#if (eq sysData.ui.valueMode "base")}}
+							<div class="attack-config__section-title">
+								<button type="button" data-action="roll-basic-save">JdS</button>
+							</div>
+							<div class="attack-config__fields">
+								<div class="attack-config__row">
+									<label class="field">
+										<span class="field__label">DD</span>
+										<input
+											name="system.attack.jds.dd"
+											type="number"
+											value="{{sysData.attack.jds.dd}}"
+											data-dtype="Number"
+										/>
+									</label>
+									<label class="field">
+										<span class="field__label">Stat</span>
+										<select class="stat" name="system.attack.jds.stat">
+											{{selectOptions config.stats_optional selected=sysData.attack.jds.stat}}
+										</select>
+									</label>
+								</div>
+							</div>
+						{{else}}
+							<div class="attack-config__fields">
+								<div class="field">
+									<span class="field__label">DD</span>
+									<span class="field__value">{{sysData.attack.jds.dd}}</span>
+								</div>
+								<div class="field">
+									<span class="field__label">Stat</span>
+									<span class="field__value">
+										{{lookup config.stats_optional sysData.attack.jds.stat}}
+									</span>
+								</div>
+							</div>
+						{{/if}}
+					</div>
+				{{/if}}
+
+				{{#if sysData.attack.jdd.enabled}}
+					<div class="attack-config__section">
+						{{#if (eq sysData.ui.valueMode "base")}}
+							<div class="attack-config__section-title">
+								<button type="button" data-action="roll-basic-damage">JdD</button>
+							</div>
+							<div class="attack-config__fields">
+								<div class="attack-config__row">
+									<label class="field">
+										<span class="field__label">Formule</span>
+										<input
+											name="system.attack.jdd.formula1"
+											type="text"
+											value="{{sysData.attack.jdd.formula1}}"
+											placeholder="d6"
+										/>
+									</label>
+									<div class="field field--compact">
+										<select class="stat" name="system.attack.jdd.stat1">
+											{{selectOptions config.stats_optional selected=sysData.attack.jdd.stat1}}
+										</select>
+									</div>
+									<div class="field field--compact">
+										<select name="system.attack.jdd.damage_type1">
+											{{selectOptions config.all_damage_types selected=sysData.attack.jdd.damage_type1}}
+										</select>
+									</div>
+								</div>
+								<div class="attack-config__row">
+									<label class="field">
+										<span class="field__label">Formule bis</span>
+										<input
+											name="system.attack.jdd.formula2"
+											type="text"
+											value="{{sysData.attack.jdd.formula2}}"
+											placeholder="d6"
+										/>
+									</label>
+									<div class="field field--compact">
+										<select class="stat" name="system.attack.jdd.stat2">
+											{{selectOptions config.stats_optional selected=sysData.attack.jdd.stat2}}
+										</select>
+									</div>
+									<div class="field field--compact">
+										<select name="system.attack.jdd.damage_type2">
+											{{selectOptions config.all_damage_types selected=sysData.attack.jdd.damage_type2}}
+										</select>
+									</div>
+								</div>
+							</div>
+						{{else}}
+							<div class="attack-config__fields">
+								<div class="field">
+									<span class="field__label">Formule</span>
+									<span class="field__value">{{sysData.attack.jdd.formula1}}</span>
+									<span class="field__value">
+										{{lookup config.stats_optional sysData.attack.jdd.stat1}}
+									</span>
+									<span class="field__value">
+										{{lookup config.all_damage_types sysData.attack.jdd.damage_type1}}
+									</span>
+								</div>
+								<div class="field">
+									<span class="field__label">Formule bis</span>
+									<span class="field__value">{{sysData.attack.jdd.formula2}}</span>
+									<span class="field__value">
+										{{lookup config.stats_optional sysData.attack.jdd.stat2}}
+									</span>
+									<span class="field__value">
+										{{lookup config.all_damage_types sysData.attack.jdd.damage_type2}}
+									</span>
+								</div>
+							</div>
+						{{/if}}
+					</div>
+				{{/if}}
+			</div>
+		</div>
+	</div>
+
+	<div class="value-mode-toggle">
+		<label class="value-mode-toggle__label" for="value-mode-select">Mode d'affichage</label>
+		<select class="fixed" id="value-mode-select" name="system.ui.valueMode">
+			{{selectOptions config.valueMode selected=sysData.ui.valueMode}}
+		</select>
+		<span class="value-mode-help">
+			Valeurs : totaux · Base : bonus permanents · Alt : bonus temporaires
+		</span>
+	</div>
 </section>

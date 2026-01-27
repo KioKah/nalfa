@@ -2,8 +2,10 @@
 
 Objectif : lister (très en détail) tout ce qu’il reste à faire pour que le système Foundry `nalfa` soit « complet », en s’appuyant sur :
 
+- `AGENTS.md` (objectifs globaux)
 - Règles (source de vérité) : `Nalfa Règles 1.1.0.docx`
-- État actuel du repo (nombreux prototypes dans `_old/`)
+- `template.json` (Liste complète des données modélisées)
+- Et évidemment l'état actuel du repo (NOTE : nombreux prototypes dans `./_old/`)
 
 ## Versions
 
@@ -241,11 +243,12 @@ Créer un module `module/rolls/*.mjs` qui expose :
 
 Format de retour (recommandé)
 
-- Chaque fonction retourne un objet normalisé :
+- [ ] Chat cards ultra compactes (titre + formule)
+- [ ] Chaque fonction retourne un objet normalisé :
   - `type` (skill/attack/damage/save/concentration/initiative)
   - `roll` (instance de Roll + résultat)
-  - `flavor` (titre court)
-  - `breakdown` (détails : stat, compétence, DC, critique, etc.)
+  - `titleText` (ex: `JdT : 20` / `JdD : 12`)
+  - `formulaText` (ex: `d20 [14] + DEX (2)` / `d10m [5] + STR (5)`)
 
 QA manuel
 

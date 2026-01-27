@@ -1,0 +1,122 @@
+.nalfa-chat-card {
+	border: 1px solid var(--color-border-light-primary);
+	border-radius: 6px;
+	padding: 8px;
+	background: rgba(0, 0, 0, 0.05);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: center;
+	text-align: center;
+	cursor: pointer;
+
+	.nalfa-roll-header {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+	}
+
+	.nalfa-roll-title {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: center;
+		gap: 4px;
+	}
+
+	.nalfa-roll-label,
+	.nalfa-roll-name {
+		font-size: 16px;
+		font-weight: 600;
+	}
+
+	.nalfa-roll-separator {
+		font-size: 14px;
+		opacity: 0.7;
+	}
+
+	.nalfa-roll-type {
+		font-size: 14px;
+		font-weight: 500;
+		opacity: 0.7;
+	}
+
+	.nalfa-roll-total {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 6px;
+		line-height: 1;
+	}
+
+	.nalfa-roll-total-value {
+		font-size: 20pt;
+		font-weight: 700;
+	}
+
+	.nalfa-roll-details {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.nalfa-roll-action {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.nalfa-roll-formula {
+		font-size: 12px;
+		opacity: 0.7;
+		text-align: center;
+	}
+
+	.nalfa-roll-tags {
+		display: flex;
+		justify-content: center;
+		gap: 6px;
+	}
+
+	.nalfa-roll-tag {
+		display: inline-flex;
+		align-items: center;
+		font-size: 11px;
+		padding: 2px 6px;
+		border-radius: 999px;
+		background: var(--color-border-light-secondary);
+	}
+
+	.nalfa-roll-tag--crit,
+	.nalfa-roll-tag--success {
+		background: #2e7d32;
+		color: #fff;
+	}
+
+	.nalfa-roll-tag--fumble,
+	.nalfa-roll-tag--fail {
+		background: #b71c1c;
+		color: #fff;
+	}
+
+	.nalfa-roll-tag--crit,
+	.nalfa-roll-tag--fumble {
+		border-radius: 0;
+		padding: 2px 10px;
+		clip-path: polygon(0% 50%, 8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%);
+	}
+
+	.nalfa-roll-tag--type {
+		background: var(--color-border-light-primary);
+	}
+
+	&.is-open {
+		.nalfa-roll-details {
+			display: flex;
+		}
+	}
+}

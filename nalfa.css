@@ -185,6 +185,25 @@
 .nalfa.sheet .hidden {
   display: none;
 }
+.nalfa.sheet .grid {
+  display: grid;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet .grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.nalfa.sheet .grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.nalfa.sheet .grid--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.nalfa.sheet .grid--five {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.nalfa.sheet .grid--six {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
 .nalfa.sheet.actor-sheet {
   min-width: 132px;
   max-width: calc(var(--actor-width) + 2 * var(--nalfa-padding));
@@ -210,6 +229,142 @@
 }
 .nalfa.sheet.actor-sheet .sheet-section {
   margin-bottom: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .field--inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .field__label {
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .field__total {
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .field__meta {
+  font-size: 12px;
+  opacity: 0.75;
+}
+.nalfa.sheet.actor-sheet .field__separator {
+  opacity: 0.7;
+}
+.nalfa.sheet.actor-sheet .ko-indicator {
+  font-weight: 700;
+  color: #b71c1c;
+}
+.nalfa.sheet.actor-sheet .field__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .value-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--base,
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--alt {
+  display: none;
+}
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="base"] .value-mode--values,
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="base"] .value-mode--alt {
+  display: none;
+}
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="alt"] .value-mode--values,
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="alt"] .value-mode--base {
+  display: none;
+}
+.nalfa.sheet.actor-sheet .value-mode-help {
+  font-size: 12px;
+  opacity: 0.75;
+  flex-basis: 100%;
+  text-align: right;
+}
+.nalfa.sheet.actor-sheet .nalfa-roll-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .nalfa-roll-buttons button {
+  flex: 1 1 120px;
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .attack-config {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .attack-config__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .attack-config__name {
+  flex: 1 1 240px;
+}
+.nalfa.sheet.actor-sheet .attack-config__name-text {
+  font-weight: 600;
+  font-size: 16px;
+  flex: 1 1 240px;
+}
+.nalfa.sheet.actor-sheet .attack-config__toggles {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nalfa.sheet.actor-sheet .attack-config__toggles button {
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .attack-config__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .attack-config__sections {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .attack-config__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--nalfa-padding);
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .attack-config__section-title {
+  display: flex;
+  justify-content: center;
+}
+.nalfa.sheet.actor-sheet .attack-config__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nalfa.sheet.actor-sheet .attack-config__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .field__value {
+  font-weight: 600;
 }
 .nalfa.sheet.actor-sheet .skills-by-stat {
   display: grid;
@@ -265,9 +420,13 @@
   padding: initial;
   text-align: center;
   font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border-color, #ccc);
   border-radius: 4px;
   padding: 4px 8px;
+  cursor: pointer;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-dropdown,
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-dropdown > div {
@@ -316,9 +475,13 @@
   padding: initial;
   text-align: center;
   font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border-color, #ccc);
   border-radius: 4px;
   padding: 2px 6px;
+  cursor: pointer;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-str {
   border-color: var(--nalfa-color-stat-str);
@@ -351,6 +514,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
+  flex-wrap: wrap;
   background: linear-gradient(0deg, var(--color-bg) 60%, color-mix(in srgb, var(--color-bg), transparent 100%));
 }
 .nalfa.sheet.actor-sheet .value-mode-toggle__label {
@@ -642,4 +806,107 @@ body {
   animation-duration: 0.6s;
   animation-iteration-count: infinite;
   animation-timing-function: steps(10);
+}
+.nalfa-chat-card {
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+.nalfa-chat-card .nalfa-roll-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.nalfa-chat-card .nalfa-roll-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+.nalfa-chat-card .nalfa-roll-label,
+.nalfa-chat-card .nalfa-roll-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+.nalfa-chat-card .nalfa-roll-separator {
+  font-size: 14px;
+  opacity: 0.7;
+}
+.nalfa-chat-card .nalfa-roll-type {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+.nalfa-chat-card .nalfa-roll-total {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1;
+}
+.nalfa-chat-card .nalfa-roll-total-value {
+  font-size: 20pt;
+  font-weight: 700;
+}
+.nalfa-chat-card .nalfa-roll-details {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.nalfa-chat-card .nalfa-roll-action {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.nalfa-chat-card .nalfa-roll-formula {
+  font-size: 12px;
+  opacity: 0.7;
+  text-align: center;
+}
+.nalfa-chat-card .nalfa-roll-tags {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.nalfa-chat-card .nalfa-roll-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--color-border-light-secondary);
+}
+.nalfa-chat-card .nalfa-roll-tag--crit,
+.nalfa-chat-card .nalfa-roll-tag--success {
+  background: #2e7d32;
+  color: #fff;
+}
+.nalfa-chat-card .nalfa-roll-tag--fumble,
+.nalfa-chat-card .nalfa-roll-tag--fail {
+  background: #b71c1c;
+  color: #fff;
+}
+.nalfa-chat-card .nalfa-roll-tag--crit,
+.nalfa-chat-card .nalfa-roll-tag--fumble {
+  border-radius: 0;
+  padding: 2px 10px;
+  clip-path: polygon(0% 50%, 8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%);
+}
+.nalfa-chat-card .nalfa-roll-tag--type {
+  background: var(--color-border-light-primary);
+}
+.nalfa-chat-card.is-open .nalfa-roll-details {
+  display: flex;
 }

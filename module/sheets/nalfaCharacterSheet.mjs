@@ -1,3 +1,11 @@
+import {
+	rollAttack,
+	rollDamageSet,
+	rollSavePrompt,
+	rollSkill,
+	rollStatSave,
+} from "../rolls/rolls.mjs";
+
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 
@@ -30,6 +38,17 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		sheet: {
 			template: "systems/nalfa/templates/sheets/character/body.hbs",
 			classes: ["nalfa-sheet", "character-sheet", "sheet-body"],
+		},
+	};
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: "character", label: "Personnage" },
+				{ id: "resources", label: "Ressources" },
+				{ id: "combat", label: "Combat" },
+			],
+			initial: "character",
 		},
 	};
 
@@ -79,7 +98,6 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			tanky: 11,
 		};
 		const profile = sysData.profile ?? "none";
-		console.log("🚀 ~ NalfaCharacterSheet ~ _prepareContext ~ sysData:\n", sysData);
 		const profileDefense = defenseTable[profile] ?? 0;
 		defenseObj.value = profileDefense + withBaseAlt(defenseObj);
 
@@ -119,6 +137,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		const profileHealth = profileArray[charLevel] ?? 1;
 		healthObj.profile = profileHealth;
 		healthObj.max = profileHealth + withBaseAlt(healthObj);
+		const isKO = Number(healthObj.value ?? 0) <= 0;
 
 		// Spell charges: table[chargeType][charLevel]
 		const maxChargeTable = {
@@ -143,6 +162,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 
 		const uiObj = sysData.ui ?? {};
 		uiObj.valueMode ??= "values";
+		const tabs = this._prepareTabs("primary");
 
 		return {
 			isOwner: this.actor.isOwner,
@@ -150,7 +170,65 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			actor: baseData.document,
 			sysData: sysData,
 			config: CONFIG.nalfa,
+			tabs,
+			isKO,
 		};
+	}
+
+	async _onRender(context, options) {
+		await super._onRender(context, options);
+		if (this.tabGroups) {
+			for (const [group, active] of Object.entries(this.tabGroups)) {
+				if (active) this.changeTab(active, group);
+			}
+		}
+		this.element
+			?.querySelector("[data-action='roll-basic-attack']")
+			?.addEventListener("click", this._onRollBasicAttack.bind(this));
+		this.element
+			?.querySelector("[data-action='roll-basic-damage']")
+			?.addEventListener("click", this._onRollBasicDamage.bind(this));
+		this.element
+			?.querySelector("[data-action='roll-basic-save']")
+			?.addEventListener("click", this._onRollBasicSave.bind(this));
+		this.element
+			?.querySelectorAll("[data-action='roll-stat-save']")
+			.forEach((element) =>
+				element.addEventListener("click", this._onRollStatSave.bind(this))
+			);
+		this.element
+			?.querySelectorAll("[data-action='roll-skill']")
+			.forEach((element) =>
+				element.addEventListener("click", this._onRollSkill.bind(this))
+			);
+	}
+
+	async _onRollBasicAttack(event) {
+		event.preventDefault();
+		return rollAttack(this.actor, "weapon");
+	}
+
+	async _onRollBasicDamage(event) {
+		event.preventDefault();
+		return rollDamageSet(this.actor);
+	}
+	async _onRollBasicSave(event) {
+		event.preventDefault();
+		return rollSavePrompt(this.actor);
+	}
+
+	async _onRollStatSave(event) {
+		event.preventDefault();
+		const statKey = event.currentTarget?.dataset?.stat;
+		if (!statKey) return null;
+		return rollStatSave(this.actor, statKey);
+	}
+
+	async _onRollSkill(event) {
+		event.preventDefault();
+		const skillKey = event.currentTarget?.dataset?.skill;
+		if (!skillKey) return null;
+		return rollSkill(this.actor, skillKey);
 	}
 
 	// activateListeners(html) {

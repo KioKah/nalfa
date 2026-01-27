@@ -1,0 +1,33 @@
+<div class="nalfa-chat-card nalfa-roll-card">
+	<header class="nalfa-roll-header">
+		<h3 class="nalfa-roll-title">
+			<span class="nalfa-roll-label">{{titleLabel}}</span>
+			{{#if titleName}}
+				<span class="nalfa-roll-separator">·</span>
+				<span class="nalfa-roll-name">{{titleName}}</span>
+			{{/if}}
+		</h3>
+		<div class="nalfa-roll-tags">
+			{{#if hasTarget}}
+				{{#if isSuccess}}
+					<span class="nalfa-roll-tag nalfa-roll-tag--success">Réussite</span>
+				{{/if}}
+				{{#unless isSuccess}}
+					<span class="nalfa-roll-tag nalfa-roll-tag--fail">Échec</span>
+				{{/unless}}
+			{{/if}}
+			{{#if isCrit}}
+				<span class="nalfa-roll-tag nalfa-roll-tag--crit">Réussite Critique !</span>
+			{{/if}}
+			{{#if isFumble}}
+				<span class="nalfa-roll-tag nalfa-roll-tag--fumble">Échec Critique !</span>
+			{{/if}}
+		</div>
+	</header>
+	<div class="nalfa-roll-total">
+		<span class="nalfa-roll-total-value">{{titleValue}}</span>
+	</div>
+	<div class="nalfa-roll-details">
+		<span class="nalfa-roll-formula">{{formulaText}}</span>
+	</div>
+</div>

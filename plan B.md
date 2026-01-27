@@ -242,11 +242,12 @@ Créer un module `module/rolls/*.mjs` qui expose :
 
 Format de retour (recommandé)
 
-- Chaque fonction retourne un objet normalisé :
+- [ ] Chat cards ultra compactes (titre + formule)
+- [ ] Chaque fonction retourne un objet normalisé :
   - `type` (skill/attack/damage/save/concentration/initiative)
   - `roll` (instance de Roll + résultat)
-  - `flavor` (titre court)
-  - `breakdown` (détails : stat, compétence, DC, critique, etc.)
+  - `titleText` (ex: `JdT : 20` / `JdD : 12`)
+  - `formulaText` (ex: `d20 [14] + DEX (2)` / `d10m [5] + STR (5)`)
 
 QA manuel
 
