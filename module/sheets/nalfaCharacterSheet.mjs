@@ -1,6 +1,7 @@
 import {
 	rollAttack,
 	rollDamageSet,
+	rollConcentration,
 	rollSavePrompt,
 	rollSkill,
 	rollStatSave,
@@ -87,6 +88,14 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		const skillsObj = sysData.attributes.skills ?? {};
 		for (const [key, skillObj] of Object.entries(skillsObj)) {
 			skillObj.value = statBased(skillObj);
+		}
+
+		// Roll stats (arme/incant)
+		const rollStatsObj = sysData.roll_stats ?? {};
+		for (const rollStat of Object.values(rollStatsObj)) {
+			const statKey = rollStat.stat ?? rollStat.default_stat ?? "none";
+			const statValue = statValues[statKey] ?? 0;
+			rollStat.value = statValue + withBaseAlt(rollStat);
 		}
 
 		// Defense: table[profile]
@@ -192,6 +201,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			?.querySelector("[data-action='roll-basic-save']")
 			?.addEventListener("click", this._onRollBasicSave.bind(this));
 		this.element
+			?.querySelector("[data-action='roll-concentration']")
+			?.addEventListener("click", this._onRollConcentration.bind(this));
+		this.element
 			?.querySelectorAll("[data-action='roll-stat-save']")
 			.forEach((element) =>
 				element.addEventListener("click", this._onRollStatSave.bind(this))
@@ -215,6 +227,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	async _onRollBasicSave(event) {
 		event.preventDefault();
 		return rollSavePrompt(this.actor);
+	}
+
+	async _onRollConcentration(event) {
+		event.preventDefault();
+		return rollConcentration(this.actor);
 	}
 
 	async _onRollStatSave(event) {

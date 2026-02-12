@@ -5,50 +5,53 @@
 			{{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config isKO=isKO}}
 		</div>
 
-		<div class="sheet-section">
-			<h2>Caractéristiques</h2>
-			<div class="grid grid--six">
-				{{#each sysData.stats}}
-					<div class="field field--inline">
-						<span class="field__label">{{lookup ../config.stats @key}}</span>
-						<span class="field__total">{{value}}</span>
-						<input
-							class="value-mode value-mode--base"
-							name="system.stats.{{@key}}.base"
-							type="number"
-							value="{{base}}"
-							data-dtype="Number"
-						/>
-						<input
-							class="value-mode value-mode--alt"
-							name="system.stats.{{@key}}.alt"
-							type="number"
-							value="{{alt}}"
-							data-dtype="Number"
-						/>
+	<div class="sheet-section">
+		<h2>Stats &amp; Compétences</h2>
+		<div class="skills-by-stat">
+			{{#each sysData.stats as |statObj statKey|}}
+				<div class="skill-by-stat color-{{statKey}}">
+					<div class="stat">
+						<div class="stat-info">
+							<div class="stat-left">
+								<span class="stat-name">{{lookup ../config.stats statKey}}</span>
+								<span class="stat-value">{{statObj.value}}</span>
+							</div>
+							<div class="stat-right">
+								<span class="stat-save">Sauv</span>
+								<span
+									class="stat-save-value border-color-{{statKey}}"
+									data-action="roll-stat-save"
+									data-stat="{{statKey}}"
+									role="button"
+								>
+									{{statObj.save.value}}
+								</span>
+							</div>
+						</div>
+						{{#if (eq ../sysData.ui.valueMode "base")}}
+							<div class="stat-base">
+								<div class="stat-base__left">
+									<span class="stat-base__label">Base :</span>
+									<input
+										name="system.stats.{{statKey}}.base"
+										type="number"
+										value="{{statObj.base}}"
+										data-dtype="Number"
+									/>
+								</div>
+								<div class="stat-base__right">
+									<span class="stat-base__label">Sauv</span>
+									<input
+										name="system.stats.{{statKey}}.save.base"
+										type="number"
+										value="{{statObj.save.base}}"
+										data-dtype="Number"
+									/>
+								</div>
+							</div>
+						{{/if}}
+						<div class="stat-separator"></div>
 					</div>
-				{{/each}}
-			</div>
-		</div>
-
-		<div class="sheet-section">
-			<h2>Compétences</h2>
-			<div class="skills-by-stat">
-				{{#each sysData.stats as |statObj statKey|}}
-					<div class="skill-by-stat color-{{statKey}}">
-						<div class="stat">
-					<div class="stat-info">
-						<span class="stat-name">{{lookup ../config.stats statKey}}</span>
-						<span
-							class="stat-value"
-							data-action="roll-stat-save"
-							data-stat="{{statKey}}"
-							role="button"
-						>
-							{{statObj.value}}
-						</span>
-					</div>
-				</div>
 						{{#each ../sysData.attributes.skills as |skillObj skillKey|}}
 							{{#if (eq skillObj.stat statKey)}}
 								<div class="skill {{skillObj.default_stat}}">
@@ -94,7 +97,7 @@
 			<div class="grid grid--four">
 				{{#each sysData.spell_charges}}
 					<div class="field field--inline">
-						<span class="field__label">Sorts {{@key}}</span>
+						<span class="field__label">{{@key}}</span>
 						<input
 							name="system.spell_charges.{{@key}}.value"
 							type="number"
@@ -155,6 +158,74 @@
 	</div>
 
 	<div class="tab {{tabs.combat.cssClass}}" data-group="primary" data-tab="combat">
+		<div class="sheet-section roll-stats">
+			{{#if (eq sysData.ui.valueMode "base")}}
+				<div class="roll-stats__row">
+					<label class="field">
+						<span class="field__label">Stat Arme</span>
+						<select class="stat" name="system.roll_stats.arme.default_stat">
+							{{selectOptions config.stats selected=sysData.roll_stats.arme.default_stat}}
+						</select>
+						<input
+							name="system.roll_stats.arme.base"
+							type="number"
+							value="{{sysData.roll_stats.arme.base}}"
+							data-dtype="Number"
+						/>
+					</label>
+					<label class="field">
+						<span class="field__label">Stat Incant</span>
+						<select class="stat" name="system.roll_stats.incant.stat">
+							{{selectOptions config.stats_optional selected=sysData.roll_stats.incant.stat}}
+						</select>
+						<input
+							name="system.roll_stats.incant.base"
+							type="number"
+							value="{{sysData.roll_stats.incant.base}}"
+							data-dtype="Number"
+						/>
+					</label>
+				</div>
+			{{else if (eq sysData.ui.valueMode "alt")}}
+				<div class="roll-stats__row">
+					<label class="field">
+						<span class="field__label">Stat Arme</span>
+						<select class="stat" name="system.roll_stats.arme.default_stat">
+							{{selectOptions config.stats selected=sysData.roll_stats.arme.default_stat}}
+						</select>
+						<input
+							name="system.roll_stats.arme.alt"
+							type="number"
+							value="{{sysData.roll_stats.arme.alt}}"
+							data-dtype="Number"
+						/>
+					</label>
+					<label class="field">
+						<span class="field__label">Stat Incant</span>
+						<select class="stat" name="system.roll_stats.incant.stat">
+							{{selectOptions config.stats_optional selected=sysData.roll_stats.incant.stat}}
+						</select>
+						<input
+							name="system.roll_stats.incant.alt"
+							type="number"
+							value="{{sysData.roll_stats.incant.alt}}"
+							data-dtype="Number"
+						/>
+					</label>
+				</div>
+			{{else}}
+				<div class="roll-stats__row">
+					<div class="field">
+						<span class="field__label">Stat Arme</span>
+						<span class="field__value">{{sysData.roll_stats.arme.value}}</span>
+					</div>
+					<div class="field">
+						<span class="field__label">Stat Incant</span>
+						<span class="field__value">{{sysData.roll_stats.incant.value}}</span>
+					</div>
+				</div>
+			{{/if}}
+		</div>
 		<div class="sheet-section attack-config">
 			<div class="attack-config__header">
 				{{#if (eq sysData.ui.valueMode "base")}}
@@ -167,6 +238,14 @@
 							value="{{sysData.attack.name}}"
 							placeholder="Attaque"
 						/>
+					</label>
+					<label class="field attack-config__mode">
+						<select
+							name="system.attack.mode"
+							data-action="attack-mode"
+						>
+							{{selectOptions config.attack_mode selected=sysData.attack.mode}}
+						</select>
 					</label>
 					<div class="attack-config__toggles">
 						<label class="attack-config__toggle">
@@ -193,6 +272,14 @@
 							/>
 							<span>JdD?</span>
 						</label>
+						<label class="attack-config__toggle">
+							<input
+								type="checkbox"
+								name="system.attack.concentration.enabled"
+								{{checked sysData.attack.concentration.enabled}}
+							/>
+							<span>Concentr?</span>
+						</label>
 					</div>
 				{{else}}
 					<div class="attack-config__name-text">
@@ -201,6 +288,9 @@
 						{{else}}
 							Attaque
 						{{/if}}
+						<span class="attack-config__mode-text">
+							({{lookup config.attack_mode sysData.attack.mode}})
+						</span>
 					</div>
 					<div class="attack-config__toggles">
 						{{#if sysData.attack.jdt.enabled}}
@@ -211,6 +301,9 @@
 						{{/if}}
 						{{#if sysData.attack.jdd.enabled}}
 							<button type="button" data-action="roll-basic-damage">JdD</button>
+						{{/if}}
+						{{#if sysData.attack.concentration.enabled}}
+							<button type="button" data-action="roll-concentration">Concentr</button>
 						{{/if}}
 					</div>
 				{{/if}}
@@ -226,8 +319,12 @@
 							<div class="attack-config__fields">
 								<label class="field">
 									<span class="field__label">Stat</span>
-									<select class="stat" name="system.attack.jdt.stat">
-										{{selectOptions config.stats_optional selected=sysData.attack.jdt.stat}}
+									<select class="stat attack-stat-select" name="system.attack.jdt.stat">
+										{{#if (eq sysData.attack.mode "incant")}}
+											{{selectOptions config.stats_optional_incant selected=sysData.attack.jdt.stat}}
+										{{else}}
+											{{selectOptions config.stats_optional_arme selected=sysData.attack.jdt.stat}}
+										{{/if}}
 									</select>
 								</label>
 								<label class="field">
@@ -245,7 +342,11 @@
 								<div class="field">
 									<span class="field__label">Stat</span>
 									<span class="field__value">
-										{{lookup config.stats_optional sysData.attack.jdt.stat}}
+										{{#if (eq sysData.attack.mode "incant")}}
+											{{lookup config.stats_optional_incant sysData.attack.jdt.stat}}
+										{{else}}
+											{{lookup config.stats_optional_arme sysData.attack.jdt.stat}}
+										{{/if}}
 									</span>
 								</div>
 								<div class="field">
@@ -274,8 +375,7 @@
 											data-dtype="Number"
 										/>
 									</label>
-									<label class="field">
-										<span class="field__label">Stat</span>
+									<label class="field field--compact">
 										<select class="stat" name="system.attack.jds.stat">
 											{{selectOptions config.stats_optional selected=sysData.attack.jds.stat}}
 										</select>
@@ -289,7 +389,6 @@
 									<span class="field__value">{{sysData.attack.jds.dd}}</span>
 								</div>
 								<div class="field">
-									<span class="field__label">Stat</span>
 									<span class="field__value">
 										{{lookup config.stats_optional sysData.attack.jds.stat}}
 									</span>
@@ -317,8 +416,12 @@
 										/>
 									</label>
 									<div class="field field--compact">
-										<select class="stat" name="system.attack.jdd.stat1">
-											{{selectOptions config.stats_optional selected=sysData.attack.jdd.stat1}}
+									<select class="stat attack-stat-select" name="system.attack.jdd.stat1">
+											{{#if (eq sysData.attack.mode "incant")}}
+												{{selectOptions config.stats_optional_incant selected=sysData.attack.jdd.stat1}}
+											{{else}}
+												{{selectOptions config.stats_optional_arme selected=sysData.attack.jdd.stat1}}
+											{{/if}}
 										</select>
 									</div>
 									<div class="field field--compact">
@@ -355,7 +458,11 @@
 									<span class="field__label">Formule</span>
 									<span class="field__value">{{sysData.attack.jdd.formula1}}</span>
 									<span class="field__value">
-										{{lookup config.stats_optional sysData.attack.jdd.stat1}}
+										{{#if (eq sysData.attack.mode "incant")}}
+											{{lookup config.stats_optional_incant sysData.attack.jdd.stat1}}
+										{{else}}
+											{{lookup config.stats_optional_arme sysData.attack.jdd.stat1}}
+										{{/if}}
 									</span>
 									<span class="field__value">
 										{{lookup config.all_damage_types sysData.attack.jdd.damage_type1}}
@@ -375,6 +482,46 @@
 						{{/if}}
 					</div>
 				{{/if}}
+
+				{{#if sysData.attack.concentration.enabled}}
+					<div class="attack-config__section">
+						{{#if (eq sysData.ui.valueMode "base")}}
+							<div class="attack-config__section-title">
+								<button type="button" data-action="roll-concentration">Concentr</button>
+							</div>
+							<div class="attack-config__fields">
+								<div class="attack-config__row">
+									<label class="field">
+										<span class="field__label">DD</span>
+										<input
+											name="system.attack.concentration.dd"
+											type="number"
+											value="{{sysData.attack.concentration.dd}}"
+											data-dtype="Number"
+										/>
+									</label>
+									<label class="field field--compact">
+										<select class="stat" name="system.attack.concentration.stat">
+											{{selectOptions config.stats_optional selected=sysData.attack.concentration.stat}}
+										</select>
+									</label>
+								</div>
+							</div>
+						{{else}}
+							<div class="attack-config__fields">
+								<div class="field">
+									<span class="field__label">DD</span>
+									<span class="field__value">{{sysData.attack.concentration.dd}}</span>
+								</div>
+								<div class="field">
+									<span class="field__value">
+										{{lookup config.stats_optional sysData.attack.concentration.stat}}
+									</span>
+								</div>
+							</div>
+						{{/if}}
+					</div>
+				{{/if}}
 			</div>
 		</div>
 	</div>
@@ -384,8 +531,5 @@
 		<select class="fixed" id="value-mode-select" name="system.ui.valueMode">
 			{{selectOptions config.valueMode selected=sysData.ui.valueMode}}
 		</select>
-		<span class="value-mode-help">
-			Valeurs : totaux · Base : bonus permanents · Alt : bonus temporaires
-		</span>
 	</div>
 </section>

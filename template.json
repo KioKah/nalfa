@@ -13,7 +13,8 @@
 						"save": {
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"value": null,
+							"auto_fail": false
 						}
 					},
 					"dex": {
@@ -23,7 +24,8 @@
 						"save": {
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"value": null,
+							"auto_fail": false
 						}
 					},
 					"int": {
@@ -33,7 +35,8 @@
 						"save": {
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"value": null,
+							"auto_fail": false
 						}
 					},
 					"wis": {
@@ -43,7 +46,8 @@
 						"save": {
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"value": null,
+							"auto_fail": false
 						}
 					},
 					"cha": {
@@ -53,7 +57,8 @@
 						"save": {
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"value": null,
+							"auto_fail": false
 						}
 					},
 					"con": {
@@ -63,17 +68,32 @@
 						"save": {
 							"base": 0,
 							"alt": 0,
-							"value": null
+							"value": null,
+							"auto_fail": false
 						}
+					}
+				},
+				"roll_stats": {
+					"arme": {
+						"value": null,
+						"base": 0,
+						"alt": 0,
+						"default_stat": "str"
+					},
+					"incant": {
+						"value": null,
+						"base": 0,
+						"alt": 0,
+						"stat": "none"
 					}
 				},
 				"attributes": {
 					"hp": {
 						"value": 1,
+						"abso": 0,
 						"max": null,
 						"base": 0,
-						"alt": 0,
-						"abso": 0
+						"alt": 0
 					},
 					"defense": {
 						"value": null,
@@ -286,26 +306,6 @@
 							"value": 0,
 							"immune": false
 						}
-					},
-					"bonuses": {
-						"weapon": {
-							"value": null,
-							"base": 0,
-							"alt": 0,
-							"stat": "str"
-						},
-						"casting": {
-							"value": null,
-							"base": 0,
-							"alt": 0,
-							"stat": "int"
-						},
-						"concentration": {
-							"value": null,
-							"base": 0,
-							"alt": 0,
-							"stat": "con"
-						}
 					}
 				},
 				"spell_charges": {
@@ -326,13 +326,13 @@
 						"max": null
 					}
 				},
-			"actions": {
-				"main": {
-					"value": 0,
-					"max": null,
-					"base": 1,
-					"alt": 0
-				},
+				"actions": {
+					"main": {
+						"value": 0,
+						"max": null,
+						"base": 1,
+						"alt": 0
+					},
 					"bonus": {
 						"value": 0,
 						"max": null,
@@ -351,42 +351,54 @@
 						"base": 1,
 						"alt": 0
 					},
-				"movement": {
-					"value": 0,
-					"max": null,
-					"base": 6,
-					"alt": 0,
-					"alt_mult": 1
-				}
-			},
-			"attack": {
-				"name": "",
-				"jdt": {
-					"enabled": false,
-					"stat": "",
-					"bonus": 0
+					"movement": {
+						"value": 0,
+						"max": null,
+						"base": 6,
+						"alt": 0,
+						"alt_mult": 1
+					}
 				},
-				"jds": {
-					"enabled": false,
-					"dd": 0,
-					"stat": ""
+				"attack": {
+					"name": "",
+					"mode": "arme",
+					"weapon_attributes": {
+						"use_dex": false,
+						"todo": "other ones"
+					},
+					"todo": {
+						"action": "which one(s)",
+						"cost": "X per short/long rest / spell charges",
+						"cooldown": "before next cast",
+						"target_range": "range",
+						"targets": "what kind how many",
+						"area": "if shape target is not a single point"
+					},
+					"jdt": {
+						"enabled": false,
+						"stat": "arme",
+						"bonus": 0
+					},
+					"jds": {
+						"enabled": false,
+						"dd": 0,
+						"stat": ""
+					},
+					"jdd": {
+						"enabled": false,
+						"formula1": "",
+						"stat1": "arme",
+						"damage_type1": "",
+						"formula2": "",
+						"stat2": "",
+						"damage_type2": ""
+					},
+					"concentration": {
+						"enabled": false,
+						"stat": "",
+						"dd": 0
+					}
 				},
-				"jdd": {
-					"enabled": false,
-					"formula1": "",
-					"stat1": "",
-					"damage_type1": "",
-					"formula2": "",
-					"stat2": "",
-					"damage_type2": ""
-				}
-			},
-			"weapon": {
-				"name": "",
-				"dA": "",
-				"stat": "",
-				"damage_type": ""
-			},
 				"ui": {
 					"valueMode": "values"
 				}

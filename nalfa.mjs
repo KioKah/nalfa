@@ -3,6 +3,7 @@ import { nalfa } from "./module/config.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
+import NalfaActor from "./module/sheets/nalfaActor.mjs";
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
 
@@ -35,8 +36,10 @@ async function preloadHandlebarsTemplates() {
 Hooks.once("init", function () {
 	console.log("nalfa | Initialising nalfa System");
 	// CONFIG.debug.hooks = true;
-
+	CONFIG.Combat.initiative.formula = "1d20+@attributes.initiative.value";
 	CONFIG.nalfa = nalfa;
+
+	// CONFIG.Actor.documentClass = NalfaActor; TODO Re-add when NalfaActor Done
 	CONFIG.Item.documentClass = NalfaItem;
 	game.nalfa = {
 		...(game.nalfa ?? {}),
@@ -47,7 +50,7 @@ Hooks.once("init", function () {
 	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
 		foundry.documents.Actor,
 		"core",
-		foundry.applications.sheets.ActorSheetV2
+		foundry.applications.sheets.ActorSheetV2,
 	);
 	foundry.applications.apps.DocumentSheetConfig.registerSheet(
 		foundry.documents.Actor,
@@ -55,13 +58,13 @@ Hooks.once("init", function () {
 		NalfaCharacterSheet,
 		{
 			makeDefault: true,
-		}
+		},
 	);
 
 	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
 		foundry.documents.Item,
 		"core",
-		foundry.applications.sheets.ItemSheetV2
+		foundry.applications.sheets.ItemSheetV2,
 	);
 	foundry.applications.apps.DocumentSheetConfig.registerSheet(
 		foundry.documents.Item,
@@ -69,7 +72,7 @@ Hooks.once("init", function () {
 		NalfaItemSheet,
 		{
 			makeDefault: true,
-		}
+		},
 	);
 
 	preloadHandlebarsTemplates();
@@ -163,10 +166,7 @@ Hooks.on("renderChatMessageHTML", (message, html) => {
 			const statKey = target?.dataset?.stat ?? "";
 			const dc = Number(target?.dataset?.dc ?? 0);
 			const titleName = target?.dataset?.name ?? "";
-			const actor =
-				canvas?.tokens?.controlled?.[0]?.actor ??
-				game.user?.character ??
-				null;
+			const actor = canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character ?? null;
 			if (!actor) {
 				ui.notifications.warn("Veuillez sélectionner une cible.");
 				return;

@@ -60,6 +60,10 @@ const evaluateRoll = async (formula, data) => {
 	return roll;
 };
 
+const getAttackName = (attack, weapon) => {
+	return (attack?.name ?? weapon?.name ?? "").trim() || "Attaque";
+};
+
 const postRollMessage = async (actor, templateKey, data) => {
 	const templatePath = CHAT_TEMPLATES[templateKey];
 	if (!templatePath) return null;
@@ -68,7 +72,6 @@ const postRollMessage = async (actor, templateKey, data) => {
 		templatePath,
 		data
 	);
-	console.log(ChatMessage.getSpeaker({ actor }));
 	return ChatMessage.create({
 		user: game.user.id,
 		speaker: ChatMessage.getSpeaker({ actor }),
@@ -76,6 +79,13 @@ const postRollMessage = async (actor, templateKey, data) => {
 		rolls: [data.roll],
 		sound: CONFIG.sounds.dice,
 	});
+};
+
+const rollD20WithModifier = async (modifier) => {
+	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
+	const dieResult = getD20Result(roll);
+	const { isCrit, isFumble } = getCritState(dieResult);
+	return { roll, dieResult, isCrit, isFumble };
 };
 
 export const normalizeDamageFormula = (formula = "") => {
@@ -103,9 +113,9 @@ export const rollSkill = async (actor, skillKey) => {
 	const statKey = skillObj.stat ?? "";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const modifier = getStatBasedValue(actor, skillObj);
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
+	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(
+		modifier
+	);
 	const titleLabel = "JdC";
 	const statLabel = hasStat(statKey) ? ` (${statName})` : "";
 	const titleName = `${skillName}${statLabel}`;
@@ -113,11 +123,8 @@ export const rollSkill = async (actor, skillKey) => {
 	const skillTotal = Number(skillObj.value ?? modifier);
 	const statTotal = hasStat(statKey) ? getStatTotal(actor, statKey) : 0;
 	const baseSkill = hasStat(statKey) ? skillTotal - statTotal : skillTotal;
-	const statDetail = hasStat(statKey)
-		? ` + ${statName} (${statTotal})`
-		: "";
-	const formulaText =
-		`d20 [${dieResult ?? "-"}] + ${skillName} (${baseSkill}${statDetail})`;
+	const statDetail = hasStat(statKey) ? ` + ${statName} (${statTotal})` : "";
+	const formulaText = `d20 [${dieResult ?? "-"}] + ${skillName} (${baseSkill}${statDetail})`;
 
 	const rollData = {
 		type: "skill",
@@ -146,19 +153,36 @@ export const rollAttack = async (actor, mode = "weapon") => {
 	if (!actor) return null;
 	const attack = actor.system?.attack ?? {};
 	const jdt = attack.jdt ?? {};
-	const bonusKey = mode === "casting" ? "casting" : "weapon";
-	const bonusObj = actor.system?.attributes?.bonuses?.[bonusKey] ?? {};
-	const statKey = jdt.stat ?? bonusObj.stat ?? "";
+	const rollStats = actor.system?.roll_stats ?? {};
+	const armeStats = rollStats.arme ?? {};
+	const incantStats = rollStats.incant ?? {};
+	const armeStatKey = armeStats.default_stat ?? "";
+	const incantStatKey = incantStats.stat ?? "";
+	const statKey =
+		mode === "casting"
+			? incantStatKey
+			: jdt.stat ?? armeStatKey ?? "";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const statValue = statKey ? getStatTotal(actor, statKey) : 0;
-	const bonusValue = Number(jdt.bonus ?? 0);
+	const armeValue = Number(
+		armeStats.value ??
+			((armeStatKey ? getStatTotal(actor, armeStatKey) : 0) +
+				(armeStats.base ?? 0) +
+				(armeStats.alt ?? 0))
+	);
+	const incantValue = Number(
+		incantStats.value ??
+			((incantStatKey ? getStatTotal(actor, incantStatKey) : 0) +
+				(incantStats.base ?? 0) +
+				(incantStats.alt ?? 0))
+	);
+	const bonusValue = mode === "casting" ? incantValue : armeValue;
 	const modifier = statValue + bonusValue;
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
+	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(
+		modifier
+	);
 	const weapon = actor.system?.weapon ?? {};
-	const attackName =
-		(attack.name ?? weapon.name ?? "").trim() || "Attaque";
+	const attackName = getAttackName(attack, weapon);
 	const titleLabel = "JdT";
 	const titleName = attackName;
 	const titleValue = roll.total;
@@ -201,7 +225,7 @@ export const rollDamage = async (actor, config = {}) => {
 	const damageTypeLabel = getLabel(
 		CONFIG.nalfa.all_damage_types,
 		damageTypeKey,
-		damageTypeKey
+		damageTypeKey,
 	);
 	const roll = await evaluateRoll(`${normalizedFormula} + @stat`, {
 		stat: statValue,
@@ -210,13 +234,10 @@ export const rollDamage = async (actor, config = {}) => {
 	const attack = actor.system?.attack ?? {};
 	const weapon = actor.system?.weapon ?? {};
 	const titleName =
-		(config.titleName ?? attack.name ?? weapon.name ?? "").trim() ||
-		"Attaque";
+		(config.titleName ?? getAttackName(attack, weapon)).trim() || "Attaque";
 	const titleLabel = config.titleLabel ?? "JdD";
 	const titleValue = roll.total;
-	const damageSuffix = hasStat(statKey)
-		? ` + ${statName} (${statValue})`
-		: "";
+	const damageSuffix = hasStat(statKey) ? ` + ${statName} (${statValue})` : "";
 	const formulaText = `${shortFormula} [${dieResult ?? "-"}]${damageSuffix}`;
 
 	await postRollMessage(actor, "damage", {
@@ -240,7 +261,7 @@ export const rollDamageSet = async (actor) => {
 	if (!actor) return null;
 	const attack = actor.system?.attack ?? {};
 	const jdd = attack.jdd ?? {};
-	const attackName = (attack.name ?? "").trim() || "Attaque";
+	const attackName = getAttackName(attack);
 	const entries = [
 		{
 			formula: jdd.formula1,
@@ -267,51 +288,6 @@ export const rollDamageSet = async (actor) => {
 	return results.length ? results : null;
 };
 
-export const rollSaveAttack = async (actor) => {
-	if (!actor) return null;
-	const attack = actor.system?.attack ?? {};
-	const jds = attack.jds ?? {};
-	const statKey = jds.stat ?? "";
-	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
-	const statObj = actor.system?.stats?.[statKey] ?? {};
-	const modifier = getStatBasedValue(actor, statObj.save ?? {}, statKey);
-	const targetDc = Number(jds.dd ?? 0);
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
-	const isSuccess = Number(roll.total ?? 0) >= targetDc;
-	const attackName = (attack.name ?? "").trim() || "Attaque";
-	const titleLabel = "JdS";
-	const titleName = attackName;
-	const titleValue = roll.total;
-	const saveSuffix = formatStatSuffix(statKey, statName, modifier, modifier);
-	const formulaText =
-		`d20 [${dieResult ?? "-"}]${saveSuffix} vs DD ${targetDc}`;
-
-	await postRollMessage(actor, "save", {
-		actor,
-		roll,
-		titleLabel,
-		titleName,
-		titleValue,
-		formulaText,
-		hasTarget: true,
-		isSuccess,
-		isCrit,
-		isFumble,
-	});
-
-	return {
-		type: "save",
-		roll,
-		titleLabel,
-		titleName,
-		titleValue,
-		formulaText,
-		isSuccess,
-	};
-};
-
 export const rollSavePrompt = async (actor) => {
 	if (!actor) return null;
 	const attack = actor.system?.attack ?? {};
@@ -321,7 +297,7 @@ export const rollSavePrompt = async (actor) => {
 	const statLabel =
 		statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
 	const dc = Number(jds.dd ?? 0);
-	const titleName = (attack.name ?? "").trim() || "Attaque";
+	const titleName = getAttackName(attack);
 	const content = await foundry.applications.handlebars.renderTemplate(
 		"systems/nalfa/templates/chat/roll/prompt-save.hbs",
 		{
@@ -329,7 +305,7 @@ export const rollSavePrompt = async (actor) => {
 			statKey,
 			statLabel,
 			dc,
-		}
+		},
 	);
 	return ChatMessage.create({
 		user: game.user.id,
@@ -343,15 +319,14 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName) => {
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const statValue = statKey ? getStatTotal(actor, statKey) : 0;
 	const targetDc = Number(dc ?? 0);
-	const roll = await evaluateRoll("1d20 + @modifier", {
-		modifier: statValue,
-	});
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
+	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(
+		statValue
+	);
 	const isSuccess = Number(roll.total ?? 0) >= targetDc;
 	const saveSuffix = formatStatSuffix(statKey, statName, statValue, statValue);
+	const compareSymbol = isSuccess ? "⩾" : "<";
 	const formulaText =
-		`d20 [${dieResult ?? "-"}]${saveSuffix} vs DD ${targetDc}`;
+		`d20 [${dieResult ?? "-"}]${saveSuffix} ${compareSymbol} DD ${targetDc}`;
 
 	await postRollMessage(actor, "save", {
 		actor,
@@ -379,9 +354,9 @@ export const rollStatSave = async (actor, statKey) => {
 	const statObj = actor.system?.stats?.[statKey] ?? {};
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const modifier = getStatBasedValue(actor, statObj.save ?? {}, statKey);
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
+	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(
+		modifier
+	);
 	const titleLabel = "JdS";
 	const titleName = statName;
 	const titleValue = roll.total;
@@ -410,68 +385,20 @@ export const rollStatSave = async (actor, statKey) => {
 	};
 };
 
-export const rollSave = async (actor, statKey, dc) => {
-	if (!actor) return null;
-	const statObj = actor.system?.stats?.[statKey] ?? {};
-	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
-	const modifier = getStatBasedValue(actor, statObj.save ?? {}, statKey);
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
-	const targetDc = Number(dc ?? 0);
-	const isSuccess = Number(roll.total ?? 0) >= targetDc;
-	const titleLabel = "Sauv";
-	const titleName = statName;
-	const titleValue = roll.total;
-	const saveSuffix = formatStatSuffix(statKey, statName, modifier, modifier);
-	const formulaText =
-		`d20 [${dieResult ?? "-"}]${saveSuffix} vs DC ${targetDc}`;
-
-	const rollData = {
-		type: "save",
-		roll,
-		titleLabel,
-		titleName,
-		titleValue,
-		formulaText,
-	};
-
-	await postRollMessage(actor, "save", {
-		actor,
-		roll,
-		titleLabel,
-		titleName,
-		titleValue,
-		formulaText,
-		hasTarget: true,
-		isSuccess,
-		isCrit,
-		isFumble,
-	});
-
-	return rollData;
-};
-
 export const rollConcentration = async (actor, statKey, dc) => {
 	if (!actor) return null;
-	const bonusObj = actor.system?.attributes?.bonuses?.concentration ?? {};
-	const resolvedStatKey = statKey ?? bonusObj.stat ?? "";
-	const statName = getLabel(
-		CONFIG.nalfa.stats,
-		resolvedStatKey,
-		resolvedStatKey
+	const attack = actor.system?.attack ?? {};
+	const concentration = attack.concentration ?? {};
+	const resolvedStatKey = statKey ?? concentration.stat ?? "";
+	const statName = getLabel(CONFIG.nalfa.stats, resolvedStatKey, resolvedStatKey);
+	const modifier = resolvedStatKey ? getStatTotal(actor, resolvedStatKey) : 0;
+	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(
+		modifier
 	);
-	const modifier = getStatBasedValue(actor, {
-		...bonusObj,
-		stat: resolvedStatKey,
-	});
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
-	const targetDc = Number(dc ?? 0);
+	const targetDc = Number(dc ?? concentration.dd ?? 0);
 	const isSuccess = Number(roll.total ?? 0) >= targetDc;
 	const titleLabel = "Concentr";
-	const titleName = statName;
+	const titleName = getAttackName(attack);
 	const titleValue = roll.total;
 	const concentrSuffix = formatStatSuffix(
 		resolvedStatKey,
@@ -479,8 +406,9 @@ export const rollConcentration = async (actor, statKey, dc) => {
 		modifier,
 		modifier
 	);
+	const compareSymbol = isSuccess ? "⩾" : "<";
 	const formulaText =
-		`d20 [${dieResult ?? "-"}]${concentrSuffix} vs DC ${targetDc}`;
+		`d20 [${dieResult ?? "-"}]${concentrSuffix} ${compareSymbol} DD ${targetDc}`;
 
 	const rollData = {
 		type: "concentration",
@@ -511,16 +439,16 @@ export const rollInitiative = async (actor) => {
 	if (!actor) return null;
 	const initiativeObj = actor.system?.attributes?.initiative ?? {};
 	const modifier = getStatBasedValue(actor, initiativeObj);
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
-	const dieResult = getD20Result(roll);
-	const { isCrit, isFumble } = getCritState(dieResult);
+	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(
+		modifier
+	);
 	const titleLabel = "Init";
 	const titleValue = roll.total;
 	const initSuffix = formatStatSuffix(
 		initiativeObj.stat,
 		getLabel(CONFIG.nalfa.stats, initiativeObj.stat, initiativeObj.stat),
 		modifier,
-		modifier
+		modifier,
 	);
 	const formulaText = `d20 [${dieResult ?? "-"}]${initSuffix}`;
 

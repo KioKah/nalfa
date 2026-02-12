@@ -32,6 +32,5 @@
 		"distance": 1,
 		"units": "m"
 	},
-	"primaryTokenAttribute": "attributes.hp",
-	"initiative": "1d20 + @attributes.initiative.value"
+	"primaryTokenAttribute": "attributes.hp"
 }

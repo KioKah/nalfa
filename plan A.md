@@ -235,10 +235,13 @@ Créer un module `module/rolls/*.mjs` qui expose :
 - [ ] `rollSkill(actor, skillKey)`
 - [ ] `rollAttack(actor, mode)`
   - `mode = weapon|casting` (utilise `system.attributes.bonuses.weapon` ou `system.attributes.bonuses.casting`)
-- [ ] `rollDamage(actor, formula, damageType)`
+- [ ] `rollDamage(actor, config)`
   - formule saisie côté acteur (voir vA.4.3)
-- [ ] `rollSave(actor, stat, dc)`
-- [ ] `rollConcentration(actor, stat, dc)`
+- [ ] `rollDamageSet(actor)`
+- [ ] `rollSavePrompt(actor)`
+- [ ] `rollSaveTarget(actor, stat, dd, titleName)`
+- [ ] `rollStatSave(actor, stat)` (sans DD)
+- [ ] `rollConcentration(actor, stat, dd)`
 - [ ] `rollInitiative(actor)`
 
 Format de retour (recommandé)
@@ -247,7 +250,7 @@ Format de retour (recommandé)
 - [ ] Chaque fonction retourne un objet normalisé :
   - `type` (skill/attack/damage/save/concentration/initiative)
   - `roll` (instance de Roll + résultat)
-  - `titleText` (ex: `JdT : 20` / `JdD : 12`)
+  - `titleLabel` / `titleName` / `titleValue`
   - `formulaText` (ex: `d20 [14] + DEX (2)` / `d10m [5] + STR (5)`)
 
 QA manuel
@@ -279,20 +282,23 @@ QA manuel
 
 Décision : pas de weapon-like dans les items.
 
-- [ ] Utiliser la structure déjà présente sur l’acteur (`system.weapon`) :
-  - [ ] `system.weapon.dA` (dés dégâts)
-  - [ ] `system.weapon.stat` (stat)
-  - [ ] `system.weapon.damage_type` (type)
-- [ ] Ajouter sur la feuille perso un bloc « Attaque basique » :
-  - [ ] choix du dé (d4/d6/d8/d10/d12) ou champ texte
-  - [ ] choix stat
-  - [ ] choix type dégâts
-  - [ ] bouton « JdT » + bouton « JdD »
+- [ ] Utiliser la structure `system.attack` sur l’acteur :
+  - [ ] `system.attack.name`
+  - [ ] `system.attack.jdt` (stat + bonus)
+  - [ ] `system.attack.jds` (DD + stat)
+  - [ ] `system.attack.jdd` (formule 1/2 + stat + type)
+  - [ ] `system.attack.concentration` (DD + stat)
+- [ ] Ajouter sur la feuille perso un bloc « Combat » :
+  - [ ] nom d’attaque
+  - [ ] toggles JdT/JdS/JdD (mode base)
+  - [ ] colonnes JdT/JdS/JdD + Concentration
 
 Logique
 
-- JdT (arme) : `1d20 + system.attributes.bonuses.weapon.value`
-- JdD : `(<dA>min<half>) + <StatArme>`
+- JdT : `1d20 + Stat + Bonus`
+- JdS : `1d20 + Stat` vs DD
+- JdD : `(<dA>min<half>) + <Stat>` (1 à 2 formules)
+- Concentr : `1d20 + Stat` vs DD
 
 QA manuel
 

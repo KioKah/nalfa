@@ -10,15 +10,24 @@ nalfa.stats = {
 	con: "CON",
 };
 
-nalfa.valueMode = {
-	values: "Valeurs",
-	base: "Base",
-	alt: "Alt",
+nalfa.attack_mode = {
+	arme: "Arme",
+	incant: "Incant",
 };
 
 nalfa.stats_optional = {
 	none: "",
 	...nalfa.stats,
+};
+
+nalfa.stats_optional_arme = {
+	arme: "Arme",
+	...nalfa.stats_optional,
+};
+
+nalfa.stats_optional_incant = {
+	incant: "Incant",
+	...nalfa.stats_optional,
 };
 
 // "Bonus pour [...]"
@@ -193,4 +202,12 @@ nalfa.all_damage_types = {
 	...nalfa.magical_damage_types,
 	...nalfa.regeneration_damage_types,
 	...nalfa.fusion_damage_types,
+};
+
+// Other
+
+nalfa.valueMode = {
+	values: "Lecture",
+	base: "Modification",
+	alt: "Altération",
 };

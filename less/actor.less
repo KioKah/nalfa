@@ -84,13 +84,6 @@
 		display: none;
 	}
 
-	.value-mode-help {
-		font-size: 12px;
-		opacity: 0.75;
-		flex-basis: 100%;
-		text-align: right;
-	}
-
 	.nalfa-roll-buttons {
 		display: flex;
 		gap: 8px;
@@ -122,7 +115,8 @@
 
 	.attack-config__name-text {
 		font-weight: 600;
-		font-size: 16px;
+		font-size: 1.5em;
+		margin: 0;
 		flex: 1 1 240px;
 	}
 
@@ -134,6 +128,24 @@
 
 	.attack-config__toggles button {
 		font-weight: 600;
+	}
+
+	.roll-stats__row {
+		display: flex;
+		align-items: center;
+		justify-content: space-evenly;
+		gap: 12px;
+		flex-wrap: wrap;
+	}
+
+	.attack-config__mode {
+		min-width: 140px;
+	}
+
+	.attack-config__mode-text {
+		font-weight: 400;
+		margin-left: 6px;
+		opacity: 0.7;
 	}
 
 	.attack-config__toggle {
@@ -180,6 +192,11 @@
 		flex-wrap: wrap;
 	}
 
+	.attack-config__section select.attack-stat-select {
+		min-width: 105px;
+		padding-right: 16px;
+	}
+
 	.field__value {
 		font-weight: 600;
 	}
@@ -211,6 +228,51 @@
 		display: flex;
 		align-items: center;
 		gap: 8px;
+		justify-content: space-between;
+		.stats-set-color-property(border-color);
+	}
+
+	.skill-by-stat .stat-left,
+	.skill-by-stat .stat-right {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.skill-by-stat .stat-save {
+		font-weight: 600;
+	}
+
+	.skill-by-stat .stat-save-value {
+		.chr-input-block(@chr: 2, @font-size: 12px);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--border-color, #ccc);
+		border-width: 2px;
+		border-radius: 4px;
+		padding: 2px 6px;
+		cursor: pointer;
+		.stats-set-color-property(border-color);
+	}
+
+	.skill-by-stat .stat-base {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		font-size: 12px;
+	}
+
+	.skill-by-stat .stat-base__left,
+	.skill-by-stat .stat-base__right {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.skill-by-stat .stat-base__label {
+		font-weight: 600;
 	}
 
 	.skill-by-stat .stat-name {
@@ -218,14 +280,19 @@
 	}
 
 	.skill-by-stat .stat-value {
-		.chr-input-block(@chr: 2, @font-size: 16px);
+		font-size: 27px;
+		font-weight: 700;
+		line-height: 1;
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		border: 1px solid var(--border-color, #ccc);
-		border-radius: 4px;
-		padding: 4px 8px;
-		cursor: pointer;
+	}
+
+	.skill-by-stat .stat-separator {
+		height: 1px;
+		background: currentColor;
+		opacity: 0.6;
+		margin-top: 6px;
+		margin-bottom: 2px;
 	}
 
 	.skill-by-stat .stat-dropdown,
