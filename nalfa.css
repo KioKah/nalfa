@@ -1,3 +1,106 @@
+.nalfa-chat-card {
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 6px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+.nalfa-chat-card .nalfa-roll-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.nalfa-chat-card .nalfa-roll-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+.nalfa-chat-card .nalfa-roll-label,
+.nalfa-chat-card .nalfa-roll-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+.nalfa-chat-card .nalfa-roll-separator {
+  font-size: 14px;
+  opacity: 0.7;
+}
+.nalfa-chat-card .nalfa-roll-type {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+.nalfa-chat-card .nalfa-roll-total {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1;
+}
+.nalfa-chat-card .nalfa-roll-total-value {
+  font-size: 20pt;
+  font-weight: 700;
+}
+.nalfa-chat-card .nalfa-roll-details {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.nalfa-chat-card .nalfa-roll-action {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.nalfa-chat-card .nalfa-roll-formula {
+  font-size: 12px;
+  opacity: 0.7;
+  text-align: center;
+}
+.nalfa-chat-card .nalfa-roll-tags {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.nalfa-chat-card .nalfa-roll-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--color-border-light-secondary);
+}
+.nalfa-chat-card .nalfa-roll-tag--crit,
+.nalfa-chat-card .nalfa-roll-tag--success {
+  background: #2e7d32;
+  color: #fff;
+}
+.nalfa-chat-card .nalfa-roll-tag--fumble,
+.nalfa-chat-card .nalfa-roll-tag--fail {
+  background: #b71c1c;
+  color: #fff;
+}
+.nalfa-chat-card .nalfa-roll-tag--crit,
+.nalfa-chat-card .nalfa-roll-tag--fumble {
+  border-radius: 0;
+  padding: 2px 10px;
+  clip-path: polygon(0% 50%, 8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%);
+}
+.nalfa-chat-card .nalfa-roll-tag--type {
+  background: var(--color-border-light-primary);
+}
+.nalfa-chat-card.is-open .nalfa-roll-details {
+  display: flex;
+}
 .nalfa.sheet hr {
   margin: var(--nalfa-padding) 0;
 }
@@ -227,15 +330,22 @@
   flex-direction: column;
   gap: var(--nalfa-padding);
 }
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--base,
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--alt {
+  display: none;
+}
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="base"] .value-mode--values,
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="base"] .value-mode--alt {
+  display: none;
+}
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="alt"] .value-mode--values,
+.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="alt"] .value-mode--base {
+  display: none;
+}
 .nalfa.sheet.actor-sheet .sheet-section {
   margin-bottom: var(--nalfa-padding);
 }
-.nalfa.sheet.actor-sheet .field {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+.nalfa.sheet.actor-sheet .field,
 .nalfa.sheet.actor-sheet .field--inline {
   display: flex;
   align-items: center;
@@ -269,18 +379,6 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-}
-.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--base,
-.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--alt {
-  display: none;
-}
-.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="base"] .value-mode--values,
-.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="base"] .value-mode--alt {
-  display: none;
-}
-.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="alt"] .value-mode--values,
-.nalfa.sheet.actor-sheet .sheet-body[data-value-mode="alt"] .value-mode--base {
-  display: none;
 }
 .nalfa.sheet.actor-sheet .nalfa-roll-buttons {
   display: flex;
@@ -320,13 +418,6 @@
 .nalfa.sheet.actor-sheet .attack-config__toggles button {
   font-weight: 600;
 }
-.nalfa.sheet.actor-sheet .roll-stats__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  gap: 12px;
-  flex-wrap: wrap;
-}
 .nalfa.sheet.actor-sheet .attack-config__mode {
   min-width: 140px;
 }
@@ -358,6 +449,10 @@
   background: color-mix(in srgb, var(--color-bg), transparent 10%);
   min-width: 0;
 }
+.nalfa.sheet.actor-sheet .attack-config__section select.attack-stat-select {
+  min-width: 105px;
+  padding-right: 16px;
+}
 .nalfa.sheet.actor-sheet .attack-config__section-title {
   display: flex;
   justify-content: center;
@@ -373,9 +468,12 @@
   gap: 8px;
   flex-wrap: wrap;
 }
-.nalfa.sheet.actor-sheet .attack-config__section select.attack-stat-select {
-  min-width: 105px;
-  padding-right: 16px;
+.nalfa.sheet.actor-sheet .roll-stats__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .nalfa.sheet.actor-sheet .field__value {
   font-weight: 600;
@@ -463,10 +561,10 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-color, #ccc);
-  border-width: 2px;
   border-radius: 4px;
   padding: 2px 6px;
   cursor: pointer;
+  border-width: 2px;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-str {
   border-color: var(--nalfa-color-stat-str);
@@ -645,27 +743,25 @@
   width: 120px;
   padding: 5px;
   box-sizing: border-box;
-  /* Ensures the input field's width includes padding and border */
 }
 .nalfa.sheet.item .test-item textarea {
   width: 380px;
   padding: 5px;
   box-sizing: border-box;
-  /* Ensures the input field's width includes padding and border */
 }
 .nalfa.sheet.item .test-item ul {
   padding-left: 0px;
   width: 100%;
   white-space: nowrap;
 }
-.nalfa.sheet.item .test-item li {
+.nalfa.sheet.item .test-item ul li {
   display: flex;
   align-items: center;
   white-space: nowrap;
   margin-top: 2px;
   margin-bottom: 2px;
 }
-.nalfa.sheet.item .test-item li ul {
+.nalfa.sheet.item .test-item ul li ul {
   /* clockwise */
   margin: 0 0 0 10px;
 }
@@ -897,107 +993,4 @@ body {
   animation-duration: 0.6s;
   animation-iteration-count: infinite;
   animation-timing-function: steps(10);
-}
-.nalfa-chat-card {
-  border: 1px solid var(--color-border-light-primary);
-  border-radius: 6px;
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
-}
-.nalfa-chat-card .nalfa-roll-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-.nalfa-chat-card .nalfa-roll-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 4px;
-}
-.nalfa-chat-card .nalfa-roll-label,
-.nalfa-chat-card .nalfa-roll-name {
-  font-size: 16px;
-  font-weight: 600;
-}
-.nalfa-chat-card .nalfa-roll-separator {
-  font-size: 14px;
-  opacity: 0.7;
-}
-.nalfa-chat-card .nalfa-roll-type {
-  font-size: 14px;
-  font-weight: 500;
-  opacity: 0.7;
-}
-.nalfa-chat-card .nalfa-roll-total {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  line-height: 1;
-}
-.nalfa-chat-card .nalfa-roll-total-value {
-  font-size: 20pt;
-  font-weight: 700;
-}
-.nalfa-chat-card .nalfa-roll-details {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-.nalfa-chat-card .nalfa-roll-action {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-.nalfa-chat-card .nalfa-roll-formula {
-  font-size: 12px;
-  opacity: 0.7;
-  text-align: center;
-}
-.nalfa-chat-card .nalfa-roll-tags {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-.nalfa-chat-card .nalfa-roll-tag {
-  display: inline-flex;
-  align-items: center;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: var(--color-border-light-secondary);
-}
-.nalfa-chat-card .nalfa-roll-tag--crit,
-.nalfa-chat-card .nalfa-roll-tag--success {
-  background: #2e7d32;
-  color: #fff;
-}
-.nalfa-chat-card .nalfa-roll-tag--fumble,
-.nalfa-chat-card .nalfa-roll-tag--fail {
-  background: #b71c1c;
-  color: #fff;
-}
-.nalfa-chat-card .nalfa-roll-tag--crit,
-.nalfa-chat-card .nalfa-roll-tag--fumble {
-  border-radius: 0;
-  padding: 2px 10px;
-  clip-path: polygon(0% 50%, 8% 0%, 92% 0%, 100% 50%, 92% 100%, 8% 100%);
-}
-.nalfa-chat-card .nalfa-roll-tag--type {
-  background: var(--color-border-light-primary);
-}
-.nalfa-chat-card.is-open .nalfa-roll-details {
-  display: flex;
 }

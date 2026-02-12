@@ -3,7 +3,7 @@ import { nalfa } from "./module/config.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
-import NalfaActor from "./module/sheets/nalfaActor.mjs";
+import { CharacterData, ItemData, NPCData } from "./module/data/models.mjs";
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
 
@@ -39,7 +39,15 @@ Hooks.once("init", function () {
 	CONFIG.Combat.initiative.formula = "1d20+@attributes.initiative.value";
 	CONFIG.nalfa = nalfa;
 
-	// CONFIG.Actor.documentClass = NalfaActor; TODO Re-add when NalfaActor Done
+	Object.assign(CONFIG.Actor.dataModels, {
+		Character: CharacterData,
+		NPC: NPCData,
+	});
+	Object.assign(CONFIG.Item.dataModels, {
+		Item: ItemData,
+	});
+
+	// Currently no custom CONFIG.Actor.documentClass
 	CONFIG.Item.documentClass = NalfaItem;
 	game.nalfa = {
 		...(game.nalfa ?? {}),

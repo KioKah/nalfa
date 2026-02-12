@@ -70,10 +70,10 @@ Règle « docs » : quand un détail dépend de l’API Foundry, demander à l'u
 
 ## État actuel (résumé)
 
-- Actor types : `Character`, `NPC` dans `template.json`
-- Item : un seul type « Item » dans `template.json`
+- Actor types : `Character`, `NPC` (schéma dans `module/data/models.mjs`)
+- Item : un seul type « Item » (schéma dans `module/data/models.mjs`)
 - Feuille personnage V2 : `module/sheets/nalfaCharacterSheet.mjs`
-  - calcule déjà des valeurs dérivées (stats totales, saves, skills, Défense, PV max, charges, actions max)
+  - lit les valeurs dérivées (calculées par `TypeDataModel#prepareDerivedData`)
   - gère `system.ui.valueMode` (values/base/alt)
 - Feuille item V2 : `module/sheets/nalfaItemSheet.mjs` (minimal)
 - Dictionnaires FR : `module/config.mjs`
@@ -88,7 +88,7 @@ Règle « docs » : quand un détail dépend de l’API Foundry, demander à l'u
 - Jets principaux disponibles et affichés proprement dans le chat (au moins via boutons ou macros).
 - Inventaire basique : lister/créer/éditer des objets, sans qu’ils modifient les stats.
 - Pas de weapon-like via items : le combat passe par des champs « arme » sur l’acteur ou par saisie manuelle.
-- `template.json` est la base de vérité (les évolutions de schéma passent dans la version suivante).
+- Les data models sont la base de vérité (les évolutions de schéma passent dans la version suivante).
 
 ## Périmètre vA (ce qui reste manuel)
 
@@ -146,11 +146,12 @@ QA manuel
 
 ---
 
-## vA.2 — Données (décision : `template.json` = vérité)
+## vA.2 — Données (décision : data models = vérité)
 
-Décision : `template.json` est la base de vérité. On évite d’y toucher, et on ajuste le code/sheets pour matcher. Les évolutions de schéma passent dans la version suivante.
+Décision : `module/data/models.mjs` est la base de vérité. `template.json` ne fait que
+déclarer les types. On ajuste le code/sheets pour matcher le schéma des data models.
 
-### vA.2.1 — Audit « sheet ↔ template.json »
+### vA.2.1 — Audit « sheet ↔ data models »
 
 - [ ] Passer en revue : tous les `name="system..."` des templates actor/item doivent correspondre à des chemins existants.
 - [ ] Toute donnée manquante → ticket pour vB.
@@ -161,7 +162,7 @@ Méthode recommandée
   - `templates/sheets/character/*.hbs`
   - `templates/partials/character/*.hbs`
   - `templates/sheets/item/*.hbs`
-- [ ] Vérifier chaque chemin dans `template.json`.
+- [ ] Vérifier chaque chemin dans `module/data/models.mjs`.
 - [ ] Vérifier aussi les chemins utilisés côté code (`sysData...`) dans :
   - `module/sheets/nalfaCharacterSheet.mjs`
   - `module/sheets/nalfaItemSheet.mjs`
@@ -194,8 +195,8 @@ Détails règles à refléter (même si gestion MJ)
 
 - [ ] Initiative : `Dex*2 + base + alt` (si le modèle prévoit base/alt)
 - [ ] Perception passive : `8 + Sag (+ base/alt si le modèle prévoit)`
-- [ ] Défense : table profil + base + alt (déjà dans `nalfaCharacterSheet.mjs`)
-- [ ] PV max : table profil/niveau + base + alt (déjà dans `nalfaCharacterSheet.mjs`)
+- [ ] Défense : table profil + base + alt (dans `TypeDataModel#prepareDerivedData`)
+- [ ] PV max : table profil/niveau + base + alt (dans `TypeDataModel#prepareDerivedData`)
 
 Templates concernés
 
@@ -357,7 +358,7 @@ QA manuel
 
 ## Objectifs vB
 
-- Evoluer le modèle de données (si nécessaire) au-delà de `template.json`.
+- Evoluer le modèle de données (si nécessaire) au-delà du schéma actuel.
 - Améliorer l’UX de la feuille personnage (onglets, boutons de jets).
 - Rolls plus pratiques (notamment sauvegardes) sans passer par les vrais items Spell.
 - Classes : structure + verrou (pas de changement).
@@ -366,7 +367,7 @@ QA manuel
 
 ## vB.1 — Modèle de données : évolutions
 
-- [ ] Faire évoluer `template.json` pour refléter ce dont la sheet/les rolls ont besoin.
+- [ ] Faire évoluer `module/data/models.mjs` pour refléter ce dont la sheet/les rolls ont besoin.
 - [ ] Ajouter/clarifier les champs manquants plutôt que d’avoir des “undefined”.
 
 QA manuel
@@ -534,7 +535,7 @@ QA manuel
 
 Découpage
 
-### vC.3.1 — Modèle de données (template.json)
+### vC.3.1 — Modèle de données (data models)
 
 - [ ] Ajouter une section par type avec les champs utiles.
 - [ ] Standardiser : `system.description`, `system.rarity`, `system.source` (optionnel).

@@ -1,6 +1,10 @@
 @import "mixin.less";
 @import "chat.less";
 
+.grid-columns(@count) {
+	grid-template-columns: repeat(@count, minmax(0, 1fr));
+}
+
 // * From foundry2.css
 // body.theme-dark {
 //   --color-scheme: dark;
@@ -230,22 +234,22 @@
 	}
 
 	.grid--two {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		.grid-columns(2);
 	}
 
 	.grid--three {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		.grid-columns(3);
 	}
 
 	.grid--four {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		.grid-columns(4);
 	}
 
 	.grid--five {
-		grid-template-columns: repeat(5, minmax(0, 1fr));
+		.grid-columns(5);
 	}
 
 	.grid--six {
-		grid-template-columns: repeat(6, minmax(0, 1fr));
+		.grid-columns(6);
 	}
 }

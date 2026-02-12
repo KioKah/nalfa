@@ -70,10 +70,10 @@ Règle « docs » : quand un détail dépend de l’API Foundry, demander à l'u
 
 ## État actuel (résumé)
 
-- Actor types : `Character`, `NPC` dans `template.json`
-- Item : un seul type « Item » dans `template.json`
+- Actor types : `Character`, `NPC` (schéma dans `module/data/models.mjs`)
+- Item : un seul type « Item » (schéma dans `module/data/models.mjs`)
 - Feuille personnage V2 : `module/sheets/nalfaCharacterSheet.mjs`
-  - calcule déjà des valeurs dérivées (stats totales, saves, skills, Défense, PV max, charges, actions max)
+  - lit les valeurs dérivées (calculées par `TypeDataModel#prepareDerivedData`)
   - gère `system.ui.valueMode` (values/base/alt)
 - Feuille item V2 : `module/sheets/nalfaItemSheet.mjs` (minimal)
 - Dictionnaires FR : `module/config.mjs`
@@ -88,7 +88,7 @@ Règle « docs » : quand un détail dépend de l’API Foundry, demander à l'u
 - Jets principaux disponibles et affichés proprement dans le chat (au moins via boutons ou macros).
 - Inventaire basique : lister/créer/éditer des objets, sans qu’ils modifient les stats.
 - Pas de weapon-like via items : le combat passe par des champs « arme » sur l’acteur ou par saisie manuelle.
-- `template.json` est la base de vérité (les évolutions de schéma passent dans la version suivante).
+- Les data models sont la base de vérité (les évolutions de schéma passent dans la version suivante).
 
 ## Périmètre vA (ce qui reste manuel)
 
@@ -146,11 +146,12 @@ QA manuel
 
 ---
 
-## vA.2 — Données (décision : `template.json` = vérité)
+## vA.2 — Données (décision : data models = vérité)
 
-Décision : `template.json` est la base de vérité. On évite d’y toucher, et on ajuste le code/sheets pour matcher. Les évolutions de schéma passent dans la version suivante.
+Décision : `module/data/models.mjs` est la base de vérité. `template.json` ne fait que
+déclarer les types. On ajuste le code/sheets pour matcher le schéma des data models.
 
-### vA.2.1 — Audit « sheet ↔ template.json »
+### vA.2.1 — Audit « sheet ↔ data models »
 
 - [ ] Passer en revue : tous les `name="system..."` des templates actor/item doivent correspondre à des chemins existants.
 - [ ] Toute donnée manquante → ticket pour vB.
@@ -161,7 +162,7 @@ Méthode recommandée
   - `templates/sheets/character/*.hbs`
   - `templates/partials/character/*.hbs`
   - `templates/sheets/item/*.hbs`
-- [ ] Vérifier chaque chemin dans `template.json`.
+- [ ] Vérifier chaque chemin dans `module/data/models.mjs`.
 - [ ] Vérifier aussi les chemins utilisés côté code (`sysData...`) dans :
   - `module/sheets/nalfaCharacterSheet.mjs`
   - `module/sheets/nalfaItemSheet.mjs`
@@ -181,21 +182,21 @@ QA manuel
 
 ### vA.3.1 — Affichage minimum jouable
 
-- [ ] PV / PV max / Absorption
-- [ ] Défense / Évasion
-- [ ] Initiative (Dex\*2) + affichage de la valeur
-- [ ] Perception passive (8 + Sag)
-- [ ] Stats (valeur, base, alt selon `valueMode`)
-- [ ] Compétences (valeur + stat associée)
-- [ ] Charges de sorts (lvl1/lvl2/lvl3/special)
-- [ ] Actions (main/bonus/réaction/concentration/déplacement)
+- [x] PV / PV max / Absorption
+- [x] Défense / Évasion
+- [x] Initiative (Dex\*2) + affichage de la valeur
+- [x] Perception passive (8 + Sag)
+- [x] Stats (valeur, base, alt selon `valueMode`)
+- [x] Compétences (valeur + stat associée)
+- [x] Charges de sorts (lvl1/lvl2/lvl3/special)
+- [x] Actions (main/bonus/réaction/concentration/déplacement)
 
 Détails règles à refléter (même si gestion MJ)
 
-- [ ] Initiative : `Dex*2 + base + alt` (si le modèle prévoit base/alt)
-- [ ] Perception passive : `8 + Sag (+ base/alt si le modèle prévoit)`
-- [ ] Défense : table profil + base + alt (déjà dans `nalfaCharacterSheet.mjs`)
-- [ ] PV max : table profil/niveau + base + alt (déjà dans `nalfaCharacterSheet.mjs`)
+- [x] Initiative : `Dex*2 + base + alt` (si le modèle prévoit base/alt)
+- [x] Perception passive : `8 + Sag (+ base/alt si le modèle prévoit)`
+- [x] Défense : table profil + base + alt (dans `TypeDataModel#prepareDerivedData`)
+- [x] PV max : table profil/niveau + base + alt (dans `TypeDataModel#prepareDerivedData`)
 
 Templates concernés
 
@@ -231,14 +232,17 @@ QA manuel
 
 Créer un module `module/rolls/*.mjs` qui expose :
 
-- [ ] `rollSkill(actor, skillKey)`
-- [ ] `rollAttack(actor, mode)`
+- [x] `rollSkill(actor, skillKey)`
+- [x] `rollAttack(actor, mode)`
   - `mode = weapon|casting` (utilise `system.attributes.bonuses.weapon` ou `system.attributes.bonuses.casting`)
-- [ ] `rollDamage(actor, formula, damageType)`
+- [x] `rollDamage(actor, config)`
   - formule saisie côté acteur (voir vA.4.3)
-- [ ] `rollSave(actor, stat, dc)`
-- [ ] `rollConcentration(actor, stat, dc)`
-- [ ] `rollInitiative(actor)`
+- [x] `rollDamageSet(actor)`
+- [x] `rollSavePrompt(actor)`
+- [x] `rollSaveTarget(actor, stat, dd, titleName)`
+- [x] `rollStatSave(actor, stat)` (sans DD)
+- [x] `rollConcentration(actor, stat, dd)`
+- [x] `rollInitiative(actor)`
 
 Format de retour (recommandé)
 
@@ -246,7 +250,7 @@ Format de retour (recommandé)
 - [ ] Chaque fonction retourne un objet normalisé :
   - `type` (skill/attack/damage/save/concentration/initiative)
   - `roll` (instance de Roll + résultat)
-  - `titleText` (ex: `JdT : 20` / `JdD : 12`)
+  - `titleLabel` / `titleName` / `titleValue`
   - `formulaText` (ex: `d20 [14] + DEX (2)` / `d10m [5] + STR (5)`)
 
 QA manuel
@@ -258,40 +262,43 @@ QA manuel
 
 - [ ] Définir une convention de formules de dégâts « Nalfa » :
   - `1d4min2`, `1d6min3`, `1d8min4`, `1d10min5`, `1d12min6`
-- [ ] Normaliser la formule de dégâts via une fonction utilitaire.
+- [x] Normaliser la formule de dégâts via une fonction utilitaire.
 
 Implémentation (recommandée)
 
-- [ ] Écrire `normalizeDamageFormula(formula)` qui remplace :
+- [x] Écrire `normalizeDamageFormula(formula)` qui remplace :
   - `d4` → `d4min2`
   - `d6` → `d6min3`
   - `d8` → `d8min4`
   - `d10` → `d10min5`
   - `d12` → `d12min6`
-- [ ] Ne pas toucher aux dés qui contiennent déjà `min`.
+- [x] Ne pas toucher aux dés qui contiennent déjà `min`.
 
 QA manuel
 
-- [ ] `1d8min4` lancé 30 fois : jamais < 4.
+- [x] `1d8min4` lancé 30 fois : jamais < 4.
 
 ### vA.4.3 — Sources de dégâts (pas d’items)
 
 Décision : pas de weapon-like dans les items.
 
-- [ ] Utiliser la structure déjà présente sur l’acteur (`system.weapon`) :
-  - [ ] `system.weapon.dA` (dés dégâts)
-  - [ ] `system.weapon.stat` (stat)
-  - [ ] `system.weapon.damage_type` (type)
-- [ ] Ajouter sur la feuille perso un bloc « Attaque basique » :
-  - [ ] choix du dé (d4/d6/d8/d10/d12) ou champ texte
-  - [ ] choix stat
-  - [ ] choix type dégâts
-  - [ ] bouton « JdT » + bouton « JdD »
+- [x] Utiliser la structure `system.attack` sur l’acteur :
+  - [x] `system.attack.name`
+  - [x] `system.attack.jdt` (stat + bonus)
+  - [x] `system.attack.jds` (DD + stat)
+  - [x] `system.attack.jdd` (formule 1/2 + stat + type)
+  - [x] `system.attack.concentration` (DD + stat)
+- [x] Ajouter sur la feuille perso un bloc « Combat » :
+  - [x] nom d’attaque
+  - [x] toggles JdT/JdS/JdD (mode base)
+  - [x] colonnes JdT/JdS/JdD + Concentration
 
 Logique
 
-- JdT (arme) : `1d20 + system.attributes.bonuses.weapon.value`
-- JdD : `(<dA>min<half>) + <StatArme>`
+- JdT : `1d20 + Stat + Bonus`
+- JdS : `1d20 + Stat` vs DD
+- JdD : `(<dA>min<half>) + <Stat>` (1 à 2 formules)
+- Concentr : `1d20 + Stat` vs DD
 
 QA manuel
 
@@ -299,12 +306,12 @@ QA manuel
 
 ### vA.4.4 — Templates chat (unifiés)
 
-- [ ] Templates :
-  - [ ] `templates/chat/roll/skill.hbs`
-  - [ ] `templates/chat/roll/attack.hbs`
-  - [ ] `templates/chat/roll/damage.hbs`
-  - [ ] `templates/chat/roll/save.hbs`
-  - [ ] `templates/chat/roll/initiative.hbs`
+- [x] Templates :
+  - [x] `templates/chat/roll/skill.hbs`
+  - [x] `templates/chat/roll/attack.hbs`
+  - [x] `templates/chat/roll/damage.hbs`
+  - [x] `templates/chat/roll/save.hbs`
+  - [x] `templates/chat/roll/initiative.hbs`
 - [ ] Styles minimaux dans `nalfa.css`.
 
 Contenu minimum par chat card
@@ -321,10 +328,10 @@ QA manuel
 
 ### vA.4.5 — Points d’entrée (UI)
 
-- [ ] Macros d’exemple :
-  - [ ] JdC sur compétence choisie
-  - [ ] Initiative
-  - [ ] Attaque basique (JdT/JdD)
+- [x] Macros d’exemple :
+  - [x] JdC sur compétence choisie
+  - [x] Initiative
+  - [x] Attaque basique (JdT/JdD)
 
 QA manuel
 
@@ -334,12 +341,12 @@ QA manuel
 
 ## vA.5 — Combat (minimum)
 
-- [ ] Vérifier que `initiative.value` est correctement calculée et que Foundry l’utilise.
-- [ ] Afficher un indicateur KO si PV ≤ 0 (affichage uniquement).
+- [x] Vérifier que `initiative.value` est correctement calculée et que Foundry l’utilise.
+- [ ] Afficher un indicateur KO si PV ≤ 0 et afficher les éléments de death save.
 
 QA manuel
 
-- [ ] Démarrer un combat, lancer initiative, vérifier l’ordre.
+- [x] Démarrer un combat, lancer initiative, vérifier l’ordre.
 
 ---
 
@@ -357,7 +364,7 @@ QA manuel
 
 ## Objectifs vB
 
-- Evoluer le modèle de données (si nécessaire) au-delà de `template.json`.
+- Evoluer le modèle de données (si nécessaire) au-delà du schéma actuel.
 - Améliorer l’UX de la feuille personnage (onglets, boutons de jets).
 - Rolls plus pratiques (notamment sauvegardes) sans passer par les vrais items Spell.
 - Classes : structure + verrou (pas de changement).
@@ -366,7 +373,7 @@ QA manuel
 
 ## vB.1 — Modèle de données : évolutions
 
-- [ ] Faire évoluer `template.json` pour refléter ce dont la sheet/les rolls ont besoin.
+- [ ] Faire évoluer `module/data/models.mjs` pour refléter ce dont la sheet/les rolls ont besoin.
 - [ ] Ajouter/clarifier les champs manquants plutôt que d’avoir des “undefined”.
 
 QA manuel

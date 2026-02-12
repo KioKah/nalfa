@@ -6,26 +6,10 @@
 	animation-timing-function: steps(@steps);
 }
 
-.fa-d4-roll-hover:hover {
-	.fa-spin-pulse(@steps: 10);
-}
+@fa-roll-sizes: d4, d6, d8, d10, d12, d20;
 
-.fa-d6-roll-hover:hover {
-	.fa-spin-pulse(@steps: 10);
-}
-
-.fa-d8-roll-hover:hover {
-	.fa-spin-pulse(@steps: 10);
-}
-
-.fa-d10-roll-hover:hover {
-	.fa-spin-pulse(@steps: 10);
-}
-
-.fa-d12-roll-hover:hover {
-	.fa-spin-pulse(@steps: 10);
-}
-
-.fa-d20-roll-hover:hover {
-	.fa-spin-pulse(@steps: 10);
-}
+each(@fa-roll-sizes, {
+	.fa-@{value}-roll-hover:hover {
+		.fa-spin-pulse(@steps: 10);
+	}
+});
