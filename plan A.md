@@ -104,23 +104,23 @@ Règle « docs » : quand un détail dépend de l’API Foundry, demander à l'u
 
 ### vA.1.1 — Compatibilité Foundry
 
-- [ ] Vérifier/ajuster `system.json.compatibility` pour V13 (minimum/verified/maximum cohérents).
-- [ ] Vérifier `system.json.initiative` (déjà présent) et sa cohérence avec `initiative.value`.
+- [x] Vérifier/ajuster `system.json.compatibility` pour V13 (minimum/verified/maximum cohérents).
+- [x] Vérifier `system.json.initiative` (déjà présent) et sa cohérence avec `initiative.value`. => Géré par CONFIG.Combat
 
 QA manuel
 
-- [ ] Lancer Foundry, vérifier que le système charge sans warning de compat.
+- [x] Lancer Foundry, vérifier que le système charge sans warning de compat.
 
 ### vA.1.2 — Templates "copy" (décision : conserver)
 
 Décision : conserver les templates `* copy.hbs` car ils servent de documentation (et utilisent correctement l’API Foundry).
 
 - [x] Ajouter une note en tête de chaque template `* copy.hbs` : « non utilisé à runtime, sert de référence ».
-- [ ] Vérifier que `nalfa.mjs` ne précharge pas les `* copy.hbs`.
+- [x] Vérifier que `nalfa.mjs` ne précharge pas les `* copy.hbs`.
 
 QA manuel
 
-- [ ] Rendu sheet OK, pas d’erreur de template manquant.
+- [x] Rendu sheet OK, pas d’erreur de template manquant.
 
 ### vA.1.3 — Import cassé `prepareItems` (décision)
 
@@ -133,17 +133,15 @@ Décision : mettre le code historique en `_old/` et supprimer toute référence 
 
 QA manuel
 
-- [ ] Ouvrir une sheet qui importe `module/utils.mjs` : aucune erreur console.
+- [x] Ouvrir une sheet qui importe `module/utils.mjs` : aucune erreur console.
 
 ### vA.1.4 — Build CSS
 
-Décision : la compilation LESS → CSS est gérée automatiquement par un plugin IDE.
-
-- [ ] Ne pas ajouter de script npm.
+- [x] Géré par un Script npm: npm run less:watch
 
 QA manuel
 
-- [ ] Modifier un fichier `less/`, vérifier que `nalfa.css` est bien régénéré par ton workflow.
+- [x] Modifier un fichier `less/`, vérifier que `nalfa.css` est bien régénéré par ton workflow.
 
 ---
 
@@ -154,17 +152,17 @@ déclarer les types. On ajuste le code/sheets pour matcher le schéma des data m
 
 ### vA.2.1 — Audit « sheet ↔ data models »
 
-- [ ] Passer en revue : tous les `name="system..."` des templates actor/item doivent correspondre à des chemins existants.
-- [ ] Toute donnée manquante → ticket pour vB.
+- [x] Passer en revue : tous les `name="system..."` des templates actor/item doivent correspondre à des chemins existants.
+- [x] Toute donnée manquante → ticket pour vB.
 
 Méthode recommandée
 
-- [ ] Lister tous les bindings `name="system..."` dans :
+- [x] Lister tous les bindings `name="system..."` dans :
   - `templates/sheets/character/*.hbs`
   - `templates/partials/character/*.hbs`
   - `templates/sheets/item/*.hbs`
-- [ ] Vérifier chaque chemin dans `module/data/models.mjs`.
-- [ ] Vérifier aussi les chemins utilisés côté code (`sysData...`) dans :
+- [x] Vérifier chaque chemin dans `module/data/models.mjs`.
+- [x] Vérifier aussi les chemins utilisés côté code (`sysData...`) dans :
   - `module/sheets/nalfaCharacterSheet.mjs`
   - `module/sheets/nalfaItemSheet.mjs`
 
@@ -175,7 +173,7 @@ Décisions de triage
 
 QA manuel
 
-- [ ] Créer un Actor neuf : aucun champ ne casse (pas de `undefined` bloquant).
+- [x] Créer un Actor neuf : aucun champ ne casse (pas de `undefined` bloquant).
 
 ---
 
@@ -207,14 +205,13 @@ Templates concernés
 
 QA manuel
 
-- [ ] Valeurs à 0 : s’affichent (pas de “falsy hidden”).
-- [ ] Changer niveau : PV max se met à jour.
-- [ ] Changer profil : Défense + PV max se mettent à jour.
+- [x] Valeurs à 0 : s’affichent (pas de “falsy hidden”).
+- [x] Changer niveau : PV max se met à jour.
+- [x] Changer profil : Défense + PV max se mettent à jour.
 
 ### vA.3.2 — Mode d’affichage (values/base/alt)
 
-- [ ] Clarifier dans l’UI ce que change chaque mode.
-- [ ] Corriger les helpers qui cachent des champs quand la valeur est 0.
+- [x] Corriger les helpers qui cachent des champs quand la valeur est 0.
 
 Endroits à vérifier
 
@@ -223,7 +220,7 @@ Endroits à vérifier
 
 QA manuel
 
-- [ ] Passer values → base → alt : les champs attendus apparaissent et sauvegardent.
+- [x] Passer values → base → alt : les champs attendus apparaissent et sauvegardent.
 
 ---
 

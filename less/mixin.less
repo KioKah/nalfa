@@ -154,33 +154,113 @@
 }
 
 .color-keyword(@keyword) {
-	@color: var(--color-text-primary);
-	@color: var(--nalfa-color-stat-str) when (@keyword = "str");
-	@color: var(--nalfa-color-stat-dex) when (@keyword = "dex");
-	@color: var(--nalfa-color-stat-int) when (@keyword = "int");
-	@color: var(--nalfa-color-stat-wis) when (@keyword = "wis");
-	@color: var(--nalfa-color-stat-cha) when (@keyword = "cha");
-	@color: var(--nalfa-color-stat-con) when (@keyword = "con");
-	@color: var(--nalfa-color-type-phys-tran) when (@keyword = "tran");
-	@color: var(--nalfa-color-type-phys-perf) when (@keyword = "perf");
-	@color: var(--nalfa-color-type-phys-cont) when (@keyword = "cont");
-	@color: var(--nalfa-color-type-phys-soni) when (@keyword = "soni");
-	@color: var(--nalfa-color-type-phys-sang) when (@keyword = "sang");
-	@color: var(--nalfa-color-type-elem-feu) when (@keyword = "feu");
-	@color: var(--nalfa-color-type-elem-eau) when (@keyword = "eau");
-	@color: var(--nalfa-color-type-elem-terr) when (@keyword = "terr");
-	@color: var(--nalfa-color-type-elem-air) when (@keyword = "air");
-	@color: var(--nalfa-color-type-elem-natu) when (@keyword = "natu");
-	@color: var(--nalfa-color-type-elem-givr) when (@keyword = "givr");
-	@color: var(--nalfa-color-type-elem-foud) when (@keyword = "foud");
-	@color: var(--nalfa-color-type-magi-radt) when (@keyword = "radt");
-	@color: var(--nalfa-color-type-magi-obsc) when (@keyword = "obsc");
-	@color: var(--nalfa-color-type-magi-arca) when (@keyword = "arca");
-	@color: var(--nalfa-color-type-magi-chao) when (@keyword = "chao");
-	@color: var(--nalfa-color-type-magi-necr) when (@keyword = "necr");
-	@color: var(--nalfa-color-type-magi-psyc) when (@keyword = "psyc");
-	@color: var(--nalfa-color-type-spec-arme) when (@keyword = "arme");
-	@color: var(--nalfa-color-type-spec-soin) when (@keyword = "soin");
-	@color: var(--nalfa-color-type-spec-abso) when (@keyword = "abso");
-	color: @color;
+	color: var(--color-text-primary);
+}
+
+.color-keyword(@keyword) when (@keyword = "str") {
+	color: var(--nalfa-color-stat-str);
+}
+
+.color-keyword(@keyword) when (@keyword = "dex") {
+	color: var(--nalfa-color-stat-dex);
+}
+
+.color-keyword(@keyword) when (@keyword = "int") {
+	color: var(--nalfa-color-stat-int);
+}
+
+.color-keyword(@keyword) when (@keyword = "wis") {
+	color: var(--nalfa-color-stat-wis);
+}
+
+.color-keyword(@keyword) when (@keyword = "cha") {
+	color: var(--nalfa-color-stat-cha);
+}
+
+.color-keyword(@keyword) when (@keyword = "con") {
+	color: var(--nalfa-color-stat-con);
+}
+
+.color-keyword(@keyword) when (@keyword = "tran") {
+	color: var(--nalfa-color-type-phys-tran);
+}
+
+.color-keyword(@keyword) when (@keyword = "perf") {
+	color: var(--nalfa-color-type-phys-perf);
+}
+
+.color-keyword(@keyword) when (@keyword = "cont") {
+	color: var(--nalfa-color-type-phys-cont);
+}
+
+.color-keyword(@keyword) when (@keyword = "soni") {
+	color: var(--nalfa-color-type-phys-soni);
+}
+
+.color-keyword(@keyword) when (@keyword = "sang") {
+	color: var(--nalfa-color-type-phys-sang);
+}
+
+.color-keyword(@keyword) when (@keyword = "feu") {
+	color: var(--nalfa-color-type-elem-feu);
+}
+
+.color-keyword(@keyword) when (@keyword = "eau") {
+	color: var(--nalfa-color-type-elem-eau);
+}
+
+.color-keyword(@keyword) when (@keyword = "terr") {
+	color: var(--nalfa-color-type-elem-terr);
+}
+
+.color-keyword(@keyword) when (@keyword = "air") {
+	color: var(--nalfa-color-type-elem-air);
+}
+
+.color-keyword(@keyword) when (@keyword = "natu") {
+	color: var(--nalfa-color-type-elem-natu);
+}
+
+.color-keyword(@keyword) when (@keyword = "givr") {
+	color: var(--nalfa-color-type-elem-givr);
+}
+
+.color-keyword(@keyword) when (@keyword = "foud") {
+	color: var(--nalfa-color-type-elem-foud);
+}
+
+.color-keyword(@keyword) when (@keyword = "radt") {
+	color: var(--nalfa-color-type-magi-radt);
+}
+
+.color-keyword(@keyword) when (@keyword = "obsc") {
+	color: var(--nalfa-color-type-magi-obsc);
+}
+
+.color-keyword(@keyword) when (@keyword = "arca") {
+	color: var(--nalfa-color-type-magi-arca);
+}
+
+.color-keyword(@keyword) when (@keyword = "chao") {
+	color: var(--nalfa-color-type-magi-chao);
+}
+
+.color-keyword(@keyword) when (@keyword = "necr") {
+	color: var(--nalfa-color-type-magi-necr);
+}
+
+.color-keyword(@keyword) when (@keyword = "psyc") {
+	color: var(--nalfa-color-type-magi-psyc);
+}
+
+.color-keyword(@keyword) when (@keyword = "arme") {
+	color: var(--nalfa-color-type-spec-arme);
+}
+
+.color-keyword(@keyword) when (@keyword = "soin") {
+	color: var(--nalfa-color-type-spec-soin);
+}
+
+.color-keyword(@keyword) when (@keyword = "abso") {
+	color: var(--nalfa-color-type-spec-abso);
 }
