@@ -1,0 +1,80 @@
+<div class="sheet-section">
+	<span class="field__label">Description</span>
+	<prose-mirror
+		name="system.description.value"
+		value="{{descriptionValue}}"
+		toggled="true"
+	>
+		{{{enrichedHTML.description.value}}}
+	</prose-mirror>
+</div>
+
+<div class="sheet-section">
+	<span class="field__label">Source</span>
+	<prose-mirror
+		name="system.description.source"
+		value="{{descriptionSource}}"
+		toggled="true"
+	>
+		{{{enrichedHTML.description.source}}}
+	</prose-mirror>
+</div>
+
+{{#if hasIdentification}}
+	<div class="sheet-section panel-section">
+		<div class="physical-flags">
+			<label class="tiny-check">
+				<span class="tiny-check__label">Cur</span>
+				<input type="checkbox" name="system.cursed" {{checked sysData.cursed}}/>
+			</label>
+			<label class="tiny-check">
+				<span class="tiny-check__label">Id M</span>
+				<input
+					type="checkbox"
+					name="system.identification.mechanic"
+					{{checked sysData.identification.mechanic}}
+				/>
+			</label>
+			<label class="tiny-check">
+				<span class="tiny-check__label">Id</span>
+				<input
+					type="checkbox"
+					name="system.identification.identified"
+					{{checked sysData.identification.identified}}
+				/>
+			</label>
+		</div>
+
+		<div class="grid grid--two">
+			<label class="field">
+				<span class="field__label">Nom réel</span>
+				<input
+					class="fixed"
+					name="system.identification.true_name"
+					type="text"
+					value="{{sysData.identification.true_name}}"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Nom inconnu</span>
+				<input
+					class="fixed"
+					name="system.identification.unidentified.name"
+					type="text"
+					value="{{sysData.identification.unidentified.name}}"
+				/>
+			</label>
+		</div>
+
+		<label class="field field--column">
+			<span class="field__label">Desc. inconnue</span>
+			<prose-mirror
+				name="system.identification.unidentified.description"
+				value="{{sysData.identification.unidentified.description}}"
+				toggled="true"
+			>
+				{{{enrichedHTML.identification.unidentified.description}}}
+			</prose-mirror>
+		</label>
+	</div>
+{{/if}}

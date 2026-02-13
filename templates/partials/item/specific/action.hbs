@@ -1,0 +1,191 @@
+<div class="grid grid--two">
+	<div class="panel-section">
+		<span class="field__label">Prérequis</span>
+		<label class="field field--inline">
+			<input type="checkbox" name="system.prerequisites.verbal" {{checked sysData.prerequisites.verbal}}/>
+			<span>Verbal</span>
+		</label>
+		<label class="field field--inline">
+			<input
+				type="checkbox"
+				name="system.prerequisites.somatic"
+				{{checked sysData.prerequisites.somatic}}
+			/>
+			<span>Somatique</span>
+		</label>
+		<label class="field field--inline">
+			<input
+				type="checkbox"
+				name="system.prerequisites.material"
+				{{checked sysData.prerequisites.material}}
+			/>
+			<span>Matériel</span>
+		</label>
+		<label class="field field--inline">
+			<input type="checkbox" name="system.prerequisites.ritual" {{checked sysData.prerequisites.ritual}}/>
+			<span>Rituel</span>
+		</label>
+	</div>
+
+	<div class="panel-section">
+		<span class="field__label">Progression</span>
+		<label class="field">
+			<span class="field__label">Prochain niveau</span>
+			<input
+				name="system.next_level_up"
+				type="number"
+				value="{{sysData.next_level_up}}"
+				data-dtype="Number"
+			/>
+		</label>
+	</div>
+</div>
+
+<div class="panel-section">
+	<span class="field__label">Lancement</span>
+	<label class="field">
+		<span class="field__label">Condition</span>
+		<input class="fixed" name="system.casting.condition" type="text" value="{{sysData.casting.condition}}"/>
+	</label>
+
+	<div class="grid grid--two">
+		<div>
+			<h4>Cible</h4>
+			<label class="field">
+				<span class="field__label">Quantité</span>
+				<input
+					name="system.casting.target.value"
+					type="number"
+					value="{{sysData.casting.target.value}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Type</span>
+				<select name="system.casting.target.target_unit">
+					{{selectOptions config.target_units selected=sysData.casting.target.target_unit}}
+				</select>
+			</label>
+			<label class="field field--inline">
+				<input
+					type="checkbox"
+					name="system.casting.target.area.mechanic"
+					{{checked sysData.casting.target.area.mechanic}}
+				/>
+				<span>Zone</span>
+			</label>
+			<label class="field">
+				<span class="field__label">Valeur zone</span>
+				<input
+					name="system.casting.target.area.value"
+					type="number"
+					value="{{sysData.casting.target.area.value}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Forme zone</span>
+				<select name="system.casting.target.area.shape">
+					{{selectOptions config.area_shapes selected=sysData.casting.target.area.shape}}
+				</select>
+			</label>
+		</div>
+
+		<div>
+			<h4>Portée</h4>
+			<label class="field">
+				<span class="field__label">Type</span>
+				<select name="system.casting.range.range_type">
+					{{selectOptions config.range_types selected=sysData.casting.range.range_type}}
+				</select>
+			</label>
+			<label class="field">
+				<span class="field__label">Valeur</span>
+				<input
+					name="system.casting.range.value"
+					type="number"
+					value="{{sysData.casting.range.value}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Min</span>
+				<input
+					name="system.casting.range.min_value"
+					type="number"
+					value="{{sysData.casting.range.min_value}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Longue</span>
+				<input
+					name="system.casting.range.long_value"
+					type="number"
+					value="{{sysData.casting.range.long_value}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Forme</span>
+				<select name="system.casting.range.shape">
+					{{selectOptions config.area_shapes selected=sysData.casting.range.shape}}
+				</select>
+			</label>
+		</div>
+	</div>
+
+	<div class="grid grid--two">
+		<div>
+			<h4>Durée</h4>
+			<label class="field">
+				<span class="field__label">Valeur</span>
+				<input
+					name="system.casting.cast_duration.value"
+					type="number"
+					value="{{sysData.casting.cast_duration.value}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Unité</span>
+				<select name="system.casting.cast_duration.duration_unit">
+					{{selectOptions config.duration_units selected=sysData.casting.cast_duration.duration_unit}}
+				</select>
+			</label>
+		</div>
+
+		<div>
+			<h4>Utilisations</h4>
+			<label class="field">
+				<span class="field__label">Repos court</span>
+				<input
+					name="system.casting.max_uses_by.sr"
+					type="number"
+					value="{{sysData.casting.max_uses_by.sr}}"
+					data-dtype="Number"
+				/>
+			</label>
+			<label class="field">
+				<span class="field__label">Repos long</span>
+				<input
+					name="system.casting.max_uses_by.lr"
+					type="number"
+					value="{{sysData.casting.max_uses_by.lr}}"
+					data-dtype="Number"
+				/>
+			</label>
+		</div>
+	</div>
+
+	<label class="field field--column">
+		<span class="field__label">Cooldown</span>
+		<prose-mirror
+			name="system.casting.cooldown"
+			value="{{sysData.casting.cooldown}}"
+			toggled="true"
+		>
+			{{{enrichedHTML.casting.cooldown}}}
+		</prose-mirror>
+	</label>
+</div>

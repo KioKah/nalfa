@@ -1,0 +1,88 @@
+<div class="panel-section">
+	{{#if sysData.all_valid}}
+		<p>
+			Total: {{sysData.total_value}} {{sysData.currency_base}} ({{sysData.total_weight}}
+			{{{weightIcon}}})
+		</p>
+	{{else}}
+		<p>Monnaie invalide: vérifie les dénominations et la base.</p>
+	{{/if}}
+
+	<div class="field field--inline">
+		<span class="field__label">Dénominations</span>
+		<button
+			type="button"
+			data-action="add-array-entry"
+			data-path="denominations"
+			data-entry-type="denomination"
+		>
+			+
+		</button>
+	</div>
+
+	{{#each sysData.denominations as |denomination index|}}
+		<div class="field field--inline">
+			<input
+				name="system.denominations.{{index}}.amount"
+				type="number"
+				value="{{denomination.amount}}"
+				data-dtype="Number"
+			/>
+			<input
+				name="system.denominations.{{index}}.short_name"
+				type="text"
+				value="{{denomination.short_name}}"
+				placeholder="nom"
+			/>
+			<input
+				name="system.denominations.{{index}}.monetary_value"
+				type="number"
+				value="{{denomination.monetary_value}}"
+				data-dtype="Number"
+			/>
+			<input
+				name="system.denominations.{{index}}.weight_coefficient"
+				type="number"
+				value="{{denomination.weight_coefficient}}"
+				data-dtype="Number"
+			/>
+			<button
+				type="button"
+				data-action="remove-array-entry"
+				data-path="denominations"
+				data-index="{{index}}"
+				data-minimum="1"
+			>
+				-
+			</button>
+		</div>
+		<div class="field field--inline field__meta">
+			{{#if denomination.valid}}
+				<span>Valeur: {{denomination.value}}</span>
+				<span>Poids: {{denomination.weight}}</span>
+			{{else}}
+				<span>Dénomination invalide</span>
+			{{/if}}
+		</div>
+	{{/each}}
+
+	<label class="field">
+		<span class="field__label">Poids de base d'une pièce</span>
+		<input
+			name="system.base_coin_weight"
+			type="number"
+			value="{{sysData.base_coin_weight}}"
+			data-dtype="Number"
+		/>
+	</label>
+
+	<label class="field field--inline">
+		<input type="checkbox" name="system.add_denomination" {{checked sysData.add_denomination}}/>
+		<span>Autoriser ajout de dénomination</span>
+	</label>
+
+	<label class="field field--inline">
+		<input type="checkbox" name="system.done" {{checked sysData.done}}/>
+		<span>Monnaie validée</span>
+	</label>
+</div>

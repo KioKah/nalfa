@@ -3,7 +3,23 @@ import { nalfa } from "./module/config.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
-import { CharacterData, ItemData, NPCData } from "./module/data/models.mjs";
+import {
+	ActionData,
+	BackpackData,
+	BookData,
+	CharacterData,
+	ClassData,
+	ConsumableData,
+	CurrencyData,
+	JobData,
+	LootData,
+	NPCData,
+	RaceData,
+	ToolData,
+	TrinketData,
+	WeaponAttributeData,
+	WeaponData,
+} from "./module/data/models.mjs";
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
 
@@ -20,7 +36,25 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/partials/character/health.hbs",
 
 		"systems/nalfa/templates/sheets/item/header.hbs",
+		"systems/nalfa/templates/sheets/item/tabs.hbs",
 		"systems/nalfa/templates/sheets/item/body.hbs",
+		"systems/nalfa/templates/partials/item/item-specific.hbs",
+		"systems/nalfa/templates/partials/item/actionable.hbs",
+		"systems/nalfa/templates/partials/item/description.hbs",
+		"systems/nalfa/templates/partials/item/physical.hbs",
+		"systems/nalfa/templates/partials/item/specific/weapon.hbs",
+		"systems/nalfa/templates/partials/item/specific/trinket.hbs",
+		"systems/nalfa/templates/partials/item/specific/tool.hbs",
+		"systems/nalfa/templates/partials/item/specific/backpack.hbs",
+		"systems/nalfa/templates/partials/item/specific/consumable.hbs",
+		"systems/nalfa/templates/partials/item/specific/loot.hbs",
+		"systems/nalfa/templates/partials/item/specific/book.hbs",
+		"systems/nalfa/templates/partials/item/specific/action.hbs",
+		"systems/nalfa/templates/partials/item/specific/currency.hbs",
+		"systems/nalfa/templates/partials/item/specific/race.hbs",
+		"systems/nalfa/templates/partials/item/specific/class.hbs",
+		"systems/nalfa/templates/partials/item/specific/job.hbs",
+		"systems/nalfa/templates/partials/item/specific/weapon-attribute.hbs",
 
 		"systems/nalfa/templates/chat/roll/skill.hbs",
 		"systems/nalfa/templates/chat/roll/attack.hbs",
@@ -44,7 +78,19 @@ Hooks.once("init", function () {
 		NPC: NPCData,
 	});
 	Object.assign(CONFIG.Item.dataModels, {
-		Item: ItemData,
+		Weapon: WeaponData,
+		Trinket: TrinketData,
+		Tool: ToolData,
+		Backpack: BackpackData,
+		Consumable: ConsumableData,
+		Loot: LootData,
+		Book: BookData,
+		Action: ActionData,
+		Currency: CurrencyData,
+		Race: RaceData,
+		Class: ClassData,
+		Job: JobData,
+		WeaponAttribute: WeaponAttributeData,
 	});
 
 	// Currently no custom CONFIG.Actor.documentClass

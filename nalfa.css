@@ -61,6 +61,10 @@
   justify-content: center;
   width: 100%;
 }
+.nalfa-chat-card .nalfa-roll-action > button {
+  border-width: 2px !important;
+  border-color: var(--color-border-light-primary, inherit) !important;
+}
 .nalfa-chat-card .nalfa-roll-formula {
   font-size: 12px;
   opacity: 0.7;
@@ -709,12 +713,13 @@
 .nalfa.sheet.actor-sheet .value-mode-toggle__label {
   font-weight: 600;
 }
+.nalfa.sheet.item-sheet,
 .nalfa.sheet.item {
-  min-width: 132px;
+  min-width: 180px;
   max-width: calc(var(--item-width) + 2 * var(--nalfa-padding));
-  min-height: 132px;
 }
-.nalfa.sheet.item .nalfa-sheet {
+.nalfa.sheet.item-sheet > section.window-content,
+.nalfa.sheet.item > section.window-content {
   font-family: var(--nalfa-font-primary), var(--font-sans);
   font-size: 18px;
   color: var(--color-text-primary);
@@ -725,78 +730,237 @@
   background-image: url(http://localhost:30000/ui/parchment.jpg);
   background-color: var(--background);
   background-blend-mode: multiply;
-}
-.nalfa.sheet.item .test-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   overflow: hidden;
-  font-size: 14px;
 }
-.nalfa.sheet.item .test-item .tab {
-  height: 100%;
-  overflow-y: auto;
-}
-.nalfa.sheet.item .test-item input,
-.nalfa.sheet.item .test-item select,
-.nalfa.sheet.item .test-item textarea {
-  margin-left: 5px;
-}
-.nalfa.sheet.item .test-item input[type="text"] {
-  width: 120px;
-  padding: 5px;
-  box-sizing: border-box;
-}
-.nalfa.sheet.item .test-item textarea {
-  width: 380px;
-  padding: 5px;
-  box-sizing: border-box;
-}
-.nalfa.sheet.item .test-item ul {
-  padding-left: 0px;
-  width: 100%;
-  white-space: nowrap;
-}
-.nalfa.sheet.item .test-item ul li {
+.nalfa.sheet.item-sheet .item-sheet-header__rarity,
+.nalfa.sheet.item .item-sheet-header__rarity {
+  flex: 0 1 125px;
   display: flex;
   align-items: center;
+}
+.nalfa.sheet.item-sheet .item-sheet-header__rarity select,
+.nalfa.sheet.item .item-sheet-header__rarity select {
+  width: 115px;
+}
+.nalfa.sheet.item-sheet .item-sheet-header__name,
+.nalfa.sheet.item .item-sheet-header__name {
+  flex: 1 1 340px;
+  display: flex;
+  align-items: center;
+}
+.nalfa.sheet.item-sheet .item-sheet-header__recommended,
+.nalfa.sheet.item .item-sheet-header__recommended {
+  flex: 0 0 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.nalfa.sheet.item-sheet .item-sheet-header__recommended-values,
+.nalfa.sheet.item .item-sheet-header__recommended-values {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
   white-space: nowrap;
-  margin-top: 2px;
-  margin-bottom: 2px;
 }
-.nalfa.sheet.item .test-item ul li ul {
-  /* clockwise */
-  margin: 0 0 0 10px;
+.nalfa.sheet.item-sheet .item-sheet-body,
+.nalfa.sheet.item .item-sheet-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 10px;
 }
-.nalfa.sheet.item .test-item .editor-container {
-  width: 450px;
-  margin-left: 5px;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid;
-  border-radius: 3px;
-  padding: 0 5px;
+.nalfa.sheet.item-sheet .item-sheet-content,
+.nalfa.sheet.item .item-sheet-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
-.nalfa.sheet.item .test-item .editor {
-  height: 100%;
-  width: 100%;
+.nalfa.sheet.item-sheet .tab,
+.nalfa.sheet.item .tab {
+  display: none;
 }
-.nalfa.sheet.item .test-item .editor.tinymce {
-  height: 163px;
+.nalfa.sheet.item-sheet .tab.active,
+.nalfa.sheet.item .tab.active {
+  display: block;
 }
-.nalfa.sheet.item .test-item .editor.tinymce .tox.tox-tinymce {
-  height: 100% !important;
+.nalfa.sheet.item-sheet .sheet-section,
+.nalfa.sheet.item .sheet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
-.nalfa.sheet.item .test-item .editor-content {
-  min-height: 35px;
-  height: 100%;
-  width: 100%;
+.nalfa.sheet.item-sheet h2,
+.nalfa.sheet.item h2,
+.nalfa.sheet.item-sheet h3,
+.nalfa.sheet.item h3,
+.nalfa.sheet.item-sheet h4,
+.nalfa.sheet.item h4 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 12px;
+  font-weight: 600;
 }
-.nalfa.sheet.item .test-item .editor-content li {
-  display: list-item;
+.nalfa.sheet.item-sheet .sheet-section--physical,
+.nalfa.sheet.item .sheet-section--physical {
+  flex: 0 0 auto;
+  max-height: 120px;
+  overflow: hidden;
+  padding-bottom: 6px;
 }
-.nalfa.sheet.item .test-item .editor-edit {
-  right: 0;
-  background: rgba(0, 0, 0, 0.1);
+.nalfa.sheet.item-sheet .hint,
+.nalfa.sheet.item .hint,
+.nalfa.sheet.item-sheet .field__meta,
+.nalfa.sheet.item .field__meta {
+  font-size: 11px;
+  opacity: 0.75;
 }
-.nalfa.sheet.item .test-item.item-description .editor-container {
-  width: 500px;
+.nalfa.sheet.item-sheet .label,
+.nalfa.sheet.item .label,
+.nalfa.sheet.item-sheet .field__label,
+.nalfa.sheet.item .field__label {
+  font-weight: 600;
+  font-size: 12px;
+}
+.nalfa.sheet.item-sheet .field,
+.nalfa.sheet.item .field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.item-sheet .field--inline,
+.nalfa.sheet.item .field--inline {
+  display: inline-flex;
+}
+.nalfa.sheet.item-sheet .field--column,
+.nalfa.sheet.item .field--column {
+  flex-direction: column;
+  align-items: stretch;
+}
+.nalfa.sheet.item-sheet .prosemirror,
+.nalfa.sheet.item .prosemirror,
+.nalfa.sheet.item-sheet prose-mirror,
+.nalfa.sheet.item prose-mirror {
+  min-height: 90px;
+}
+.nalfa.sheet.item-sheet .button-row,
+.nalfa.sheet.item .button-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nalfa.sheet.item-sheet .panel-section,
+.nalfa.sheet.item .panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+}
+.nalfa.sheet.item-sheet .physical-flags,
+.nalfa.sheet.item .physical-flags {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.nalfa.sheet.item-sheet .tiny-check,
+.nalfa.sheet.item .tiny-check {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 38px;
+}
+.nalfa.sheet.item-sheet .tiny-check__label,
+.nalfa.sheet.item .tiny-check__label {
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.8;
+}
+.nalfa.sheet.item-sheet .attack-config,
+.nalfa.sheet.item .attack-config {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nalfa.sheet.item-sheet .attack-config__header,
+.nalfa.sheet.item .attack-config__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.item-sheet .attack-config__name,
+.nalfa.sheet.item .attack-config__name {
+  flex: 1 1 240px;
+}
+.nalfa.sheet.item-sheet .attack-config__toggles,
+.nalfa.sheet.item .attack-config__toggles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.nalfa.sheet.item-sheet .attack-config__mode,
+.nalfa.sheet.item .attack-config__mode {
+  min-width: 140px;
+}
+.nalfa.sheet.item-sheet .attack-config__toggle,
+.nalfa.sheet.item .attack-config__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.nalfa.sheet.item-sheet .attack-config__sections,
+.nalfa.sheet.item .attack-config__sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.nalfa.sheet.item-sheet .attack-config__section,
+.nalfa.sheet.item .attack-config__section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+  min-width: 0;
+}
+.nalfa.sheet.item-sheet .attack-config__section-title,
+.nalfa.sheet.item .attack-config__section-title {
+  display: flex;
+  justify-content: center;
+}
+.nalfa.sheet.item-sheet .attack-config__fields,
+.nalfa.sheet.item .attack-config__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nalfa.sheet.item-sheet .attack-config__row,
+.nalfa.sheet.item .attack-config__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 #autocomplete-menu li.context-item.command,
 #context-menu li.context-item {

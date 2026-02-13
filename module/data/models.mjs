@@ -9,10 +9,18 @@ const numberValueField = (initial = null, options = {}) => {
 	return new fields.NumberField({ initial, nullable, ...options });
 };
 
-const stringField = (initial = "") => new fields.StringField({ initial });
-const htmlField = (initial = "") => new fields.HTMLField({ initial });
-const booleanField = (initial = false) => new fields.BooleanField({ initial });
+const stringField = (initial = "", options = {}) =>
+	new fields.StringField({ initial, ...options });
+const htmlField = (initial = "", options = {}) =>
+	new fields.HTMLField({ initial, ...options });
+const booleanField = (initial = false, options = {}) =>
+	new fields.BooleanField({ initial, ...options });
 const schemaField = (schema) => new fields.SchemaField(schema);
+const arrayField = (elementField, initial = []) =>
+	new fields.ArrayField(elementField, { initial });
+
+const roundNumber = (value, decimals = 6) =>
+	Number(Math.round(value * 10 ** decimals) / 10 ** decimals);
 
 const saveSchema = () =>
 	schemaField({
@@ -76,6 +84,61 @@ const movementSchema = () =>
 		base: numberField(6),
 		alt: numberField(0),
 		alt_mult: numberField(1),
+	});
+
+const attackSchema = () =>
+	schemaField({
+		name: stringField(""),
+		mode: stringField("arme"),
+		damage_formulas: arrayField(
+			schemaField({
+				formula: stringField(""),
+				type: stringField("none"),
+			}),
+			[{ formula: "", type: "none" }],
+		),
+		cost: schemaField({
+			value: numberField(1),
+			action_unit: stringField("main"),
+			ester_level: numberField(-1),
+			materials: arrayField(stringField(""), []),
+		}),
+		weapon_attributes: schemaField({
+			use_dex: booleanField(false),
+			todo: stringField(""),
+		}),
+		todo: schemaField({
+			action: stringField(""),
+			cost: stringField(""),
+			cooldown: stringField(""),
+			target_range: stringField(""),
+			targets: stringField(""),
+			area: stringField(""),
+		}),
+		jdt: schemaField({
+			enabled: booleanField(false),
+			stat: stringField("arme"),
+			bonus: numberField(0),
+		}),
+		jds: schemaField({
+			enabled: booleanField(false),
+			dd: numberField(0),
+			stat: stringField("none"),
+		}),
+		jdd: schemaField({
+			enabled: booleanField(false),
+			formula1: stringField(""),
+			stat1: stringField("arme"),
+			damage_type1: stringField("none"),
+			formula2: stringField(""),
+			stat2: stringField("none"),
+			damage_type2: stringField("none"),
+		}),
+		concentration: schemaField({
+			enabled: booleanField(false),
+			stat: stringField("none"),
+			dd: numberField(0),
+		}),
 	});
 
 const baseAttributesSchema = () => ({
@@ -177,8 +240,7 @@ export class BaseActorData extends TypeDataModel {
 
 		const sys = this;
 
-		const withBaseAlt = (source = {}) =>
-			(source.base ?? 0) + (source.alt ?? 0);
+		const withBaseAlt = (source = {}) => (source.base ?? 0) + (source.alt ?? 0);
 		const withBaseAltMult = (source = {}) =>
 			(source.base ?? 0) * (source.alt_mult ?? 1) + (source.alt ?? 0);
 
@@ -218,8 +280,7 @@ export class BaseActorData extends TypeDataModel {
 		};
 		const profile = sys.profile ?? "none";
 		const defenseObj = sys.attributes?.defense ?? {};
-		defenseObj.value =
-			(defenseTable[profile] ?? 0) + withBaseAlt(defenseObj);
+		defenseObj.value = (defenseTable[profile] ?? 0) + withBaseAlt(defenseObj);
 
 		const evasionObj = sys.attributes?.evasion ?? {};
 		evasionObj.value = withBaseAlt(evasionObj);
@@ -241,22 +302,10 @@ export class BaseActorData extends TypeDataModel {
 		const charLevel = Number(sys.attributes?.level ?? 1);
 		const maxHealthTable = {
 			none: [1],
-			squishy: [
-				0, 8, 12, 16, 20, 24, 28,
-				32, 36, 40, 44, 48, 52,
-			],
-			soft: [
-				0, 9, 14, 18, 23, 27, 32,
-				36, 41, 45, 50, 54, 59,
-			],
-			sturdy: [
-				0, 10, 16, 21, 26, 31, 36,
-				41, 46, 51, 56, 61, 66,
-			],
-			tanky: [
-				0, 11, 18, 24, 29, 35, 40,
-				46, 51, 57, 62, 68, 73,
-			],
+			squishy: [0, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52],
+			soft: [0, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59],
+			sturdy: [0, 10, 16, 21, 26, 31, 36, 41, 46, 51, 56, 61, 66],
+			tanky: [0, 11, 18, 24, 29, 35, 40, 46, 51, 57, 62, 68, 73],
 		};
 		const healthObj = sys.attributes?.hp ?? {};
 		const profileArray = maxHealthTable[profile] ?? maxHealthTable.none;
@@ -265,22 +314,10 @@ export class BaseActorData extends TypeDataModel {
 		healthObj.max = profileHealth + withBaseAlt(healthObj);
 
 		const maxChargeTable = {
-			lvl1: [
-				0, 4, 5, 6, 6, 6, 6,
-				6, 6, 6, 6, 6, 6,
-			],
-			lvl2: [
-				0, 0, 0, 0, 1, 2, 2,
-				2, 2, 3, 3, 3, 3,
-			],
-			lvl3: [
-				0, 0, 0, 0, 0, 0, 0,
-				0, 1, 1, 2, 2, 2,
-			],
-			special: [
-				0, 0, 1, 1, 2, 3, 3,
-				3, 3, 4, 4, 4, 4,
-			],
+			lvl1: [0, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+			lvl2: [0, 0, 0, 0, 1, 2, 2, 2, 2, 3, 3, 3, 3],
+			lvl3: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2],
+			special: [0, 0, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4],
 		};
 		for (const [key, slot] of Object.entries(sys.spell_charges ?? {})) {
 			slot.max = maxChargeTable[key]?.[charLevel] ?? 0;
@@ -332,46 +369,7 @@ export class BaseActorData extends TypeDataModel {
 				}),
 			}),
 			actions: schemaField(baseActionsSchema()),
-			attack: schemaField({
-				name: stringField(""),
-				mode: stringField("arme"),
-				weapon_attributes: schemaField({
-					use_dex: booleanField(false),
-					todo: stringField("other ones"),
-				}),
-				todo: schemaField({
-					action: stringField("which one(s)"),
-					cost: stringField("X per short/long rest / spell charges"),
-					cooldown: stringField("before next cast"),
-					target_range: stringField("range"),
-					targets: stringField("what kind how many"),
-					area: stringField("if shape target is not a single point"),
-				}),
-				jdt: schemaField({
-					enabled: booleanField(false),
-					stat: stringField("arme"),
-					bonus: numberField(0),
-				}),
-				jds: schemaField({
-					enabled: booleanField(false),
-					dd: numberField(0),
-					stat: stringField(""),
-				}),
-				jdd: schemaField({
-					enabled: booleanField(false),
-					formula1: stringField(""),
-					stat1: stringField("arme"),
-					damage_type1: stringField(""),
-					formula2: stringField(""),
-					stat2: stringField(""),
-					damage_type2: stringField(""),
-				}),
-				concentration: schemaField({
-					enabled: booleanField(false),
-					stat: stringField(""),
-					dd: numberField(0),
-				}),
-			}),
+			attack: attackSchema(),
 			ui: schemaField({
 				valueMode: stringField("values"),
 			}),
@@ -417,11 +415,374 @@ export class NPCData extends BaseActorData {
 	}
 }
 
-export class ItemData extends TypeDataModel {
+const itemDescriptionSchema = () => ({
+	description: schemaField({
+		value: htmlField(""),
+		source: htmlField(""),
+	}),
+});
+
+const itemRaritySchema = () => ({
+	rarity: stringField("unknown"),
+});
+
+const recommendedLevelSchema = () => ({
+	recommended_level: schemaField({
+		min: numberField(0),
+		max: numberField(0),
+	}),
+});
+
+const physicalSchema = () => ({
+	weight: numberField(0),
+	quantity: numberField(1),
+	equippable: schemaField({
+		main_hand: booleanField(false),
+		off_hand: booleanField(false),
+		body: booleanField(false),
+	}),
+	equipped: schemaField({
+		main_hand: booleanField(false),
+		off_hand: booleanField(false),
+		body: booleanField(false),
+	}),
+	cursed: booleanField(false),
+	identification: schemaField({
+		mechanic: booleanField(false),
+		identified: booleanField(false),
+		true_name: stringField(""),
+		unidentified: schemaField({
+			name: stringField(""),
+			description: htmlField(""),
+		}),
+	}),
+});
+
+const actionableSchema = () => ({
+	action: attackSchema(),
+});
+
+const racePointBuySchema = () =>
+	schemaField({
+		stat_advantage: schemaField({
+			str: stringField("choice"),
+			dex: stringField("choice"),
+			int: stringField("choice"),
+			wis: stringField("choice"),
+			cha: stringField("choice"),
+			con: stringField("choice"),
+		}),
+	});
+
+const denominationSchema = () =>
+	schemaField({
+		amount: numberField(0),
+		short_name: stringField(""),
+		monetary_value: numberField(1),
+		weight_coefficient: numberField(1),
+		valid: booleanField(false),
+		value: numberValueField(null),
+		weight: numberValueField(null),
+	});
+
+export class BaseItemData extends TypeDataModel {
+	static migrateData(source) {
+		super.migrateData(source);
+
+		if (typeof source.description === "string") {
+			source.description = {
+				value: source.description,
+				source: "",
+			};
+		}
+
+		return source;
+	}
+
 	static defineSchema() {
 		return {
-			rarity: stringField("unknown"),
-			description: htmlField(""),
+			...itemDescriptionSchema(),
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 		};
 	}
 }
+
+export class WeaponData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+			...actionableSchema(),
+			weapon_attributes: arrayField(stringField(""), []),
+		};
+	}
+}
+
+export class TrinketData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+			...actionableSchema(),
+			trinket_type: stringField("none"),
+		};
+	}
+}
+
+export class ToolData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+		};
+	}
+}
+
+export class BackpackData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+			capacity: numberField(35),
+		};
+	}
+}
+
+export class ConsumableData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+			...actionableSchema(),
+			consumable_type: stringField("other"),
+			auto_destroy: booleanField(false),
+		};
+	}
+}
+
+export class LootData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+		};
+	}
+}
+
+export class BookData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...physicalSchema(),
+		};
+	}
+}
+
+export class ActionData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			...actionableSchema(),
+			prerequisites: schemaField({
+				verbal: booleanField(false),
+				somatic: booleanField(false),
+				material: booleanField(false),
+				ritual: booleanField(false),
+			}),
+			casting: schemaField({
+				condition: stringField(""),
+				target: schemaField({
+					value: numberField(0),
+					target_unit: stringField("entity"),
+					area: schemaField({
+						mechanic: booleanField(false),
+						value: numberField(0),
+						shape: stringField(""),
+					}),
+				}),
+				range: schemaField({
+					range_type: stringField("ranged"),
+					value: numberField(1),
+					min_value: numberField(0),
+					long_value: numberField(0),
+					shape: stringField(""),
+				}),
+				cast_duration: schemaField({
+					value: numberField(0),
+					duration_unit: stringField("instant"),
+				}),
+				cooldown: htmlField(""),
+				max_uses_by: schemaField({
+					sr: numberField(-1),
+					lr: numberField(-1),
+				}),
+			}),
+			next_level_up: numberField(-1),
+		};
+	}
+}
+
+export class CurrencyData extends BaseItemData {
+	prepareDerivedData() {
+		super.prepareDerivedData();
+
+		const baseCoinWeight = Number(this.base_coin_weight ?? 0);
+		let totalValue = 0;
+		let totalWeight = 0;
+		let hasBaseDenomination = false;
+
+		this.currency_base = "";
+
+		for (const denomination of this.denominations ?? []) {
+			const amount = Number(denomination.amount ?? 0);
+			const shortName = String(denomination.short_name ?? "").trim();
+			const monetaryValue = Number(denomination.monetary_value ?? 0);
+			const weightCoefficient = Number(denomination.weight_coefficient ?? 0);
+
+			denomination.valid =
+				Number.isFinite(amount) &&
+				amount >= 0 &&
+				shortName.length > 0 &&
+				Number.isFinite(monetaryValue) &&
+				monetaryValue > 0 &&
+				Number.isFinite(weightCoefficient) &&
+				weightCoefficient >= 0;
+
+			if (!denomination.valid) {
+				denomination.value = null;
+				denomination.weight = null;
+				continue;
+			}
+
+			const value = roundNumber(amount * monetaryValue);
+			const weight = roundNumber(amount * baseCoinWeight * weightCoefficient);
+
+			denomination.value = value;
+			denomination.weight = weight;
+			totalValue += value;
+			totalWeight += weight;
+
+			if (!hasBaseDenomination && monetaryValue === 1) {
+				hasBaseDenomination = true;
+				this.currency_base = denomination.short_name;
+			}
+		}
+
+		const allDenominationsValid = (this.denominations ?? []).every(
+			(denomination) => denomination.valid,
+		);
+
+		this.all_valid = allDenominationsValid && baseCoinWeight >= 0 && hasBaseDenomination;
+
+		if (this.all_valid) {
+			this.total_value = roundNumber(totalValue);
+			this.total_weight = roundNumber(totalWeight);
+			return;
+		}
+
+		this.total_value = null;
+		this.total_weight = null;
+		this.add_denomination = false;
+	}
+
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			denominations: arrayField(denominationSchema(), [
+				{
+					amount: 0,
+					short_name: "",
+					monetary_value: 1,
+					weight_coefficient: 1,
+					valid: false,
+					value: null,
+					weight: null,
+				},
+			]),
+			base_coin_weight: numberField(0.005),
+			add_denomination: booleanField(false),
+			done: booleanField(false),
+			total_value: numberValueField(null),
+			currency_base: stringField(""),
+			total_weight: numberValueField(null),
+			all_valid: booleanField(false),
+		};
+	}
+}
+
+export class RaceData extends BaseItemData {
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			height: schemaField({
+				min: numberField(0),
+				max: numberField(0),
+			}),
+			weight: schemaField({
+				min: numberField(0),
+				max: numberField(0),
+			}),
+			life_expectancy: numberField(0),
+			size: stringField("medium"),
+			playable_classes: arrayField(stringField(""), []),
+			racial_traits: arrayField(stringField(""), []),
+			point_buy: racePointBuySchema(),
+		};
+	}
+}
+
+export class ClassData extends BaseItemData {
+	prepareDerivedData() {
+		super.prepareDerivedData();
+		if (this.attributes?.armor_score) {
+			this.attributes.armor_score.value = this.attributes.armor_score.base;
+		}
+	}
+
+	static defineSchema() {
+		const baseSchema = super.defineSchema();
+		return {
+			...baseSchema,
+			stat_ester: stringField("str"),
+			choices: schemaField({
+				bonus_skill_points: schemaField({
+					value: numberField(0),
+					max: numberField(8),
+				}),
+				malus_skill_points: schemaField({
+					value: numberField(0),
+					max: numberField(5),
+				}),
+			}),
+			attributes: schemaField({
+				actions: schemaField({
+					main: numberField(1),
+					bonus: numberField(1),
+					reaction: numberField(1),
+					concentration: numberField(1),
+					movement: numberField(6),
+				}),
+				armor_score: schemaField({
+					base: numberField(0),
+					stat: stringField("none"),
+					value: numberValueField(null),
+				}),
+			}),
+		};
+	}
+}
+
+export class JobData extends BaseItemData {}
+
+export class WeaponAttributeData extends BaseItemData {}

@@ -4,6 +4,21 @@
 		"templates": {}
 	},
 	"Item": {
-		"types": ["Item"]
+		"types": [
+			"Weapon",
+			"Trinket",
+			"Tool",
+			"Backpack",
+			"Consumable",
+			"Loot",
+			"Book",
+			"Action",
+			"Currency",
+			"Race",
+			"Class",
+			"Job",
+			"WeaponAttribute"
+		],
+		"templates": {}
 	}
 }

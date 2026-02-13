@@ -1,0 +1,11 @@
+<label class="field">
+	<span class="field__label">Type</span>
+	<select name="system.consumable_type">
+		{{selectOptions config.consumable_types selected=sysData.consumable_type}}
+	</select>
+</label>
+
+<label class="field field--inline">
+	<input type="checkbox" name="system.auto_destroy" {{checked sysData.auto_destroy}}/>
+	<span>Auto-détruire après usage</span>
+</label>

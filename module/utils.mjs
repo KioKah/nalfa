@@ -31,7 +31,6 @@ export function prepareItem(sysData, itemType) {
 		CombatStyle: () => {} /* Future implementation */,
 		Status: () => {} /* Future implementation */,
 		WeaponAttribute: () => {} /* Future implementation */,
-		TestItem: () => {} /* Future implementation */,
 	};
 	const prepare = prepareMap[itemType];
 

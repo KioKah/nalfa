@@ -1,0 +1,34 @@
+<div class="panel-section">
+	<div class="field field--inline">
+		<span class="field__label">Attributs d'arme</span>
+		<button
+			type="button"
+			data-action="add-array-entry"
+			data-path="weapon_attributes"
+		>
+			+
+		</button>
+	</div>
+	{{#if sysData.weapon_attributes.length}}
+		{{#each sysData.weapon_attributes as |attribute index|}}
+			<div class="field field--inline">
+				<input
+					class="fixed"
+					name="system.weapon_attributes.{{index}}"
+					type="text"
+					value="{{attribute}}"
+				/>
+				<button
+					type="button"
+					data-action="remove-array-entry"
+					data-path="weapon_attributes"
+					data-index="{{index}}"
+				>
+					-
+				</button>
+			</div>
+		{{/each}}
+	{{else}}
+		<p>Aucun attribut d'arme.</p>
+	{{/if}}
+</div>

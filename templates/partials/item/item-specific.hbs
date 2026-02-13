@@ -1,0 +1,29 @@
+<div class="sheet-section">
+	{{#if (eq item.type "Weapon")}}
+		{{> "systems/nalfa/templates/partials/item/specific/weapon.hbs"}}
+	{{else if (eq item.type "Trinket")}}
+		{{> "systems/nalfa/templates/partials/item/specific/trinket.hbs"}}
+	{{else if (eq item.type "Tool")}}
+		{{> "systems/nalfa/templates/partials/item/specific/tool.hbs"}}
+	{{else if (eq item.type "Backpack")}}
+		{{> "systems/nalfa/templates/partials/item/specific/backpack.hbs"}}
+	{{else if (eq item.type "Consumable")}}
+		{{> "systems/nalfa/templates/partials/item/specific/consumable.hbs"}}
+	{{else if (eq item.type "Loot")}}
+		{{> "systems/nalfa/templates/partials/item/specific/loot.hbs"}}
+	{{else if (eq item.type "Book")}}
+		{{> "systems/nalfa/templates/partials/item/specific/book.hbs"}}
+	{{else if (eq item.type "Action")}}
+		{{> "systems/nalfa/templates/partials/item/specific/action.hbs"}}
+	{{else if (eq item.type "Currency")}}
+		{{> "systems/nalfa/templates/partials/item/specific/currency.hbs"}}
+	{{else if (eq item.type "Race")}}
+		{{> "systems/nalfa/templates/partials/item/specific/race.hbs"}}
+	{{else if (eq item.type "Class")}}
+		{{> "systems/nalfa/templates/partials/item/specific/class.hbs"}}
+	{{else if (eq item.type "Job")}}
+		{{> "systems/nalfa/templates/partials/item/specific/job.hbs"}}
+	{{else if (eq item.type "WeaponAttribute")}}
+		{{> "systems/nalfa/templates/partials/item/specific/weapon-attribute.hbs"}}
+	{{/if}}
+</div>

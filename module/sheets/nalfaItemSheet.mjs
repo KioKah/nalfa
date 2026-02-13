@@ -2,12 +2,22 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
 export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
-	/** ─── DEFAULT OPTIONS ───────────────────────────────────────────────────────── */
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: "specific", label: "Spécifique" },
+				{ id: "actionable", label: "Action" },
+				{ id: "description", label: "Description" },
+			],
+			initial: "specific",
+		},
+	};
+
 	static DEFAULT_OPTIONS = {
 		classes: ["nalfa", "sheet", "item-sheet"],
 		position: {
-			width: 632,
-			height: 462,
+			width: 760,
+			height: 720,
 		},
 		form: {
 			submitOnChange: true,
@@ -23,102 +33,188 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			template: `systems/nalfa/templates/sheets/item/header.hbs`,
 			classes: ["nalfa-sheet"],
 		},
+		tabs: {
+			template: `systems/nalfa/templates/sheets/item/tabs.hbs`,
+			classes: ["nalfa-sheet"],
+		},
 		sheet: {
 			template: `systems/nalfa/templates/sheets/item/body.hbs`,
 			classes: ["nalfa-sheet", "sheet-body"],
 		},
 	};
 
-	/** ─── PREPARE CONTEXT ──────────────────────────────────────── */
-
 	async _prepareContext(options) {
 		const baseData = await super._prepareContext(options);
 		const { TextEditor } = foundry.applications.ux;
-
-		// Redefine sheet :
 		const item = baseData.document;
+		const rawTabs = this._prepareTabs("primary");
+		const specificTypes = new Set([
+			"Weapon",
+			"Trinket",
+			"Backpack",
+			"Consumable",
+			"Action",
+			"Currency",
+			"Race",
+			"Class",
+		]);
+		const hasSpecific = specificTypes.has(item.type);
+		const hasActionable = item.system?.action !== undefined;
+		const tabIds = [];
+		if (hasSpecific) tabIds.push("specific");
+		if (hasActionable) tabIds.push("actionable");
+		tabIds.push("description");
+
+		let activeTab = this.tabGroups.primary;
+		if (!tabIds.includes(activeTab)) {
+			activeTab = tabIds[0];
+			this.tabGroups.primary = activeTab;
+		}
+
+		const tabs = {};
+		for (const tabId of tabIds) {
+			const tab = rawTabs[tabId] ?? { id: tabId };
+			tabs[tabId] = {
+				...tab,
+				label: tabId === "specific" ? item.type : tab.label,
+				cssClass: tabId === activeTab ? "active" : "",
+			};
+		}
+
+		const descriptionData = item.system?.description ?? {};
+		const descriptionValue =
+			typeof descriptionData === "string" ? descriptionData : (descriptionData.value ?? "");
+		const descriptionSource =
+			typeof descriptionData === "string" ? "" : (descriptionData.source ?? "");
+		const unidentifiedDescription =
+			item.system?.identification?.unidentified?.description ?? "";
+		const castingCooldown = item.system?.casting?.cooldown ?? "";
+
+		if (item.img === "icons/svg/item-bag.svg") {
+			const typeIconMap = {
+				Action: "Spell",
+				Book: "Loot",
+			};
+			const iconName = typeIconMap[item.type] ?? item.type;
+			item.img = `systems/nalfa/icons/base_icons/${iconName}.svg`;
+		}
+
 		const sheetData = {
 			isOwner: this.item.isOwner,
 			isEditable: this.isEditable,
-			item: item,
+			item,
 			sysData: item.system,
-			effects: item.getEmbeddedCollection("ActiveEffect").contents,
+			tabs,
+			hasActionable,
+			hasSpecific,
+			hasPhysical: item.system?.weight !== undefined,
+			hasIdentification: item.system?.identification !== undefined,
+			hasRecommendedLevel: item.system?.recommended_level !== undefined,
+			descriptionValue,
+			descriptionSource,
 			config: CONFIG.nalfa,
 			enrichedHTML: {
-				description: await TextEditor.enrichHTML(
-					item.system?.description ?? "",
-					{
+				description: {
+					value: await TextEditor.enrichHTML(descriptionValue, {
 						async: true,
-					}
-				),
+					}),
+					source: await TextEditor.enrichHTML(descriptionSource, {
+						async: true,
+					}),
+				},
+				identification: {
+					unidentified: {
+						description: await TextEditor.enrichHTML(unidentifiedDescription, {
+							async: true,
+						}),
+					},
+				},
+				casting: {
+					cooldown: await TextEditor.enrichHTML(castingCooldown, {
+						async: true,
+					}),
+				},
 			},
 		};
-
-		// Change image if default :
-		if (sheetData.item.img == "icons/svg/item-bag.svg") {
-			sheetData.item.img = `systems/nalfa/icons/base_icons/loot.svg`;
-			// sheetData.item.img = `systems/nalfa/icons/base_icons/${sheetData.item.type}.svg`;
-		}
 
 		return sheetData;
 	}
 
-	/**
-	 * ─── ON RENDER (replaces activateListeners in V1) ─────────────────────────────
-	 * Once the HTML is in the DOM, bind your `.effect‐control` click handlers with vanilla JS.
-	 */
-	_onRender(context, options) {
-		// Always call super first
-		super._onRender(context, options);
+	async _onRender(context, options) {
+		await super._onRender(context, options);
 		if (this.tabGroups) {
 			for (const [group, active] of Object.entries(this.tabGroups)) {
 				if (active) this.changeTab(active, group);
 			}
 		}
 
-		// If editable, attach click listeners to any `.effect-control` button
 		if (this.isEditable) {
-			this.element.querySelectorAll(".effect-control").forEach((button) => {
-				button.addEventListener("click", this._onEffectControl.bind(this));
-			});
+			this.element
+				?.querySelectorAll("[data-action='add-array-entry']")
+				.forEach((button) => {
+					button.addEventListener("click", this._onAddArrayEntry.bind(this));
+				});
+
+			this.element
+				?.querySelectorAll("[data-action='remove-array-entry']")
+				.forEach((button) => {
+					button.addEventListener("click", this._onRemoveArrayEntry.bind(this));
+				});
 		}
 	}
 
-	/**
-	 * ─── EFFECT CONTROL HANDLER ───────────────────────────────────────────────────
-	 * Same logic as V1’s _onEffectControl, but reference `this.document` (the Item) instead of `this.object`.
-	 */
-	// _onEffectControl(event) {
-	// 	event.preventDefault();
+	async _onAddArrayEntry(event) {
+		event.preventDefault();
+		const button = event.currentTarget;
+		const path = button.dataset.path;
+		if (!path) return;
 
-	// 	// The Item document
-	// 	const item = this.document;
+		const entryType = button.dataset.entryType ?? "string";
+		const array = foundry.utils.deepClone(
+			foundry.utils.getProperty(this.item.system, path) ?? [],
+		);
+		array.push(this._buildDefaultArrayEntry(entryType));
 
-	// 	// Find which <tr> row and effect ID was clicked
-	// 	const a = event.currentTarget;
-	// 	const tr = a.closest("tr");
-	// 	const effectId = tr?.dataset.effectId;
-	// 	const effect = effectId ? item.effects.get(effectId) : null;
+		await this.item.update({ [`system.${path}`]: array });
+	}
 
-	// 	switch (a.dataset.action) {
-	// 		case "create":
-	// 			return item.createEmbeddedDocuments("ActiveEffect", [
-	// 				{
-	// 					name: "New Effect",
-	// 					icon: "icons/svg/aura.svg",
-	// 					origin: item.uuid,
-	// 					disabled: true,
-	// 				},
-	// 			]);
+	async _onRemoveArrayEntry(event) {
+		event.preventDefault();
+		const button = event.currentTarget;
+		const path = button.dataset.path;
+		const index = Number(button.dataset.index ?? -1);
+		const minimum = Number(button.dataset.minimum ?? 0);
 
-	// 		case "toggle":
-	// 			return effect.update({ disabled: !effect.disabled });
+		if (!path || !Number.isInteger(index) || index < 0) return;
 
-	// 		case "edit":
-	// 			return effect.sheet.render(true);
+		const array = foundry.utils.deepClone(
+			foundry.utils.getProperty(this.item.system, path) ?? [],
+		);
+		if (array.length <= minimum) return;
 
-	// 		case "delete":
-	// 			return effect.delete();
-	// 	}
-	// }
+		array.splice(index, 1);
+		await this.item.update({ [`system.${path}`]: array });
+	}
+
+	_buildDefaultArrayEntry(entryType) {
+		switch (entryType) {
+			case "damage-formula":
+				return {
+					formula: "",
+					type: "none",
+				};
+			case "denomination":
+				return {
+					amount: 0,
+					short_name: "",
+					monetary_value: 1,
+					weight_coefficient: 1,
+					valid: false,
+					value: null,
+					weight: null,
+				};
+			default:
+				return "";
+		}
+	}
 }

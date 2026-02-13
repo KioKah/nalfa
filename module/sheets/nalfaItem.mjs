@@ -1,6 +1,7 @@
 export default class NalfaItem extends Item {
 	/** Define your chat‐template paths the same way */
 	chatTemplate = {
+		Weapon: "systems/nalfa/templates/chat/roll/weapon.hbs",
 		weapon: "systems/nalfa/templates/chat/roll/weapon.hbs",
 	};
 
@@ -20,7 +21,13 @@ export default class NalfaItem extends Item {
 			owner: this.actor?.id,
 		};
 
-		chatData.content = await renderTemplate(this.chatTemplate[this.type], cardData);
+		const templatePath = this.chatTemplate[this.type];
+		if (!templatePath) {
+			ui.notifications?.warn(`Aucun template de chat pour le type ${this.type}.`);
+			return null;
+		}
+
+		chatData.content = await renderTemplate(templatePath, cardData);
 		chatData.roll = true; // your “hack” to mark it as a roll card
 
 		return ChatMessage.create(chatData);

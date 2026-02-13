@@ -1,9 +1,45 @@
 <header class="nalfa-sheet-header">
-  <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
-  
-  <div class="nalfa-sheet-header-info">
-    <div class="sheet-primary-info">
-      <input name="name" type="text" value="{{item.name}}" placeholder="Name"/>
-    </div>
-  </div>
+	<img
+		src="{{item.img}}"
+		data-edit="img"
+		title="{{item.name}}"
+		height="64"
+		width="64"
+	/>
+
+	<div class="item-sheet-header__rarity">
+		<label class="field field--inline">
+			<span class="field__label">Rareté :</span>
+			<select name="system.rarity">
+				{{selectOptions config.rarity selected=sysData.rarity}}
+			</select>
+		</label>
+	</div>
+
+	<div class="item-sheet-header__name">
+		<input name="name" type="text" value="{{item.name}}" placeholder="Nom"/>
+	</div>
+
+	<div class="item-sheet-header__recommended">
+		<span class="field__label">Niv. Recom.</span>
+		{{#if hasRecommendedLevel}}
+			<div class="item-sheet-header__recommended-values">
+				<input
+					name="system.recommended_level.min"
+					type="number"
+					value="{{sysData.recommended_level.min}}"
+					data-dtype="Number"
+				/>
+				<span class="field__separator">-</span>
+				<input
+					name="system.recommended_level.max"
+					type="number"
+					value="{{sysData.recommended_level.max}}"
+					data-dtype="Number"
+				/>
+			</div>
+		{{else}}
+			<span class="field__meta">n/a</span>
+		{{/if}}
+	</div>
 </header>

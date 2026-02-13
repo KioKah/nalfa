@@ -1,20 +1,26 @@
-<section class="sheet-body">
-	<div class="sheet-section">
-		<label class="field">
-			<span class="field__label">Rareté</span>
-			<select name="system.rarity">
-				{{selectOptions config.rarity selected=sysData.rarity}}
-			</select>
-		</label>
+<section class="sheet-body item-sheet-body">
+	<div class="item-sheet-content">
+		{{#if hasSpecific}}
+			<div class="tab {{tabs.specific.cssClass}}" data-group="primary" data-tab="specific">
+				{{> "systems/nalfa/templates/partials/item/item-specific.hbs"}}
+			</div>
+		{{/if}}
+
+		{{#if hasActionable}}
+			<div class="tab {{tabs.actionable.cssClass}}" data-group="primary" data-tab="actionable">
+				{{> "systems/nalfa/templates/partials/item/actionable.hbs"}}
+			</div>
+		{{/if}}
+
+		<div class="tab {{tabs.description.cssClass}}" data-group="primary" data-tab="description">
+			{{> "systems/nalfa/templates/partials/item/description.hbs"}}
+		</div>
 	</div>
-	<div class="sheet-section">
-		<h2>Description</h2>
-		<prose-mirror
-			name="system.description"
-			value="{{sysData.description}}"
-			toggled="true"
-		>
-			{{{enrichedHTML.description}}}
-		</prose-mirror>
-	</div>
+
+	{{#if hasPhysical}}
+		<hr/>
+		<div class="sheet-section sheet-section--physical">
+			{{> "systems/nalfa/templates/partials/item/physical.hbs"}}
+		</div>
+	{{/if}}
 </section>

@@ -97,13 +97,17 @@ nalfa.roll_types = {
 
 nalfa.attack_stats = {
 	default: "Défaut",
-	for: "Force",
-	dex: "Dextérité",
-	int: "Intelligence",
-	sag: "Sagesse",
-	cha: "Charisme",
-	con: "Constitution",
+	...nalfa.stats_optional,
 	none: "Aucune",
+};
+
+nalfa.action_units = {
+	main: "Action principale",
+	bonus: "Action bonus",
+	reaction: "Réaction",
+	concentration: "Concentration",
+	movement: "Déplacement",
+	free: "Libre",
 };
 
 nalfa.trinket_types = {
@@ -126,6 +130,35 @@ nalfa.range_types = {
 	ranged: "Distance",
 	both: "CaC & Distance",
 	pure_ranged: "Distance pur", //range doesn't allow attacks in melee range
+};
+
+nalfa.target_units = {
+	entity: "Entité",
+	ally: "Allié",
+	enemy: "Ennemi",
+	object: "Objet",
+	self: "Soi",
+	visible_point: "Point visible",
+	any_point: "Point quelconque",
+};
+
+nalfa.duration_units = {
+	instant: "Instantané",
+	round: "Round",
+	minute: "Minute",
+	hour: "Heure",
+	day: "Jour",
+	sr: "Repos court",
+	lr: "Repos long",
+};
+
+nalfa.area_shapes = {
+	none: "Aucune",
+	line: "Ligne",
+	cone: "Cône",
+	cube: "Cube",
+	sphere: "Sphère",
+	cylinder: "Cylindre",
 };
 
 nalfa.sizes = {

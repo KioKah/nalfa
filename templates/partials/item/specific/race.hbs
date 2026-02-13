@@ -1,0 +1,111 @@
+<div class="grid grid--three">
+	<label class="field">
+		<span class="field__label">Taille min</span>
+		<input name="system.height.min" type="number" value="{{sysData.height.min}}" data-dtype="Number"/>
+	</label>
+	<label class="field">
+		<span class="field__label">Taille max</span>
+		<input name="system.height.max" type="number" value="{{sysData.height.max}}" data-dtype="Number"/>
+	</label>
+	<label class="field">
+		<span class="field__label">Espérance de vie</span>
+		<input
+			name="system.life_expectancy"
+			type="number"
+			value="{{sysData.life_expectancy}}"
+			data-dtype="Number"
+		/>
+	</label>
+	<label class="field">
+		<span class="field__label">Poids min</span>
+		<input name="system.weight.min" type="number" value="{{sysData.weight.min}}" data-dtype="Number"/>
+	</label>
+	<label class="field">
+		<span class="field__label">Poids max</span>
+		<input name="system.weight.max" type="number" value="{{sysData.weight.max}}" data-dtype="Number"/>
+	</label>
+	<label class="field">
+		<span class="field__label">Taille</span>
+		<select name="system.size">
+			{{selectOptions config.sizes selected=sysData.size}}
+		</select>
+	</label>
+</div>
+
+<div class="grid grid--two">
+	<div class="panel-section">
+		<div class="field field--inline">
+			<span class="field__label">Classes jouables</span>
+			<button
+				type="button"
+				data-action="add-array-entry"
+				data-path="playable_classes"
+			>
+				+
+			</button>
+		</div>
+		{{#each sysData.playable_classes as |entry index|}}
+			<div class="field field--inline">
+				<input
+					class="fixed"
+					name="system.playable_classes.{{index}}"
+					type="text"
+					value="{{entry}}"
+				/>
+				<button
+					type="button"
+					data-action="remove-array-entry"
+					data-path="playable_classes"
+					data-index="{{index}}"
+				>
+					-
+				</button>
+			</div>
+		{{/each}}
+	</div>
+
+	<div class="panel-section">
+		<div class="field field--inline">
+			<span class="field__label">Traits raciaux</span>
+			<button
+				type="button"
+				data-action="add-array-entry"
+				data-path="racial_traits"
+			>
+				+
+			</button>
+		</div>
+		{{#each sysData.racial_traits as |entry index|}}
+			<div class="field field--inline">
+				<input
+					class="fixed"
+					name="system.racial_traits.{{index}}"
+					type="text"
+					value="{{entry}}"
+				/>
+				<button
+					type="button"
+					data-action="remove-array-entry"
+					data-path="racial_traits"
+					data-index="{{index}}"
+				>
+					-
+				</button>
+			</div>
+		{{/each}}
+	</div>
+</div>
+
+<div class="panel-section">
+	<span class="field__label">Point Buy</span>
+	<div class="grid grid--three">
+		{{#each sysData.point_buy.stat_advantage as |value stat|}}
+			<label class="field">
+				<span class="field__label">{{lookup ../config.stats stat}}</span>
+				<select name="system.point_buy.stat_advantage.{{stat}}">
+					{{selectOptions ../config.stat_advantages selected=value}}
+				</select>
+			</label>
+		{{/each}}
+	</div>
+</div>
