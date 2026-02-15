@@ -244,8 +244,8 @@ Créer un module `module/rolls/*.mjs` qui expose :
 
 Format de retour (recommandé)
 
-- [ ] Chat cards ultra compactes (titre + formule)
-- [ ] Chaque fonction retourne un objet normalisé :
+- [x] Chat cards compactes (titre + formule)
+- [x] Chaque fonction retourne un objet normalisé :
   - `type` (skill/attack/damage/save/concentration/initiative)
   - `roll` (instance de Roll + résultat)
   - `titleLabel` / `titleName` / `titleValue`
@@ -253,12 +253,12 @@ Format de retour (recommandé)
 
 QA manuel
 
-- [ ] Import du module dans une macro : pas d’erreur.
-- [ ] Un jet de chaque type : pas d’erreur console.
+- [x] Import du module dans une macro : pas d’erreur.
+- [x] Un jet de chaque type : pas d’erreur console.
 
 ### vA.4.2 — Plancher des dés de dégâts (décision : `dXminY`)
 
-- [ ] Définir une convention de formules de dégâts « Nalfa » :
+- [x] Définir une convention de formules de dégâts « Nalfa » :
   - `1d4min2`, `1d6min3`, `1d8min4`, `1d10min5`, `1d12min6`
 - [x] Normaliser la formule de dégâts via une fonction utilitaire.
 
@@ -300,7 +300,7 @@ Logique
 
 QA manuel
 
-- [ ] Configurer une arme basique sur l’acteur, lancer JdT et JdD, vérifier affichage.
+- [~] Configurer une arme basique sur l’acteur, lancer JdT et JdD, vérifier affichage.
 
 ### vA.4.4 — Templates chat (unifiés)
 
@@ -310,7 +310,7 @@ QA manuel
   - [x] `templates/chat/roll/damage.hbs`
   - [x] `templates/chat/roll/save.hbs`
   - [x] `templates/chat/roll/initiative.hbs`
-- [ ] Styles minimaux dans `nalfa.css`.
+- [x] Styles minimaux dans `nalfa.css`.
 
 Contenu minimum par chat card
 
@@ -322,7 +322,7 @@ Contenu minimum par chat card
 
 QA manuel
 
-- [ ] 1 jet de chaque type : rendu lisible + pas d’erreur console.
+- [x] 1 jet de chaque type : rendu lisible + pas d’erreur console.
 
 ### vA.4.5 — Points d’entrée (UI)
 
@@ -333,14 +333,14 @@ QA manuel
 
 QA manuel
 
-- [ ] Macro sur actor sélectionné : fonctionne.
+- [x] Macro sur actor sélectionné : fonctionne.
 
 ---
 
 ## vA.5 — Combat (minimum)
 
 - [x] Vérifier que `initiative.value` est correctement calculée et que Foundry l’utilise.
-- [ ] Afficher un indicateur KO si PV ≤ 0 et afficher les éléments de death save.
+- [x] Afficher un indicateur KO si PV ≤ 0 et afficher les éléments de death save.
 
 QA manuel
 
@@ -350,8 +350,8 @@ QA manuel
 
 ## vA.6 — Items : feuille unique minimale (pas de weapon-like)
 
-- [ ] Feuille item : nom, image, description (rich text si possible), rareté si déjà modélisée.
+- [x] Feuille item : nom, image, description (rich text si possible), rareté si déjà modélisée.
 
 QA manuel
 
-- [ ] Créer un item, éditer description, sauvegarde OK.
+- [x] Créer un item, éditer description, sauvegarde OK.

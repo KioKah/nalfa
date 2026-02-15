@@ -439,12 +439,14 @@ const physicalSchema = () => ({
 	equippable: schemaField({
 		main_hand: booleanField(false),
 		off_hand: booleanField(false),
-		body: booleanField(false),
+		two_handed: booleanField(false),
+		no_hands: booleanField(false),
 	}),
 	equipped: schemaField({
 		main_hand: booleanField(false),
 		off_hand: booleanField(false),
-		body: booleanField(false),
+		two_handed: booleanField(false),
+		no_hands: booleanField(false),
 	}),
 	cursed: booleanField(false),
 	identification: schemaField({
@@ -496,14 +498,26 @@ export class BaseItemData extends TypeDataModel {
 			};
 		}
 
+		for (const key of ["equippable", "equipped"]) {
+			const slots = source[key];
+			if (!slots || typeof slots !== "object") continue;
+
+			if (typeof slots.two_handed !== "boolean") {
+				slots.two_handed = false;
+			}
+			if (typeof slots.no_hands !== "boolean") {
+				slots.no_hands = Boolean(slots.body);
+			}
+
+			delete slots.body;
+		}
+
 		return source;
 	}
 
 	static defineSchema() {
 		return {
 			...itemDescriptionSchema(),
-			...itemRaritySchema(),
-			...recommendedLevelSchema(),
 		};
 	}
 }
@@ -513,6 +527,8 @@ export class WeaponData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 			...physicalSchema(),
 			...actionableSchema(),
 			weapon_attributes: arrayField(stringField(""), []),
@@ -525,6 +541,8 @@ export class TrinketData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 			...physicalSchema(),
 			...actionableSchema(),
 			trinket_type: stringField("none"),
@@ -537,6 +555,8 @@ export class ToolData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 			...physicalSchema(),
 		};
 	}
@@ -547,6 +567,8 @@ export class BackpackData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 			...physicalSchema(),
 			capacity: numberField(35),
 		};
@@ -558,6 +580,8 @@ export class ConsumableData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 			...physicalSchema(),
 			...actionableSchema(),
 			consumable_type: stringField("other"),
@@ -571,6 +595,8 @@ export class LootData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
+			...recommendedLevelSchema(),
 			...physicalSchema(),
 		};
 	}
@@ -581,6 +607,7 @@ export class BookData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemRaritySchema(),
 			...physicalSchema(),
 		};
 	}

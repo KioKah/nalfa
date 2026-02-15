@@ -58,7 +58,24 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		const baseData = await super._prepareContext(options);
 		const sysData = baseData.document.system;
 		const tabs = this._prepareTabs("primary");
-		const isKO = Number(sysData.attributes?.hp?.value ?? 0) <= 0;
+		const hpValue = Number(sysData.attributes?.hp?.value ?? 0);
+		const hpMax = Math.max(1, Number(sysData.attributes?.hp?.max ?? 0));
+		const isKO = hpValue <= 0;
+		let deathTick = null;
+
+		if (isKO) {
+			const hpLossPerTurn = Math.max(1, Math.ceil(hpMax * 0.1));
+			const isDead = hpValue <= -hpMax;
+			const turnsToDeath = isDead
+				? 0
+				: Math.max(0, Math.ceil((hpValue + hpMax) / hpLossPerTurn));
+
+			deathTick = {
+				isDead,
+				turnsToDeath,
+				lossPerTurn: String(hpLossPerTurn),
+			};
+		}
 
 		return {
 			isOwner: this.actor.isOwner,
@@ -68,6 +85,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			config: CONFIG.nalfa,
 			tabs,
 			isKO,
+			deathTick,
 		};
 	}
 

@@ -3,6 +3,7 @@ import { nalfa } from "./module/config.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
+import NalfaCombat from "./module/documents/nalfaCombat.mjs";
 import {
 	ActionData,
 	BackpackData,
@@ -20,6 +21,7 @@ import {
 	WeaponAttributeData,
 	WeaponData,
 } from "./module/data/models.mjs";
+import { registerHalfMinimumDiceModifier } from "./module/rolls/diceModifiers.mjs";
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
 
@@ -70,7 +72,9 @@ async function preloadHandlebarsTemplates() {
 Hooks.once("init", function () {
 	console.log("nalfa | Initialising nalfa System");
 	// CONFIG.debug.hooks = true;
+	registerHalfMinimumDiceModifier();
 	CONFIG.Combat.initiative.formula = "1d20+@attributes.initiative.value";
+	CONFIG.Combat.documentClass = NalfaCombat;
 	CONFIG.nalfa = nalfa;
 
 	Object.assign(CONFIG.Actor.dataModels, {

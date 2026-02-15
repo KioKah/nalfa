@@ -5,7 +5,7 @@
   background: rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
   align-items: center;
   text-align: center;
   cursor: pointer;
@@ -43,7 +43,7 @@
 .nalfa-chat-card .nalfa-roll-total {
   display: inline-flex;
   align-items: baseline;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
   line-height: 1;
 }
 .nalfa-chat-card .nalfa-roll-total-value {
@@ -73,7 +73,7 @@
 .nalfa-chat-card .nalfa-roll-tags {
   display: flex;
   justify-content: center;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa-chat-card .nalfa-roll-tag {
   display: inline-flex;
@@ -123,6 +123,35 @@
   padding: initial;
   text-align: center;
   font-size: 18px;
+}
+.nalfa.sheet input[type="text"],
+.nalfa.sheet input[type="number"],
+.nalfa.sheet input[type="password"],
+.nalfa.sheet input[type="date"],
+.nalfa.sheet input[type="time"],
+.nalfa.sheet input[type="datetime-local"],
+.nalfa.sheet input[type="search"],
+.nalfa.sheet input[type="file"],
+.nalfa.sheet select {
+  background: var(--input-background-color);
+  background: color-mix(in srgb, var(--background, var(--input-background-color)), transparent 10%);
+}
+.nalfa.sheet input[type="checkbox"] {
+  box-sizing: border-box;
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  inline-size: 16px;
+  block-size: 16px;
+  min-inline-size: 16px;
+  min-block-size: 16px;
+  max-inline-size: 16px;
+  max-block-size: 16px;
+  flex: 0 0 16px;
+  margin: 0;
+}
+.nalfa.sheet input[type="checkbox"]::before,
+.nalfa.sheet input[type="checkbox"]::after {
+  content: none !important;
 }
 .nalfa.sheet input.fixed[type="text"] {
   width: calc((1px * 20 + 2px) * (18 / 2));
@@ -204,7 +233,6 @@
   height: 48px;
   font-size: 24px;
   padding: 5px;
-  border: 1px solid var(--color-border-light-primary);
   border-radius: 3px;
   text-align: center;
 }
@@ -353,7 +381,7 @@
 .nalfa.sheet.actor-sheet .field--inline {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
   flex-wrap: wrap;
 }
 .nalfa.sheet.actor-sheet .field__label {
@@ -376,7 +404,7 @@
 .nalfa.sheet.actor-sheet .field__row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
   flex-wrap: wrap;
 }
 .nalfa.sheet.actor-sheet .value-mode {
@@ -384,9 +412,140 @@
   align-items: center;
   gap: 4px;
 }
+.nalfa.sheet.actor-sheet .combat-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .combat-overview__card {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  padding: var(--nalfa-padding);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 10%);
+  min-width: 0;
+  justify-content: space-between;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .combat-overview__title {
+  font-weight: 700;
+  text-align: center;
+  font-size: 20px;
+  line-height: 1.1;
+}
+.nalfa.sheet.actor-sheet .combat-overview__separator {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+.nalfa.sheet.actor-sheet .combat-overview__line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nalfa-gap-text);
+  flex-wrap: wrap;
+}
+.nalfa.sheet.actor-sheet .combat-overview__line--mode {
+  justify-content: flex-start;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .combat-overview__hp {
+  align-items: baseline;
+}
+.nalfa.sheet.actor-sheet .combat-overview__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .combat-overview__header > .combat-overview__title {
+  flex: 1 1 auto;
+  text-align: left;
+}
+.nalfa.sheet.actor-sheet .combat-overview__profile-select {
+  flex: 0 1 150px;
+  max-width: 150px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__hp-max-base {
+  margin-left: 2px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__entry,
+.nalfa.sheet.actor-sheet .combat-overview__stat {
+  flex: 1 1 145px;
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .combat-overview__entry--death {
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .combat-overview__death-main,
+.nalfa.sheet.actor-sheet .combat-overview__death-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .combat-overview__death-rate {
+  margin-left: auto;
+  position: relative;
+  top: -1px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__entry--death-rip {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex: 1 1 100%;
+}
+.nalfa.sheet.actor-sheet .combat-overview__rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+.nalfa.sheet.actor-sheet .combat-overview__fraction {
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  line-height: 1;
+  min-width: 24px;
+  font-size: 10px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__fraction > span:first-child {
+  border-bottom: 1px solid currentColor;
+  padding: 0 2px 1px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__fraction > span:last-child {
+  padding-top: 1px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__stat {
+  justify-content: flex-start;
+}
+.nalfa.sheet.actor-sheet .combat-overview__value {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+.nalfa.sheet.actor-sheet .combat-overview__label--stacked {
+  font-size: 14px;
+  line-height: 0.95;
+}
+@media (max-width: 980px) {
+  .nalfa.sheet.actor-sheet .combat-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 680px) {
+  .nalfa.sheet.actor-sheet .combat-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .nalfa.sheet.actor-sheet .nalfa-roll-buttons {
   display: flex;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   flex-wrap: wrap;
 }
 .nalfa.sheet.actor-sheet .nalfa-roll-buttons button {
@@ -417,7 +576,7 @@
 .nalfa.sheet.actor-sheet .attack-config__toggles {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.actor-sheet .attack-config__toggles button {
   font-weight: 600;
@@ -441,16 +600,15 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
-  gap: var(--nalfa-padding);
+  gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.actor-sheet .attack-config__section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   padding: var(--nalfa-padding);
-  border: 1px solid var(--border-color, #ccc);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+  background: color-mix(in srgb, var(--background), transparent 10%);
   min-width: 0;
 }
 .nalfa.sheet.actor-sheet .attack-config__section select.attack-stat-select {
@@ -464,12 +622,12 @@
 .nalfa.sheet.actor-sheet .attack-config__fields {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.actor-sheet .attack-config__row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   flex-wrap: wrap;
 }
 .nalfa.sheet.actor-sheet .roll-stats__row {
@@ -508,21 +666,20 @@
 .nalfa.sheet.actor-sheet .skill-by-stat {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   padding: var(--nalfa-padding);
-  border: 1px solid var(--border-color, #ccc);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+  background: color-mix(in srgb, var(--background), transparent 10%);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   justify-content: space-between;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-str {
@@ -547,10 +704,16 @@
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-right {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-save {
   font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value,
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value {
   width: calc((1px * 2 + 2px) * (12 / 2));
@@ -564,35 +727,41 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-color, #ccc);
   border-radius: 4px;
   padding: 2px 6px;
   cursor: pointer;
-  border-width: 2px;
+  border: 0;
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-str {
-  border-color: var(--nalfa-color-stat-str);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value__icon,
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value__icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  line-height: 1;
+  color: currentColor;
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 0;
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-dex {
-  border-color: var(--nalfa-color-stat-dex);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value__icon {
+  font-size: 2.5em;
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-int {
-  border-color: var(--nalfa-color-stat-int);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-wis {
-  border-color: var(--nalfa-color-stat-wis);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-cha {
-  border-color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value .border-color-con {
-  border-color: var(--nalfa-color-stat-con);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value__text,
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-value__text {
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0px 0px 8px black;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-base {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   font-size: 12px;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-base__left,
@@ -618,14 +787,14 @@
   height: 1px;
   background: currentColor;
   opacity: 0.6;
-  margin-top: 6px;
+  margin-top: 4px;
   margin-bottom: 2px;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-dropdown,
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-dropdown > div {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill {
   display: flex;
@@ -636,7 +805,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-str {
   border-color: var(--nalfa-color-stat-str);
@@ -671,28 +840,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border-color, #ccc);
   border-radius: 4px;
   padding: 2px 6px;
   cursor: pointer;
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-str {
-  border-color: var(--nalfa-color-stat-str);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-dex {
-  border-color: var(--nalfa-color-stat-dex);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-int {
-  border-color: var(--nalfa-color-stat-int);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-wis {
-  border-color: var(--nalfa-color-stat-wis);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-cha {
-  border-color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-value .border-color-con {
-  border-color: var(--nalfa-color-stat-con);
+  border: 0;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-dropdown {
   display: flex;
@@ -706,9 +857,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   flex-wrap: wrap;
-  background: linear-gradient(0deg, var(--color-bg) 60%, color-mix(in srgb, var(--color-bg), transparent 100%));
 }
 .nalfa.sheet.actor-sheet .value-mode-toggle__label {
   font-weight: 600;
@@ -732,7 +882,6 @@
   background-blend-mode: multiply;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   overflow: hidden;
 }
 .nalfa.sheet.item-sheet .item-sheet-header__rarity,
@@ -774,7 +923,6 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  gap: 10px;
 }
 .nalfa.sheet.item-sheet .item-sheet-content,
 .nalfa.sheet.item .item-sheet-content {
@@ -794,7 +942,7 @@
 .nalfa.sheet.item .sheet-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet h2,
 .nalfa.sheet.item h2,
@@ -811,9 +959,8 @@
 .nalfa.sheet.item-sheet .sheet-section--physical,
 .nalfa.sheet.item .sheet-section--physical {
   flex: 0 0 auto;
-  max-height: 120px;
+  max-height: 86px;
   overflow: hidden;
-  padding-bottom: 6px;
 }
 .nalfa.sheet.item-sheet .hint,
 .nalfa.sheet.item .hint,
@@ -855,26 +1002,60 @@
 .nalfa.sheet.item .button-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .panel-section,
 .nalfa.sheet.item .panel-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
   padding: 8px;
-  border: 1px solid var(--border-color, #ccc);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+  background: color-mix(in srgb, var(--background), transparent 10%);
 }
 .nalfa.sheet.item-sheet .physical-flags,
 .nalfa.sheet.item .physical-flags {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
   flex-wrap: nowrap;
   overflow-x: auto;
-  padding-bottom: 2px;
+  min-width: 0;
+}
+.nalfa.sheet.item-sheet .physical-row,
+.nalfa.sheet.item .physical-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+.nalfa.sheet.item-sheet .physical-row__label,
+.nalfa.sheet.item .physical-row__label {
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 40px;
+}
+.nalfa.sheet.item-sheet .physical-row__meta,
+.nalfa.sheet.item .physical-row__meta {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+}
+.nalfa.sheet.item-sheet .physical-row__meta input,
+.nalfa.sheet.item .physical-row__meta input {
+  width: 42px;
+  height: 22px;
+  padding: 0 4px;
+}
+.nalfa.sheet.item-sheet .physical-row--can-eq,
+.nalfa.sheet.item .physical-row--can-eq {
+  grid-template-columns: auto 1fr auto;
+}
+.nalfa.sheet.item-sheet .physical-row--can-eq .physical-flags:first-of-type,
+.nalfa.sheet.item .physical-row--can-eq .physical-flags:first-of-type {
+  justify-self: start;
+}
+.nalfa.sheet.item-sheet .physical-row--can-eq .physical-flags:last-of-type,
+.nalfa.sheet.item .physical-row--can-eq .physical-flags:last-of-type {
+  justify-self: end;
 }
 .nalfa.sheet.item-sheet .tiny-check,
 .nalfa.sheet.item .tiny-check {
@@ -882,7 +1063,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1px;
-  min-width: 38px;
+  min-width: 28px;
 }
 .nalfa.sheet.item-sheet .tiny-check__label,
 .nalfa.sheet.item .tiny-check__label {
@@ -894,13 +1075,12 @@
 .nalfa.sheet.item .attack-config {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 .nalfa.sheet.item-sheet .attack-config__header,
 .nalfa.sheet.item .attack-config__header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   justify-content: space-between;
   flex-wrap: wrap;
 }
@@ -912,7 +1092,7 @@
 .nalfa.sheet.item .attack-config__toggles {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: calc(var(--nalfa-padding) / 2);
   flex-wrap: wrap;
 }
 .nalfa.sheet.item-sheet .attack-config__mode,
@@ -931,17 +1111,16 @@
 .nalfa.sheet.item .attack-config__sections {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .attack-config__section,
 .nalfa.sheet.item .attack-config__section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
   padding: 8px;
-  border: 1px solid var(--border-color, #ccc);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--color-bg), transparent 10%);
+  background: color-mix(in srgb, var(--background), transparent 10%);
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__section-title,
@@ -953,13 +1132,13 @@
 .nalfa.sheet.item .attack-config__fields {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .attack-config__row,
 .nalfa.sheet.item .attack-config__row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
   flex-wrap: wrap;
 }
 #autocomplete-menu li.context-item.command,
@@ -1014,6 +1193,7 @@
   --item-width: 600px;
   --actor-width: 780px;
   --nalfa-padding: 16px;
+  --nalfa-gap-text: 6px;
   --nalfa-font-primary: "Lexend";
   --nalfa-font-stats: "Cinzel Decorative";
   --nalfa-color-back-background: #131313;

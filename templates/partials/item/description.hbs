@@ -22,7 +22,44 @@
 
 {{#if hasIdentification}}
 	<div class="sheet-section panel-section">
-		<div class="physical-flags">
+		<div class="physical-row physical-row--can-eq">
+			<span class="physical-row__label">Can Eq</span>
+			<div class="physical-flags">
+				<label class="tiny-check">
+					<span class="tiny-check__label">1H</span>
+					<input
+						type="checkbox"
+						name="system.equippable.main_hand"
+						{{checked sysData.equippable.main_hand}}
+					/>
+				</label>
+				<label class="tiny-check">
+					<span class="tiny-check__label">1H'</span>
+					<input
+						type="checkbox"
+						name="system.equippable.off_hand"
+						{{checked sysData.equippable.off_hand}}
+					/>
+				</label>
+				<label class="tiny-check">
+					<span class="tiny-check__label">2H</span>
+					<input
+						type="checkbox"
+						name="system.equippable.two_handed"
+						{{checked sysData.equippable.two_handed}}
+					/>
+				</label>
+				<label class="tiny-check">
+					<span class="tiny-check__label">NoH</span>
+					<input
+						type="checkbox"
+						name="system.equippable.no_hands"
+						{{checked sysData.equippable.no_hands}}
+					/>
+				</label>
+			</div>
+
+			<div class="physical-flags">
 			<label class="tiny-check">
 				<span class="tiny-check__label">Cur</span>
 				<input type="checkbox" name="system.cursed" {{checked sysData.cursed}}/>
@@ -43,6 +80,7 @@
 					{{checked sysData.identification.identified}}
 				/>
 			</label>
+			</div>
 		</div>
 
 		<div class="grid grid--two">

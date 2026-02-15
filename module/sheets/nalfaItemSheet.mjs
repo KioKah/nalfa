@@ -58,8 +58,18 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			"Race",
 			"Class",
 		]);
+		const physicalTypes = new Set([
+			"Weapon",
+			"Trinket",
+			"Tool",
+			"Backpack",
+			"Consumable",
+			"Loot",
+			"Book",
+		]);
 		const hasSpecific = specificTypes.has(item.type);
 		const hasActionable = item.system?.action !== undefined;
+		const hasPhysical = physicalTypes.has(item.type);
 		const tabIds = [];
 		if (hasSpecific) tabIds.push("specific");
 		if (hasActionable) tabIds.push("actionable");
@@ -107,7 +117,8 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			tabs,
 			hasActionable,
 			hasSpecific,
-			hasPhysical: item.system?.weight !== undefined,
+			hasPhysical,
+			hasRarity: item.system?.rarity !== undefined,
 			hasIdentification: item.system?.identification !== undefined,
 			hasRecommendedLevel: item.system?.recommended_level !== undefined,
 			descriptionValue,

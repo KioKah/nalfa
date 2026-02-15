@@ -7,22 +7,24 @@
 		width="64"
 	/>
 
-	<div class="item-sheet-header__rarity">
-		<label class="field field--inline">
-			<span class="field__label">Rareté :</span>
-			<select name="system.rarity">
-				{{selectOptions config.rarity selected=sysData.rarity}}
-			</select>
-		</label>
-	</div>
+	{{#if hasRarity}}
+		<div class="item-sheet-header__rarity">
+			<label class="field field--inline">
+				<span class="field__label">Rareté :</span>
+				<select name="system.rarity">
+					{{selectOptions config.rarity selected=sysData.rarity}}
+				</select>
+			</label>
+		</div>
+	{{/if}}
 
 	<div class="item-sheet-header__name">
 		<input name="name" type="text" value="{{item.name}}" placeholder="Nom"/>
 	</div>
 
-	<div class="item-sheet-header__recommended">
-		<span class="field__label">Niv. Recom.</span>
-		{{#if hasRecommendedLevel}}
+	{{#if hasRecommendedLevel}}
+		<div class="item-sheet-header__recommended">
+			<span class="field__label">Niv. Recom.</span>
 			<div class="item-sheet-header__recommended-values">
 				<input
 					name="system.recommended_level.min"
@@ -38,8 +40,6 @@
 					data-dtype="Number"
 				/>
 			</div>
-		{{else}}
-			<span class="field__meta">n/a</span>
-		{{/if}}
-	</div>
+		</div>
+	{{/if}}
 </header>

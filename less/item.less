@@ -9,7 +9,7 @@
 		.nalfa-sheet-setup(@width: var(--item-width));
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		// gap: 10px;
 		overflow: hidden;
 	}
 
@@ -50,7 +50,7 @@
 		flex-direction: column;
 		flex: 1;
 		min-height: 0;
-		gap: 10px;
+		// gap: 10px;
 	}
 
 	.item-sheet-content {
@@ -70,7 +70,7 @@
 	.sheet-section {
 		display: flex;
 		flex-direction: column;
-		gap: 6px;
+		gap: var(--nalfa-gap-text);
 	}
 
 	h2,
@@ -85,9 +85,8 @@
 
 	.sheet-section--physical {
 		flex: 0 0 auto;
-		max-height: 120px;
+		max-height: 86px;
 		overflow: hidden;
-		padding-bottom: 6px;
 	}
 
 	.hint,
@@ -126,26 +125,64 @@
 	.button-row {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: calc(var(--nalfa-padding) / 2);
 	}
 
 	.panel-section {
 		display: flex;
 		flex-direction: column;
-		gap: 6px;
+		gap: var(--nalfa-gap-text);
 		padding: 8px;
-		border: 1px solid var(--border-color, #ccc);
+		// border: 1px solid var(--border-color, #ccc);
 		border-radius: 6px;
-		background: color-mix(in srgb, var(--color-bg), transparent 10%);
+		background: color-mix(in srgb, var(--background), transparent 10%);
 	}
 
 	.physical-flags {
 		display: flex;
-		align-items: flex-start;
-		gap: 8px;
+		align-items: center;
+		// gap: 6px;
 		flex-wrap: nowrap;
 		overflow-x: auto;
-		padding-bottom: 2px;
+		min-width: 0;
+	}
+
+	.physical-row {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		// gap: 6px;
+
+		&__label {
+			font-size: 12px;
+			font-weight: 600;
+			min-width: 40px;
+		}
+
+		&__meta {
+			display: inline-flex;
+			align-items: center;
+			// gap: 4px;
+			margin-left: auto;
+
+			input {
+				width: 42px;
+				height: 22px;
+				padding: 0 4px;
+			}
+		}
+
+		&--can-eq {
+			grid-template-columns: auto 1fr auto;
+
+			.physical-flags:first-of-type {
+				justify-self: start;
+			}
+
+			.physical-flags:last-of-type {
+				justify-self: end;
+			}
+		}
 	}
 
 	.tiny-check {
@@ -153,7 +190,7 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 1px;
-		min-width: 38px;
+		min-width: 28px;
 
 		&__label {
 			font-size: 10px;
@@ -165,12 +202,12 @@
 	.attack-config {
 		display: flex;
 		flex-direction: column;
-		gap: 10px;
+		// gap: 10px;
 
 		&__header {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: calc(var(--nalfa-padding) / 2);
 			justify-content: space-between;
 			flex-wrap: wrap;
 		}
@@ -182,7 +219,7 @@
 		&__toggles {
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: calc(var(--nalfa-padding) / 2);
 			flex-wrap: wrap;
 		}
 
@@ -201,7 +238,7 @@
 		&__sections {
 			display: grid;
 			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 8px;
+			gap: calc(var(--nalfa-padding) / 2);
 		}
 
 		&__section {
@@ -217,13 +254,13 @@
 		&__fields {
 			display: flex;
 			flex-direction: column;
-			gap: 6px;
+			gap: var(--nalfa-gap-text);
 		}
 
 		&__row {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: calc(var(--nalfa-padding) / 2);
 			flex-wrap: wrap;
 		}
 	}

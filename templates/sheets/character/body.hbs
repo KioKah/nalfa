@@ -1,8 +1,7 @@
 <section class="sheet-body" data-value-mode="{{sysData.ui.valueMode}}">
 	<div class="tab {{tabs.character.cssClass}}" data-group="primary" data-tab="character">
 		<div class="sheet-section">
-			<h2>Santé &amp; Défense</h2>
-			{{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config isKO=isKO}}
+			{{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config isKO=isKO deathTick=deathTick}}
 		</div>
 
 	<div class="sheet-section">
@@ -24,7 +23,8 @@
 									data-stat="{{statKey}}"
 									role="button"
 								>
-									{{statObj.save.value}}
+									<i class="stat-save-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+									<span class="stat-save-value__text">{{statObj.save.value}}</span>
 								</span>
 							</div>
 						</div>
@@ -63,7 +63,8 @@
 									data-skill="{{skillKey}}"
 									role="button"
 								>
-									{{skillObj.value}}
+									<i class="skill-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+									<span class="skill-value__text">{{skillObj.value}}</span>
 								</span>
 							</div>
 								<div class="skill-dropdown">

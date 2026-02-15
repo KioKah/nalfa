@@ -52,15 +52,11 @@
 .panel-section() {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: calc(var(--nalfa-padding) / 2);
 	padding: var(--nalfa-padding);
-	border: 1px solid var(--border-color, #ccc);
+	// border: 1px solid var(--border-color, #ccc);
 	border-radius: 6px;
-	background: color-mix(
-		in srgb,
-		var(--color-bg),
-		transparent 10%
-	);
+	background: color-mix(in srgb, var(--background), transparent 10%);
 }
 
 .stats-set-color-property(@property) {
