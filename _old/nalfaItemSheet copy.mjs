@@ -8,7 +8,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 	static DEFAULT_OPTIONS = {
 		classes: ["nalfa", "sheet", "item-sheet"],
 		position: {
-			width: 632,
+			width: 650,
 			height: 462,
 		},
 		form: {
@@ -88,7 +88,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 				unidentified: {
 					description: await enrichHTML(
 						sheetData.sysData.identification.unidentified.description,
-						sheetData.isOwner
+						sheetData.isOwner,
 					),
 				},
 			};

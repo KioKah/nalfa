@@ -68,7 +68,7 @@
 		background: color-mix(
 			in srgb,
 			var(--background, var(--input-background-color)),
-			transparent 10%
+			transparent 50%
 		);
 	}
 
@@ -101,6 +101,10 @@
 
 	select.stat {
 		.chr-block(@chr: 7);
+	}
+
+	select.stat-arme {
+		.chr-select-block(@chr: 4);
 	}
 
 	select.fixed {

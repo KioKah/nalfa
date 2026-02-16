@@ -35,7 +35,7 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/sheets/character/tabs.hbs",
 		"systems/nalfa/templates/sheets/character/body.hbs",
 
-		"systems/nalfa/templates/partials/character/health.hbs",
+		"systems/nalfa/templates/partials/character/combat-overview.hbs",
 
 		"systems/nalfa/templates/sheets/item/header.hbs",
 		"systems/nalfa/templates/sheets/item/tabs.hbs",
@@ -141,6 +141,13 @@ Hooks.once("init", function () {
 
 	Handlebars.registerHelper("plusOne", function (numberString) {
 		return String(parseInt(numberString, 10) + 1);
+	});
+
+	Handlebars.registerHelper("formulaSignedNumber", function (value) {
+		const number = Number(value);
+		if (!Number.isFinite(number)) return "";
+		if (number == 0) return "";
+		return number >= 0 ? `+${number}` : `${number}`;
 	});
 
 	Handlebars.registerHelper("repeat", function (n, content) {

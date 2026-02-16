@@ -1,6 +1,6 @@
-# Nalfa (Foundry VTT System)
+# Nalfa (Foundry VTT System V13)
 
-This repository is a Foundry Virtual Tabletop game system named `nalfa`.
+This repository is a Foundry Virtual Tabletop (V13) game system named `nalfa`.
 
 ## Documentation (Foundry API)
 
@@ -111,6 +111,7 @@ reference.
 ## V2 Sheets Guide (Practical)
 
 ### Core Concepts
+
 - `ApplicationV2`: base lifecycle (render/close/rerender).
 - `DocumentSheetV2`: form + document update plumbing.
 - `ActorSheetV2` / `ItemSheetV2`: document-sheet specializations.
@@ -118,46 +119,61 @@ reference.
 - No jQuery-by-default: use DOM APIs (`this.element.querySelector(...)`).
 
 ### Basic Shape
+
 ```js
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 export default class MySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	static DEFAULT_OPTIONS = { classes: ["my", "sheet"], form: { submitOnChange: true } };
-	static PARTS = { header: { template: ".../header.hbs" }, sheet: { template: ".../body.hbs" } };
+	static PARTS = {
+		header: { template: ".../header.hbs" },
+		sheet: { template: ".../body.hbs" },
+	};
 	async _prepareContext(options) {
 		const base = await super._prepareContext(options);
-		return { ...base, actor: base.document, sysData: base.document.system, config: CONFIG.my };
+		return {
+			...base,
+			actor: base.document,
+			sysData: base.document.system,
+			config: CONFIG.my,
+		};
 	}
 }
 ```
 
 ### DEFAULT_OPTIONS
+
 - `classes`: CSS scoping; becomes `.my.sheet` etc.
 - `position`: initial size; user resize persists in Foundry.
 - `form.submitOnChange: true`: makes edits persist immediately.
 - `actions`: click handlers via `data-action`.
 
 ### PARTS And Templates
+
 - Parts render in order; each part template must have exactly one top-level element.
 - Common pattern: `header`, `tabs`, then one part per tab.
 - Preload templates in `Hooks.once("init")` with `foundry.applications.handlebars.loadTemplates([...])`.
 
 ### Context And Form Binding
+
 - `_prepareContext()` is the async replacement for V1 `getData()`.
 - Read from context: `{{sysData.attributes.hp.value}}`.
 - Write to the document: `name="system.attributes.hp.value"`.
 - These are related but not the same: `name="..."` targets the Document data path directly.
 
 ### Derived Data
+
 - Compute derived values in `TypeDataModel#prepareDerivedData()` and assign to `this` (system).
 - Keep it deterministic; avoid side-effects outside setting derived numbers/flags.
 
-### Actions vs _onRender
+### Actions vs \_onRender
+
 - Clicks: prefer `DEFAULT_OPTIONS.actions` + `data-action="..."`.
 - Everything else: bind in `_onRender(context, options)`.
 - Re-bind in `_onRender` because parts can rerender without a full app reload.
 
 ### Tabs
+
 - Foundry stores active tab per group in `this.tabGroups`.
 - In `_onRender`, re-apply after rerender:
   - `for (const [group, active] of Object.entries(this.tabGroups)) this.changeTab(active, group)`.
@@ -172,17 +188,20 @@ export default class MySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   `data-tab` attributes.
 
 ### Text Enrichment
+
 - Enrich before rendering (async): `await TextEditor.enrichHTML(...)`.
 - Render enriched HTML with triple-stash: `{{{enrichedDescription}}}`.
 - For editable rich text, use `<prose-mirror>` with `name="system.description"` and pass the
   enriched HTML inside.
 
 ### DragDrop / SearchFilter Quick Pattern
+
 - Create handlers/filters once (constructor or class fields), then bind them in `_onRender`.
 - DragDrop: `this.dragDrop.forEach((d) => d.bind(this.element))`.
 - SearchFilter: `filter.bind(this.element)`.
 
 ### Troubleshooting Checklist
+
 - Button refreshes page: add `type="button"` (default submits the form).
 - Rendering fails: a part template has multiple root elements.
 - Tabs reset: restore via `changeTab` in `_onRender` and ensure `data-group`/`data-tab` exist.

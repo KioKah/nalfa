@@ -1,7 +1,7 @@
 <section class="sheet-body" data-value-mode="{{sysData.ui.valueMode}}">
 	<div class="tab {{tabs.character.cssClass}}" data-group="primary" data-tab="character">
 		<div class="sheet-section">
-			{{> "systems/nalfa/templates/partials/character/health.hbs" sysData=sysData config=config isKO=isKO deathTick=deathTick}}
+			{{> "systems/nalfa/templates/partials/character/combat-overview.hbs" sysData=sysData config=config isKO=isKO deathTick=deathTick}}
 		</div>
 
 	<div class="sheet-section">
@@ -13,12 +13,26 @@
 						<div class="stat-info">
 							<div class="stat-left">
 								<span class="stat-name">{{lookup ../config.stats statKey}}</span>
-								<span class="stat-value">{{statObj.value}}</span>
+								<span class="stat-value value-mode--values">{{statObj.value}}</span>
+								<input
+									class="stat-input value-mode--base"
+									name="system.stats.{{statKey}}.base"
+									type="number"
+									value="{{statObj.base}}"
+									data-dtype="Number"
+								/>
+								<input
+									class="stat-input value-mode--alt"
+									name="system.stats.{{statKey}}.alt"
+									type="number"
+									value="{{statObj.alt}}"
+									data-dtype="Number"
+								/>
 							</div>
 							<div class="stat-right">
 								<span class="stat-save">Sauv</span>
 								<span
-									class="stat-save-value border-color-{{statKey}}"
+									class="stat-save-value value-mode--values border-color-{{statKey}}"
 									data-action="roll-stat-save"
 									data-stat="{{statKey}}"
 									role="button"
@@ -26,63 +40,62 @@
 									<i class="stat-save-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
 									<span class="stat-save-value__text">{{statObj.save.value}}</span>
 								</span>
+								<input
+									class="stat-save-input value-mode--base"
+									name="system.stats.{{statKey}}.save.base"
+									type="number"
+									value="{{statObj.save.base}}"
+									data-dtype="Number"
+								/>
+								<input
+									class="stat-save-input value-mode--alt"
+									name="system.stats.{{statKey}}.save.alt"
+									type="number"
+									value="{{statObj.save.alt}}"
+									data-dtype="Number"
+								/>
 							</div>
 						</div>
-						{{#if (eq ../sysData.ui.valueMode "base")}}
-							<div class="stat-base">
-								<div class="stat-base__left">
-									<span class="stat-base__label">Base :</span>
-									<input
-										name="system.stats.{{statKey}}.base"
-										type="number"
-										value="{{statObj.base}}"
-										data-dtype="Number"
-									/>
-								</div>
-								<div class="stat-base__right">
-									<span class="stat-base__label">Sauv</span>
-									<input
-										name="system.stats.{{statKey}}.save.base"
-										type="number"
-										value="{{statObj.save.base}}"
-										data-dtype="Number"
-									/>
-								</div>
-							</div>
-						{{/if}}
 						<div class="stat-separator"></div>
 					</div>
 						{{#each ../sysData.attributes.skills as |skillObj skillKey|}}
 							{{#if (eq skillObj.stat statKey)}}
 								<div class="skill {{skillObj.default_stat}}">
-							<div class="skill-info">
-								<span class="skill-name">{{skillName skillKey}}</span>
-								<span
-									class="skill-value border-color-{{statKey}}"
-									data-action="roll-skill"
-									data-skill="{{skillKey}}"
-									role="button"
-								>
-									<i class="skill-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
-									<span class="skill-value__text">{{skillObj.value}}</span>
-								</span>
-							</div>
-								<div class="skill-dropdown">
-									<div class="value-mode value-mode--base">
-										<span class="nowrap">Base :</span>
-										<input
-											class="field__base"
-											name="system.attributes.skills.{{skillKey}}.base"
-											type="number"
-											value="{{skillObj.base}}"
-											data-dtype="Number"
-										/>
-										<span class="field__separator">+</span>
-										<select class="skill-stat" name="system.attributes.skills.{{skillKey}}.stat">
-											{{selectOptions ../../config.stats selected=skillObj.stat}}
-										</select>
+									<div class="skill-info">
+										<span class="skill-name value-mode--values">{{skillName skillKey}}</span>
+										<span class="skill-name skill-name--key value-mode--edit">{{skillKey}}</span>
+										<span
+											class="skill-value skill-value--roll value-mode--values border-color-{{statKey}}"
+											data-action="roll-skill"
+											data-skill="{{skillKey}}"
+											role="button"
+										>
+											<i class="skill-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+											<span class="skill-value__text">{{skillObj.value}}</span>
+										</span>
+										<div class="skill-controls value-mode--edit">
+											<select
+												class="skill-stat value-mode--base"
+												name="system.attributes.skills.{{skillKey}}.stat"
+											>
+												{{selectOptions ../../config.stats selected=skillObj.stat}}
+											</select>
+											<input
+												class="value-mode--base"
+												name="system.attributes.skills.{{skillKey}}.base"
+												type="number"
+												value="{{skillObj.base}}"
+												data-dtype="Number"
+											/>
+											<input
+												class="value-mode--alt"
+												name="system.attributes.skills.{{skillKey}}.alt"
+												type="number"
+												value="{{skillObj.alt}}"
+												data-dtype="Number"
+											/>
+										</div>
 									</div>
-								</div>
 								</div>
 							{{/if}}
 						{{/each}}
@@ -320,7 +333,7 @@
 							<div class="attack-config__fields">
 								<label class="field">
 									<span class="field__label">Stat</span>
-									<select class="stat attack-stat-select" name="system.attack.jdt.stat">
+									<select class="stat-arme" name="system.attack.jdt.stat">
 										{{#if (eq sysData.attack.mode "incant")}}
 											{{selectOptions config.stats_optional_incant selected=sysData.attack.jdt.stat}}
 										{{else}}
@@ -417,7 +430,7 @@
 										/>
 									</label>
 									<div class="field field--compact">
-									<select class="stat attack-stat-select" name="system.attack.jdd.stat1">
+									<select class="stat-arme" name="system.attack.jdd.stat1">
 											{{#if (eq sysData.attack.mode "incant")}}
 												{{selectOptions config.stats_optional_incant selected=sysData.attack.jdd.stat1}}
 											{{else}}

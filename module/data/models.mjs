@@ -59,6 +59,7 @@ const skillSchema = (statKey) =>
 	schemaField({
 		value: numberValueField(null),
 		base: numberField(0),
+		alt: numberField(0),
 		stat: stringField(statKey),
 		default_stat: stringField(statKey),
 	});
@@ -86,60 +87,211 @@ const movementSchema = () =>
 		alt_mult: numberField(1),
 	});
 
-const attackSchema = () =>
-	schemaField({
-		name: stringField(""),
-		mode: stringField("arme"),
+const attackSchemaFields = () => ({
+	mode: stringField("arme"),
+	damage_formulas: arrayField(
+		schemaField({
+			formula: stringField(""),
+			type: stringField("none"),
+			stat: stringField("none"),
+		}),
+		[
+			{
+				formula: "",
+				type: "none",
+				stat: "none",
+			},
+		],
+	),
+	cost: schemaField({
+		value: numberField(1),
+		action_unit: stringField("main"),
+		ester_level: stringField("lvl1"),
+	}),
+	weapon_attributes: schemaField({
+		use_dex: booleanField(false),
+		todo: stringField(""),
+	}),
+	todo: schemaField({
+		action: stringField(""),
+		cost: stringField(""),
+		cooldown: stringField(""),
+		target_range: stringField(""),
+		targets: stringField(""),
+		area: stringField(""),
+	}),
+	jdt: schemaField({
+		enabled: booleanField(false),
+		stat: stringField("arme"),
+		bonus: numberField(0),
+	}),
+	jds: schemaField({
+		enabled: booleanField(false),
+		dd: numberField(0),
+		stat: stringField("none"),
+		text: stringField(""),
 		damage_formulas: arrayField(
 			schemaField({
 				formula: stringField(""),
 				type: stringField("none"),
+				stat: stringField("none"),
 			}),
-			[{ formula: "", type: "none" }],
+			[
+				{
+					formula: "",
+					type: "none",
+					stat: "none",
+				},
+			],
 		),
-		cost: schemaField({
-			value: numberField(1),
-			action_unit: stringField("main"),
-			ester_level: numberField(-1),
-			materials: arrayField(stringField(""), []),
-		}),
-		weapon_attributes: schemaField({
-			use_dex: booleanField(false),
-			todo: stringField(""),
-		}),
-		todo: schemaField({
-			action: stringField(""),
-			cost: stringField(""),
-			cooldown: stringField(""),
-			target_range: stringField(""),
-			targets: stringField(""),
-			area: stringField(""),
-		}),
-		jdt: schemaField({
-			enabled: booleanField(false),
-			stat: stringField("arme"),
-			bonus: numberField(0),
-		}),
-		jds: schemaField({
-			enabled: booleanField(false),
-			dd: numberField(0),
-			stat: stringField("none"),
-		}),
-		jdd: schemaField({
-			enabled: booleanField(false),
-			formula1: stringField(""),
-			stat1: stringField("arme"),
-			damage_type1: stringField("none"),
-			formula2: stringField(""),
-			stat2: stringField("none"),
-			damage_type2: stringField("none"),
-		}),
-		concentration: schemaField({
-			enabled: booleanField(false),
-			stat: stringField("none"),
-			dd: numberField(0),
-		}),
-	});
+	}),
+	jdd: schemaField({
+		enabled: booleanField(false),
+		formula1: stringField(""),
+		stat1: stringField("arme"),
+		damage_type1: stringField("none"),
+		formula2: stringField(""),
+		stat2: stringField("none"),
+		damage_type2: stringField("none"),
+	}),
+	concentration: schemaField({
+		enabled: booleanField(false),
+		stat: stringField("none"),
+		dd: numberField(0),
+		enemy_attack_bonus: numberField(0),
+	}),
+});
+
+const attackSchema = () => schemaField(attackSchemaFields());
+
+const attackSchemaKeys = [
+	"mode",
+	"damage_formulas",
+	"cost",
+	"weapon_attributes",
+	"todo",
+	"jdt",
+	"jds",
+	"jdd",
+	"concentration",
+];
+
+const makeDefaultDamageFormula = () => ({
+	formula: "",
+	type: "none",
+	stat: "none",
+});
+
+const normalizeDamageFormula = (entry = {}) => {
+	if (typeof entry === "string") {
+		return {
+			...makeDefaultDamageFormula(),
+			formula: entry,
+		};
+	}
+
+	if (!entry || typeof entry !== "object") {
+		return makeDefaultDamageFormula();
+	}
+
+	const legacyBonus = Number(entry.bonus ?? 0);
+	const bonusSuffix =
+		Number.isFinite(legacyBonus) && legacyBonus !== 0
+			? legacyBonus > 0
+				? `+${legacyBonus}`
+				: `${legacyBonus}`
+			: "";
+
+	return {
+		formula: `${String(entry.formula ?? "")}${bonusSuffix}`,
+		type: String(entry.type ?? entry.damage_type1 ?? "none"),
+		stat: String(entry.stat ?? entry.stat1 ?? "none"),
+	};
+};
+
+const migrateDamageFormulaArray = (entries, legacyJdd = null) => {
+	if (Array.isArray(entries) && entries.length > 0) {
+		return entries.map((entry) => normalizeDamageFormula(entry));
+	}
+
+	const fallbackEntries = [];
+	if (legacyJdd && typeof legacyJdd === "object") {
+		if (legacyJdd.formula1 || legacyJdd.damage_type1 !== undefined) {
+			fallbackEntries.push(
+				normalizeDamageFormula({
+					formula: legacyJdd.formula1,
+					type: legacyJdd.damage_type1,
+					stat: legacyJdd.stat1,
+				}),
+			);
+		}
+
+		if (legacyJdd.formula2 || legacyJdd.damage_type2 !== undefined) {
+			fallbackEntries.push(
+				normalizeDamageFormula({
+					formula: legacyJdd.formula2,
+					type: legacyJdd.damage_type2,
+					stat: legacyJdd.stat2,
+				}),
+			);
+		}
+	}
+
+	return fallbackEntries.length > 0 ? fallbackEntries : [makeDefaultDamageFormula()];
+};
+
+const migrateAttackPayload = (payload) => {
+	if (!payload || typeof payload !== "object") return;
+
+	if ("damage_formulas" in payload || "jdd" in payload) {
+		payload.damage_formulas = migrateDamageFormulaArray(
+			payload.damage_formulas,
+			payload.jdd,
+		);
+	}
+
+	if ("cost" in payload && payload.cost && typeof payload.cost === "object") {
+		const legacyEsterValue = payload.cost.ester_level;
+		if (typeof legacyEsterValue === "number") {
+			const mapped =
+				legacyEsterValue <= 1
+					? "lvl1"
+					: legacyEsterValue === 2
+						? "lvl2"
+						: legacyEsterValue === 3
+							? "lvl3"
+							: "special";
+			payload.cost.ester_level = mapped;
+		} else if (typeof legacyEsterValue !== "string") {
+			payload.cost.ester_level = "lvl1";
+		}
+	}
+
+	if ("jds" in payload && payload.jds && typeof payload.jds === "object") {
+		if ("text" in payload.jds) {
+			payload.jds.text = String(payload.jds.text ?? "");
+		}
+		if ("damage_formulas" in payload.jds) {
+			payload.jds.damage_formulas = migrateDamageFormulaArray(
+				payload.jds.damage_formulas,
+			);
+		}
+	}
+
+	if (
+		"concentration" in payload &&
+		payload.concentration &&
+		typeof payload.concentration === "object"
+	) {
+		delete payload.concentration.enemy_attack_stat;
+		if ("enemy_attack_bonus" in payload.concentration) {
+			const enemyAttackBonus = Number(payload.concentration.enemy_attack_bonus ?? 0);
+			payload.concentration.enemy_attack_bonus = Number.isFinite(enemyAttackBonus)
+				? enemyAttackBonus
+				: 0;
+		}
+	}
+};
 
 const baseAttributesSchema = () => ({
 	hp: schemaField({
@@ -280,7 +432,8 @@ export class BaseActorData extends TypeDataModel {
 		};
 		const profile = sys.profile ?? "none";
 		const defenseObj = sys.attributes?.defense ?? {};
-		defenseObj.value = (defenseTable[profile] ?? 0) + withBaseAlt(defenseObj);
+		const defenseProfile = defenseTable[profile] ?? 0;
+		defenseObj.value = defenseProfile + withBaseAlt(defenseObj);
 
 		const evasionObj = sys.attributes?.evasion ?? {};
 		evasionObj.value = withBaseAlt(evasionObj);
@@ -512,6 +665,8 @@ export class BaseItemData extends TypeDataModel {
 			delete slots.body;
 		}
 
+		migrateAttackPayload(source.action);
+
 		return source;
 	}
 
@@ -614,17 +769,29 @@ export class BookData extends BaseItemData {
 }
 
 export class ActionData extends BaseItemData {
+	static migrateData(source) {
+		super.migrateData(source);
+
+		const legacyAction = source.action;
+		if (legacyAction && typeof legacyAction === "object") {
+			for (const key of attackSchemaKeys) {
+				if (source[key] === undefined && legacyAction[key] !== undefined) {
+					source[key] = legacyAction[key];
+				}
+			}
+
+			delete source.action;
+		}
+
+		migrateAttackPayload(source);
+		return source;
+	}
+
 	static defineSchema() {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
-			...actionableSchema(),
-			prerequisites: schemaField({
-				verbal: booleanField(false),
-				somatic: booleanField(false),
-				material: booleanField(false),
-				ritual: booleanField(false),
-			}),
+			...attackSchemaFields(),
 			casting: schemaField({
 				condition: stringField(""),
 				target: schemaField({
@@ -653,7 +820,6 @@ export class ActionData extends BaseItemData {
 					lr: numberField(-1),
 				}),
 			}),
-			next_level_up: numberField(-1),
 		};
 	}
 }

@@ -78,6 +78,13 @@ nalfa.actions = {
 	movement: "Déplacement",
 };
 
+nalfa.ester_levels = {
+	lvl1: "Niv. 1",
+	lvl2: "Niv. 2",
+	lvl3: "Niv. 3",
+	special: "Spécial",
+};
+
 // Item data
 nalfa.rarity = {
 	unknown: "Inconnu",

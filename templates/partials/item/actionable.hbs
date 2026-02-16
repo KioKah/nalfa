@@ -1,282 +1,279 @@
 {{#if hasActionable}}
 	<div class="sheet-section attack-config">
-		<div class="attack-config__header">
-			<label class="field attack-config__name">
-				<span class="field__label">Nom</span>
-				<input
-					class="fixed"
-					name="system.action.name"
-					type="text"
-					value="{{sysData.action.name}}"
-					placeholder="Attaque"
-				/>
-			</label>
-			<label class="field attack-config__mode">
+		<div class="attack-config__section attack-config__section--row">
+			<div class="attack-config__section-title">
 				<span class="field__label">Mode</span>
-				<select name="system.action.mode">
-					{{selectOptions config.attack_mode selected=sysData.action.mode}}
+			</div>
+			<div class="attack-config__fields attack-config__fields--row attack-config__mode-row">
+				<select class="attack-config__mode-select" name="system.{{actionPath}}mode">
+					{{selectOptions config.attack_mode selected=actionData.mode}}
 				</select>
-			</label>
-			<div class="attack-config__toggles">
-				<label class="attack-config__toggle">
-					<input
-						type="checkbox"
-						name="system.action.jdt.enabled"
-						{{checked sysData.action.jdt.enabled}}
-					/>
-					<span>JdT</span>
-				</label>
-				<label class="attack-config__toggle">
-					<input
-						type="checkbox"
-						name="system.action.jds.enabled"
-						{{checked sysData.action.jds.enabled}}
-					/>
-					<span>JdS</span>
-				</label>
-				<label class="attack-config__toggle">
-					<input
-						type="checkbox"
-						name="system.action.jdd.enabled"
-						{{checked sysData.action.jdd.enabled}}
-					/>
-					<span>JdD</span>
-				</label>
-				<label class="attack-config__toggle">
-					<input
-						type="checkbox"
-						name="system.action.concentration.enabled"
-						{{checked sysData.action.concentration.enabled}}
-					/>
-					<span>Concentr</span>
-				</label>
+
+				<div class="attack-config__inline-row attack-config__toggles">
+					<label class="attack-config__toggle">
+						<input
+							type="checkbox"
+							name="system.{{actionPath}}jdt.enabled"
+							{{checked actionData.jdt.enabled}}
+						/>
+						<span>JdT?</span>
+					</label>
+					<label class="attack-config__toggle">
+						<input
+							type="checkbox"
+							name="system.{{actionPath}}jds.enabled"
+							{{checked actionData.jds.enabled}}
+						/>
+						<span>JdS?</span>
+					</label>
+					<label class="attack-config__toggle">
+						<input
+							type="checkbox"
+							name="system.{{actionPath}}jdd.enabled"
+							{{checked actionData.jdd.enabled}}
+						/>
+						<span>JdD?</span>
+					</label>
+					<label class="attack-config__toggle">
+						<input
+							type="checkbox"
+							name="system.{{actionPath}}concentration.enabled"
+							{{checked actionData.concentration.enabled}}
+						/>
+						<span>Concentr?</span>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="attack-config__section attack-config__section--row">
+			<div class="attack-config__section-title">
+				<span class="field__label">Coût</span>
+			</div>
+			<div class="attack-config__fields attack-config__fields--row attack-config__cost-row">
+				<input
+					class="attack-config__cost-value"
+					name="system.{{actionPath}}cost.value"
+					type="number"
+					value="{{actionData.cost.value}}"
+					data-dtype="Number"
+				/>
+				<select class="attack-config__cost-unit" name="system.{{actionPath}}cost.action_unit">
+					{{selectOptions config.action_units selected=actionData.cost.action_unit}}
+				</select>
+				<span class="attack-config__row-sep">+ Charge Sort</span>
+				<select class="attack-config__cost-ester" name="system.{{actionPath}}cost.ester_level">
+					{{selectOptions config.ester_levels selected=actionData.cost.ester_level}}
+				</select>
 			</div>
 		</div>
 
 		<div class="attack-config__sections">
-			{{#if sysData.action.jdt.enabled}}
-				<div class="attack-config__section">
-					<div class="attack-config__section-title"><span class="field__label">JdT</span></div>
-					<div class="attack-config__fields">
-						<label class="field">
-							<span class="field__label">Stat</span>
-							<select class="stat attack-stat-select" name="system.action.jdt.stat">
-								{{#if (eq sysData.action.mode "incant")}}
-									{{selectOptions config.stats_optional_incant selected=sysData.action.jdt.stat}}
-								{{else}}
-									{{selectOptions config.stats_optional_arme selected=sysData.action.jdt.stat}}
-								{{/if}}
-							</select>
-						</label>
-						<label class="field">
-							<span class="field__label">Bonus</span>
-							<input
-								name="system.action.jdt.bonus"
-								type="number"
-								value="{{sysData.action.jdt.bonus}}"
-								data-dtype="Number"
-							/>
-						</label>
+			{{#if actionData.jdt.enabled}}
+				<div class="attack-config__section attack-config__section--row">
+					<div class="attack-config__section-title">
+						<span class="field__label">JdT</span>
+					</div>
+					<div class="attack-config__fields attack-config__fields--row">
+						<span class="attack-config__row-sep">d20 +</span>
+						<select class="stat-arme" name="system.{{actionPath}}jdt.stat">
+							{{#if isActionModeIncant}}
+								{{selectOptions config.stats_optional_incant selected=actionData.jdt.stat}}
+							{{else}}
+								{{selectOptions config.stats_optional_arme selected=actionData.jdt.stat}}
+							{{/if}}
+						</select>
+						<span class="attack-config__row-sep">+</span>
+						<input
+							name="system.{{actionPath}}jdt.bonus"
+							type="number"
+							value="{{actionData.jdt.bonus}}"
+							data-dtype="Number"
+						/>
 					</div>
 				</div>
 			{{/if}}
 
-			{{#if sysData.action.jds.enabled}}
-				<div class="attack-config__section">
-					<div class="attack-config__section-title"><span class="field__label">JdS</span></div>
-					<div class="attack-config__fields">
-						<div class="attack-config__row">
-							<label class="field">
-								<span class="field__label">DD</span>
-								<input
-									name="system.action.jds.dd"
-									type="number"
-									value="{{sysData.action.jds.dd}}"
-									data-dtype="Number"
-								/>
-							</label>
-							<label class="field field--compact">
-								<select class="stat" name="system.action.jds.stat">
-									{{selectOptions config.stats_optional selected=sysData.action.jds.stat}}
-								</select>
-							</label>
-						</div>
+			{{#if actionData.jds.enabled}}
+				<div class="attack-config__section attack-config__section--row">
+					<div class="attack-config__section-title">
+						<span class="field__label">JdS</span>
+					</div>
+					<div class="attack-config__fields attack-config__fields--row">
+						<select class="stat" name="system.{{actionPath}}jds.stat">
+							{{selectOptions config.stats_optional selected=actionData.jds.stat}}
+						</select>
+						<span class="attack-config__row-sep">vs DD</span>
+						<input
+							name="system.{{actionPath}}jds.dd"
+							type="number"
+							value="{{actionData.jds.dd}}"
+							data-dtype="Number"
+						/>
+						<span class="attack-config__row-sep">-&gt;</span>
+						<input
+							class="attack-config__grow-input"
+							name="system.{{actionPath}}jds.text"
+							type="text"
+							value="{{actionData.jds.text}}"
+							placeholder="Effet / précision"
+						/>
 					</div>
 				</div>
 			{{/if}}
 
-			{{#if sysData.action.jdd.enabled}}
-				<div class="attack-config__section">
-					<div class="attack-config__section-title"><span class="field__label">JdD</span></div>
+			{{#if actionData.jdd.enabled}}
+				<div class="attack-config__section attack-config__section--row">
+					<div class="attack-config__section-title">
+						<span class="field__label">JdD</span>
+					</div>
 					<div class="attack-config__fields">
-						<label class="field">
-							<span class="field__label">Stat</span>
-							<select class="stat attack-stat-select" name="system.action.jdd.stat1">
-								{{#if (eq sysData.action.mode "incant")}}
-									{{selectOptions config.stats_optional_incant selected=sysData.action.jdd.stat1}}
+						{{#each actionData.damage_formulas as |damage index|}}
+							<div class="attack-config__damage-row">
+								<div class="attack-config__damage-main">
+									<input
+										class="attack-config__damage-formula"
+										name="system.{{@root.actionPath}}damage_formulas.{{index}}.formula"
+										type="text"
+										value="{{damage.formula}}"
+										placeholder="2d6+1"
+									/>
+									<span class="attack-config__row-sep">+</span>
+									<select
+										class="stat-arme"
+										name="system.{{@root.actionPath}}damage_formulas.{{index}}.stat"
+									>
+										{{#if @root.isActionModeIncant}}
+											{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
+										{{else}}
+											{{selectOptions @root.config.stats_optional_arme selected=damage.stat}}
+										{{/if}}
+									</select>
+								</div>
+								<div class="attack-config__damage-tail">
+									<span class="attack-config__row-sep">:</span>
+									<select
+										class="attack-config__damage-type"
+										name="system.{{@root.actionPath}}damage_formulas.{{index}}.type"
+									>
+										{{selectOptions @root.config.all_damage_types selected=damage.type}}
+									</select>
+								</div>
+								{{#if (eq index 0)}}
+									<button
+										type="button"
+										data-action="add-array-entry"
+										data-path="{{@root.actionPath}}damage_formulas"
+										data-entry-type="damage-formula"
+									>
+										<i class="fa-light fa-square-plus"></i>
+									</button>
 								{{else}}
-									{{selectOptions config.stats_optional_arme selected=sysData.action.jdd.stat1}}
+									<button
+										type="button"
+										data-action="remove-array-entry"
+										data-path="{{@root.actionPath}}damage_formulas"
+										data-index="{{index}}"
+										data-minimum="1"
+									>
+										<i class="fa-light fa-square-minus"></i>
+									</button>
 								{{/if}}
-							</select>
-						</label>
-						<div class="field field--inline">
-							<span class="field__label">Dégâts</span>
-							<button
-								type="button"
-								data-action="add-array-entry"
-								data-path="action.damage_formulas"
-								data-entry-type="damage-formula"
-							>
-								+
-							</button>
-						</div>
-						{{#each sysData.action.damage_formulas as |damage index|}}
-							<div class="field field--inline">
-								<input
-									name="system.action.damage_formulas.{{index}}.formula"
-									type="text"
-									value="{{damage.formula}}"
-									placeholder="2d6"
-								/>
-								<select name="system.action.damage_formulas.{{index}}.type">
-									{{selectOptions ../config.all_damage_types selected=damage.type}}
-								</select>
-								<button
-									type="button"
-									data-action="remove-array-entry"
-									data-path="action.damage_formulas"
-									data-index="{{index}}"
-									data-minimum="1"
-								>
-									-
-								</button>
 							</div>
 						{{/each}}
 					</div>
 				</div>
 			{{/if}}
 
-			{{#if sysData.action.concentration.enabled}}
-				<div class="attack-config__section">
-					<div class="attack-config__section-title"><span class="field__label">Concentration</span></div>
+			{{#if actionData.jds.enabled}}
+				<div class="attack-config__section attack-config__section--row">
+					<div class="attack-config__section-title">
+						<span class="field__label">JdD Sauv</span>
+					</div>
 					<div class="attack-config__fields">
-						<div class="attack-config__row">
-							<label class="field">
-								<span class="field__label">DD</span>
-								<input
-									name="system.action.concentration.dd"
-									type="number"
-									value="{{sysData.action.concentration.dd}}"
-									data-dtype="Number"
-								/>
-							</label>
-							<label class="field field--compact">
-								<select class="stat" name="system.action.concentration.stat">
-									{{selectOptions config.stats_optional selected=sysData.action.concentration.stat}}
-								</select>
-							</label>
-						</div>
+						{{#each actionData.jds.damage_formulas as |damage index|}}
+							<div class="attack-config__damage-row">
+								<div class="attack-config__damage-main">
+									<input
+										class="attack-config__damage-formula"
+										name="system.{{@root.actionPath}}jds.damage_formulas.{{index}}.formula"
+										type="text"
+										value="{{damage.formula}}"
+										placeholder="2d6"
+									/>
+									<span class="attack-config__row-sep">+</span>
+									<select
+										class="stat-arme"
+										name="system.{{@root.actionPath}}jds.damage_formulas.{{index}}.stat"
+									>
+										{{#if @root.isActionModeIncant}}
+											{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
+										{{else}}
+											{{selectOptions @root.config.stats_optional_arme selected=damage.stat}}
+										{{/if}}
+									</select>
+								</div>
+								<div class="attack-config__damage-tail">
+									<span class="attack-config__row-sep">:</span>
+									<select
+										class="attack-config__damage-type"
+										name="system.{{@root.actionPath}}jds.damage_formulas.{{index}}.type"
+									>
+										{{selectOptions @root.config.all_damage_types selected=damage.type}}
+									</select>
+								</div>
+								{{#if (eq index 0)}}
+									<button
+										type="button"
+										data-action="add-array-entry"
+										data-path="{{@root.actionPath}}jds.damage_formulas"
+										data-entry-type="damage-formula"
+									>
+										<i class="fa-light fa-square-plus"></i>
+									</button>
+								{{else}}
+									<button
+										type="button"
+										data-action="remove-array-entry"
+										data-path="{{@root.actionPath}}jds.damage_formulas"
+										data-index="{{index}}"
+										data-minimum="1"
+									>
+										<i class="fa-light fa-square-minus"></i>
+									</button>
+								{{/if}}
+							</div>
+						{{/each}}
 					</div>
 				</div>
 			{{/if}}
-		</div>
-	</div>
 
-	<div class="sheet-section">
-		<div class="grid grid--two">
-			<div class="panel-section">
-				<span class="field__label">Coût</span>
-				<label class="field">
-					<span class="field__label">Valeur</span>
-					<input
-						name="system.action.cost.value"
-						type="number"
-						value="{{sysData.action.cost.value}}"
-						data-dtype="Number"
-					/>
-				</label>
-				<label class="field">
-					<span class="field__label">Unité</span>
-					<select name="system.action.cost.action_unit">
-						{{selectOptions config.action_units selected=sysData.action.cost.action_unit}}
-					</select>
-				</label>
-				<label class="field">
-					<span class="field__label">Niveau ester</span>
-					<input
-						name="system.action.cost.ester_level"
-						type="number"
-						value="{{sysData.action.cost.ester_level}}"
-						data-dtype="Number"
-					/>
-				</label>
-				<div class="field field--inline">
-					<span class="field__label">Matériaux</span>
-					<button
-						type="button"
-						data-action="add-array-entry"
-						data-path="action.cost.materials"
-					>
-						+
-					</button>
-				</div>
-				{{#each sysData.action.cost.materials as |material index|}}
-					<div class="field field--inline">
-						<input
-							class="fixed"
-							name="system.action.cost.materials.{{index}}"
-							type="text"
-							value="{{material}}"
-						/>
-						<button
-							type="button"
-							data-action="remove-array-entry"
-							data-path="action.cost.materials"
-							data-index="{{index}}"
-						>
-							-
-						</button>
+			{{#if actionData.concentration.enabled}}
+				<div class="attack-config__section attack-config__section--row">
+					<div class="attack-config__section-title">
+						<span class="field__label">Concentr.</span>
 					</div>
-				{{/each}}
-			</div>
-
-			<div class="panel-section">
-				<span class="field__label">Champs todo</span>
-				<div class="grid grid--three">
-					<label class="field">
-						<span class="field__label">Action</span>
-						<input name="system.action.todo.action" type="text" value="{{sysData.action.todo.action}}"/>
-					</label>
-					<label class="field">
-						<span class="field__label">Coût texte</span>
-						<input name="system.action.todo.cost" type="text" value="{{sysData.action.todo.cost}}"/>
-					</label>
-					<label class="field">
-						<span class="field__label">Cooldown</span>
+					<div class="attack-config__fields attack-config__fields--row">
+						<select class="stat" name="system.{{actionPath}}concentration.stat">
+							{{selectOptions config.stats_optional selected=actionData.concentration.stat}}
+						</select>
+						<span class="attack-config__row-sep">vs DD</span>
 						<input
-							name="system.action.todo.cooldown"
-							type="text"
-							value="{{sysData.action.todo.cooldown}}"
+							name="system.{{actionPath}}concentration.dd"
+							type="number"
+							value="{{actionData.concentration.dd}}"
+							data-dtype="Number"
 						/>
-					</label>
-					<label class="field">
-						<span class="field__label">Portée</span>
+						<span class="attack-config__row-sep">+ Stat Arme/Incant</span>
 						<input
-							name="system.action.todo.target_range"
-							type="text"
-							value="{{sysData.action.todo.target_range}}"
+							name="system.{{actionPath}}concentration.enemy_attack_bonus"
+							type="number"
+							value="{{actionData.concentration.enemy_attack_bonus}}"
+							data-dtype="Number"
 						/>
-					</label>
-					<label class="field">
-						<span class="field__label">Cibles</span>
-						<input name="system.action.todo.targets" type="text" value="{{sysData.action.todo.targets}}"/>
-					</label>
-					<label class="field">
-						<span class="field__label">Zone</span>
-						<input name="system.action.todo.area" type="text" value="{{sysData.action.todo.area}}"/>
-					</label>
+					</div>
 				</div>
-			</div>
+			{{/if}}
 		</div>
 	</div>
 {{/if}}

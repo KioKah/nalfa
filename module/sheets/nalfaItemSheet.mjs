@@ -17,7 +17,6 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		classes: ["nalfa", "sheet", "item-sheet"],
 		position: {
 			width: 760,
-			height: 720,
 		},
 		form: {
 			submitOnChange: true,
@@ -68,11 +67,17 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			"Book",
 		]);
 		const hasSpecific = specificTypes.has(item.type);
-		const hasActionable = item.system?.action !== undefined;
+		const isActionItem = item.type === "Action";
+		const hasLegacyActionSchema = isActionItem && item.system?.action !== undefined;
+		const hasRootActionSchema = isActionItem && !hasLegacyActionSchema;
+		const actionPath = hasRootActionSchema ? "" : "action.";
+		const actionData = hasRootActionSchema ? item.system : item.system?.action;
+		const hasActionable = actionData !== undefined;
+		const showActionableTab = hasActionable && !isActionItem;
 		const hasPhysical = physicalTypes.has(item.type);
 		const tabIds = [];
 		if (hasSpecific) tabIds.push("specific");
-		if (hasActionable) tabIds.push("actionable");
+		if (showActionableTab) tabIds.push("actionable");
 		tabIds.push("description");
 
 		let activeTab = this.tabGroups.primary;
@@ -82,11 +87,12 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		}
 
 		const tabs = {};
+		const specificTabLabel = item.type;
 		for (const tabId of tabIds) {
 			const tab = rawTabs[tabId] ?? { id: tabId };
 			tabs[tabId] = {
 				...tab,
-				label: tabId === "specific" ? item.type : tab.label,
+				label: tabId === "specific" ? specificTabLabel : tab.label,
 				cssClass: tabId === activeTab ? "active" : "",
 			};
 		}
@@ -99,11 +105,18 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		const unidentifiedDescription =
 			item.system?.identification?.unidentified?.description ?? "";
 		const castingCooldown = item.system?.casting?.cooldown ?? "";
+		const actionMode = actionData?.mode ?? "arme";
+		const castingRangeType = item.system?.casting?.range?.range_type ?? "ranged";
+		const castingDurationUnit =
+			item.system?.casting?.cast_duration?.duration_unit ?? "instant";
+		const showCastingRangeBands =
+			castingRangeType === "ranged" ||
+			castingRangeType === "pure_ranged" ||
+			castingRangeType === "both";
 
 		if (item.img === "icons/svg/item-bag.svg") {
 			const typeIconMap = {
 				Action: "Spell",
-				Book: "Loot",
 			};
 			const iconName = typeIconMap[item.type] ?? item.type;
 			item.img = `systems/nalfa/icons/base_icons/${iconName}.svg`;
@@ -116,11 +129,23 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			sysData: item.system,
 			tabs,
 			hasActionable,
+			showActionableTab,
+			actionData,
+			actionPath,
+			isActionModeIncant: actionMode === "incant",
 			hasSpecific,
 			hasPhysical,
 			hasRarity: item.system?.rarity !== undefined,
 			hasIdentification: item.system?.identification !== undefined,
 			hasRecommendedLevel: item.system?.recommended_level !== undefined,
+			showCastingAreaFields: Boolean(item.system?.casting?.target?.area?.mechanic),
+			showCastingRangeDistance: castingRangeType !== "melee",
+			showCastingRangeBands,
+			showCastingRangeShape: castingRangeType === "both",
+			showCastingDurationValue:
+				castingDurationUnit !== "instant" &&
+				castingDurationUnit !== "sr" &&
+				castingDurationUnit !== "lr",
 			descriptionValue,
 			descriptionSource,
 			config: CONFIG.nalfa,
@@ -213,6 +238,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 				return {
 					formula: "",
 					type: "none",
+					stat: "none",
 				};
 			case "denomination":
 				return {
