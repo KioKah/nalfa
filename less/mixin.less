@@ -11,6 +11,10 @@
 	background-blend-mode: multiply;
 }
 
+.sheet-field-border() {
+	border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+}
+
 .input-block(@font-size: 18px, @padding: initial) {
 	@height: calc(@font-size + 8px);
 	height: calc(@font-size + 8px);
@@ -47,6 +51,22 @@
 	box-sizing: border-box;
 	font-size: @font-size;
 	text-align: center;
+}
+
+.array-action-button(@size: 16px, @icon-size: 16px) {
+	width: @size;
+	height: @size;
+	min-width: @size;
+	min-height: @size;
+	padding: 0;
+	line-height: calc(@size - 2px);
+	border-style: none;
+
+	i {
+		font-size: @icon-size;
+		line-height: 1;
+		pointer-events: none;
+	}
 }
 
 .panel-section() {

@@ -1,4 +1,36 @@
 export default class NalfaItem extends Item {
+	static TYPE_ICON_MAP = Object.freeze({
+		Action: "Spell",
+	});
+
+	static AVAILABLE_TYPE_ICONS = new Set([
+		"Backpack",
+		"Book",
+		"Class",
+		"CombatStyle",
+		"Consumable",
+		"Currency",
+		"Job",
+		"Loot",
+		"Race",
+		"Spell",
+		"Status",
+		"Tool",
+		"Trinket",
+		"Weapon",
+		"WeaponAttribute",
+	]);
+
+	static getDefaultArtwork(itemData = {}) {
+		const iconName = this.TYPE_ICON_MAP[itemData.type] ?? itemData.type;
+		if (iconName && this.AVAILABLE_TYPE_ICONS.has(iconName)) {
+			return {
+				img: `systems/nalfa/icons/base_icons/${iconName}.svg`,
+			};
+		}
+		return super.getDefaultArtwork(itemData);
+	}
+
 	/** Define your chat‐template paths the same way */
 	chatTemplate = {
 		Weapon: "systems/nalfa/templates/chat/roll/weapon.hbs",

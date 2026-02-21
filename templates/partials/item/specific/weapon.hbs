@@ -3,10 +3,11 @@
 		<span class="field__label">Attributs d'arme</span>
 		<button
 			type="button"
+			class="array-action-btn"
 			data-action="add-array-entry"
 			data-path="weapon_attributes"
 		>
-			+
+			<i class="fa-light fa-square-plus"></i>
 		</button>
 	</div>
 	{{#if sysData.weapon_attributes.length}}
@@ -20,11 +21,12 @@
 				/>
 				<button
 					type="button"
+					class="array-action-btn"
 					data-action="remove-array-entry"
 					data-path="weapon_attributes"
 					data-index="{{index}}"
 				>
-					-
+					<i class="fa-light fa-square-minus"></i>
 				</button>
 			</div>
 		{{/each}}

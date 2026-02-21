@@ -26,10 +26,7 @@
 		overflow-x: hidden;
 		scrollbar-gutter: stable;
 		padding-inline-start: var(--nalfa-padding);
-		padding-inline-end: max(
-			0px,
-			calc(var(--nalfa-padding) - var(--nalfa-scrollbar-comp))
-		);
+		padding-inline-end: max(0px, calc(var(--nalfa-padding) - var(--nalfa-scrollbar-comp)));
 	}
 
 	.sheet-body {
@@ -301,7 +298,7 @@
 		&__toggles {
 			display: flex;
 			align-items: center;
-			gap: calc(var(--nalfa-padding) / 2);
+			gap: var(--nalfa-gap-text);
 
 			button {
 				font-weight: 600;

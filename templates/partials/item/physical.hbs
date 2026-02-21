@@ -1,47 +1,71 @@
 <div>
 	<hr/>
 	<div class="physical-row">
-		<span class="physical-row__label">Equip</span>
-		<div class="physical-flags">
-			<label class="tiny-check">
-				<span class="tiny-check__label">1H</span>
-				<input type="checkbox" name="system.equipped.main_hand" {{checked sysData.equipped.main_hand}}/>
-			</label>
-			<label class="tiny-check">
-				<span class="tiny-check__label">1H'</span>
-				<input type="checkbox" name="system.equipped.off_hand" {{checked sysData.equipped.off_hand}}/>
-			</label>
-			<label class="tiny-check">
-				<span class="tiny-check__label">2H</span>
-				<input
-					type="checkbox"
-					name="system.equipped.two_handed"
-					{{checked sysData.equipped.two_handed}}
-				/>
-			</label>
-			<label class="tiny-check">
-				<span class="tiny-check__label">NoH</span>
-				<input type="checkbox" name="system.equipped.no_hands" {{checked sysData.equipped.no_hands}}/>
-			</label>
-		</div>
+		{{#if isCurrencyItem}}
+			<span class="physical-row__label">Total :</span>
+			<div class="physical-flags physical-flags--equip-select">
+				{{#if sysData.all_valid}}
+					<span class="physical-row__currency-total">
+						{{sysData.total_value}} {{sysData.currency_base}}
+					</span>
+				{{else}}
+					<span class="physical-row__currency-total physical-row__currency-total--invalid">
+						Monnaie invalide
+					</span>
+				{{/if}}
+			</div>
+		{{else}}
+			<span class="physical-row__label">Equipé :</span>
+			<div class="physical-flags physical-flags--equip-select">
+				<select
+					class="physical-row__equip-select"
+					data-action="change-equipped-slot"
+					{{#if isEquipLocked}}disabled{{/if}}
+				>
+					{{#each equippedOptions as |slot|}}
+						<option value="{{slot.key}}" {{#if (eq slot.key ../equippedSlot)}}selected{{/if}}>
+							{{slot.label}}
+						</option>
+					{{/each}}
+				</select>
+				{{#if isEquipLocked}}
+					<span class="physical-row__lock-indicator">Maudit !</span>
+				{{/if}}
+			</div>
+		{{/if}}
+
 		<div class="physical-row__meta">
-			<label class="field field--inline">
-				<span class="field__label">Qté</span>
-				<input
-					name="system.quantity"
-					type="number"
-					value="{{sysData.quantity}}"
-					data-dtype="Number"
-				/>
-			</label>
+			{{#unless isCurrencyItem}}
+				<label class="field field--inline">
+					<span class="field__label">Qté.</span>
+					<input
+						class="physical-row__quantity-input"
+						name="system.quantity"
+						type="number"
+						value="{{sysData.quantity}}"
+						data-dtype="Number"
+					/>
+				</label>
+			{{/unless}}
 			<span class="field__meta">
 				(
-				<input
-					name="system.weight"
-					type="number"
-					value="{{sysData.weight}}"
-					data-dtype="Number"
-				/>
+				{{#unless isCurrencyItem}}&times;{{/unless}}
+				{{#if isCurrencyItem}}
+					<input
+						class="physical-row__weight-input"
+						type="text"
+						value="{{compactNumber sysData.weight 4}}"
+						readonly
+					/>
+				{{else}}
+					<input
+						class="physical-row__weight-input"
+						name="system.weight"
+						type="number"
+						value="{{sysData.weight}}"
+						data-dtype="Number"
+					/>
+				{{/if}}
 				{{{weightIcon}}})
 			</span>
 		</div>

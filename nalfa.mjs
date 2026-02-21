@@ -204,6 +204,22 @@ Hooks.once("init", function () {
 		return `<i class="fa-solid fa-weight-hanging fa-sm weight-unit"></i>`;
 	});
 
+	Handlebars.registerHelper("compactNumber", function (value, maxDigits = 4) {
+		const number = Number(value);
+		if (!Number.isFinite(number)) return "";
+
+		const digits = Math.max(1, Number(maxDigits) || 4);
+		const minMagnitude = 10 ** (1 - digits);
+		const clampedNumber =
+			number !== 0 && Math.abs(number) < minMagnitude
+				? Math.sign(number) * minMagnitude
+				: number;
+		return new Intl.NumberFormat("fr-FR", {
+			maximumSignificantDigits: digits,
+			useGrouping: false,
+		}).format(clampedNumber);
+	});
+
 	Handlebars.registerHelper("listTypedValues", function (listOfTypedValues) {
 		return listOfTypedValues
 			.map((elem) => `<span class="${elem.type}">${elem.value} ${elem.type}</span>`)

@@ -2,6 +2,12 @@
 
 This repository is a Foundry Virtual Tabletop (V13) game system named `nalfa`.
 
+## Development Phase Policy
+
+- This system is currently in development/testing only (no production users).
+- In active runtime scripts, prefer current schemas/APIs and remove legacy compatibility code.
+- Do not add migration shims unless a task explicitly asks for backward compatibility.
+
 ## Documentation (Foundry API)
 
 If a change depends on Foundry V13 API details and you are not sure, check the official API docs:

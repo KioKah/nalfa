@@ -164,18 +164,6 @@ const attackSchemaFields = () => ({
 
 const attackSchema = () => schemaField(attackSchemaFields());
 
-const attackSchemaKeys = [
-	"mode",
-	"damage_formulas",
-	"cost",
-	"weapon_attributes",
-	"todo",
-	"jdt",
-	"jds",
-	"jdd",
-	"concentration",
-];
-
 const makeDefaultDamageFormula = () => ({
 	formula: "",
 	type: "none",
@@ -194,75 +182,30 @@ const normalizeDamageFormula = (entry = {}) => {
 		return makeDefaultDamageFormula();
 	}
 
-	const legacyBonus = Number(entry.bonus ?? 0);
-	const bonusSuffix =
-		Number.isFinite(legacyBonus) && legacyBonus !== 0
-			? legacyBonus > 0
-				? `+${legacyBonus}`
-				: `${legacyBonus}`
-			: "";
-
 	return {
-		formula: `${String(entry.formula ?? "")}${bonusSuffix}`,
-		type: String(entry.type ?? entry.damage_type1 ?? "none"),
-		stat: String(entry.stat ?? entry.stat1 ?? "none"),
+		formula: String(entry.formula ?? ""),
+		type: String(entry.type ?? "none"),
+		stat: String(entry.stat ?? "none"),
 	};
 };
 
-const migrateDamageFormulaArray = (entries, legacyJdd = null) => {
+const migrateDamageFormulaArray = (entries) => {
 	if (Array.isArray(entries) && entries.length > 0) {
 		return entries.map((entry) => normalizeDamageFormula(entry));
 	}
 
-	const fallbackEntries = [];
-	if (legacyJdd && typeof legacyJdd === "object") {
-		if (legacyJdd.formula1 || legacyJdd.damage_type1 !== undefined) {
-			fallbackEntries.push(
-				normalizeDamageFormula({
-					formula: legacyJdd.formula1,
-					type: legacyJdd.damage_type1,
-					stat: legacyJdd.stat1,
-				}),
-			);
-		}
-
-		if (legacyJdd.formula2 || legacyJdd.damage_type2 !== undefined) {
-			fallbackEntries.push(
-				normalizeDamageFormula({
-					formula: legacyJdd.formula2,
-					type: legacyJdd.damage_type2,
-					stat: legacyJdd.stat2,
-				}),
-			);
-		}
-	}
-
-	return fallbackEntries.length > 0 ? fallbackEntries : [makeDefaultDamageFormula()];
+	return [makeDefaultDamageFormula()];
 };
 
 const migrateAttackPayload = (payload) => {
 	if (!payload || typeof payload !== "object") return;
 
 	if ("damage_formulas" in payload || "jdd" in payload) {
-		payload.damage_formulas = migrateDamageFormulaArray(
-			payload.damage_formulas,
-			payload.jdd,
-		);
+		payload.damage_formulas = migrateDamageFormulaArray(payload.damage_formulas);
 	}
 
 	if ("cost" in payload && payload.cost && typeof payload.cost === "object") {
-		const legacyEsterValue = payload.cost.ester_level;
-		if (typeof legacyEsterValue === "number") {
-			const mapped =
-				legacyEsterValue <= 1
-					? "lvl1"
-					: legacyEsterValue === 2
-						? "lvl2"
-						: legacyEsterValue === 3
-							? "lvl3"
-							: "special";
-			payload.cost.ester_level = mapped;
-		} else if (typeof legacyEsterValue !== "string") {
+		if (typeof payload.cost.ester_level !== "string") {
 			payload.cost.ester_level = "lvl1";
 		}
 	}
@@ -586,24 +529,24 @@ const recommendedLevelSchema = () => ({
 	}),
 });
 
+const equipSlotsSchema = (coinPouchDefault = false) =>
+	schemaField({
+		main_hand: booleanField(false),
+		off_hand: booleanField(false),
+		two_handed: booleanField(false),
+		body: booleanField(false),
+		coin_pouch: booleanField(coinPouchDefault),
+	});
+
 const physicalSchema = () => ({
 	weight: numberField(0),
 	quantity: numberField(1),
-	equippable: schemaField({
-		main_hand: booleanField(false),
-		off_hand: booleanField(false),
-		two_handed: booleanField(false),
-		no_hands: booleanField(false),
-	}),
-	equipped: schemaField({
-		main_hand: booleanField(false),
-		off_hand: booleanField(false),
-		two_handed: booleanField(false),
-		no_hands: booleanField(false),
-	}),
+	total_weight: numberValueField(null),
+	equippable: equipSlotsSchema(),
+	equipped: equipSlotsSchema(),
 	cursed: booleanField(false),
 	identification: schemaField({
-		mechanic: booleanField(false),
+		needs_identification: booleanField(false),
 		identified: booleanField(false),
 		true_name: stringField(""),
 		unidentified: schemaField({
@@ -611,6 +554,13 @@ const physicalSchema = () => ({
 			description: htmlField(""),
 		}),
 	}),
+});
+
+const currencyPhysicalSchema = () => ({
+	weight: numberField(0),
+	quantity: numberField(1),
+	equippable: equipSlotsSchema(true),
+	equipped: equipSlotsSchema(true),
 });
 
 const actionableSchema = () => ({
@@ -651,6 +601,15 @@ export class BaseItemData extends TypeDataModel {
 			};
 		}
 
+		if (source.identification && typeof source.identification === "object") {
+			const identification = source.identification;
+			if (typeof identification.needs_identification !== "boolean") {
+				identification.needs_identification = Boolean(
+					identification.needs_identification,
+				);
+			}
+		}
+
 		for (const key of ["equippable", "equipped"]) {
 			const slots = source[key];
 			if (!slots || typeof slots !== "object") continue;
@@ -658,16 +617,36 @@ export class BaseItemData extends TypeDataModel {
 			if (typeof slots.two_handed !== "boolean") {
 				slots.two_handed = false;
 			}
-			if (typeof slots.no_hands !== "boolean") {
-				slots.no_hands = Boolean(slots.body);
+			if (typeof slots.body !== "boolean") {
+				slots.body = false;
 			}
-
-			delete slots.body;
 		}
 
 		migrateAttackPayload(source.action);
 
 		return source;
+	}
+
+	prepareDerivedData() {
+		super.prepareDerivedData();
+
+		if (
+			this.weight === undefined ||
+			this.quantity === undefined ||
+			this.total_weight === undefined
+		) {
+			return;
+		}
+
+		const weight = Number(this.weight ?? 0);
+		const quantity = Number(this.quantity ?? 0);
+
+		if (!Number.isFinite(weight) || !Number.isFinite(quantity)) {
+			this.total_weight = null;
+			return;
+		}
+
+		this.total_weight = roundNumber(weight * quantity);
 	}
 
 	static defineSchema() {
@@ -772,17 +751,6 @@ export class ActionData extends BaseItemData {
 	static migrateData(source) {
 		super.migrateData(source);
 
-		const legacyAction = source.action;
-		if (legacyAction && typeof legacyAction === "object") {
-			for (const key of attackSchemaKeys) {
-				if (source[key] === undefined && legacyAction[key] !== undefined) {
-					source[key] = legacyAction[key];
-				}
-			}
-
-			delete source.action;
-		}
-
 		migrateAttackPayload(source);
 		return source;
 	}
@@ -825,6 +793,13 @@ export class ActionData extends BaseItemData {
 }
 
 export class CurrencyData extends BaseItemData {
+	static migrateData(source) {
+		super.migrateData(source);
+		delete source.add_denomination;
+		delete source.done;
+		return source;
+	}
+
 	prepareDerivedData() {
 		super.prepareDerivedData();
 
@@ -873,24 +848,34 @@ export class CurrencyData extends BaseItemData {
 		const allDenominationsValid = (this.denominations ?? []).every(
 			(denomination) => denomination.valid,
 		);
+		const hasValidWeight = allDenominationsValid && baseCoinWeight >= 0;
+		const calculatedWeight = hasValidWeight ? roundNumber(totalWeight) : 0;
 
-		this.all_valid = allDenominationsValid && baseCoinWeight >= 0 && hasBaseDenomination;
+		for (const slot of ["main_hand", "off_hand", "two_handed", "body"]) {
+			this.equippable[slot] = false;
+			this.equipped[slot] = false;
+		}
+		this.equippable.coin_pouch = true;
+		this.equipped.coin_pouch = true;
+
+		this.quantity = 1;
+		this.weight = calculatedWeight;
+		this.total_weight = hasValidWeight ? calculatedWeight : null;
+		this.all_valid = hasValidWeight && hasBaseDenomination;
 
 		if (this.all_valid) {
 			this.total_value = roundNumber(totalValue);
-			this.total_weight = roundNumber(totalWeight);
 			return;
 		}
 
 		this.total_value = null;
-		this.total_weight = null;
-		this.add_denomination = false;
 	}
 
 	static defineSchema() {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...currencyPhysicalSchema(),
 			denominations: arrayField(denominationSchema(), [
 				{
 					amount: 0,
@@ -903,8 +888,6 @@ export class CurrencyData extends BaseItemData {
 				},
 			]),
 			base_coin_weight: numberField(0.005),
-			add_denomination: booleanField(false),
-			done: booleanField(false),
 			total_value: numberValueField(null),
 			currency_base: stringField(""),
 			total_weight: numberValueField(null),

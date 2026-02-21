@@ -1,9 +1,27 @@
+import { addArrayEntry, removeArrayEntry } from "./item/arrays.mjs";
+import {
+	EQUIP_SLOT_KEYS,
+	EQUIP_SLOT_NONE,
+	PRIMARY_TAB_GROUP,
+} from "./item/constants.mjs";
+import { buildItemSheetContext } from "./item/context.mjs";
+import {
+	buildEquippedSlotUpdate,
+	getEquippedSlotValue,
+	isEquippedSlotLocked,
+} from "./item/equipment.mjs";
+import {
+	buildIdentifiedUpdate,
+	buildNeedsIdentificationUpdate,
+} from "./item/identification.mjs";
+import { openRichTextEditorDialog } from "./item/richTextDialog.mjs";
+
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
 export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 	static TABS = {
-		primary: {
+		[PRIMARY_TAB_GROUP]: {
 			tabs: [
 				{ id: "specific", label: "Spécifique" },
 				{ id: "actionable", label: "Action" },
@@ -45,139 +63,24 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 	async _prepareContext(options) {
 		const baseData = await super._prepareContext(options);
 		const { TextEditor } = foundry.applications.ux;
-		const item = baseData.document;
-		const rawTabs = this._prepareTabs("primary");
-		const specificTypes = new Set([
-			"Weapon",
-			"Trinket",
-			"Backpack",
-			"Consumable",
-			"Action",
-			"Currency",
-			"Race",
-			"Class",
-		]);
-		const physicalTypes = new Set([
-			"Weapon",
-			"Trinket",
-			"Tool",
-			"Backpack",
-			"Consumable",
-			"Loot",
-			"Book",
-		]);
-		const hasSpecific = specificTypes.has(item.type);
-		const isActionItem = item.type === "Action";
-		const hasLegacyActionSchema = isActionItem && item.system?.action !== undefined;
-		const hasRootActionSchema = isActionItem && !hasLegacyActionSchema;
-		const actionPath = hasRootActionSchema ? "" : "action.";
-		const actionData = hasRootActionSchema ? item.system : item.system?.action;
-		const hasActionable = actionData !== undefined;
-		const showActionableTab = hasActionable && !isActionItem;
-		const hasPhysical = physicalTypes.has(item.type);
-		const tabIds = [];
-		if (hasSpecific) tabIds.push("specific");
-		if (showActionableTab) tabIds.push("actionable");
-		tabIds.push("description");
-
-		let activeTab = this.tabGroups.primary;
-		if (!tabIds.includes(activeTab)) {
-			activeTab = tabIds[0];
-			this.tabGroups.primary = activeTab;
-		}
-
-		const tabs = {};
-		const specificTabLabel = item.type;
-		for (const tabId of tabIds) {
-			const tab = rawTabs[tabId] ?? { id: tabId };
-			tabs[tabId] = {
-				...tab,
-				label: tabId === "specific" ? specificTabLabel : tab.label,
-				cssClass: tabId === activeTab ? "active" : "",
-			};
-		}
-
-		const descriptionData = item.system?.description ?? {};
-		const descriptionValue =
-			typeof descriptionData === "string" ? descriptionData : (descriptionData.value ?? "");
-		const descriptionSource =
-			typeof descriptionData === "string" ? "" : (descriptionData.source ?? "");
-		const unidentifiedDescription =
-			item.system?.identification?.unidentified?.description ?? "";
-		const castingCooldown = item.system?.casting?.cooldown ?? "";
-		const actionMode = actionData?.mode ?? "arme";
-		const castingRangeType = item.system?.casting?.range?.range_type ?? "ranged";
-		const castingDurationUnit =
-			item.system?.casting?.cast_duration?.duration_unit ?? "instant";
-		const showCastingRangeBands =
-			castingRangeType === "ranged" ||
-			castingRangeType === "pure_ranged" ||
-			castingRangeType === "both";
-
-		if (item.img === "icons/svg/item-bag.svg") {
-			const typeIconMap = {
-				Action: "Spell",
-			};
-			const iconName = typeIconMap[item.type] ?? item.type;
-			item.img = `systems/nalfa/icons/base_icons/${iconName}.svg`;
-		}
-
-		const sheetData = {
-			isOwner: this.item.isOwner,
-			isEditable: this.isEditable,
-			item,
-			sysData: item.system,
-			tabs,
-			hasActionable,
-			showActionableTab,
-			actionData,
-			actionPath,
-			isActionModeIncant: actionMode === "incant",
-			hasSpecific,
-			hasPhysical,
-			hasRarity: item.system?.rarity !== undefined,
-			hasIdentification: item.system?.identification !== undefined,
-			hasRecommendedLevel: item.system?.recommended_level !== undefined,
-			showCastingAreaFields: Boolean(item.system?.casting?.target?.area?.mechanic),
-			showCastingRangeDistance: castingRangeType !== "melee",
-			showCastingRangeBands,
-			showCastingRangeShape: castingRangeType === "both",
-			showCastingDurationValue:
-				castingDurationUnit !== "instant" &&
-				castingDurationUnit !== "sr" &&
-				castingDurationUnit !== "lr",
-			descriptionValue,
-			descriptionSource,
+		const { activeTab, sheetData } = await buildItemSheetContext({
+			baseData,
 			config: CONFIG.nalfa,
-			enrichedHTML: {
-				description: {
-					value: await TextEditor.enrichHTML(descriptionValue, {
-						async: true,
-					}),
-					source: await TextEditor.enrichHTML(descriptionSource, {
-						async: true,
-					}),
-				},
-				identification: {
-					unidentified: {
-						description: await TextEditor.enrichHTML(unidentifiedDescription, {
-							async: true,
-						}),
-					},
-				},
-				casting: {
-					cooldown: await TextEditor.enrichHTML(castingCooldown, {
-						async: true,
-					}),
-				},
-			},
-		};
+			sheet: this,
+			textEditor: TextEditor,
+		});
 
+		this._nextPrimaryTab = activeTab;
 		return sheetData;
 	}
 
 	async _onRender(context, options) {
 		await super._onRender(context, options);
+		if (this._nextPrimaryTab && this.tabGroups) {
+			this.tabGroups[PRIMARY_TAB_GROUP] = this._nextPrimaryTab;
+		}
+		this._nextPrimaryTab = null;
+
 		if (this.tabGroups) {
 			for (const [group, active] of Object.entries(this.tabGroups)) {
 				if (active) this.changeTab(active, group);
@@ -185,18 +88,40 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		}
 
 		if (this.isEditable) {
-			this.element
-				?.querySelectorAll("[data-action='add-array-entry']")
-				.forEach((button) => {
-					button.addEventListener("click", this._onAddArrayEntry.bind(this));
-				});
-
-			this.element
-				?.querySelectorAll("[data-action='remove-array-entry']")
-				.forEach((button) => {
-					button.addEventListener("click", this._onRemoveArrayEntry.bind(this));
-				});
+			this._bindClickAction("[data-action='add-array-entry']", this._onAddArrayEntry);
+			this._bindClickAction(
+				"[data-action='remove-array-entry']",
+				this._onRemoveArrayEntry,
+			);
+			this._bindChangeAction(
+				"[data-action='change-equipped-slot']",
+				this._onChangeEquippedSlot,
+			);
+			this._bindChangeAction(
+				"input[name='system.identification.needs_identification']",
+				this._onToggleNeedsIdentification,
+			);
+			this._bindChangeAction(
+				"input[name='system.identification.identified']",
+				this._onToggleIdentified,
+			);
+			this._bindClickAction(
+				"[data-action='open-richtext-editor']",
+				this._onOpenRichTextEditor,
+			);
 		}
+	}
+
+	_bindClickAction(selector, handler) {
+		this.element?.querySelectorAll(selector).forEach((element) => {
+			element.addEventListener("click", handler.bind(this));
+		});
+	}
+
+	_bindChangeAction(selector, handler) {
+		this.element?.querySelectorAll(selector).forEach((element) => {
+			element.addEventListener("change", handler.bind(this));
+		});
 	}
 
 	async _onAddArrayEntry(event) {
@@ -206,12 +131,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		if (!path) return;
 
 		const entryType = button.dataset.entryType ?? "string";
-		const array = foundry.utils.deepClone(
-			foundry.utils.getProperty(this.item.system, path) ?? [],
-		);
-		array.push(this._buildDefaultArrayEntry(entryType));
-
-		await this.item.update({ [`system.${path}`]: array });
+		await addArrayEntry(this.item, path, entryType);
 	}
 
 	async _onRemoveArrayEntry(event) {
@@ -222,36 +142,63 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		const minimum = Number(button.dataset.minimum ?? 0);
 
 		if (!path || !Number.isInteger(index) || index < 0) return;
-
-		const array = foundry.utils.deepClone(
-			foundry.utils.getProperty(this.item.system, path) ?? [],
-		);
-		if (array.length <= minimum) return;
-
-		array.splice(index, 1);
-		await this.item.update({ [`system.${path}`]: array });
+		await removeArrayEntry(this.item, path, index, minimum);
 	}
 
-	_buildDefaultArrayEntry(entryType) {
-		switch (entryType) {
-			case "damage-formula":
-				return {
-					formula: "",
-					type: "none",
-					stat: "none",
-				};
-			case "denomination":
-				return {
-					amount: 0,
-					short_name: "",
-					monetary_value: 1,
-					weight_coefficient: 1,
-					valid: false,
-					value: null,
-					weight: null,
-				};
-			default:
-				return "";
+	_onOpenRichTextEditor(event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		const button = event.currentTarget;
+		const path = button.dataset.path;
+		if (!path) return;
+
+		const title = button.dataset.title || "Éditeur";
+		openRichTextEditorDialog(this.item, path, title);
+	}
+
+	async _onChangeEquippedSlot(event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (isEquippedSlotLocked(this.item.system)) {
+			ui.notifications.warn("Cet objet maudit est verrouillé tant qu'il est équipé.");
+			event.currentTarget.value = getEquippedSlotValue(
+				this.item.system?.equipped ?? {},
+				this.item.system?.equippable ?? {},
+			);
+			return;
 		}
+
+		const selectedSlot = event.currentTarget.value;
+		if (selectedSlot !== EQUIP_SLOT_NONE && !EQUIP_SLOT_KEYS.has(selectedSlot)) return;
+
+		if (selectedSlot !== EQUIP_SLOT_NONE && !this.item.system?.equippable?.[selectedSlot]) {
+			ui.notifications.warn("Cet emplacement n'est pas autorisé.");
+			event.currentTarget.value = EQUIP_SLOT_NONE;
+			await this.item.update(buildEquippedSlotUpdate(EQUIP_SLOT_NONE));
+			return;
+		}
+
+		await this.item.update(buildEquippedSlotUpdate(selectedSlot));
 	}
+
+	async _onToggleNeedsIdentification(event) {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		event.stopPropagation();
+
+		const isEnabled = Boolean(event.currentTarget.checked);
+		await this.item.update(buildNeedsIdentificationUpdate(this.item, isEnabled));
+	}
+
+	async _onToggleIdentified(event) {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		event.stopPropagation();
+
+		const isIdentified = Boolean(event.currentTarget.checked);
+		await this.item.update(buildIdentifiedUpdate(this.item, isIdentified));
+	}
+
 }

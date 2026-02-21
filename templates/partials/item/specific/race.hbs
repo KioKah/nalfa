@@ -38,10 +38,11 @@
 			<span class="field__label">Classes jouables</span>
 			<button
 				type="button"
+				class="array-action-btn"
 				data-action="add-array-entry"
 				data-path="playable_classes"
 			>
-				+
+				<i class="fa-light fa-square-plus"></i>
 			</button>
 		</div>
 		{{#each sysData.playable_classes as |entry index|}}
@@ -54,11 +55,12 @@
 				/>
 				<button
 					type="button"
+					class="array-action-btn"
 					data-action="remove-array-entry"
 					data-path="playable_classes"
 					data-index="{{index}}"
 				>
-					-
+					<i class="fa-light fa-square-minus"></i>
 				</button>
 			</div>
 		{{/each}}
@@ -69,10 +71,11 @@
 			<span class="field__label">Traits raciaux</span>
 			<button
 				type="button"
+				class="array-action-btn"
 				data-action="add-array-entry"
 				data-path="racial_traits"
 			>
-				+
+				<i class="fa-light fa-square-plus"></i>
 			</button>
 		</div>
 		{{#each sysData.racial_traits as |entry index|}}
@@ -85,11 +88,12 @@
 				/>
 				<button
 					type="button"
+					class="array-action-btn"
 					data-action="remove-array-entry"
 					data-path="racial_traits"
 					data-index="{{index}}"
 				>
-					-
+					<i class="fa-light fa-square-minus"></i>
 				</button>
 			</div>
 		{{/each}}

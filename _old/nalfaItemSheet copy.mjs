@@ -67,7 +67,15 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 
 		// Change image if default :
 		if (sheetData.item.img == "icons/svg/item-bag.svg") {
+			console.log(
+				"🚀 ~ NalfaItemSheet ~ _prepareContext ~ sheetData.item.img:\n",
+				sheetData.item.img,
+			);
 			sheetData.item.img = `systems/nalfa/icons/base_icons/${sheetData.item.type}.svg`;
+			console.log(
+				"🚀 ~ NalfaItemSheet ~ _prepareContext ~ sheetData.item.img:\n",
+				sheetData.item.img,
+			);
 		}
 
 		// Enrich HTML :

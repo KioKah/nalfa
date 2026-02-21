@@ -34,12 +34,6 @@
 //   --sidebar-entry-hover-bg: rgba(255, 255, 255, 0.1);
 //   --sidebar-folder-color: var(--color-dark-1);
 
-// .tox-tinymce-aux {
-// 	.tox-menu.tox-collection.tox-collection--list {
-// 		background-color: gray !important;
-// 	}
-// }
-
 .nalfa.sheet {
 	hr {
 		margin: var(--nalfa-padding) 0;
@@ -64,6 +58,7 @@
 	input[type="search"],
 	input[type="file"],
 	select {
+		.sheet-field-border();
 		background: var(--input-background-color);
 		background: color-mix(
 			in srgb,
@@ -218,45 +213,6 @@
 	.editor {
 		height: 100%;
 		min-height: 34px;
-	}
-
-	.editor.tinymce {
-		height: 163px;
-
-		.tox.tox-tinymce {
-			height: 100% !important;
-
-			.tox-editor-header {
-				background-color: gray !important;
-				.tox-toolbar__primary {
-					background-color: gray !important;
-					.tox-tbtn.tox-tbtn--select.tox-tbtn--bespoke {
-						background-color: gray !important;
-					}
-				}
-			}
-		}
-	}
-
-	.editor-box {
-		display: flex;
-		flex-direction: column;
-		max-height: 600px;
-		overflow: hidden;
-		min-height: 36px;
-		// .input-box(@font-size: 14px);
-		font-size: 14px;
-		padding: 1px 3px;
-	}
-
-	.editor-menu {
-		flex-shrink: 0; /* don’t allow shrinking */
-	}
-
-	.editor-container {
-		overflow: auto;
-		flex-shrink: 1;
-		flex-grow: 1;
 	}
 
 	.nowrap {

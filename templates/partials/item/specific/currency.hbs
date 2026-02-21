@@ -1,88 +1,94 @@
-<div class="panel-section">
-	{{#if sysData.all_valid}}
-		<p>
-			Total: {{sysData.total_value}} {{sysData.currency_base}} ({{sysData.total_weight}}
-			{{{weightIcon}}})
-		</p>
-	{{else}}
-		<p>Monnaie invalide: vérifie les dénominations et la base.</p>
-	{{/if}}
+<div class="panel-section currency-config">
+	{{#unless sysData.all_valid}}
+		<p class="currency-config__summary">Monnaie invalide: vérifie les dénominations et la base.</p>
+	{{/unless}}
 
-	<div class="field field--inline">
+	<div class="currency-config__head">
 		<span class="field__label">Dénominations</span>
 		<button
 			type="button"
+			class="array-action-btn"
 			data-action="add-array-entry"
 			data-path="denominations"
 			data-entry-type="denomination"
 		>
-			+
+			<i class="fa-light fa-square-plus"></i>
 		</button>
 	</div>
 
-	{{#each sysData.denominations as |denomination index|}}
-		<div class="field field--inline">
-			<input
-				name="system.denominations.{{index}}.amount"
-				type="number"
-				value="{{denomination.amount}}"
-				data-dtype="Number"
-			/>
-			<input
-				name="system.denominations.{{index}}.short_name"
-				type="text"
-				value="{{denomination.short_name}}"
-				placeholder="nom"
-			/>
-			<input
-				name="system.denominations.{{index}}.monetary_value"
-				type="number"
-				value="{{denomination.monetary_value}}"
-				data-dtype="Number"
-			/>
-			<input
-				name="system.denominations.{{index}}.weight_coefficient"
-				type="number"
-				value="{{denomination.weight_coefficient}}"
-				data-dtype="Number"
-			/>
-			<button
-				type="button"
-				data-action="remove-array-entry"
-				data-path="denominations"
-				data-index="{{index}}"
-				data-minimum="1"
-			>
-				-
-			</button>
-		</div>
-		<div class="field field--inline field__meta">
-			{{#if denomination.valid}}
-				<span>Valeur: {{denomination.value}}</span>
-				<span>Poids: {{denomination.weight}}</span>
-			{{else}}
-				<span>Dénomination invalide</span>
-			{{/if}}
-		</div>
-	{{/each}}
+	<div class="currency-config__list">
+		{{#each sysData.denominations as |denomination index|}}
+			<div class="currency-config__row">
+				<label class="field field--column currency-config__field">
+					<span class="field__label">Qté.</span>
+					<input
+						class="currency-config__amount"
+						name="system.denominations.{{index}}.amount"
+						type="number"
+						value="{{denomination.amount}}"
+						data-dtype="Number"
+					/>
+				</label>
+				<label class="field field--column currency-config__field">
+					<span class="field__label">Nom</span>
+					<input
+						class="currency-config__name"
+						name="system.denominations.{{index}}.short_name"
+						type="text"
+						value="{{denomination.short_name}}"
+						placeholder="pa"
+					/>
+				</label>
+				<label class="field field--column currency-config__field">
+					<span class="field__label">Valeur</span>
+					<input
+						class="currency-config__value"
+						name="system.denominations.{{index}}.monetary_value"
+						type="number"
+						value="{{denomination.monetary_value}}"
+						data-dtype="Number"
+					/>
+				</label>
+				<label class="field field--column currency-config__field">
+					<span class="field__label">Coeff. poids</span>
+					<input
+						class="currency-config__weight"
+						name="system.denominations.{{index}}.weight_coefficient"
+						type="number"
+						value="{{denomination.weight_coefficient}}"
+						data-dtype="Number"
+					/>
+				</label>
+				<button
+					type="button"
+					class="array-action-btn currency-config__remove"
+					data-action="remove-array-entry"
+					data-path="denominations"
+					data-index="{{index}}"
+					data-minimum="1"
+				>
+					<i class="fa-light fa-square-minus"></i>
+				</button>
+			</div>
+			<div class="currency-config__meta field__meta">
+				{{#if denomination.valid}}
+					<span>Valeur: {{denomination.value}}</span>
+					<span>Poids: {{denomination.weight}}</span>
+				{{else}}
+					<span>Dénomination invalide</span>
+				{{/if}}
+			</div>
+		{{/each}}
+	</div>
 
-	<label class="field">
+	<label class="field field--column currency-config__base">
 		<span class="field__label">Poids de base d'une pièce</span>
 		<input
+			class="currency-config__base-input"
 			name="system.base_coin_weight"
 			type="number"
 			value="{{sysData.base_coin_weight}}"
 			data-dtype="Number"
 		/>
-	</label>
-
-	<label class="field field--inline">
-		<input type="checkbox" name="system.add_denomination" {{checked sysData.add_denomination}}/>
-		<span>Autoriser ajout de dénomination</span>
-	</label>
-
-	<label class="field field--inline">
-		<input type="checkbox" name="system.done" {{checked sysData.done}}/>
-		<span>Monnaie validée</span>
 	</label>
 </div>
