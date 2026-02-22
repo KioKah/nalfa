@@ -79,10 +79,23 @@ nalfa.actions = {
 };
 
 nalfa.ester_levels = {
+	none: "Gratuit",
 	lvl1: "Niv. 1",
 	lvl2: "Niv. 2",
 	lvl3: "Niv. 3",
 	special: "Spécial",
+};
+
+nalfa.uses_units = {
+	none: "Illimité",
+	lr: "Repos long",
+	sr: "Repos court",
+};
+
+nalfa.cooldown_units = {
+	none: "Aucun",
+	turns: "Tours",
+	rounds: "Rounds",
 };
 
 // Item data
@@ -109,12 +122,8 @@ nalfa.attack_stats = {
 };
 
 nalfa.action_units = {
-	main: "Action principale",
-	bonus: "Action bonus",
-	reaction: "Réaction",
-	concentration: "Concentration",
-	movement: "Déplacement",
-	free: "Libre",
+	none: "Gratuit",
+	...nalfa.actions,
 };
 
 nalfa.trinket_types = {
@@ -133,10 +142,10 @@ nalfa.consumable_types = {
 };
 
 nalfa.range_types = {
-	melee: "Corps à corps",
-	ranged: "Distance",
-	both: "CaC & Distance",
-	pure_ranged: "Distance pur", //range doesn't allow attacks in melee range
+	melee: "Au CàC",
+	ranged: "À Distance",
+	ranged_including_melee: "À Dist dont CàC",
+	pure_ranged: "À Distance Pure", //range doesn't allow attacks in melee range
 };
 
 nalfa.target_units = {
@@ -147,6 +156,19 @@ nalfa.target_units = {
 	self: "Soi",
 	visible_point: "Point visible",
 	any_point: "Point quelconque",
+};
+
+nalfa.selection_target_units = {
+	ally: "Allié",
+	enemy: "Ennemi",
+	entity: "Entité",
+	point: "Point",
+	self: "Soi",
+};
+
+nalfa.target_visibility = {
+	visible: "Visible",
+	any: "Quelconque",
 };
 
 nalfa.duration_units = {
@@ -160,12 +182,9 @@ nalfa.duration_units = {
 };
 
 nalfa.area_shapes = {
-	none: "Aucune",
+	circle: "Cercle",
 	line: "Ligne",
 	cone: "Cône",
-	cube: "Cube",
-	sphere: "Sphère",
-	cylinder: "Cylindre",
 };
 
 nalfa.sizes = {

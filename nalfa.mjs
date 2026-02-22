@@ -220,6 +220,11 @@ Hooks.once("init", function () {
 		}).format(clampedNumber);
 	});
 
+	Handlebars.registerHelper("pluralTargetLabel", function (label, count) {
+		const amount = Number(count ?? 0);
+		return amount >= 2 ? `${label}s` : `${label}`;
+	});
+
 	Handlebars.registerHelper("listTypedValues", function (listOfTypedValues) {
 		return listOfTypedValues
 			.map((elem) => `<span class="${elem.type}">${elem.value} ${elem.type}</span>`)

@@ -148,7 +148,7 @@ export const rollAttack = async (actor, mode = "weapon") => {
 	const incantStats = rollStats.incant ?? {};
 	const armeStatKey = armeStats.default_stat ?? "";
 	const incantStatKey = incantStats.stat ?? "";
-	const statKey = mode === "casting" ? incantStatKey : (jdt.stat ?? armeStatKey ?? "");
+	const statKey = mode === "incant" ? incantStatKey : (jdt.stat ?? armeStatKey ?? "");
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const statValue = statKey ? getStatTotal(actor, statKey) : 0;
 	const armeValue = Number(
@@ -163,7 +163,7 @@ export const rollAttack = async (actor, mode = "weapon") => {
 				(incantStats.base ?? 0) +
 				(incantStats.alt ?? 0),
 	);
-	const bonusValue = mode === "casting" ? incantValue : armeValue;
+	const bonusValue = mode === "incant" ? incantValue : armeValue;
 	const modifier = statValue + bonusValue;
 	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(modifier);
 	const weapon = actor.system?.weapon ?? {};
@@ -246,18 +246,11 @@ export const rollDamageSet = async (actor) => {
 	const attack = actor.system?.attack ?? {};
 	const jdd = attack.jdd ?? {};
 	const attackName = getAttackName(attack);
-	const entries = [
-		{
-			formula: jdd.formula1,
-			statKey: jdd.stat1,
-			damageType: jdd.damage_type1,
-		},
-		{
-			formula: jdd.formula2,
-			statKey: jdd.stat2,
-			damageType: jdd.damage_type2,
-		},
-	];
+	const entries = (jdd.damage_formulas ?? []).map((entry) => ({
+		formula: entry?.formula,
+		statKey: entry?.stat,
+		damageType: entry?.type,
+	}));
 
 	const results = [];
 	for (const entry of entries) {

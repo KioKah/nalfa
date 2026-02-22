@@ -108,14 +108,8 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 		? `Description (${unidentifiedName || "inconnue"})`
 		: "Description";
 
-	const castingCooldown = item.system?.casting?.cooldown ?? "";
 	const actionMode = actionData?.mode ?? "arme";
-	const castingRangeType = item.system?.casting?.range?.range_type ?? "ranged";
-	const castingDurationUnit = item.system?.casting?.cast_duration?.duration_unit ?? "instant";
-	const showCastingRangeBands =
-		castingRangeType === "ranged" ||
-		castingRangeType === "pure_ranged" ||
-		castingRangeType === "both";
+	const effectTextSource = actionData?.effect?.text ?? "";
 	const equippableState = item.system?.equippable ?? {};
 	const equippedState = item.system?.equipped ?? {};
 	const equippedSlot = getEquippedSlotValue(equippedState, equippableState);
@@ -142,14 +136,6 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			hasRarity: item.system?.rarity !== undefined,
 			hasIdentification: !isCurrencyItem && item.system?.identification !== undefined,
 			hasRecommendedLevel: item.system?.recommended_level !== undefined,
-			showCastingAreaFields: Boolean(item.system?.casting?.target?.area?.mechanic),
-			showCastingRangeDistance: castingRangeType !== "melee",
-			showCastingRangeBands,
-			showCastingRangeShape: castingRangeType === "both",
-			showCastingDurationValue:
-				castingDurationUnit !== "instant" &&
-				castingDurationUnit !== "sr" &&
-				castingDurationUnit !== "lr",
 			isIdentificationLocked,
 			useUnidentifiedPresentation,
 			currentDescriptionNamePath,
@@ -167,8 +153,8 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 						async: true,
 					}),
 				},
-				casting: {
-					cooldown: await textEditor.enrichHTML(castingCooldown, {
+				effect: {
+					text: await textEditor.enrichHTML(effectTextSource, {
 						async: true,
 					}),
 				},

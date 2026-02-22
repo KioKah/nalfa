@@ -70,13 +70,29 @@ const resistanceSchema = () =>
 		immune: booleanField(false),
 	});
 
-const actionSchema = (baseInitial = 1) =>
+const actionResourceSchema = (baseInitial = 1) =>
 	schemaField({
 		value: numberField(0),
 		max: numberValueField(null),
 		base: numberField(baseInitial),
 		alt: numberField(0),
 	});
+
+const makeDefaultDamageFormula = () => ({
+	formula: "",
+	type: "none",
+	stat: "none",
+});
+
+const damageFormulaSchema = () =>
+	schemaField({
+		formula: stringField(""),
+		type: stringField("none"),
+		stat: stringField("none"),
+	});
+
+const damageFormulaArrayField = () =>
+	arrayField(damageFormulaSchema(), [makeDefaultDamageFormula()]);
 
 const movementSchema = () =>
 	schemaField({
@@ -87,26 +103,47 @@ const movementSchema = () =>
 		alt_mult: numberField(1),
 	});
 
-const attackSchemaFields = () => ({
+const actionSchemaDefinition = () => ({
 	mode: stringField("arme"),
-	damage_formulas: arrayField(
-		schemaField({
-			formula: stringField(""),
-			type: stringField("none"),
-			stat: stringField("none"),
-		}),
-		[
-			{
-				formula: "",
-				type: "none",
-				stat: "none",
-			},
-		],
-	),
+	range_type: stringField("ranged"),
+	requires: stringField(""),
 	cost: schemaField({
-		value: numberField(1),
-		action_unit: stringField("main"),
-		ester_level: stringField("lvl1"),
+		action: schemaField({
+			amount: numberField(1),
+			unit: stringField("main"),
+		}),
+		ester: schemaField({
+			amount: numberField(0),
+			unit: stringField("none"),
+		}),
+		uses: schemaField({
+			value: numberValueField(null),
+			max: numberValueField(null),
+			unit: stringField("none"),
+		}),
+		cooldown: schemaField({
+			amount: numberField(0),
+			unit: stringField("none"),
+		}),
+	}),
+	selection: schemaField({
+		target: schemaField({
+			amount: numberField(1),
+			unit: stringField("enemy"),
+			visibility: stringField("visible"),
+			include_self: booleanField(false),
+		}),
+		zone: schemaField({
+			shape: stringField("circle"),
+			range_secondary: numberField(0),
+			range: numberField(0),
+			min_range: numberField(0),
+			long_range: numberField(0),
+			has_long_range: booleanField(false),
+		}),
+	}),
+	effect: schemaField({
+		text: htmlField(""),
 	}),
 	weapon_attributes: schemaField({
 		use_dex: booleanField(false),
@@ -130,29 +167,15 @@ const attackSchemaFields = () => ({
 		dd: numberField(0),
 		stat: stringField("none"),
 		text: stringField(""),
-		damage_formulas: arrayField(
-			schemaField({
-				formula: stringField(""),
-				type: stringField("none"),
-				stat: stringField("none"),
-			}),
-			[
-				{
-					formula: "",
-					type: "none",
-					stat: "none",
-				},
-			],
-		),
+		jdd_saved: booleanField(false),
 	}),
 	jdd: schemaField({
 		enabled: booleanField(false),
-		formula1: stringField(""),
-		stat1: stringField("arme"),
-		damage_type1: stringField("none"),
-		formula2: stringField(""),
-		stat2: stringField("none"),
-		damage_type2: stringField("none"),
+		damage_formulas: damageFormulaArrayField(),
+	}),
+	jdd_saved: schemaField({
+		enabled: booleanField(false),
+		damage_formulas: damageFormulaArrayField(),
 	}),
 	concentration: schemaField({
 		enabled: booleanField(false),
@@ -162,79 +185,7 @@ const attackSchemaFields = () => ({
 	}),
 });
 
-const attackSchema = () => schemaField(attackSchemaFields());
-
-const makeDefaultDamageFormula = () => ({
-	formula: "",
-	type: "none",
-	stat: "none",
-});
-
-const normalizeDamageFormula = (entry = {}) => {
-	if (typeof entry === "string") {
-		return {
-			...makeDefaultDamageFormula(),
-			formula: entry,
-		};
-	}
-
-	if (!entry || typeof entry !== "object") {
-		return makeDefaultDamageFormula();
-	}
-
-	return {
-		formula: String(entry.formula ?? ""),
-		type: String(entry.type ?? "none"),
-		stat: String(entry.stat ?? "none"),
-	};
-};
-
-const migrateDamageFormulaArray = (entries) => {
-	if (Array.isArray(entries) && entries.length > 0) {
-		return entries.map((entry) => normalizeDamageFormula(entry));
-	}
-
-	return [makeDefaultDamageFormula()];
-};
-
-const migrateAttackPayload = (payload) => {
-	if (!payload || typeof payload !== "object") return;
-
-	if ("damage_formulas" in payload || "jdd" in payload) {
-		payload.damage_formulas = migrateDamageFormulaArray(payload.damage_formulas);
-	}
-
-	if ("cost" in payload && payload.cost && typeof payload.cost === "object") {
-		if (typeof payload.cost.ester_level !== "string") {
-			payload.cost.ester_level = "lvl1";
-		}
-	}
-
-	if ("jds" in payload && payload.jds && typeof payload.jds === "object") {
-		if ("text" in payload.jds) {
-			payload.jds.text = String(payload.jds.text ?? "");
-		}
-		if ("damage_formulas" in payload.jds) {
-			payload.jds.damage_formulas = migrateDamageFormulaArray(
-				payload.jds.damage_formulas,
-			);
-		}
-	}
-
-	if (
-		"concentration" in payload &&
-		payload.concentration &&
-		typeof payload.concentration === "object"
-	) {
-		delete payload.concentration.enemy_attack_stat;
-		if ("enemy_attack_bonus" in payload.concentration) {
-			const enemyAttackBonus = Number(payload.concentration.enemy_attack_bonus ?? 0);
-			payload.concentration.enemy_attack_bonus = Number.isFinite(enemyAttackBonus)
-				? enemyAttackBonus
-				: 0;
-		}
-	}
-};
+const actionSchema = () => schemaField(actionSchemaDefinition());
 
 const baseAttributesSchema = () => ({
 	hp: schemaField({
@@ -316,10 +267,10 @@ const baseAttributesSchema = () => ({
 });
 
 const baseActionsSchema = () => ({
-	main: actionSchema(1),
-	bonus: actionSchema(1),
-	concentration: actionSchema(1),
-	reaction: actionSchema(1),
+	main: actionResourceSchema(1),
+	bonus: actionResourceSchema(1),
+	concentration: actionResourceSchema(1),
+	reaction: actionResourceSchema(1),
 	movement: movementSchema(),
 });
 
@@ -465,7 +416,7 @@ export class BaseActorData extends TypeDataModel {
 				}),
 			}),
 			actions: schemaField(baseActionsSchema()),
-			attack: attackSchema(),
+			attack: actionSchema(),
 			ui: schemaField({
 				valueMode: stringField("values"),
 			}),
@@ -564,7 +515,7 @@ const currencyPhysicalSchema = () => ({
 });
 
 const actionableSchema = () => ({
-	action: attackSchema(),
+	action: actionSchema(),
 });
 
 const racePointBuySchema = () =>
@@ -591,42 +542,6 @@ const denominationSchema = () =>
 	});
 
 export class BaseItemData extends TypeDataModel {
-	static migrateData(source) {
-		super.migrateData(source);
-
-		if (typeof source.description === "string") {
-			source.description = {
-				value: source.description,
-				source: "",
-			};
-		}
-
-		if (source.identification && typeof source.identification === "object") {
-			const identification = source.identification;
-			if (typeof identification.needs_identification !== "boolean") {
-				identification.needs_identification = Boolean(
-					identification.needs_identification,
-				);
-			}
-		}
-
-		for (const key of ["equippable", "equipped"]) {
-			const slots = source[key];
-			if (!slots || typeof slots !== "object") continue;
-
-			if (typeof slots.two_handed !== "boolean") {
-				slots.two_handed = false;
-			}
-			if (typeof slots.body !== "boolean") {
-				slots.body = false;
-			}
-		}
-
-		migrateAttackPayload(source.action);
-
-		return source;
-	}
-
 	prepareDerivedData() {
 		super.prepareDerivedData();
 
@@ -748,58 +663,16 @@ export class BookData extends BaseItemData {
 }
 
 export class ActionData extends BaseItemData {
-	static migrateData(source) {
-		super.migrateData(source);
-
-		migrateAttackPayload(source);
-		return source;
-	}
-
 	static defineSchema() {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
-			...attackSchemaFields(),
-			casting: schemaField({
-				condition: stringField(""),
-				target: schemaField({
-					value: numberField(0),
-					target_unit: stringField("entity"),
-					area: schemaField({
-						mechanic: booleanField(false),
-						value: numberField(0),
-						shape: stringField(""),
-					}),
-				}),
-				range: schemaField({
-					range_type: stringField("ranged"),
-					value: numberField(1),
-					min_value: numberField(0),
-					long_value: numberField(0),
-					shape: stringField(""),
-				}),
-				cast_duration: schemaField({
-					value: numberField(0),
-					duration_unit: stringField("instant"),
-				}),
-				cooldown: htmlField(""),
-				max_uses_by: schemaField({
-					sr: numberField(-1),
-					lr: numberField(-1),
-				}),
-			}),
+			...actionSchemaDefinition(),
 		};
 	}
 }
 
 export class CurrencyData extends BaseItemData {
-	static migrateData(source) {
-		super.migrateData(source);
-		delete source.add_denomination;
-		delete source.done;
-		return source;
-	}
-
 	prepareDerivedData() {
 		super.prepareDerivedData();
 

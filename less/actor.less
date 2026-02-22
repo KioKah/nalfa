@@ -380,6 +380,31 @@
 
 	.skill-by-stat {
 		.panel-section();
+		--nalfa-stat-field-border-color: var(--color-text-primary);
+
+		&.color-str {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-str);
+		}
+
+		&.color-dex {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-dex);
+		}
+
+		&.color-int {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-int);
+		}
+
+		&.color-wis {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-wis);
+		}
+
+		&.color-cha {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-cha);
+		}
+
+		&.color-con {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-con);
+		}
 
 		.stat {
 			display: flex;
@@ -408,11 +433,17 @@
 
 		.stat-input {
 			.chr-input-block(@chr: 2, @font-size: 19px);
+			.sheet-field-border(var(--nalfa-stat-field-border-color), 2px);
 		}
 
-		.stat-save-input,
+		.stat-save-input {
+			.chr-input-block(@chr: 2, @font-size: 12px);
+			.sheet-field-border(var(--nalfa-stat-field-border-color), 2px);
+		}
+
 		.skill-controls input {
 			.chr-input-block(@chr: 2, @font-size: 12px);
+			.sheet-field-border(var(--nalfa-stat-field-border-color));
 		}
 
 		.stat-save-value,
@@ -508,7 +539,7 @@
 
 		.skill-stat {
 			.select-block(@font-size: 12px);
-			border: 0;
+			.sheet-field-border(var(--nalfa-stat-field-border-color));
 		}
 	}
 

@@ -133,6 +133,7 @@
 .nalfa.sheet input[type="search"],
 .nalfa.sheet input[type="file"],
 .nalfa.sheet select {
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   background: var(--input-background-color);
   background: color-mix(in srgb, var(--background, var(--input-background-color)), transparent 50%);
 }
@@ -652,6 +653,25 @@
   padding: var(--nalfa-padding);
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
+  --nalfa-stat-field-border-color: var(--color-text-primary);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat.color-str {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-str);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat.color-dex {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-dex);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat.color-int {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-int);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat.color-wis {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-wis);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat.color-cha {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-cha);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat.color-con {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-con);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat {
   display: flex;
@@ -700,8 +720,19 @@
   padding: initial;
   text-align: center;
   font-size: 19px;
+  border: 2px solid color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 75%);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-input,
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-save-input {
+  width: calc((1px * 2 + 2px) * (12 / 2));
+  min-width: calc((1px * 2 + 2px) * (12 / 2));
+  max-width: calc((1px * 2 + 2px) * (12 / 2));
+  height: calc(12px + 8px);
+  line-height: calc(calc(12px + 8px) - 2px);
+  padding: initial;
+  text-align: center;
+  font-size: 12px;
+  border: 2px solid color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 75%);
+}
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-controls input {
   width: calc((1px * 2 + 2px) * (12 / 2));
   min-width: calc((1px * 2 + 2px) * (12 / 2));
@@ -711,6 +742,7 @@
   padding: initial;
   text-align: center;
   font-size: 12px;
+  border: 1px solid color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 75%);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-save-value,
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-value--roll {
@@ -824,7 +856,7 @@
   height: calc(12px + 9px);
   font-size: 12px;
   text-align: center;
-  border: 0;
+  border: 1px solid color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 75%);
 }
 .nalfa.sheet.actor-sheet .value-mode-toggle {
   position: sticky;
@@ -993,7 +1025,7 @@
   line-height: 1.4;
   border-radius: 4px;
   background: color-mix(in srgb, var(--background), transparent 50%);
-  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 82%);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
 }
 .nalfa.sheet.item-sheet .richtext-field__content > :first-child,
 .nalfa.sheet.item .richtext-field__content > :first-child {
@@ -1002,6 +1034,29 @@
 .nalfa.sheet.item-sheet .richtext-field__content > :last-child,
 .nalfa.sheet.item .richtext-field__content > :last-child {
   margin-bottom: 0;
+}
+.nalfa.sheet.item-sheet .richtext-field__overlay-btn,
+.nalfa.sheet.item .richtext-field__overlay-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+  z-index: 1;
+}
+.nalfa.sheet.item-sheet .richtext-field--overlay-action,
+.nalfa.sheet.item .richtext-field--overlay-action {
+  position: relative;
+}
+.nalfa.sheet.item-sheet .richtext-field--overlay-action .richtext-field__content,
+.nalfa.sheet.item .richtext-field--overlay-action .richtext-field__content {
+  padding-right: 30px;
+}
+.nalfa.sheet.item-sheet .richtext-field--overlay-action:hover .richtext-field__overlay-btn,
+.nalfa.sheet.item .richtext-field--overlay-action:hover .richtext-field__overlay-btn {
+  opacity: 1;
+  pointer-events: auto;
 }
 .nalfa.sheet.item-sheet .array-action-btn,
 .nalfa.sheet.item .array-action-btn {
@@ -1307,21 +1362,35 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .attack-config__mode-row,
 .nalfa.sheet.item .attack-config__mode-row {
   justify-content: space-between;
   width: 100%;
+  flex-wrap: nowrap;
 }
 .nalfa.sheet.item-sheet .attack-config__mode-select,
 .nalfa.sheet.item .attack-config__mode-select {
   height: calc(18px + 9px);
-  width: calc((1px * 8 + 8px) * (18 / 2));
+  width: calc((1px * 4 + 8px) * (18 / 2));
   border-radius: 3px;
   box-sizing: border-box;
   font-size: 18px;
   text-align: center;
+  min-width: calc((1px * 4 + 8px) * (18 / 2));
+  max-width: calc((1px * 4 + 8px) * (18 / 2));
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--zone-type,
+.nalfa.sheet.item .attack-config__cost-select--zone-type {
+  height: calc(18px + 9px);
+  width: calc((1px * 12 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+  min-width: calc((1px * 12 + 8px) * (18 / 2));
+  max-width: calc((1px * 12 + 8px) * (18 / 2));
 }
 .nalfa.sheet.item-sheet .attack-config__toggles,
 .nalfa.sheet.item .attack-config__toggles {
@@ -1337,6 +1406,10 @@
   font-size: 12px;
   white-space: nowrap;
 }
+.nalfa.sheet.item-sheet .attack-config__toggle--push-end,
+.nalfa.sheet.item .attack-config__toggle--push-end {
+  margin-left: auto;
+}
 .nalfa.sheet.item-sheet .attack-config__sections,
 .nalfa.sheet.item .attack-config__sections {
   display: flex;
@@ -1347,14 +1420,13 @@
 .nalfa.sheet.item .attack-config__section {
   display: flex;
   flex-direction: column;
-  gap: var(--nalfa-gap-text);
   padding: 8px;
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   display: grid;
   grid-template-columns: 64px 1fr;
   align-items: start;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__section--stack,
@@ -1383,7 +1455,13 @@
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.item-sheet .attack-config__measure,
+.nalfa.sheet.item .attack-config__measure {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__row-sep,
 .nalfa.sheet.item .attack-config__row-sep {
@@ -1398,13 +1476,25 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-row,
 .nalfa.sheet.item .attack-config__cost-row {
-  align-items: center;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  overflow-x: auto;
+  gap: var(--nalfa-gap-text);
 }
-.nalfa.sheet.item-sheet .attack-config__cost-value,
-.nalfa.sheet.item .attack-config__cost-value {
+.nalfa.sheet.item-sheet .attack-config__cost-entry,
+.nalfa.sheet.item .attack-config__cost-entry {
+  display: flex;
+  align-items: center;
+  gap: var(--nalfa-gap-text);
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-label,
+.nalfa.sheet.item .attack-config__cost-label {
+  font-weight: 600;
+  opacity: 0.9;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-input,
+.nalfa.sheet.item .attack-config__cost-input {
   width: calc((1px * 3 + 2px) * (18 / 2));
   min-width: calc((1px * 3 + 2px) * (18 / 2));
   max-width: calc((1px * 3 + 2px) * (18 / 2));
@@ -1413,20 +1503,71 @@
   padding: initial;
   text-align: center;
   font-size: 18px;
+  flex: 0 0 auto;
 }
-.nalfa.sheet.item-sheet .attack-config__cost-unit,
-.nalfa.sheet.item .attack-config__cost-unit {
+.nalfa.sheet.item-sheet .attack-config__cost-select,
+.nalfa.sheet.item .attack-config__cost-select {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--action,
+.nalfa.sheet.item .attack-config__cost-select--action {
   height: calc(18px + 9px);
-  width: calc((1px * 18 + 8px) * (18 / 2));
+  width: calc((1px * 17 + 8px) * (18 / 2));
   border-radius: 3px;
   box-sizing: border-box;
   font-size: 18px;
   text-align: center;
 }
-.nalfa.sheet.item-sheet .attack-config__cost-ester,
-.nalfa.sheet.item .attack-config__cost-ester {
+.nalfa.sheet.item-sheet .attack-config__cost-select--ester,
+.nalfa.sheet.item .attack-config__cost-select--ester {
+  height: calc(18px + 9px);
+  width: calc((1px * 8 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--uses,
+.nalfa.sheet.item .attack-config__cost-select--uses {
+  height: calc(18px + 9px);
+  width: calc((1px * 11 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--cooldown,
+.nalfa.sheet.item .attack-config__cost-select--cooldown {
+  height: calc(18px + 9px);
+  width: calc((1px * 7 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--target-unit,
+.nalfa.sheet.item .attack-config__cost-select--target-unit {
+  height: calc(18px + 9px);
+  width: calc((1px * 7 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--target-visibility,
+.nalfa.sheet.item .attack-config__cost-select--target-visibility {
   height: calc(18px + 9px);
   width: calc((1px * 10 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-select--zone-shape,
+.nalfa.sheet.item .attack-config__cost-select--zone-shape {
+  height: calc(18px + 9px);
+  width: calc((1px * 6 + 8px) * (18 / 2));
   border-radius: 3px;
   box-sizing: border-box;
   font-size: 18px;
@@ -1441,21 +1582,21 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .attack-config__damage-row,
 .nalfa.sheet.item .attack-config__damage-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__damage-main,
 .nalfa.sheet.item .attack-config__damage-main {
   display: inline-flex;
   align-items: center;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
   min-width: 0;
   flex: 1 1 auto;
 }
@@ -1468,7 +1609,7 @@
 .nalfa.sheet.item .attack-config__damage-tail {
   display: inline-flex;
   align-items: center;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-gap-text);
   margin-left: auto;
 }
 .nalfa.sheet.item-sheet .attack-config__damage-type,
@@ -1557,7 +1698,7 @@
   font-size: var(--font-size-14);
   line-height: 1.4;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 82%);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 4px;
   background: color-mix(in srgb, var(--background), transparent 50%);
 }

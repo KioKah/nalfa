@@ -394,6 +394,22 @@
 											{{selectOptions config.stats_optional selected=sysData.attack.jds.stat}}
 										</select>
 									</label>
+									<label class="field">
+										<input
+											name="system.attack.jds.text"
+											type="text"
+											value="{{sysData.attack.jds.text}}"
+											placeholder="Effet si réussite"
+										/>
+									</label>
+									<label class="attack-config__toggle">
+										<input
+											type="checkbox"
+											name="system.attack.jds.jdd_saved"
+											{{checked sysData.attack.jds.jdd_saved}}
+										/>
+										<span>JdD?</span>
+									</label>
 								</div>
 							</div>
 						{{else}}
@@ -407,6 +423,16 @@
 										{{lookup config.stats_optional sysData.attack.jds.stat}}
 									</span>
 								</div>
+								{{#if sysData.attack.jds.text}}
+									<div class="field">
+										<span class="field__value">{{sysData.attack.jds.text}}</span>
+									</div>
+								{{/if}}
+								{{#if sysData.attack.jds.jdd_saved}}
+									<div class="field">
+										<span class="field__value">JdD?</span>
+									</div>
+								{{/if}}
 							</div>
 						{{/if}}
 					</div>
@@ -419,82 +445,125 @@
 								<button type="button" data-action="roll-basic-damage">JdD</button>
 							</div>
 							<div class="attack-config__fields">
-								<div class="attack-config__row">
-									<label class="field">
-										<span class="field__label">Formule</span>
-										<input
-											name="system.attack.jdd.formula1"
-											type="text"
-											value="{{sysData.attack.jdd.formula1}}"
-											placeholder="d6"
-										/>
-									</label>
-									<div class="field field--compact">
-									<select class="stat-arme" name="system.attack.jdd.stat1">
-											{{#if (eq sysData.attack.mode "incant")}}
-												{{selectOptions config.stats_optional_incant selected=sysData.attack.jdd.stat1}}
-											{{else}}
-												{{selectOptions config.stats_optional_arme selected=sysData.attack.jdd.stat1}}
-											{{/if}}
-										</select>
+								{{#each sysData.attack.jdd.damage_formulas as |damage index|}}
+									<div class="attack-config__row">
+										<label class="field">
+											<span class="field__label">Formule</span>
+											<input
+												name="system.attack.jdd.damage_formulas.{{index}}.formula"
+												type="text"
+												value="{{damage.formula}}"
+												placeholder="d6"
+											/>
+										</label>
+										<div class="field field--compact">
+											<select
+												class="stat-arme"
+												name="system.attack.jdd.damage_formulas.{{index}}.stat"
+											>
+												{{#if (eq @root.sysData.attack.mode "incant")}}
+													{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
+												{{else}}
+													{{selectOptions @root.config.stats_optional_arme selected=damage.stat}}
+												{{/if}}
+											</select>
+										</div>
+										<div class="field field--compact">
+											<select
+												name="system.attack.jdd.damage_formulas.{{index}}.type"
+											>
+												{{selectOptions @root.config.all_damage_types selected=damage.type}}
+											</select>
+										</div>
 									</div>
-									<div class="field field--compact">
-										<select name="system.attack.jdd.damage_type1">
-											{{selectOptions config.all_damage_types selected=sysData.attack.jdd.damage_type1}}
-										</select>
-									</div>
-								</div>
-								<div class="attack-config__row">
-									<label class="field">
-										<span class="field__label">Formule bis</span>
-										<input
-											name="system.attack.jdd.formula2"
-											type="text"
-											value="{{sysData.attack.jdd.formula2}}"
-											placeholder="d6"
-										/>
-									</label>
-									<div class="field field--compact">
-										<select class="stat" name="system.attack.jdd.stat2">
-											{{selectOptions config.stats_optional selected=sysData.attack.jdd.stat2}}
-										</select>
-									</div>
-									<div class="field field--compact">
-										<select name="system.attack.jdd.damage_type2">
-											{{selectOptions config.all_damage_types selected=sysData.attack.jdd.damage_type2}}
-										</select>
-									</div>
-								</div>
+								{{/each}}
 							</div>
 						{{else}}
 							<div class="attack-config__fields">
-								<div class="field">
-									<span class="field__label">Formule</span>
-									<span class="field__value">{{sysData.attack.jdd.formula1}}</span>
-									<span class="field__value">
-										{{#if (eq sysData.attack.mode "incant")}}
-											{{lookup config.stats_optional_incant sysData.attack.jdd.stat1}}
-										{{else}}
-											{{lookup config.stats_optional_arme sysData.attack.jdd.stat1}}
-										{{/if}}
-									</span>
-									<span class="field__value">
-										{{lookup config.all_damage_types sysData.attack.jdd.damage_type1}}
-									</span>
-								</div>
-								<div class="field">
-									<span class="field__label">Formule bis</span>
-									<span class="field__value">{{sysData.attack.jdd.formula2}}</span>
-									<span class="field__value">
-										{{lookup config.stats_optional sysData.attack.jdd.stat2}}
-									</span>
-									<span class="field__value">
-										{{lookup config.all_damage_types sysData.attack.jdd.damage_type2}}
-									</span>
-								</div>
+								{{#each sysData.attack.jdd.damage_formulas as |damage|}}
+									<div class="field">
+										<span class="field__label">Formule</span>
+										<span class="field__value">{{damage.formula}}</span>
+										<span class="field__value">
+											{{#if (eq @root.sysData.attack.mode "incant")}}
+												{{lookup @root.config.stats_optional_incant damage.stat}}
+											{{else}}
+												{{lookup @root.config.stats_optional_arme damage.stat}}
+											{{/if}}
+										</span>
+										<span class="field__value">
+											{{lookup @root.config.all_damage_types damage.type}}
+										</span>
+									</div>
+								{{/each}}
 							</div>
 						{{/if}}
 					</div>
+				{{/if}}
+
+				{{#if sysData.attack.jds.enabled}}
+					{{#if sysData.attack.jds.jdd_saved}}
+						<div class="attack-config__section">
+							{{#if (eq sysData.ui.valueMode "base")}}
+								<div class="attack-config__section-title">
+									<span>JdD Sauv</span>
+								</div>
+								<div class="attack-config__fields">
+									{{#each sysData.attack.jdd_saved.damage_formulas as |damage index|}}
+										<div class="attack-config__row">
+											<label class="field">
+												<span class="field__label">Formule</span>
+												<input
+													name="system.attack.jdd_saved.damage_formulas.{{index}}.formula"
+													type="text"
+													value="{{damage.formula}}"
+													placeholder="d6"
+												/>
+											</label>
+											<div class="field field--compact">
+												<select
+													class="stat-arme"
+													name="system.attack.jdd_saved.damage_formulas.{{index}}.stat"
+												>
+													{{#if (eq @root.sysData.attack.mode "incant")}}
+														{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
+													{{else}}
+														{{selectOptions @root.config.stats_optional_arme selected=damage.stat}}
+													{{/if}}
+												</select>
+											</div>
+											<div class="field field--compact">
+												<select
+													name="system.attack.jdd_saved.damage_formulas.{{index}}.type"
+												>
+													{{selectOptions @root.config.all_damage_types selected=damage.type}}
+												</select>
+											</div>
+										</div>
+									{{/each}}
+								</div>
+							{{else}}
+								<div class="attack-config__fields">
+									{{#each sysData.attack.jdd_saved.damage_formulas as |damage|}}
+										<div class="field">
+											<span class="field__label">Formule</span>
+											<span class="field__value">{{damage.formula}}</span>
+											<span class="field__value">
+												{{#if (eq @root.sysData.attack.mode "incant")}}
+													{{lookup @root.config.stats_optional_incant damage.stat}}
+												{{else}}
+													{{lookup @root.config.stats_optional_arme damage.stat}}
+												{{/if}}
+											</span>
+											<span class="field__value">
+												{{lookup @root.config.all_damage_types damage.type}}
+											</span>
+										</div>
+									{{/each}}
+								</div>
+							{{/if}}
+						</div>
+					{{/if}}
 				{{/if}}
 
 				{{#if sysData.attack.concentration.enabled}}

@@ -11,8 +11,8 @@
 	background-blend-mode: multiply;
 }
 
-.sheet-field-border() {
-	border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+.sheet-field-border(@color: var(--color-text-primary), @width: 1px) {
+	border: @width solid color-mix(in srgb, @color, transparent 75%);
 }
 
 .input-block(@font-size: 18px, @padding: initial) {
@@ -76,6 +76,13 @@
 	padding: var(--nalfa-padding);
 	border-radius: 6px;
 	background: color-mix(in srgb, var(--background), transparent 50%);
+}
+
+.label-control-row(@label-width: 96px) {
+	display: grid;
+	grid-template-columns: @label-width minmax(0, 1fr);
+	align-items: start;
+	gap: calc(var(--nalfa-padding) / 2);
 }
 
 .stats-set-color-property(@property) {
