@@ -149,14 +149,6 @@ const actionSchemaDefinition = () => ({
 		use_dex: booleanField(false),
 		todo: stringField(""),
 	}),
-	todo: schemaField({
-		action: stringField(""),
-		cost: stringField(""),
-		cooldown: stringField(""),
-		target_range: stringField(""),
-		targets: stringField(""),
-		area: stringField(""),
-	}),
 	jdt: schemaField({
 		enabled: booleanField(false),
 		stat: stringField("arme"),
@@ -462,10 +454,36 @@ export class NPCData extends BaseActorData {
 	}
 }
 
-const itemDescriptionSchema = () => ({
+const DEFAULT_ACTION_DESCRIPTION_TEXT = [
+	"<table><tbody><tr>",
+	'<td colspan="2" data-colwidth="352,0">',
+	"<p style=\"text-align: center\">Nom de l'Action</p>",
+	"</td>",
+	"</tr><tr>",
+	'<td colspan="2" data-colwidth="352,0">',
+	'<p style="text-align: center">Effets</p>',
+	"</td>",
+	"</tr><tr>",
+	'<td data-colwidth="352">',
+	'<p style="text-align: center">Portée :</p>',
+	"</td>",
+	"<td>",
+	'<p style="text-align: center">CD :</p>',
+	"</td>",
+	"</tr><tr>",
+	'<td data-colwidth="352">',
+	'<p style="text-align: center">Sort Niveau(?)</p>',
+	"</td>",
+	"<td>",
+	"<p style=\"text-align: center\">(Type d'action)</p>",
+	"</td>",
+	"</tr></tbody></table>",
+].join("");
+
+const itemDescriptionSchema = (textInitial = "", loretextInitial = "") => ({
 	description: schemaField({
-		value: htmlField(""),
-		source: htmlField(""),
+		text: htmlField(textInitial),
+		loretext: htmlField(loretextInitial),
 	}),
 });
 
@@ -607,6 +625,7 @@ export class ToolData extends BaseItemData {
 			...itemRaritySchema(),
 			...recommendedLevelSchema(),
 			...physicalSchema(),
+			...actionableSchema(),
 		};
 	}
 }
@@ -667,6 +686,7 @@ export class ActionData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			...itemDescriptionSchema(DEFAULT_ACTION_DESCRIPTION_TEXT),
 			...actionSchemaDefinition(),
 		};
 	}

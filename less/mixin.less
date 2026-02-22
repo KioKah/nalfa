@@ -78,6 +78,19 @@
 	background: color-mix(in srgb, var(--background), transparent 50%);
 }
 
+.html-field-content-size(
+	@font-size: var(--font-size-14),
+	@max-lines: 6,
+	@line-height: 1.4,
+	@padding-y: 6px,
+	@edit-icon-size: 16px,
+	@edit-icon-offset: 6px
+) {
+	min-height: calc(@edit-icon-size + (@edit-icon-offset * 2));
+	max-height: calc((@font-size * @line-height * @max-lines) + (@padding-y * 2));
+	height: fit-content;
+}
+
 .label-control-row(@label-width: 96px) {
 	display: grid;
 	grid-template-columns: @label-width minmax(0, 1fr);

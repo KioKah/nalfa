@@ -1017,15 +1017,40 @@
 }
 .nalfa.sheet.item-sheet .richtext-field__content,
 .nalfa.sheet.item .richtext-field__content {
-  min-height: 90px;
-  max-height: 320px;
+  min-height: calc(16px + (6px * 2));
+  max-height: calc((var(--font-size-14) * 1.4 * 6) + (6px * 2));
+  height: fit-content;
   overflow: auto;
   padding: 6px 8px;
   font-size: var(--font-size-14);
   line-height: 1.4;
+  --nalfa-html-field-border-color: color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  --nalfa-html-table-fill: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+}
+.nalfa.sheet.item-sheet .richtext-field__content table,
+.nalfa.sheet.item .richtext-field__content table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid var(--nalfa-html-field-border-color);
+}
+.nalfa.sheet.item-sheet .richtext-field__content th,
+.nalfa.sheet.item .richtext-field__content th,
+.nalfa.sheet.item-sheet .richtext-field__content td,
+.nalfa.sheet.item .richtext-field__content td {
+  border: 1px solid var(--nalfa-html-field-border-color);
+  background: var(--nalfa-html-table-fill) !important;
+}
+.nalfa.sheet.item-sheet .richtext-field__content tbody tr,
+.nalfa.sheet.item .richtext-field__content tbody tr,
+.nalfa.sheet.item-sheet .richtext-field__content tbody tr:nth-child(even),
+.nalfa.sheet.item .richtext-field__content tbody tr:nth-child(even),
+.nalfa.sheet.item-sheet .richtext-field__content tbody tr:nth-child(odd),
+.nalfa.sheet.item .richtext-field__content tbody tr:nth-child(odd) {
+  background: transparent !important;
 }
 .nalfa.sheet.item-sheet .richtext-field__content > :first-child,
 .nalfa.sheet.item .richtext-field__content > :first-child {
@@ -1034,6 +1059,24 @@
 .nalfa.sheet.item-sheet .richtext-field__content > :last-child,
 .nalfa.sheet.item .richtext-field__content > :last-child {
   margin-bottom: 0;
+}
+.nalfa.sheet.item-sheet .richtext-field__content > .tableWrapper:first-child > table,
+.nalfa.sheet.item .richtext-field__content > .tableWrapper:first-child > table {
+  margin-top: 0;
+}
+.nalfa.sheet.item-sheet .richtext-field__content > .tableWrapper:last-child > table,
+.nalfa.sheet.item .richtext-field__content > .tableWrapper:last-child > table {
+  margin-bottom: 0;
+}
+.nalfa.sheet.item-sheet .richtext-field__content p:empty::before,
+.nalfa.sheet.item .richtext-field__content p:empty::before {
+  content: "\00a0";
+}
+.nalfa.sheet.item-sheet .richtext-field--description .richtext-field__content,
+.nalfa.sheet.item .richtext-field--description .richtext-field__content {
+  min-height: calc(16px + (6px * 2));
+  max-height: calc((var(--font-size-14) * 1.4 * 12) + (6px * 2));
+  height: fit-content;
 }
 .nalfa.sheet.item-sheet .richtext-field__overlay-btn,
 .nalfa.sheet.item .richtext-field__overlay-btn {
@@ -1048,10 +1091,6 @@
 .nalfa.sheet.item-sheet .richtext-field--overlay-action,
 .nalfa.sheet.item .richtext-field--overlay-action {
   position: relative;
-}
-.nalfa.sheet.item-sheet .richtext-field--overlay-action .richtext-field__content,
-.nalfa.sheet.item .richtext-field--overlay-action .richtext-field__content {
-  padding-right: 30px;
 }
 .nalfa.sheet.item-sheet .richtext-field--overlay-action:hover .richtext-field__overlay-btn,
 .nalfa.sheet.item .richtext-field--overlay-action:hover .richtext-field__overlay-btn {
@@ -1683,10 +1722,38 @@
 .nalfa.sheet.item-richtext-dialog > section.window-content {
   overflow: hidden;
 }
+.nalfa.sheet.item-richtext-dialog form.dialog-form:has(prose-mirror.editing-source) > footer.form-footer {
+  display: none;
+}
 .nalfa.sheet.item-richtext-dialog prose-mirror {
   display: flex;
   flex-direction: column;
   min-height: 430px;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror code-mirror.source-editor {
+  display: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  font-size: var(--font-size-14);
+  line-height: 1.4;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--background), transparent 50%);
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror code-mirror.source-editor:focus,
+.nalfa.sheet.item-richtext-dialog prose-mirror code-mirror.source-editor:focus-within {
+  outline: none;
+  box-shadow: none;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror code-mirror.source-editor .cm-editor {
+  height: 100%;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror.editing-source .editor-container {
+  display: none;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror.editing-source code-mirror.source-editor {
+  display: block;
 }
 .nalfa.sheet.item-richtext-dialog prose-mirror .editor-menu {
   flex: 0 0 auto;
@@ -1712,14 +1779,41 @@
   box-sizing: border-box;
   font-size: var(--font-size-14);
   line-height: 1.4;
+  --nalfa-html-field-border-color: color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  --nalfa-html-table-fill: rgba(255, 255, 255, 0.05);
   color: var(--color-text-primary);
   caret-color: var(--color-text-primary);
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid var(--nalfa-html-field-border-color);
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] th,
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] td {
+  border: 1px solid var(--nalfa-html-field-border-color);
+  background: var(--nalfa-html-table-fill) !important;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] tbody tr,
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] tbody tr:nth-child(even),
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] tbody tr:nth-child(odd) {
+  background: transparent !important;
 }
 .nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] > :first-child {
   margin-top: 0;
 }
 .nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] > :last-child {
   margin-bottom: 0;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] > .tableWrapper:first-child > table {
+  margin-top: 0;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] > .tableWrapper:last-child > table {
+  margin-bottom: 0;
+}
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-container [contenteditable="true"] p:empty::before {
+  content: "\00a0";
 }
 .nalfa.sheet.item-richtext-dialog prose-mirror .editor-menu button:not(.pm-dropdown) {
   justify-content: center;
@@ -1732,7 +1826,7 @@
 .nalfa.sheet.item-richtext-dialog prose-mirror .editor-menu button[data-action="save"] {
   display: none;
 }
-.nalfa.sheet.item-richtext-dialog prose-mirror .editor-menu li.right {
+.nalfa.sheet.item-richtext-dialog prose-mirror .editor-menu li.right:not(.source-code-edit) {
   display: none;
 }
 #autocomplete-menu li.context-item.command,

@@ -279,7 +279,7 @@ Hooks.on("createItem", (sysData) => {
 
 // [.] "Weapon", https://game-icons.net/1x1/lorc/broad-dagger.html
 // [.] "Trinket", https://game-icons.net/1x1/lorc/gem-pendant.html
-// [.] "Tool", https://game-icons.net/1x1/lorc/tinker.html
+// [.] "Tool", https://game-icons.net/1x1/lorc/dig-dug.html
 // [~] "Backpack", https://game-icons.net/1x1/lorc/knapsack.html
 // [.] "Consumable", https://game-icons.net/1x1/lorc/standing-potion.html
 // [.] "Loot", https://game-icons.net/1x1/lorc/swap-bag.html
@@ -287,7 +287,7 @@ Hooks.on("createItem", (sysData) => {
 // [.] "Spell", https://game-icons.net/1x1/lorc/lightning-helix.html
 // [x] "Currency", https://game-icons.net/1x1/delapouite/two-coins.html
 // [.] "Race", https://game-icons.net/1x1/lorc/dark-squad.html
-// [.] "Class", https://game-icons.net/1x1/lorc/embrassed-energy.html
+// [.] "Class", https://game-icons.net/1x1/delapouite/skills.html
 // [.] "Job", https://game-icons.net/1x1/lorc/journey.html
 // [.] "CombatStyle", https://game-icons.net/1x1/delapouite/fencer.html
 // [.] "Status", https://game-icons.net/1x1/lorc/despair.html

@@ -53,11 +53,11 @@ const getDescriptionData = (item) => {
 		descriptionValue:
 			typeof descriptionData === "string"
 				? descriptionData
-				: (descriptionData.value ?? ""),
+				: (descriptionData.text ?? ""),
 		descriptionSource:
 			typeof descriptionData === "string"
 				? ""
-				: (descriptionData.source ?? ""),
+				: (descriptionData.loretext ?? ""),
 	};
 };
 
@@ -100,7 +100,7 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 		needsIdentification === true && identificationData?.identified !== true;
 	const currentDescriptionNamePath = useUnidentifiedPresentation
 		? "system.identification.unidentified.description"
-		: "system.description.value";
+		: "system.description.text";
 	const currentDescriptionEnriched = useUnidentifiedPresentation
 		? await textEditor.enrichHTML(unidentifiedDescription, { async: true })
 		: await textEditor.enrichHTML(descriptionValue, { async: true });
@@ -149,7 +149,7 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			config,
 			enrichedHTML: {
 				description: {
-					source: await textEditor.enrichHTML(descriptionSource, {
+					loretext: await textEditor.enrichHTML(descriptionSource, {
 						async: true,
 					}),
 				},

@@ -134,15 +134,39 @@
 		}
 
 		&__content {
-			min-height: 90px;
-			max-height: 320px;
+			.html-field-content-size();
 			overflow: auto;
 			padding: 6px 8px;
 			font-size: var(--font-size-14);
 			line-height: 1.4;
+			--nalfa-html-field-border-color: color-mix(
+				in srgb,
+				var(--color-text-primary),
+				transparent 75%
+			);
+			--nalfa-html-table-fill: rgba(255, 255, 255, 0.05);
 			border-radius: 4px;
 			background: color-mix(in srgb, var(--background), transparent 50%);
 			.sheet-field-border();
+
+			table {
+				border-collapse: collapse;
+				border-spacing: 0;
+				width: 100%;
+				border: 1px solid var(--nalfa-html-field-border-color);
+			}
+
+			th,
+			td {
+				border: 1px solid var(--nalfa-html-field-border-color);
+				background: var(--nalfa-html-table-fill) !important;
+			}
+
+			tbody tr,
+			tbody tr:nth-child(even),
+			tbody tr:nth-child(odd) {
+				background: transparent !important;
+			}
 
 			> :first-child {
 				margin-top: 0;
@@ -150,6 +174,24 @@
 
 			> :last-child {
 				margin-bottom: 0;
+			}
+
+			> .tableWrapper:first-child > table {
+				margin-top: 0;
+			}
+
+			> .tableWrapper:last-child > table {
+				margin-bottom: 0;
+			}
+
+			p:empty::before {
+				content: "\00a0";
+			}
+		}
+
+		&--description {
+			.richtext-field__content {
+				.html-field-content-size(@max-lines: 12);
 			}
 		}
 
@@ -165,10 +207,6 @@
 
 		&--overlay-action {
 			position: relative;
-
-			.richtext-field__content {
-				padding-right: 30px;
-			}
 
 			&:hover .richtext-field__overlay-btn {
 				opacity: 1;
@@ -677,10 +715,46 @@
 		overflow: hidden;
 	}
 
+	form.dialog-form:has(prose-mirror.editing-source) > footer.form-footer {
+		display: none;
+	}
+
 	prose-mirror {
 		display: flex;
 		flex-direction: column;
 		min-height: 430px;
+
+		code-mirror.source-editor {
+			display: none;
+			flex: 1 1 auto;
+			min-height: 0;
+			overflow: hidden;
+			font-size: var(--font-size-14);
+			line-height: 1.4;
+			.sheet-field-border();
+			border-radius: 4px;
+			background: color-mix(in srgb, var(--background), transparent 50%);
+
+			&:focus,
+			&:focus-within {
+				outline: none;
+				box-shadow: none;
+			}
+
+			.cm-editor {
+				height: 100%;
+			}
+		}
+
+		&.editing-source {
+			.editor-container {
+				display: none;
+			}
+
+			code-mirror.source-editor {
+				display: block;
+			}
+		}
 
 		.editor-menu {
 			flex: 0 0 auto;
@@ -709,8 +783,33 @@
 			box-sizing: border-box;
 			font-size: var(--font-size-14);
 			line-height: 1.4;
+			--nalfa-html-field-border-color: color-mix(
+				in srgb,
+				var(--color-text-primary),
+				transparent 75%
+			);
+			--nalfa-html-table-fill: rgba(255, 255, 255, 0.05);
 			color: var(--color-text-primary);
 			caret-color: var(--color-text-primary);
+
+			table {
+				border-collapse: collapse;
+				border-spacing: 0;
+				width: 100%;
+				border: 1px solid var(--nalfa-html-field-border-color);
+			}
+
+			th,
+			td {
+				border: 1px solid var(--nalfa-html-field-border-color);
+				background: var(--nalfa-html-table-fill) !important;
+			}
+
+			tbody tr,
+			tbody tr:nth-child(even),
+			tbody tr:nth-child(odd) {
+				background: transparent !important;
+			}
 
 			> :first-child {
 				margin-top: 0;
@@ -718,6 +817,18 @@
 
 			> :last-child {
 				margin-bottom: 0;
+			}
+
+			> .tableWrapper:first-child > table {
+				margin-top: 0;
+			}
+
+			> .tableWrapper:last-child > table {
+				margin-bottom: 0;
+			}
+
+			p:empty::before {
+				content: "\00a0";
 			}
 		}
 
@@ -735,7 +846,7 @@
 			display: none;
 		}
 
-		.editor-menu li.right {
+		.editor-menu li.right:not(.source-code-edit) {
 			display: none;
 		}
 	}

@@ -1,10 +1,12 @@
-<div class="sheet-section richtext-field">
+<div class="sheet-section richtext-field richtext-field--description">
 	<div class="richtext-field__head">
 		<span class="field__label">{{currentDescriptionLabel}}</span>
+	</div>
+	<div class="richtext-field richtext-field--description richtext-field--overlay-action">
 		{{#if isEditable}}
 			<button
 				type="button"
-				class="array-action-btn"
+				class="array-action-btn richtext-field__overlay-btn"
 				data-action="open-richtext-editor"
 				data-path="{{currentDescriptionNamePath}}"
 				data-title="{{currentDescriptionLabel}}"
@@ -12,26 +14,28 @@
 				<i class="fa-light fa-pen-to-square"></i>
 			</button>
 		{{/if}}
+		<div class="richtext-field__content">{{{currentDescriptionEnriched}}}</div>
 	</div>
-	<div class="richtext-field__content">{{{currentDescriptionEnriched}}}</div>
 </div>
 
-<div class="sheet-section richtext-field">
+<div class="sheet-section richtext-field richtext-field--description">
 	<div class="richtext-field__head">
-		<span class="field__label">Source</span>
+		<span class="field__label">Loretext</span>
+	</div>
+	<div class="richtext-field richtext-field--description richtext-field--overlay-action">
 		{{#if isEditable}}
 			<button
 				type="button"
-				class="array-action-btn"
+				class="array-action-btn richtext-field__overlay-btn"
 				data-action="open-richtext-editor"
-				data-path="system.description.source"
-				data-title="Source"
+				data-path="system.description.loretext"
+				data-title="Loretext"
 			>
 				<i class="fa-light fa-pen-to-square"></i>
 			</button>
 		{{/if}}
+		<div class="richtext-field__content">{{{enrichedHTML.description.loretext}}}</div>
 	</div>
-	<div class="richtext-field__content">{{{enrichedHTML.description.source}}}</div>
 </div>
 
 {{#if hasIdentification}}

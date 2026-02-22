@@ -79,7 +79,7 @@ nalfa.actions = {
 };
 
 nalfa.ester_levels = {
-	none: "Gratuit",
+	none: "Basique",
 	lvl1: "Niv. 1",
 	lvl2: "Niv. 2",
 	lvl3: "Niv. 3",
@@ -90,6 +90,7 @@ nalfa.uses_units = {
 	none: "Illimité",
 	lr: "Repos long",
 	sr: "Repos court",
+	consumable: "(Consommable !)",
 };
 
 nalfa.cooldown_units = {
