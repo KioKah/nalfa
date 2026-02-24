@@ -38,7 +38,7 @@ export const rollInitiativeMacro = async () => {
 export const rollBasicAttackMacro = async () => {
 	const actor = ensureActor();
 	if (!actor) return null;
-	return rollAttack(actor, "weapon");
+	return rollAttack(actor, "physical");
 };
 
 export const rollBasicDamageMacro = async () => {

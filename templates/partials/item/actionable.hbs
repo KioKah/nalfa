@@ -328,11 +328,13 @@
 					</div>
 					<div class="attack-config__fields attack-config__fields--row">
 						<span class="attack-config__row-sep">d20 +</span>
-						<select class="stat-arme" name="system.{{actionPath}}jdt.stat">
+						<select class="stat-physical" name="system.{{actionPath}}jdt.stat">
 							{{#if isActionModeIncant}}
 								{{selectOptions config.stats_optional_incant selected=actionData.jdt.stat}}
+							{{else if isActionModePhysical}}
+								{{selectOptions config.stats_optional_physical selected=actionData.jdt.stat}}
 							{{else}}
-								{{selectOptions config.stats_optional_arme selected=actionData.jdt.stat}}
+								{{selectOptions config.stats_optional selected=actionData.jdt.stat}}
 							{{/if}}
 						</select>
 						<span class="attack-config__row-sep">+</span>
@@ -400,13 +402,15 @@
 									/>
 									<span class="attack-config__row-sep">+</span>
 									<select
-										class="stat-arme"
+										class="stat-physical"
 										name="system.{{@root.actionPath}}jdd.damage_formulas.{{index}}.stat"
 									>
 										{{#if @root.isActionModeIncant}}
 											{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
+										{{else if @root.isActionModePhysical}}
+											{{selectOptions @root.config.stats_optional_physical selected=damage.stat}}
 										{{else}}
-											{{selectOptions @root.config.stats_optional_arme selected=damage.stat}}
+											{{selectOptions @root.config.stats_optional selected=damage.stat}}
 										{{/if}}
 									</select>
 								</div>
@@ -464,13 +468,15 @@
 										/>
 										<span class="attack-config__row-sep">+</span>
 										<select
-											class="stat-arme"
+											class="stat-physical"
 											name="system.{{@root.actionPath}}jdd_saved.damage_formulas.{{index}}.stat"
 										>
 											{{#if @root.isActionModeIncant}}
 												{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
+											{{else if @root.isActionModePhysical}}
+												{{selectOptions @root.config.stats_optional_physical selected=damage.stat}}
 											{{else}}
-												{{selectOptions @root.config.stats_optional_arme selected=damage.stat}}
+												{{selectOptions @root.config.stats_optional selected=damage.stat}}
 											{{/if}}
 										</select>
 									</div>
@@ -526,7 +532,7 @@
 							value="{{actionData.concentration.dd}}"
 							data-dtype="Number"
 						/>
-						<span class="attack-config__row-sep">+ Stat Arme/Incant</span>
+						<span class="attack-config__row-sep">+ Stat Physique/Incant</span>
 						<input
 							name="system.{{actionPath}}concentration.enemy_attack_bonus"
 							type="number"

@@ -1,0 +1,89 @@
+<div class="panel-section modifiers-config">
+	<div class="modifiers-config__head field field--inline">
+		<span class="field__label">Modificateurs</span>
+		<button
+			type="button"
+			class="array-action-btn"
+			data-action="add-array-entry"
+			data-path="modifiers"
+			data-entry-type="modifier"
+		>
+			<i class="fa-light fa-square-plus"></i>
+		</button>
+	</div>
+
+	{{#if modifierRows.length}}
+		<div class="modifiers-config__list">
+			<div class="modifiers-config__row modifiers-config__row--labels">
+				<span class="modifiers-config__label modifiers-config__label--category">Catégorie</span>
+				<span class="modifiers-config__label modifiers-config__label--attribute">Attribut</span>
+				<span class="modifiers-config__label modifiers-config__label--operation">Opération</span>
+				<span class="modifiers-config__label modifiers-config__label--value">Valeur</span>
+				<span class="modifiers-config__label modifiers-config__label--remove"></span>
+			</div>
+
+			{{#each modifierRows as |modifier index|}}
+				<div class="modifiers-config__row">
+					<label class="field modifiers-config__field">
+						<select
+							aria-label="Catégorie"
+							class="modifiers-config__control modifiers-config__control--category"
+							name="system.modifiers.{{index}}.category"
+							data-action="change-modifier-category"
+							data-index="{{index}}"
+						>
+							{{selectOptions @root.config.modifier_path_categories selected=modifier.resolvedCategory}}
+						</select>
+					</label>
+
+					<label class="field modifiers-config__field">
+						<select
+							aria-label="Attribut"
+							class="modifiers-config__control modifiers-config__control--attribute"
+							name="system.modifiers.{{index}}.path"
+						>
+							{{selectOptions
+								(lookup @root.config.modifier_base_paths_by_category modifier.resolvedCategory)
+								selected=modifier.resolvedPath
+								blank="Choisir un attribut"
+							}}
+						</select>
+					</label>
+
+					<label class="field modifiers-config__field">
+						<select
+							aria-label="Opération"
+							class="modifiers-config__control modifiers-config__control--operation"
+							name="system.modifiers.{{index}}.mode"
+						>
+							{{selectOptions @root.config.modifier_operations selected=modifier.mode}}
+						</select>
+					</label>
+
+					<label class="field modifiers-config__field">
+						<input
+							aria-label="Valeur"
+							class="modifiers-config__control modifiers-config__control--value"
+							name="system.modifiers.{{index}}.value"
+							type="number"
+							value="{{modifier.value}}"
+							data-dtype="Number"
+						/>
+					</label>
+
+					<button
+						type="button"
+						class="array-action-btn modifiers-config__remove"
+						data-action="remove-array-entry"
+						data-path="modifiers"
+						data-index="{{index}}"
+					>
+						<i class="fa-light fa-square-minus"></i>
+					</button>
+				</div>
+			{{/each}}
+		</div>
+	{{else}}
+		<p>Aucun modificateur.</p>
+	{{/if}}
+</div>

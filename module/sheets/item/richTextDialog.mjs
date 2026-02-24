@@ -4,6 +4,23 @@ const getRichTextDialogValue = (dialog, fallback = "") => {
 	return String(editor.value ?? "");
 };
 
+const resolveRichTextSourceValue = ({ item, path, getValue }) => {
+	if (typeof getValue === "function") {
+		return String(getValue() ?? "");
+	}
+	if (!item || !path) return "";
+	return String(foundry.utils.getProperty(item, path) ?? "");
+};
+
+const persistRichTextValue = async ({ item, onSave, path, value }) => {
+	if (typeof onSave === "function") {
+		await onSave(value);
+		return;
+	}
+	if (!item || !path) return;
+	await item.update({ [path]: value });
+};
+
 const focusRichTextDialogEditor = (dialog) => {
 	const editable = dialog.element?.querySelector(
 		".editor-content[contenteditable='true'], .ProseMirror[contenteditable='true']",
@@ -22,7 +39,7 @@ const focusRichTextDialogEditor = (dialog) => {
 	selection.addRange(range);
 };
 
-const bindRichTextDialogCloseSave = (dialog, item, path, initialValue) => {
+const bindRichTextDialogCloseSave = (dialog, source, initialValue) => {
 	const closeButton = dialog.window?.close;
 	if (!(closeButton instanceof HTMLElement)) return;
 
@@ -31,26 +48,32 @@ const bindRichTextDialogCloseSave = (dialog, item, path, initialValue) => {
 
 		dialog._nalfaSkipAutoSave = true;
 		const content = getRichTextDialogValue(dialog, initialValue);
-		const currentValue = String(foundry.utils.getProperty(item, path) ?? "");
+		const currentValue = resolveRichTextSourceValue(source);
 		if (content === currentValue) return;
 
-		void item.update({ [path]: content });
+		void persistRichTextValue({ ...source, value: content });
 	});
 };
 
-const onRichTextDialogClose = async (dialog, item, path, initialValue) => {
+const onRichTextDialogClose = async (dialog, source, initialValue) => {
 	if (dialog._nalfaSkipAutoSave) return;
 
 	const content = getRichTextDialogValue(dialog, initialValue);
-	const currentValue = String(foundry.utils.getProperty(item, path) ?? "");
+	const currentValue = resolveRichTextSourceValue(source);
 	if (content === currentValue) return;
 
-	await item.update({ [path]: content });
+	await persistRichTextValue({ ...source, value: content });
 };
 
-export const openRichTextEditorDialog = (item, path, title = "Éditeur") => {
+export const openRichTextEditorDialog = (
+	item,
+	path,
+	title = "Éditeur",
+	{ getValue, onSave } = {},
+) => {
 	const { DialogV2 } = foundry.applications.api;
-	const value = String(foundry.utils.getProperty(item, path) ?? "");
+	const source = { item, path, getValue, onSave };
+	const value = resolveRichTextSourceValue(source);
 	const escapedValue = foundry.utils.escapeHTML(value);
 
 	const dialog = new DialogV2({
@@ -93,17 +116,17 @@ export const openRichTextEditorDialog = (item, path, title = "Éditeur") => {
 			dialog._nalfaSkipAutoSave = true;
 			const content =
 				typeof result === "string" ? result : getRichTextDialogValue(dialog, value);
-			await item.update({ [path]: content });
+			await persistRichTextValue({ ...source, value: content });
 		},
 	});
 
 	dialog.addEventListener("render", () => {
-		bindRichTextDialogCloseSave(dialog, item, path, value);
+		bindRichTextDialogCloseSave(dialog, source, value);
 		window.setTimeout(() => focusRichTextDialogEditor(dialog), 0);
 	});
 
 	dialog.addEventListener("close", () => {
-		void onRichTextDialogClose(dialog, item, path, value);
+		void onRichTextDialogClose(dialog, source, value);
 	});
 
 	dialog.render({ force: true });

@@ -16,6 +16,13 @@ const buildDefaultArrayEntry = (entryType) => {
 				value: null,
 				weight: null,
 			};
+		case "modifier":
+			return {
+				category: "stats",
+				path: "",
+				mode: "add",
+				value: 0,
+			};
 		default:
 			return "";
 	}

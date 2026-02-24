@@ -1,7 +1,8 @@
 @import "mixin.less";
 
 .nalfa.sheet.item-sheet,
-.nalfa.sheet.item {
+.nalfa.sheet.item,
+.nalfa.sheet.item-action-editor {
 	min-width: 180px;
 	max-width: calc(var(--item-width) + 2 * var(--nalfa-padding));
 	min-height: 132px;
@@ -438,6 +439,163 @@
 		}
 	}
 
+	.modifiers-config {
+		display: flex;
+		flex-direction: column;
+		gap: calc(var(--nalfa-padding) / 2);
+
+		&__list {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			overflow-x: auto;
+		}
+
+		&__row {
+			display: flex;
+			flex-wrap: nowrap;
+			align-items: center;
+			justify-content: space-evenly;
+			gap: 6px;
+		}
+
+		&__row--labels {
+			align-items: center;
+		}
+
+		&__label {
+			display: inline-flex;
+			align-items: center;
+			justify-content: flex-start;
+			font-weight: 600;
+			font-size: 12px;
+			opacity: 0.8;
+			flex: 0 0 auto;
+			text-align: left;
+
+			&--category {
+				@width: calc((1px * 10 + 8px) * (unit(18px) / 2));
+				width: @width;
+				min-width: @width;
+				max-width: @width;
+			}
+
+			&--attribute {
+				@width: calc((1px * 13 + 8px) * (unit(18px) / 2));
+				width: @width;
+				min-width: @width;
+				max-width: @width;
+			}
+
+			&--operation {
+				@width: calc((1px * 8 + 8px) * (unit(18px) / 2));
+				width: @width;
+				min-width: @width;
+				max-width: @width;
+			}
+
+			&--value {
+				.chr-block(@chr: 4);
+			}
+
+			&--remove {
+				flex: 0 0 auto;
+				margin-left: auto;
+				width: 16px;
+				min-width: 16px;
+				max-width: 16px;
+			}
+		}
+
+		&__field {
+			min-width: 0;
+			flex: 0 0 auto;
+			flex-wrap: nowrap;
+		}
+
+		&__control {
+			min-width: 0;
+
+			&--category {
+				.chr-select-block(@chr: 10);
+			}
+
+			&--attribute {
+				.chr-select-block(@chr: 13);
+			}
+
+			&--operation {
+				.chr-select-block(@chr: 8);
+			}
+
+			&--value {
+				.chr-input-block(@chr: 4);
+			}
+		}
+
+		&__remove {
+			flex: 0 0 auto;
+			margin-left: auto;
+		}
+	}
+
+	.item-actions {
+		display: flex;
+		flex-direction: column;
+		gap: calc(var(--nalfa-padding) / 2);
+
+		&__list {
+			display: flex;
+			flex-direction: column;
+			gap: var(--nalfa-gap-text);
+		}
+
+		&__row {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			align-items: center;
+			gap: var(--nalfa-gap-text);
+		}
+
+		&__main {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+			min-width: 0;
+		}
+
+		&__name,
+		&__name-label {
+			width: 100%;
+			font-weight: 600;
+		}
+
+		&__name-label {
+			line-height: 24px;
+		}
+
+		&__summary {
+			font-size: 11px;
+			opacity: 0.8;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&__buttons {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+
+		&__footer {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: var(--nalfa-gap-text);
+		}
+	}
+
 	.attack-config {
 		display: flex;
 		flex-direction: column;
@@ -678,6 +836,52 @@
 		}
 	}
 
+	.item-action-editor-body {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow: auto;
+		padding-inline-end: 2px;
+	}
+
+	.item-action-editor-layout {
+		display: flex;
+		flex-direction: column;
+		gap: var(--nalfa-gap-text);
+		min-height: 0;
+		flex: 1 1 auto;
+	}
+
+	.item-action-editor-footer {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		gap: var(--nalfa-gap-text);
+		margin: 0;
+		padding: 0;
+		border: 0;
+
+		button {
+			flex: 1 1 0;
+		}
+	}
+
+	&.item-action-editor {
+		max-height: 920px;
+
+		> section.window-content {
+			max-height: 850px;
+			height: auto;
+			overflow: hidden;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+			flex: 1 1 auto;
+		}
+	}
+
 	@media (max-width: 720px) {
 		.grid--two,
 		.action-specific__checks {
@@ -697,6 +901,18 @@
 		.attack-config__damage-tail {
 			width: 100%;
 			margin-left: 0;
+		}
+
+		.item-actions__row {
+			grid-template-columns: 1fr;
+		}
+
+		.item-actions__buttons {
+			justify-content: start;
+		}
+
+		.item-actions__summary {
+			white-space: normal;
 		}
 
 		.currency-config__row {

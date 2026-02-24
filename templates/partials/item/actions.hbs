@@ -1,0 +1,64 @@
+<div class="sheet-section item-actions">
+	{{#if itemActions.length}}
+		<div class="item-actions__list">
+			{{#each itemActions as |itemAction|}}
+				<div class="item-actions__row panel-section">
+					<div class="item-actions__main">
+						{{#if @root.isEditable}}
+							<input
+								class="item-actions__name"
+								name="system.actions.{{itemAction.index}}.name"
+								type="text"
+								value="{{itemAction.inputName}}"
+								placeholder="{{itemAction.defaultName}}"
+							/>
+						{{else}}
+							<span class="item-actions__name-label">{{itemAction.displayName}}</span>
+						{{/if}}
+						<span class="item-actions__summary">{{itemAction.summary}}</span>
+					</div>
+
+					{{#if @root.isEditable}}
+						<div class="item-actions__buttons">
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="edit-item-action"
+								data-index="{{itemAction.index}}"
+								title="Modifier"
+							>
+								<i class="fa-light fa-pen-to-square"></i>
+							</button>
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="remove-item-action"
+								data-index="{{itemAction.index}}"
+								title="Supprimer"
+							>
+								<i class="fa-light fa-square-minus"></i>
+							</button>
+						</div>
+					{{/if}}
+				</div>
+			{{/each}}
+		</div>
+	{{else}}
+		<p class="hint item-actions__empty">Aucune action.</p>
+	{{/if}}
+
+	{{#if isEditable}}
+		<div class="item-actions__footer">
+			<button
+				type="button"
+				class="array-action-btn"
+				data-action="add-item-action"
+				{{#unless canAddItemAction}}disabled{{/unless}}
+				title="Ajouter"
+			>
+				<i class="fa-light fa-square-plus"></i>
+			</button>
+			<span class="hint">{{itemActionsCount}} / {{maxItemActions}} actions</span>
+		</div>
+	{{/if}}
+</div>

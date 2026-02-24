@@ -1,0 +1,15 @@
+<div class="item-action-editor-layout">
+	<section class="sheet-body item-action-editor-body">
+		{{#if hasActionable}}
+			{{> "systems/nalfa/templates/partials/item/actionable.hbs"}}
+		{{else}}
+			<div class="sheet-section">
+				<p class="hint">Cette action n'existe plus.</p>
+			</div>
+		{{/if}}
+	</section>
+	<footer class="form-footer item-action-editor-footer">
+		<button type="button" data-action="cancel-action-editor">Annuler</button>
+		<button type="button" data-action="save-action-editor">Enregistrer</button>
+	</footer>
+</div>

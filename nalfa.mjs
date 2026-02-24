@@ -24,6 +24,7 @@ import {
 import { registerHalfMinimumDiceModifier } from "./module/rolls/diceModifiers.mjs";
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
+import { round } from "./module/utils.mjs";
 
 import { DiceSystem } from "../../modules/dice-so-nice/api.js";
 
@@ -40,8 +41,11 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/sheets/item/header.hbs",
 		"systems/nalfa/templates/sheets/item/tabs.hbs",
 		"systems/nalfa/templates/sheets/item/body.hbs",
+		"systems/nalfa/templates/sheets/item/action-editor.hbs",
 		"systems/nalfa/templates/partials/item/item-specific.hbs",
+		"systems/nalfa/templates/partials/item/actions.hbs",
 		"systems/nalfa/templates/partials/item/actionable.hbs",
+		"systems/nalfa/templates/partials/item/modifiers.hbs",
 		"systems/nalfa/templates/partials/item/description.hbs",
 		"systems/nalfa/templates/partials/item/physical.hbs",
 		"systems/nalfa/templates/partials/item/specific/weapon.hbs",
@@ -218,6 +222,14 @@ Hooks.once("init", function () {
 			maximumSignificantDigits: digits,
 			useGrouping: false,
 		}).format(clampedNumber);
+	});
+
+	Handlebars.registerHelper("roundNumber", function (value, decimals = 2) {
+		const number = Number(value);
+		if (!Number.isFinite(number)) return "";
+
+		const precision = Math.max(0, Math.trunc(Number(decimals) || 0));
+		return round(number, precision);
 	});
 
 	Handlebars.registerHelper("pluralTargetLabel", function (label, count) {

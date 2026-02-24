@@ -11,8 +11,9 @@ nalfa.stats = {
 };
 
 nalfa.attack_mode = {
-	arme: "Arme",
-	incant: "Incant",
+	none: "None",
+	physical: "Phys.",
+	incant: "Incant.",
 };
 
 nalfa.stats_optional = {
@@ -20,13 +21,13 @@ nalfa.stats_optional = {
 	...nalfa.stats,
 };
 
-nalfa.stats_optional_arme = {
-	arme: "Arme",
+nalfa.stats_optional_physical = {
+	physical: "Phys.",
 	...nalfa.stats_optional,
 };
 
 nalfa.stats_optional_incant = {
-	incant: "Incant",
+	incant: "Incant.",
 	...nalfa.stats_optional,
 };
 
@@ -141,6 +142,88 @@ nalfa.consumable_types = {
 	scroll: "Parchemin",
 	other: "Autre",
 };
+
+nalfa.modifier_operations = {
+	add: "Ajouter",
+	multiply: "Multiplier",
+	override: "Remplacer",
+	upgrade: "Maximum",
+	downgrade: "Minimum",
+};
+
+nalfa.modifier_path_categories = {
+	attributes: "Attributs",
+	stats: "Stats",
+	saving_throws: "Sauvegardes",
+	skills: "Compétences",
+	roll_stats: "Jets",
+	actions: "Actions",
+};
+
+nalfa.modifier_base_paths_by_category = {
+	stats: {
+		"stats.str.base": "FOR",
+		"stats.dex.base": "DEX",
+		"stats.int.base": "INT",
+		"stats.wis.base": "SAG",
+		"stats.cha.base": "CHA",
+		"stats.con.base": "CON",
+	},
+	saving_throws: {
+		"stats.str.save.base": "FOR",
+		"stats.dex.save.base": "DEX",
+		"stats.int.save.base": "INT",
+		"stats.wis.save.base": "SAG",
+		"stats.cha.save.base": "CHA",
+		"stats.con.save.base": "CON",
+	},
+	skills: {
+		"attributes.skills.athlet.base": "Athlétisme",
+		"attributes.skills.robust.base": "Robustesse",
+		"attributes.skills.adress.base": "Adresse",
+		"attributes.skills.discre.base": "Discrétion",
+		"attributes.skills.acroba.base": "Acrobaties",
+		"attributes.skills.cultur.base": "Culture",
+		"attributes.skills.magie.base": "Magie",
+		"attributes.skills.nature.base": "Nature",
+		"attributes.skills.medeci.base": "Médecine",
+		"attributes.skills.percep.base": "Perception",
+		"attributes.skills.sereni.base": "Sérénité",
+		"attributes.skills.intuit.base": "Intuition",
+		"attributes.skills.intimi.base": "Intimidation",
+		"attributes.skills.trompe.base": "Tromperie",
+		"attributes.skills.persua.base": "Persuasion",
+		"attributes.skills.perfor.base": "Performance",
+		"attributes.skills.sante.base": "Santé",
+		"attributes.skills.endura.base": "Endurance",
+	},
+	roll_stats: {
+		"roll_stats.physical.base": "Physique",
+		"roll_stats.incant.base": "Incantation",
+	},
+	attributes: {
+		"attributes.hp.base": "PV max",
+		"attributes.defense.base": "Défense",
+		"attributes.evasion.base": "Évasion",
+		"attributes.initiative.base": "Initiative",
+		"attributes.passive_percep.base": "Percep. passive",
+		"attributes.reach.base": "Allonge",
+		"attributes.range_coef.base": "Coef. portée",
+		"attributes.death.passing_throw.base": "DD JdMort",
+	},
+	actions: {
+		"actions.main.base": "Principales",
+		"actions.bonus.base": "Bonus",
+		"actions.concentration.base": "Concentration",
+		"actions.reaction.base": "Réaction",
+		"actions.movement.base": "Déplacement",
+	},
+};
+
+nalfa.modifier_base_paths = Object.values(nalfa.modifier_base_paths_by_category).reduce(
+	(allPaths, groupPaths) => ({ ...allPaths, ...groupPaths }),
+	{},
+);
 
 nalfa.range_types = {
 	melee: "Au CàC",
@@ -257,6 +340,15 @@ nalfa.fusion_damage_types = {
 nalfa.all_damage_types = {
 	none: "",
 	arme: "Arme", // ← hérite du type de dégât de l'arme
+	...nalfa.physical_damage_types,
+	...nalfa.elementary_damage_types,
+	...nalfa.magical_damage_types,
+	...nalfa.regeneration_damage_types,
+	...nalfa.fusion_damage_types,
+};
+
+nalfa.standard_damage_types = {
+	none: "",
 	...nalfa.physical_damage_types,
 	...nalfa.elementary_damage_types,
 	...nalfa.magical_damage_types,

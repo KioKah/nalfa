@@ -1,21 +1,86 @@
 <div class="panel-section">
 	<div class="field field--inline">
+		<span class="field__label">Dé arme</span>
+	</div>
+	<div class="field field--inline">
+		<span class="field__label">1 main</span>
+		{{#if sysData.equippable.main_hand}}
+			<input
+				class="fixed"
+				name="system.da.main_hand"
+				type="text"
+				value="{{sysData.da.main_hand}}"
+				placeholder="d6"
+			/>
+		{{else}}
+			<span class="field__value">Non équipable</span>
+		{{/if}}
+	</div>
+	<div class="field field--inline">
+		<span class="field__label">2 mains</span>
+		{{#if sysData.equippable.two_handed}}
+			<input
+				class="fixed"
+				name="system.da.two_handed"
+				type="text"
+				value="{{sysData.da.two_handed}}"
+				placeholder="d8"
+			/>
+		{{else}}
+			<span class="field__value">Non équipable</span>
+		{{/if}}
+	</div>
+	<div class="field field--inline">
+		<span class="field__label">2&times; 1 main</span>
+		{{#if sysData.equippable.off_hand}}
+			<input
+				class="fixed"
+				name="system.da.dual_wield"
+				type="text"
+				value="{{sysData.da.dual_wield}}"
+				placeholder="d8"
+			/>
+		{{else}}
+			<span class="field__value">Non équipable</span>
+		{{/if}}
+	</div>
+	<label class="field field--inline">
+		<span class="field__label">Type de dégâts</span>
+		<select name="system.damage_type">
+			{{selectOptions config.standard_damage_types selected=sysData.damage_type}}
+		</select>
+	</label>
+</div>
+
+<div class="panel-section">
+	<label class="field field--inline">
+		<span class="field__label">Peut utiliser DEX</span>
+		<input
+			type="checkbox"
+			name="system.weapon_attributes.can_use_dex"
+			{{checked sysData.weapon_attributes.can_use_dex}}
+		/>
+	</label>
+</div>
+
+<div class="panel-section">
+	<div class="field field--inline">
 		<span class="field__label">Attributs d'arme</span>
 		<button
 			type="button"
 			class="array-action-btn"
 			data-action="add-array-entry"
-			data-path="weapon_attributes"
+			data-path="weapon_attributes.list"
 		>
 			<i class="fa-light fa-square-plus"></i>
 		</button>
 	</div>
-	{{#if sysData.weapon_attributes.length}}
-		{{#each sysData.weapon_attributes as |attribute index|}}
+	{{#if sysData.weapon_attributes.list.length}}
+		{{#each sysData.weapon_attributes.list as |attribute index|}}
 			<div class="field field--inline">
 				<input
 					class="fixed"
-					name="system.weapon_attributes.{{index}}"
+					name="system.weapon_attributes.list.{{index}}"
 					type="text"
 					value="{{attribute}}"
 				/>
@@ -23,7 +88,7 @@
 					type="button"
 					class="array-action-btn"
 					data-action="remove-array-entry"
-					data-path="weapon_attributes"
+					data-path="weapon_attributes.list"
 					data-index="{{index}}"
 				>
 					<i class="fa-light fa-square-minus"></i>

@@ -122,7 +122,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 
 	async _onRollBasicAttack(event) {
 		event.preventDefault();
-		return rollAttack(this.actor, "weapon");
+		return rollAttack(this.actor, "physical");
 	}
 
 	async _onRollBasicDamage(event) {

@@ -20,7 +20,7 @@
 
 <div class="sheet-section richtext-field richtext-field--description">
 	<div class="richtext-field__head">
-		<span class="field__label">Loretext</span>
+		<span class="field__label">{{currentLoretextLabel}}</span>
 	</div>
 	<div class="richtext-field richtext-field--description richtext-field--overlay-action">
 		{{#if isEditable}}
@@ -28,13 +28,13 @@
 				type="button"
 				class="array-action-btn richtext-field__overlay-btn"
 				data-action="open-richtext-editor"
-				data-path="system.description.loretext"
-				data-title="Loretext"
+				data-path="{{currentLoretextNamePath}}"
+				data-title="{{currentLoretextLabel}}"
 			>
 				<i class="fa-light fa-pen-to-square"></i>
 			</button>
 		{{/if}}
-		<div class="richtext-field__content">{{{enrichedHTML.description.loretext}}}</div>
+		<div class="richtext-field__content">{{{currentLoretextEnriched}}}</div>
 	</div>
 </div>
 

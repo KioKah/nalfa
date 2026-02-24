@@ -11,6 +11,8 @@ export const ITEM_TYPES_WITH_SPECIFIC = new Set([
 	"Class",
 ]);
 
+export const ITEM_TYPES_WITH_MODIFIERS = new Set(["Trinket", "Class"]);
+
 export const ITEM_TYPES_WITH_PHYSICAL = new Set([
 	"Weapon",
 	"Trinket",

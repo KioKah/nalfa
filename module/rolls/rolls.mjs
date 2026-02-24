@@ -72,6 +72,31 @@ const getCompareSymbol = (isGreaterOrEqualThan) => {
 	return isGreaterOrEqualThan ? "⩾" : "＜";
 };
 
+const DEFAULT_ACTOR_DAMAGE_DIE = "d2+1";
+const DEFAULT_ACTOR_DAMAGE_TYPE = "none";
+
+const getActorDamageDie = (actor) => {
+	const actorDamageDie = String(actor?.system?.da?.value ?? "").trim();
+	return actorDamageDie || DEFAULT_ACTOR_DAMAGE_DIE;
+};
+
+const getActorDamageType = (actor) => {
+	const actorDamageType = String(actor?.system?.damage_type ?? "").trim();
+	return actorDamageType || DEFAULT_ACTOR_DAMAGE_TYPE;
+};
+
+const resolveDamageFormula = (formula = "", actor) => {
+	const damageDie = getActorDamageDie(actor);
+	return String(formula ?? "").replace(/\bdA\b/gi, `(${damageDie})`);
+};
+
+const resolveDamageType = (damageType, actor) => {
+	const rawType = String(damageType ?? "none").trim() || "none";
+	if (rawType !== "arme") return rawType;
+
+	return getActorDamageType(actor);
+};
+
 const postRollMessage = async (actor, templateKey, data, messageOptions = {}) => {
 	const templatePath = CHAT_TEMPLATES[templateKey];
 	if (!templatePath) return null;
@@ -139,23 +164,35 @@ export const rollSkill = async (actor, skillKey) => {
 	return rollData;
 };
 
-export const rollAttack = async (actor, mode = "weapon") => {
+export const rollAttack = async (actor, mode = "physical") => {
 	if (!actor) return null;
 	const attack = actor.system?.attack ?? {};
 	const jdt = attack.jdt ?? {};
+	const resolvedMode =
+		mode === "incant" || mode === "physical" || mode === "none"
+			? mode
+			: "none";
 	const rollStats = actor.system?.roll_stats ?? {};
-	const armeStats = rollStats.arme ?? {};
+	const physicalStats = rollStats.physical ?? {};
 	const incantStats = rollStats.incant ?? {};
-	const armeStatKey = armeStats.default_stat ?? "";
+	const physicalStatKey = physicalStats.default_stat ?? "";
 	const incantStatKey = incantStats.stat ?? "";
-	const statKey = mode === "incant" ? incantStatKey : (jdt.stat ?? armeStatKey ?? "");
-	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
+	const statKey =
+		resolvedMode === "incant"
+			? incantStatKey
+			: resolvedMode === "physical"
+				? (jdt.stat ?? physicalStatKey ?? "")
+				: (jdt.stat ?? "");
+	const statName =
+		statKey === "physical"
+			? getLabel(CONFIG.nalfa.attack_mode, "physical", "Physique")
+			: getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const statValue = statKey ? getStatTotal(actor, statKey) : 0;
-	const armeValue = Number(
-		armeStats.value ??
-			(armeStatKey ? getStatTotal(actor, armeStatKey) : 0) +
-				(armeStats.base ?? 0) +
-				(armeStats.alt ?? 0),
+	const physicalValue = Number(
+		physicalStats.value ??
+			(physicalStatKey ? getStatTotal(actor, physicalStatKey) : 0) +
+				(physicalStats.base ?? 0) +
+				(physicalStats.alt ?? 0),
 	);
 	const incantValue = Number(
 		incantStats.value ??
@@ -163,7 +200,10 @@ export const rollAttack = async (actor, mode = "weapon") => {
 				(incantStats.base ?? 0) +
 				(incantStats.alt ?? 0),
 	);
-	const bonusValue = mode === "incant" ? incantValue : armeValue;
+	const bonusValue =
+		resolvedMode === "incant"
+			? incantValue
+			: (resolvedMode === "physical" ? physicalValue : 0);
 	const modifier = statValue + bonusValue;
 	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(modifier);
 	const weapon = actor.system?.weapon ?? {};
@@ -201,12 +241,19 @@ export const rollDamage = async (actor, config = {}) => {
 	if (!actor) return null;
 	const rawFormula = (config.formula ?? "").trim();
 	if (!rawFormula) return null;
-	const normalizedFormula = normalizeDamageFormula(rawFormula);
+	const resolvedFormula = resolveDamageFormula(rawFormula, actor);
+	const normalizedFormula = normalizeDamageFormula(resolvedFormula);
 	const shortFormula = toShortHalfMinimumFormula(normalizedFormula);
 	const statKey = config.statKey ?? "";
-	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
-	const statValue = statKey ? getStatTotal(actor, statKey) : 0;
-	const damageTypeKey = config.damageType ?? "none";
+	const statName =
+		statKey === "physical"
+			? getLabel(CONFIG.nalfa.attack_mode, "physical", "Physique")
+			: getLabel(CONFIG.nalfa.stats, statKey, statKey);
+	const statValue =
+		statKey === "physical"
+			? Number(actor.system?.roll_stats?.physical?.value ?? 0)
+			: (statKey ? getStatTotal(actor, statKey) : 0);
+	const damageTypeKey = resolveDamageType(config.damageType, actor);
 	const damageTypeLabel = getLabel(
 		CONFIG.nalfa.all_damage_types,
 		damageTypeKey,

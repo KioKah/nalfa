@@ -4,6 +4,7 @@ import {
 	EQUIP_SLOT_NONE,
 	PRIMARY_TAB_GROUP,
 } from "./item/constants.mjs";
+import NalfaItemActionEditor from "./item/actionEditor.mjs";
 import { buildItemSheetContext } from "./item/context.mjs";
 import {
 	buildEquippedSlotUpdate,
@@ -15,6 +16,11 @@ import {
 	buildNeedsIdentificationUpdate,
 } from "./item/identification.mjs";
 import { openRichTextEditorDialog } from "./item/richTextDialog.mjs";
+import {
+	MAX_ITEM_ACTIONS,
+	createDefaultItemAction,
+	getDefaultItemActionName,
+} from "../itemActions.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -25,6 +31,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			tabs: [
 				{ id: "specific", label: "Spécifique" },
 				{ id: "actionable", label: "Action" },
+				{ id: "modifiers", label: "Modificateurs" },
 				{ id: "description", label: "Description" },
 			],
 			initial: "specific",
@@ -93,6 +100,12 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 				"[data-action='remove-array-entry']",
 				this._onRemoveArrayEntry,
 			);
+			this._bindClickAction("[data-action='add-item-action']", this._onAddItemAction);
+			this._bindClickAction("[data-action='edit-item-action']", this._onEditItemAction);
+			this._bindClickAction(
+				"[data-action='remove-item-action']",
+				this._onRemoveItemAction,
+			);
 			this._bindChangeAction(
 				"[data-action='change-equipped-slot']",
 				this._onChangeEquippedSlot,
@@ -104,6 +117,10 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			this._bindChangeAction(
 				"input[name='system.identification.identified']",
 				this._onToggleIdentified,
+			);
+			this._bindChangeAction(
+				"[data-action='change-modifier-category']",
+				this._onChangeModifierCategory,
 			);
 			this._bindClickAction(
 				"[data-action='open-richtext-editor']",
@@ -157,6 +174,56 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		openRichTextEditorDialog(this.item, path, title);
 	}
 
+	async _onAddItemAction(event) {
+		event.preventDefault();
+
+		const itemActions = Array.isArray(this.item.system?.actions)
+			? foundry.utils.deepClone(this.item.system.actions)
+			: [];
+		if (itemActions.length >= MAX_ITEM_ACTIONS) return;
+
+		const actionIndex = itemActions.length;
+		const actionName = getDefaultItemActionName(this.item.name, actionIndex);
+		itemActions.push(createDefaultItemAction({ name: actionName }));
+		await this.item.update({ "system.actions": itemActions });
+	}
+
+	_onEditItemAction(event) {
+		event.preventDefault();
+
+		const button = event.currentTarget;
+		const index = Number(button.dataset.index ?? -1);
+		if (!Number.isInteger(index) || index < 0) return;
+
+		const itemActions = this.item.system?.actions;
+		if (!Array.isArray(itemActions) || !itemActions[index]) return;
+
+		const fallbackWidth = this.constructor.DEFAULT_OPTIONS.position?.width ?? 760;
+		const width = Number(this.position?.width ?? fallbackWidth) || fallbackWidth;
+		const editor = new NalfaItemActionEditor({
+			document: this.item,
+			actionIndex: index,
+			position: { width },
+		});
+		editor.render({ force: true });
+	}
+
+	async _onRemoveItemAction(event) {
+		event.preventDefault();
+
+		const button = event.currentTarget;
+		const index = Number(button.dataset.index ?? -1);
+		if (!Number.isInteger(index) || index < 0) return;
+
+		const itemActions = Array.isArray(this.item.system?.actions)
+			? foundry.utils.deepClone(this.item.system.actions)
+			: [];
+		if (!itemActions[index]) return;
+
+		itemActions.splice(index, 1);
+		await this.item.update({ "system.actions": itemActions });
+	}
+
 	async _onChangeEquippedSlot(event) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -199,6 +266,32 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 
 		const isIdentified = Boolean(event.currentTarget.checked);
 		await this.item.update(buildIdentifiedUpdate(this.item, isIdentified));
+	}
+
+	async _onChangeModifierCategory(event) {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		event.stopPropagation();
+
+		const select = event.currentTarget;
+		const index = Number(select.dataset.index ?? -1);
+		if (!Number.isInteger(index) || index < 0) return;
+
+		const category = String(select.value ?? "");
+		const pathsByCategory = CONFIG.nalfa?.modifier_base_paths_by_category ?? {};
+		const availablePaths = Object.keys(pathsByCategory[category] ?? {});
+		const modifiers = foundry.utils.deepClone(this.item.system?.modifiers ?? []);
+		if (!modifiers[index]) return;
+
+		const currentPath = String(modifiers[index].path ?? "");
+		const nextPath = availablePaths.includes(currentPath)
+			? currentPath
+			: (availablePaths[0] ?? "");
+
+		modifiers[index].category = category;
+		modifiers[index].path = nextPath;
+
+		await this.item.update({ "system.modifiers": modifiers });
 	}
 
 }

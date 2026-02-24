@@ -1,6 +1,16 @@
-const getDescriptionValue = (item) => {
+const getDescriptionData = (item) => {
 	const descriptionData = item.system?.description ?? {};
-	return typeof descriptionData === "string" ? descriptionData : (descriptionData.value ?? "");
+	if (typeof descriptionData === "string") {
+		return {
+			text: descriptionData,
+			loretext: "",
+		};
+	}
+
+	return {
+		text: descriptionData.text ?? "",
+		loretext: descriptionData.loretext ?? "",
+	};
 };
 
 export const getBaseItemNameForIdentification = (name) => {
@@ -29,8 +39,9 @@ export const buildNeedsIdentificationUpdate = (item, isEnabled) => {
 	}
 
 	const baseName = getBaseItemNameForIdentification(item.name);
-	const baseDescription = getDescriptionValue(item);
-	const unknownDescription = toUnknownDescription(baseDescription);
+	const { text, loretext } = getDescriptionData(item);
+	const unknownDescription = toUnknownDescription(text);
+	const unknownLoretext = toUnknownDescription(loretext);
 	const trueName = `${baseName} (!)`.trim();
 	const unknownName = `${baseName} (?)`.trim();
 
@@ -40,6 +51,7 @@ export const buildNeedsIdentificationUpdate = (item, isEnabled) => {
 		"system.identification.true_name": trueName,
 		"system.identification.unidentified.name": unknownName,
 		"system.identification.unidentified.description": unknownDescription,
+		"system.identification.unidentified.loretext": unknownLoretext,
 		"system.identification.identified": false,
 	};
 };

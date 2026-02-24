@@ -41,7 +41,7 @@ the exact class/method page + version) so the implementation can match Foundry's
   - `BaseActorData` defines stats (str/dex/int/wis/cha/con), attributes (hp/defense/evasion/etc),
     skills, resistances, actions, spell charges, and UI state (`ui.valueMode`).
   - `CharacterData`/`NPCData` extend the base schema and add type-specific fields.
-  - `ItemData` defines item rarity + description.
+  - `BaseItemData` extensions define ALL items.
 - `template.json` only registers document types.
 
 ## Core Code Layout
