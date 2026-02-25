@@ -1039,6 +1039,7 @@ export class ActionData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
+			shorthand: stringField(""),
 			...itemDescriptionSchema(
 				DEFAULT_ACTION_DESCRIPTION_TEXT,
 				DEFAULT_ACTION_DESCRIPTION_LORETEXT,

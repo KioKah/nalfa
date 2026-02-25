@@ -5,6 +5,8 @@ import {
 } from "../../itemActions.mjs";
 import { openRichTextEditorDialog } from "./richTextDialog.mjs";
 
+const DEFAULT_ITEM_ICON = "icons/svg/item-bag.svg";
+
 const htmlToPlainText = (value) => {
 	const html = String(value ?? "");
 	if (!html) return "";
@@ -14,6 +16,12 @@ const htmlToPlainText = (value) => {
 	return String(container.textContent ?? "")
 		.replace(/\s+/g, " ")
 		.trim();
+};
+
+const getItemImage = (item) => {
+	const defaultItemIcon = item.constructor?.DEFAULT_ICON ?? DEFAULT_ITEM_ICON;
+	const defaultArtwork = item.constructor?.getDefaultArtwork?.(item.toObject()) ?? {};
+	return item.img === defaultItemIcon ? (defaultArtwork.img ?? item.img) : item.img;
 };
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -31,6 +39,14 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 	};
 
 	static PARTS = {
+		header: {
+			template: `systems/nalfa/templates/sheets/item/action-editor-header.hbs`,
+			classes: ["nalfa-sheet"],
+		},
+		separator: {
+			template: `systems/nalfa/templates/sheets/item/action-editor-separator.hbs`,
+			classes: ["nalfa-sheet"],
+		},
 		sheet: {
 			template: `systems/nalfa/templates/sheets/item/action-editor.hbs`,
 			classes: ["nalfa-sheet", "sheet-body"],
@@ -39,7 +55,6 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 
 	constructor(options = {}) {
 		super(options);
-		this._skipAutoSave = false;
 		this._draftAction = this.#getInitialDraftAction();
 	}
 
@@ -63,17 +78,23 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 		const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
 		const defaultActionName = getDefaultItemActionName(item.name, actionIndex);
 		const defaultActionShorthand = getDefaultItemActionShorthand(actionIndex);
+		const actionDisplayName = String(actionData?.name ?? "").trim() || defaultActionName;
+		const actionDisplayShorthand =
+			String(actionData?.shorthand ?? "").trim() || defaultActionShorthand;
 		const { TextEditor } = foundry.applications.ux;
 
 		return {
 			isOwner: this.item.isOwner,
 			isEditable: this.isEditable,
 			item,
+			itemImage: getItemImage(item),
 			hasActionable,
 			actionData,
 			actionPath: `actions.${actionIndex}.`,
 			defaultActionName,
 			defaultActionShorthand,
+			actionDisplayName,
+			actionDisplayShorthand,
 			isActionModeIncant: actionMode === "incant",
 			isActionModePhysical: actionMode === "physical",
 			config: CONFIG.nalfa,
@@ -111,14 +132,6 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 			"[data-action='open-richtext-editor']",
 			this._onOpenRichTextEditor,
 		);
-		this._bindClickAction(
-			"[data-action='save-action-editor']",
-			this._onSaveActionEditor,
-		);
-		this._bindClickAction(
-			"[data-action='cancel-action-editor']",
-			this._onCancelActionEditor,
-		);
 	}
 
 	_bindClickAction(selector, handler) {
@@ -141,24 +154,10 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 		if (!path) return;
 
 		foundry.utils.setProperty(this._draftAction, path, this.#readFieldValue(element));
+		void this.#saveDraftAction();
 		if (this.#shouldRerenderAfterChange(path)) {
 			this.render({ force: true });
 		}
-	}
-
-	_onSaveActionEditor(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		this.#syncDraftFromRenderedForm();
-		this._skipAutoSave = true;
-		void this.#saveDraftAction().then(() => this.close());
-	}
-
-	_onCancelActionEditor(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		this._skipAutoSave = true;
-		void this.close();
 	}
 
 	_onAddArrayEntryDraft(event) {
@@ -175,6 +174,7 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 		const array = Array.isArray(source) ? foundry.utils.deepClone(source) : [];
 		array.push(this.#buildDefaultArrayEntry(entryType));
 		foundry.utils.setProperty(this._draftAction, path, array);
+		void this.#saveDraftAction();
 		this.render({ force: true });
 	}
 
@@ -196,6 +196,7 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 
 		array.splice(index, 1);
 		foundry.utils.setProperty(this._draftAction, path, array);
+		void this.#saveDraftAction();
 		this.render({ force: true });
 	}
 
@@ -213,16 +214,15 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 			getValue: () => String(foundry.utils.getProperty(this._draftAction, path) ?? ""),
 			onSave: async (content) => {
 				foundry.utils.setProperty(this._draftAction, path, String(content ?? ""));
+				await this.#saveDraftAction();
 				this.render({ force: true });
 			},
 		});
 	}
 
 	async close(options = {}) {
-		if (!this._skipAutoSave) {
-			this.#syncDraftFromRenderedForm();
-			await this.#saveDraftAction();
-		}
+		this.#syncDraftFromRenderedForm();
+		await this.#saveDraftAction();
 		return super.close(options);
 	}
 
@@ -290,6 +290,8 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 
 	#shouldRerenderAfterChange(path) {
 		const rerenderPaths = [
+			"name",
+			"shorthand",
 			"range_type",
 			"selection.target.unit",
 			"selection.zone.shape",

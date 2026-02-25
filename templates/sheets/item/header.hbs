@@ -1,5 +1,12 @@
 <header class="nalfa-sheet-header">
-	<img src="{{itemImage}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+	{{#if isActionItem}}
+		<div class="item-sheet-header__icon item-actions__icon">
+			<img src="{{itemImage}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+			<span class="item-actions__shorthand">{{actionHeaderShorthand}}</span>
+		</div>
+	{{else}}
+		<img src="{{itemImage}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+	{{/if}}
 
 	{{#if hasRarity}}
 		<div class="item-sheet-header__rarity">
@@ -16,7 +23,17 @@
 		<input name="name" type="text" value="{{item.name}}" placeholder="Nom"/>
 	</div>
 
-	{{#if hasRecommendedLevel}}
+	{{#if isActionItem}}
+		<div class="item-sheet-header__shorthand">
+			<span class="field__label">Raccourci</span>
+			<input
+				name="system.shorthand"
+				type="text"
+				value="{{sysData.shorthand}}"
+				placeholder="{{defaultActionShorthand}}"
+			/>
+		</div>
+	{{else if hasRecommendedLevel}}
 		<div class="item-sheet-header__recommended">
 			<span class="field__label">Niv. Recom.</span>
 			<div class="item-sheet-header__recommended-values">

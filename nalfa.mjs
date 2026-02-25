@@ -41,6 +41,8 @@ async function preloadHandlebarsTemplates() {
 		"systems/nalfa/templates/sheets/item/header.hbs",
 		"systems/nalfa/templates/sheets/item/tabs.hbs",
 		"systems/nalfa/templates/sheets/item/body.hbs",
+		"systems/nalfa/templates/sheets/item/action-editor-header.hbs",
+		"systems/nalfa/templates/sheets/item/action-editor-separator.hbs",
 		"systems/nalfa/templates/sheets/item/action-editor.hbs",
 		"systems/nalfa/templates/partials/item/item-specific.hbs",
 		"systems/nalfa/templates/partials/item/actions.hbs",

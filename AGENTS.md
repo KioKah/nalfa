@@ -56,7 +56,12 @@ This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 
 ## V2 Sheet Pitfalls And Patterns
 
-- **Template root rule**: every `PARTS` template should render exactly one top-level element. If a part has sibling root nodes, the sheet can fail to render with errors that look unrelated.
+- **Template root rule (per PART)**: each template referenced by a single `PARTS` entry
+  should render exactly one top-level element. If that one part template has sibling root
+  nodes, the sheet can fail to render with errors that look unrelated.
+- **Multiple PARTS are expected**: it is valid (and often preferred) to split layout into
+  separate parts like `header`/`tabs`/`sheet`/`footer` that render top-to-bottom. Do not add
+  an extra wrapper only to satisfy the root rule across different parts.
 - **Context vs form path**: values read from context (`{{sysData...}}`) are not automatically tied to where forms write. Persistence depends on the input `name="system..."` path targeting the real document data path.
 - **Rerender-safe listeners**: partial rerenders replace DOM nodes, so listeners attached to old nodes are lost. Bind non-action listeners in `_onRender` each time, not only once at construction.
 - **Prefer sheet actions for clicks**: use `DEFAULT_OPTIONS.actions` + `data-action` for click handlers where possible. It keeps wiring consistent and reduces brittle selector/event boilerplate.

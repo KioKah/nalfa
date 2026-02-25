@@ -1,0 +1,31 @@
+<header class="nalfa-sheet-header">
+	<div class="item-sheet-header__icon item-actions__icon">
+		<img
+			src="{{itemImage}}"
+			data-edit="img"
+			title="{{actionDisplayName}}"
+			height="64"
+			width="64"
+		/>
+		<span class="item-actions__shorthand">{{actionDisplayShorthand}}</span>
+	</div>
+
+	<div class="item-sheet-header__name">
+		<input
+			name="system.{{actionPath}}name"
+			type="text"
+			value="{{actionData.name}}"
+			placeholder="{{defaultActionName}}"
+		/>
+	</div>
+
+	<div class="item-sheet-header__shorthand">
+		<span class="field__label">Raccourci</span>
+		<input
+			name="system.{{actionPath}}shorthand"
+			type="text"
+			value="{{actionData.shorthand}}"
+			placeholder="{{defaultActionShorthand}}"
+		/>
+	</div>
+</header>

@@ -419,6 +419,9 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 	const hasItemActions = Array.isArray(item.system?.actions);
 	const actionData = isActionItem ? item.system : null;
 	const actionPath = isActionItem ? "" : "actions.0.";
+	const defaultActionShorthand = getDefaultItemActionShorthand(0);
+	const actionHeaderShorthand =
+		String(item.system?.shorthand ?? "").trim() || defaultActionShorthand;
 	const hasActionable = isActionItem ? actionData !== null : hasItemActions;
 	const showActionableTab = hasItemActions && !isActionItem;
 	const itemActions = showActionableTab ? buildItemActionRows({ item, config }) : [];
@@ -489,6 +492,7 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			item,
 			itemImage: getItemImage(item),
 			sysData: item.system,
+			isActionItem,
 			tabs,
 			hasActionable,
 			showActionableTab,
@@ -501,6 +505,8 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			modifierRows,
 			actionData,
 			actionPath,
+			defaultActionShorthand,
+			actionHeaderShorthand,
 			isCurrencyItem,
 			isActionModeIncant,
 			isActionModePhysical,
