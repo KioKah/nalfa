@@ -11,9 +11,21 @@ export const createDefaultActionData = () => ({
 	range_type: "ranged",
 	requires: "",
 	cost: {
-		action: {
+		actions: {
+			note: "",
+			options: [
+				{
+					main: 1,
+					bonus: 0,
+					reaction: 0,
+					condition: "",
+				},
+			],
+		},
+		movement: {
+			mode: "none",
 			amount: 1,
-			unit: "main",
+			variable: "X",
 		},
 		ester: {
 			amount: 0,
@@ -76,8 +88,9 @@ export const createDefaultActionData = () => ({
 	},
 });
 
-export const createDefaultItemAction = ({ name = "" } = {}) => ({
+export const createDefaultItemAction = ({ name = "", shorthand = "" } = {}) => ({
 	name,
+	shorthand,
 	...createDefaultActionData(),
 });
 
@@ -89,3 +102,5 @@ export const getDefaultItemActionName = (itemName, index) => {
 	if (index <= 0) return resolvedBaseName;
 	return `${resolvedBaseName} ${index + 1}`;
 };
+
+export const getDefaultItemActionShorthand = (index) => String(index + 1);

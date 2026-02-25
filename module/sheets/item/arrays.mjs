@@ -1,5 +1,12 @@
 const buildDefaultArrayEntry = (entryType) => {
 	switch (entryType) {
+		case "action-resource-option":
+			return {
+				main: 1,
+				bonus: 0,
+				reaction: 0,
+				condition: "",
+			};
 		case "damage-formula":
 			return {
 				formula: "",

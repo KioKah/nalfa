@@ -1,8 +1,20 @@
 import {
 	createDefaultDamageFormula,
 	getDefaultItemActionName,
+	getDefaultItemActionShorthand,
 } from "../../itemActions.mjs";
 import { openRichTextEditorDialog } from "./richTextDialog.mjs";
+
+const htmlToPlainText = (value) => {
+	const html = String(value ?? "");
+	if (!html) return "";
+
+	const container = document.createElement("div");
+	container.innerHTML = html;
+	return String(container.textContent ?? "")
+		.replace(/\s+/g, " ")
+		.trim();
+};
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -47,6 +59,10 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 		const hasActionable = actionData !== null;
 		const actionMode = actionData?.mode ?? "physical";
 		const effectTextSource = actionData?.effect?.text ?? "";
+		const noteTextSource = actionData?.cost?.actions?.note ?? "";
+		const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
+		const defaultActionName = getDefaultItemActionName(item.name, actionIndex);
+		const defaultActionShorthand = getDefaultItemActionShorthand(actionIndex);
 		const { TextEditor } = foundry.applications.ux;
 
 		return {
@@ -56,15 +72,21 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 			hasActionable,
 			actionData,
 			actionPath: `actions.${actionIndex}.`,
+			defaultActionName,
+			defaultActionShorthand,
 			isActionModeIncant: actionMode === "incant",
 			isActionModePhysical: actionMode === "physical",
 			config: CONFIG.nalfa,
+			noteHasContent,
 			enrichedHTML: {
 				effect: {
 					text: await TextEditor.enrichHTML(effectTextSource, {
 						async: true,
 					}),
 				},
+				note: await TextEditor.enrichHTML(noteTextSource, {
+					async: true,
+				}),
 			},
 		};
 	}
@@ -76,7 +98,10 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 			event.preventDefault();
 		});
 
-		this._bindFieldChangeAction("input[name], select[name]", this._onDraftFieldChange);
+		this._bindFieldChangeAction(
+			"input[name], select[name]",
+			this._onDraftFieldChange,
+		);
 		this._bindClickAction("[data-action='add-array-entry']", this._onAddArrayEntryDraft);
 		this._bindClickAction(
 			"[data-action='remove-array-entry']",
@@ -209,6 +234,13 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 
 	#buildDefaultArrayEntry(entryType) {
 		switch (entryType) {
+			case "action-resource-option":
+				return {
+					main: 1,
+					bonus: 0,
+					reaction: 0,
+					condition: "",
+				};
 			case "damage-formula":
 				return createDefaultDamageFormula();
 			default:
@@ -262,7 +294,7 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 			"selection.target.unit",
 			"selection.zone.shape",
 			"selection.zone.has_long_range",
-			"cost.action.unit",
+			"cost.movement.mode",
 			"cost.ester.unit",
 			"cost.uses.unit",
 			"cost.cooldown.unit",

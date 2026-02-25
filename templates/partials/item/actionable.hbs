@@ -234,23 +234,224 @@
 				<span class="field__label">Coût</span>
 			</div>
 			<div class="attack-config__fields attack-config__cost-row">
-				<div class="attack-config__cost-entry">
+				<div class="attack-config__cost-entry attack-config__cost-entry--actions">
 					<span class="attack-config__cost-label">Action</span>
-					{{#unless (eq actionData.cost.action.unit "none")}}
+					<div class="attack-config__action-costs attack-config__action-costs--column">
+						{{#with (lookup actionData.cost.actions.options 0) as |firstOption|}}
+							<div class="attack-config__action-option panel-section attack-config__action-option--primary">
+								<div class="attack-config__action-costs">
+									<label
+										class="attack-config__action-cost"
+										title="{{@root.config.action_cost_hover_labels.main}}"
+									>
+										<span
+											class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
+											aria-hidden="true"
+										>
+											<i class="fa-light fa-sword"></i>
+										</span>
+										<input
+											class="attack-config__cost-input"
+											name="system.{{@root.actionPath}}cost.actions.options.0.main"
+											type="number"
+											value="{{firstOption.main}}"
+											data-dtype="Number"
+										/>
+									</label>
+									<label
+										class="attack-config__action-cost"
+										title="{{@root.config.action_cost_hover_labels.bonus}}"
+									>
+										<span
+											class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
+											aria-hidden="true"
+										>
+											<i class="fa-light fa-plus"></i>
+										</span>
+										<input
+											class="attack-config__cost-input"
+											name="system.{{@root.actionPath}}cost.actions.options.0.bonus"
+											type="number"
+											value="{{firstOption.bonus}}"
+											data-dtype="Number"
+										/>
+									</label>
+									<label
+										class="attack-config__action-cost"
+										title="{{@root.config.action_cost_hover_labels.reaction}}"
+									>
+										<span
+											class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
+											aria-hidden="true"
+										>
+											<i class="fa-light fa-rotate-left"></i>
+										</span>
+										<input
+											class="attack-config__cost-input"
+											name="system.{{@root.actionPath}}cost.actions.options.0.reaction"
+											type="number"
+											value="{{firstOption.reaction}}"
+											data-dtype="Number"
+										/>
+									</label>
+								</div>
+								<div class="attack-config__action-option-meta">
+									<input
+										class="attack-config__grow-input"
+										name="system.{{@root.actionPath}}cost.actions.options.0.condition"
+										type="text"
+										value="{{firstOption.condition}}"
+										placeholder="Condition (optionnelle)"
+									/>
+								</div>
+							</div>
+						{{/with}}
+
+						<div class="richtext-field richtext-field--overlay-action attack-config__action-note-field">
+							{{#if isEditable}}
+								<button
+									type="button"
+									class="array-action-btn richtext-field__overlay-btn"
+									data-action="open-richtext-editor"
+									data-path="system.{{actionPath}}cost.actions.note"
+									data-title="Note"
+								>
+									<i class="fa-light fa-pen-to-square"></i>
+								</button>
+							{{/if}}
+							{{#if noteHasContent}}
+								<div class="richtext-field__content">{{{enrichedHTML.note}}}</div>
+							{{else}}
+								<div class="richtext-field__content richtext-field__content--placeholder">
+									<p>Ex : Annulation Gratuite</p>
+								</div>
+							{{/if}}
+						</div>
+
+						<div class="attack-config__action-options-head">
+							<span class="hint">Si plusieurs options :</span>
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="add-array-entry"
+								data-path="{{actionPath}}cost.actions.options"
+								data-entry-type="action-resource-option"
+								title="Ajouter une option"
+							>
+								<i class="fa-light fa-square-plus"></i>
+							</button>
+						</div>
+
+						{{#each actionData.cost.actions.options as |option optionIndex|}}
+							{{#unless @first}}
+								<div class="attack-config__action-option panel-section">
+									<div class="attack-config__action-costs">
+										<label
+											class="attack-config__action-cost"
+											title="{{@root.config.action_cost_hover_labels.main}}"
+										>
+											<span
+												class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
+												aria-hidden="true"
+											>
+												<i class="fa-light fa-sword"></i>
+											</span>
+											<input
+												class="attack-config__cost-input"
+												name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.main"
+												type="number"
+												value="{{option.main}}"
+												data-dtype="Number"
+											/>
+										</label>
+										<label
+											class="attack-config__action-cost"
+											title="{{@root.config.action_cost_hover_labels.bonus}}"
+										>
+											<span
+												class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
+												aria-hidden="true"
+											>
+												<i class="fa-light fa-plus"></i>
+											</span>
+											<input
+												class="attack-config__cost-input"
+												name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.bonus"
+												type="number"
+												value="{{option.bonus}}"
+												data-dtype="Number"
+											/>
+										</label>
+										<label
+											class="attack-config__action-cost"
+											title="{{@root.config.action_cost_hover_labels.reaction}}"
+										>
+											<span
+												class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
+												aria-hidden="true"
+											>
+												<i class="fa-light fa-rotate-left"></i>
+											</span>
+											<input
+												class="attack-config__cost-input"
+												name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.reaction"
+												type="number"
+												value="{{option.reaction}}"
+												data-dtype="Number"
+											/>
+										</label>
+										<button
+											type="button"
+											class="array-action-btn attack-config__action-option-remove"
+											data-action="remove-array-entry"
+											data-path="{{@root.actionPath}}cost.actions.options"
+											data-index="{{optionIndex}}"
+											data-minimum="1"
+											title="Supprimer l'option"
+										>
+											<i class="fa-light fa-square-minus"></i>
+										</button>
+									</div>
+									<div class="attack-config__action-option-meta">
+										<input
+											class="attack-config__grow-input"
+											name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.condition"
+											type="text"
+											value="{{option.condition}}"
+											placeholder="Condition (optionnelle)"
+										/>
+									</div>
+								</div>
+							{{/unless}}
+						{{/each}}
+					</div>
+				</div>
+
+				<div class="attack-config__cost-entry">
+					<span class="attack-config__cost-label">Action de Déplacement</span>
+					<select
+						class="attack-config__cost-select attack-config__cost-select--movement"
+						name="system.{{actionPath}}cost.movement.mode"
+					>
+						{{selectOptions config.action_movement_cost_modes selected=actionData.cost.movement.mode}}
+					</select>
+					{{#if (eq actionData.cost.movement.mode "fixed")}}
 						<input
 							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.action.amount"
+							name="system.{{actionPath}}cost.movement.amount"
 							type="number"
-							value="{{actionData.cost.action.amount}}"
+							value="{{actionData.cost.movement.amount}}"
 							data-dtype="Number"
 						/>
-					{{/unless}}
-					<select
-						class="attack-config__cost-select attack-config__cost-select--action"
-						name="system.{{actionPath}}cost.action.unit"
-					>
-						{{selectOptions config.action_units selected=actionData.cost.action.unit}}
-					</select>
+					{{else if (eq actionData.cost.movement.mode "variable")}}
+						<input
+							class="attack-config__cost-input"
+							name="system.{{actionPath}}cost.movement.variable"
+							type="text"
+							value="{{actionData.cost.movement.variable}}"
+							placeholder="X"
+						/>
+					{{/if}}
 				</div>
 
 				<div class="attack-config__cost-entry">

@@ -20,6 +20,7 @@ import {
 	MAX_ITEM_ACTIONS,
 	createDefaultItemAction,
 	getDefaultItemActionName,
+	getDefaultItemActionShorthand,
 } from "../itemActions.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -184,7 +185,10 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 
 		const actionIndex = itemActions.length;
 		const actionName = getDefaultItemActionName(this.item.name, actionIndex);
-		itemActions.push(createDefaultItemAction({ name: actionName }));
+		const actionShorthand = getDefaultItemActionShorthand(actionIndex);
+		itemActions.push(
+			createDefaultItemAction({ name: actionName, shorthand: actionShorthand }),
+		);
 		await this.item.update({ "system.actions": itemActions });
 	}
 

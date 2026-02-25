@@ -7,6 +7,7 @@ import {
 import {
 	MAX_ITEM_ACTIONS,
 	getDefaultItemActionName,
+	getDefaultItemActionShorthand,
 } from "../../itemActions.mjs";
 import {
 	getEquippedOptions,
@@ -45,7 +46,9 @@ const buildVisibleTabs = ({
 		const tabLabel =
 			tabId === "specific"
 				? specificTabLabel
-				: (tabId === "actionable" ? actionTabLabel : tab.label);
+				: tabId === "actionable"
+					? actionTabLabel
+					: tab.label;
 		tabs[tabId] = {
 			...tab,
 			label: tabLabel,
@@ -63,13 +66,9 @@ const getDescriptionData = (item) => {
 	const descriptionData = item.system?.description ?? {};
 	return {
 		descriptionValue:
-			typeof descriptionData === "string"
-				? descriptionData
-				: (descriptionData.text ?? ""),
+			typeof descriptionData === "string" ? descriptionData : (descriptionData.text ?? ""),
 		loretextValue:
-			typeof descriptionData === "string"
-				? ""
-				: (descriptionData.loretext ?? ""),
+			typeof descriptionData === "string" ? "" : (descriptionData.loretext ?? ""),
 	};
 };
 
@@ -120,9 +119,7 @@ const buildModifierRows = ({ modifiers, config }) => {
 		});
 
 		const categoryPaths = pathsByCategory[category] ?? {};
-		const resolvedPath = Object.hasOwn(categoryPaths, selectedPath)
-			? selectedPath
-			: "";
+		const resolvedPath = Object.hasOwn(categoryPaths, selectedPath) ? selectedPath : "";
 
 		return {
 			...modifier,
@@ -132,31 +129,260 @@ const buildModifierRows = ({ modifiers, config }) => {
 	});
 };
 
-const buildActionCostSummary = (actionData, config) => {
-	const actionCost = actionData?.cost?.action ?? {};
-	const actionUnit = String(actionCost.unit ?? "none");
-	if (actionUnit === "none") return "Sans cout d'action";
+const htmlToPlainText = (value) => {
+	const html = String(value ?? "");
+	if (!html) return "";
 
-	const amount = Number(actionCost.amount ?? 0);
-	const unitLabel = config.action_units?.[actionUnit] ?? actionUnit;
-	if (!Number.isFinite(amount) || amount <= 0) return unitLabel;
-
-	return `${amount} ${unitLabel}`;
+	const container = document.createElement("div");
+	container.innerHTML = html;
+	return String(container.textContent ?? "")
+		.replace(/\s+/g, " ")
+		.trim();
 };
 
-const buildActionSummary = (actionData, config) => {
-	const mode = String(actionData?.mode ?? "physical");
-	const rangeType = String(actionData?.range_type ?? "ranged");
-	const tags = [
-		config.attack_mode?.[mode] ?? mode,
-		config.range_types?.[rangeType] ?? rangeType,
-		buildActionCostSummary(actionData, config),
-	];
+const ACTION_RESOURCE_TOKEN_META = Object.freeze({
+	main: {
+		iconClass: "fa-light fa-sword",
+		colorClass: "main",
+		label: "main",
+	},
+	bonus: {
+		iconClass: "fa-light fa-plus",
+		colorClass: "bonus",
+		label: "bonus",
+	},
+	reaction: {
+		iconClass: "fa-light fa-rotate-left",
+		colorClass: "reaction",
+		label: "reaction",
+	},
+	concentration: {
+		iconClass: "fa-light fa-bullseye",
+		colorClass: "concentration",
+		label: "concentration",
+	},
+	movement: {
+		iconClass: "fa-light fa-person-running",
+		colorClass: "movement",
+		label: "movement",
+	},
+});
 
-	if (actionData?.jdt?.enabled) tags.push("JdT");
-	if (actionData?.jds?.enabled) tags.push("JdS");
-	if (actionData?.jdd?.enabled) tags.push("JdD");
-	if (actionData?.concentration?.enabled) tags.push("JdF");
+const makeActionResourceToken = ({
+	type,
+	amountLabel = "",
+	showAmount = false,
+	config,
+}) => {
+	const meta = ACTION_RESOURCE_TOKEN_META[type];
+	if (!meta) return null;
+
+	return {
+		type,
+		iconClass: meta.iconClass,
+		colorClass: meta.colorClass,
+		showAmount,
+		amountLabel: showAmount ? String(amountLabel ?? "") : "",
+		title: config.action_cost_hover_labels?.[meta.label] ?? "",
+	};
+};
+
+const buildActionResourceOptionTokens = ({ option, config }) => {
+	const values = {
+		main: toFiniteNumber(option?.main, 0),
+		bonus: toFiniteNumber(option?.bonus, 0),
+		reaction: toFiniteNumber(option?.reaction, 0),
+	};
+
+	return Object.entries(values)
+		.filter(([, amount]) => amount > 0)
+		.map(([type, amount]) =>
+			makeActionResourceToken({
+				type,
+				amountLabel: `×${amount}`,
+				showAmount: amount !== 1,
+				config,
+			}),
+		)
+		.filter(Boolean);
+};
+
+const buildActionResourceSummary = ({ actionData, config }) => {
+	const optionsSource = Array.isArray(actionData?.cost?.actions?.options)
+		? actionData.cost.actions.options
+		: [];
+	const options = optionsSource
+		.map((option) => {
+			const tokens = buildActionResourceOptionTokens({ option, config });
+			const condition = String(option?.condition ?? "").trim();
+
+			return {
+				tokens,
+				hasCondition: condition.length > 0,
+				condition,
+			};
+		})
+		.filter((option) => option.tokens.length > 0);
+
+	if (options.length === 0) {
+		options.push({
+			tokens: [
+				makeActionResourceToken({
+					type: "main",
+					amountLabel: "1",
+					showAmount: false,
+					config,
+				}),
+			],
+			hasCondition: false,
+			condition: "",
+		});
+	}
+
+	const additions = [];
+	if (actionData?.concentration?.enabled) {
+		const concentrationToken = makeActionResourceToken({
+			type: "concentration",
+			amountLabel: "1",
+			showAmount: false,
+			config,
+		});
+		if (concentrationToken) additions.push(concentrationToken);
+	}
+
+	const movementMode = String(actionData?.cost?.movement?.mode ?? "none");
+	if (movementMode === "fixed") {
+		const movementAmount = toFiniteNumber(actionData?.cost?.movement?.amount, 0);
+		if (movementAmount > 0) {
+			const movementToken = makeActionResourceToken({
+				type: "movement",
+				amountLabel: `${movementAmount}m`,
+				showAmount: true,
+				config,
+			});
+			if (movementToken) additions.push(movementToken);
+		}
+	} else if (movementMode === "variable") {
+		const variableLabel = String(actionData?.cost?.movement?.variable ?? "").trim() || "X";
+		const movementToken = makeActionResourceToken({
+			type: "movement",
+			amountLabel: `${variableLabel}m`,
+			showAmount: true,
+			config,
+		});
+		if (movementToken) additions.push(movementToken);
+	}
+
+	return {
+		options,
+		additions,
+		note: htmlToPlainText(actionData?.cost?.actions?.note ?? ""),
+	};
+};
+
+const toFiniteNumber = (value, fallback = 0) => {
+	const number = Number(value);
+	return Number.isFinite(number) ? number : fallback;
+};
+
+const getActorStatValue = (item, statKey) => {
+	if (!statKey || statKey === "none") return 0;
+
+	const actor = item.actor ?? item.parent ?? null;
+	const actorSystem = actor?.system ?? {};
+	const rollStatValue = actorSystem?.roll_stats?.[statKey]?.value;
+	if (Number.isFinite(Number(rollStatValue))) return Number(rollStatValue);
+
+	const statValue = actorSystem?.stats?.[statKey]?.value;
+	if (Number.isFinite(Number(statValue))) return Number(statValue);
+
+	return 0;
+};
+
+const buildActionTopSummary = (item, actionData, config) => {
+	const mode = String(actionData?.mode ?? "physical");
+	const modeLabel = config.attack_mode?.[mode] ?? mode;
+	const esterUnit = String(actionData?.cost?.ester?.unit ?? "none");
+	const esterLabel = String(config.ester_levels_short?.[esterUnit] ?? "").trim();
+	const modeWithTier = esterLabel ? `${modeLabel} ${esterLabel}` : modeLabel;
+	const jdParts = [];
+
+	if (actionData?.jdt?.enabled) {
+		const statKey = String(actionData?.jdt?.stat ?? "none");
+		const statValue = getActorStatValue(item, statKey);
+		const bonus = toFiniteNumber(actionData?.jdt?.bonus, 0);
+		const total = statValue + bonus;
+		const signedTotal = total >= 0 ? `+${total}` : `${total}`;
+		jdParts.push(`JdT ${signedTotal}`);
+	}
+
+	if (actionData?.jds?.enabled) {
+		const dd = toFiniteNumber(actionData?.jds?.dd, 0);
+		const stat = String(actionData?.jds?.stat ?? "none");
+		const statLabel = (config.stats_optional?.[stat] ?? stat) || "?";
+		jdParts.push(`JdS ${dd} ${statLabel}`);
+	}
+
+	if (jdParts.length === 0) return modeWithTier;
+	return `${modeWithTier} : ${jdParts.join(" & ")}`;
+};
+
+const buildRangeDetailSummary = (actionData, config) => {
+	const rangeType = String(actionData?.range_type ?? "ranged");
+	if (rangeType === "melee") return "Allonge";
+
+	const zone = actionData?.selection?.zone ?? {};
+	const shape = String(zone.shape ?? "circle");
+	const rangeParts = [];
+
+	if (rangeType === "pure_ranged") {
+		rangeParts.push(`${toFiniteNumber(zone.min_range, 0)} m`, "↔");
+	}
+
+	rangeParts.push(`${toFiniteNumber(zone.range, 0)} m`);
+
+	if (zone.has_long_range) {
+		rangeParts.push(`~ ${toFiniteNumber(zone.long_range, 0)} m (Longue)`);
+	}
+
+	if (rangeType === "ranged") {
+		rangeParts.push("[D-Av. Allonge]");
+	}
+
+	const rangeText = rangeParts.join(" ");
+	if (shape === "circle") return rangeText;
+
+	const shapeLabel = config.area_shapes?.[shape] ?? shape;
+	const secondary = toFiniteNumber(zone.range_secondary, 0);
+	const secondaryLabel = shape === "line" ? `${secondary} m de largeur` : `${secondary}°`;
+	return `${rangeText} <${shapeLabel} ${secondaryLabel}>`;
+};
+
+const buildActionBottomSummary = (actionData, config) => {
+	const rangeType = String(actionData?.range_type ?? "ranged");
+	const rangeTypeLabel = config.range_types?.[rangeType] ?? rangeType;
+	const rangeSummary = buildRangeDetailSummary(actionData, config);
+
+	if (!rangeSummary) return rangeTypeLabel;
+	return `${rangeTypeLabel} : ${rangeSummary}`;
+};
+
+const buildActionSecondarySummary = (actionData) => {
+	const tags = [];
+
+	if (actionData?.jdd?.enabled) {
+		const formulas = Array.isArray(actionData?.jdd?.damage_formulas)
+			? actionData.jdd.damage_formulas
+			: [];
+		const formulaText = formulas
+			.map((formulaData) => String(formulaData?.formula ?? "").trim())
+			.filter(Boolean)
+			.join(" + ");
+		tags.push(formulaText ? `JdD ${formulaText}` : "JdD");
+	}
+
+	const actionNote = htmlToPlainText(actionData?.cost?.actions?.note ?? "");
+	if (actionNote) tags.push(actionNote);
 
 	return tags.filter(Boolean).join(" | ");
 };
@@ -168,13 +394,20 @@ const buildItemActionRows = ({ item, config }) => {
 		const storedName = String(actionData?.name ?? "");
 		const trimmedName = storedName.trim();
 		const defaultName = getDefaultItemActionName(item.name, index);
+		const storedShorthand = String(actionData?.shorthand ?? "");
+		const trimmedShorthand = storedShorthand.trim();
+		const defaultShorthand = getDefaultItemActionShorthand(index);
 
 		return {
 			index,
 			defaultName,
+			defaultShorthand,
 			displayName: trimmedName || defaultName,
-			inputName: trimmedName || defaultName,
-			summary: buildActionSummary(actionData, config),
+			displayShorthand: trimmedShorthand || defaultShorthand,
+			resourceSummary: buildActionResourceSummary({ actionData, config }),
+			summaryTop: buildActionTopSummary(item, actionData, config),
+			summaryBottom: buildActionBottomSummary(actionData, config),
+			secondarySummary: buildActionSecondarySummary(actionData),
 		};
 	});
 };
@@ -238,6 +471,8 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 	const isActionModeIncant = actionMode === "incant";
 	const isActionModePhysical = actionMode === "physical";
 	const effectTextSource = actionData?.effect?.text ?? "";
+	const noteTextSource = actionData?.cost?.actions?.note ?? "";
+	const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
 	const equippableState = item.system?.equippable ?? {};
 	const equippedState = item.system?.equipped ?? {};
 	const equippedSlot = getEquippedSlotValue(equippedState, equippableState);
@@ -288,6 +523,7 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			descriptionValue,
 			loretextValue,
 			config,
+			noteHasContent,
 			enrichedHTML: {
 				description: {
 					loretext: await textEditor.enrichHTML(loretextValue, {
@@ -299,6 +535,9 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 						async: true,
 					}),
 				},
+				note: await textEditor.enrichHTML(noteTextSource, {
+					async: true,
+				}),
 			},
 		},
 	};

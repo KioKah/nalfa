@@ -1,6 +1,7 @@
 import {
 	createDefaultDamageFormula,
 	createDefaultItemAction,
+	getDefaultItemActionShorthand,
 } from "../itemActions.mjs";
 
 const { TypeDataModel } = foundry.abstract;
@@ -107,9 +108,29 @@ const actionSchemaDefinition = () => ({
 	range_type: stringField("ranged"),
 	requires: stringField(""),
 	cost: schemaField({
-		action: schemaField({
+		actions: schemaField({
+			note: htmlField(""),
+			options: arrayField(
+				schemaField({
+					main: numberField(1),
+					bonus: numberField(0),
+					reaction: numberField(0),
+					condition: stringField(""),
+				}),
+				[
+					{
+						main: 1,
+						bonus: 0,
+						reaction: 0,
+						condition: "",
+					},
+				],
+			),
+		}),
+		movement: schemaField({
+			mode: stringField("none"),
 			amount: numberField(1),
-			unit: stringField("main"),
+			variable: stringField("X"),
 		}),
 		ester: schemaField({
 			amount: numberField(0),
@@ -176,6 +197,7 @@ const actionSchema = () => schemaField(actionSchemaDefinition());
 
 const itemActionSchemaDefinition = () => ({
 	name: stringField(""),
+	shorthand: stringField(""),
 	...actionSchemaDefinition(),
 });
 
@@ -432,8 +454,12 @@ const analyzeActorEquippedWeapons = (actor) => {
 		});
 	}
 
-	const mainOccupants = equippedWeapons.filter((entry) => entry.isMainHand || entry.isTwoHanded);
-	const offOccupants = equippedWeapons.filter((entry) => entry.isOffHand || entry.isTwoHanded);
+	const mainOccupants = equippedWeapons.filter(
+		(entry) => entry.isMainHand || entry.isTwoHanded,
+	);
+	const offOccupants = equippedWeapons.filter(
+		(entry) => entry.isOffHand || entry.isTwoHanded,
+	);
 	const twoHandedOccupants = equippedWeapons.filter((entry) => entry.isTwoHanded);
 
 	if (mainOccupants.length > 1) {
@@ -453,7 +479,9 @@ const analyzeActorEquippedWeapons = (actor) => {
 	}
 	if (
 		twoHandedOccupants.length > 0 &&
-		equippedWeapons.some((entry) => !entry.isTwoHanded && (entry.isMainHand || entry.isOffHand))
+		equippedWeapons.some(
+			(entry) => !entry.isTwoHanded && (entry.isMainHand || entry.isOffHand),
+		)
 	) {
 		warnings.push(
 			"Configuration d'armes invalide : une arme à deux mains occupe déjà les deux mains.",
@@ -469,9 +497,11 @@ const analyzeActorEquippedWeapons = (actor) => {
 	}
 
 	const mainWeaponSlot = mainWeaponEntry
-		? (mainWeaponEntry.isTwoHanded
+		? mainWeaponEntry.isTwoHanded
 			? "two_handed"
-			: (mainWeaponEntry.isMainHand ? "main_hand" : "off_hand"))
+			: mainWeaponEntry.isMainHand
+				? "main_hand"
+				: "off_hand"
 		: "";
 	const mainWeapon = mainWeaponEntry?.item ?? null;
 	const mainWeaponSystem = mainWeaponEntry?.system ?? {};
@@ -562,7 +592,8 @@ export class BaseActorData extends TypeDataModel {
 		physicalRollStat.default_stat =
 			equippedWeapons.canUseDex && dexTotal >= strTotal ? "dex" : "str";
 		physicalRollStat.value =
-			physicalStatTotal + withBaseAlt("roll_stats.physical.base", "roll_stats.physical.alt");
+			physicalStatTotal +
+			withBaseAlt("roll_stats.physical.base", "roll_stats.physical.alt");
 
 		for (const [key, rollStat] of Object.entries(sys.roll_stats ?? {})) {
 			if (key === "physical") continue;
@@ -773,6 +804,8 @@ const DEFAULT_ACTION_DESCRIPTION_TEXT = [
 	"</tr></tbody></table>",
 ].join("");
 
+const DEFAULT_ACTION_DESCRIPTION_LORETEXT = "<p><em>-</em></p>";
+
 const itemDescriptionSchema = (textInitial = "", loretextInitial = "") => ({
 	description: schemaField({
 		text: htmlField(textInitial),
@@ -827,7 +860,9 @@ const currencyPhysicalSchema = () => ({
 });
 
 const actionableSchema = () => ({
-	actions: arrayField(itemActionSchema(), [createDefaultItemAction()]),
+	actions: arrayField(itemActionSchema(), [
+		createDefaultItemAction({ shorthand: getDefaultItemActionShorthand(0) }),
+	]),
 });
 
 const racePointBuySchema = () =>
@@ -1004,7 +1039,10 @@ export class ActionData extends BaseItemData {
 		const baseSchema = super.defineSchema();
 		return {
 			...baseSchema,
-			...itemDescriptionSchema(DEFAULT_ACTION_DESCRIPTION_TEXT),
+			...itemDescriptionSchema(
+				DEFAULT_ACTION_DESCRIPTION_TEXT,
+				DEFAULT_ACTION_DESCRIPTION_LORETEXT,
+			),
 			...actionSchemaDefinition(),
 		};
 	}

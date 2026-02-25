@@ -11,7 +11,7 @@ nalfa.stats = {
 };
 
 nalfa.attack_mode = {
-	none: "None",
+	none: "",
 	physical: "Phys.",
 	incant: "Incant.",
 };
@@ -87,6 +87,14 @@ nalfa.ester_levels = {
 	special: "Spécial",
 };
 
+nalfa.ester_levels_short = {
+	none: "",
+	lvl1: "I",
+	lvl2: "II",
+	lvl3: "III",
+	special: "Spé",
+};
+
 nalfa.uses_units = {
 	none: "Illimité",
 	lr: "Repos long",
@@ -126,6 +134,20 @@ nalfa.attack_stats = {
 nalfa.action_units = {
 	none: "Gratuit",
 	...nalfa.actions,
+};
+
+nalfa.action_cost_hover_labels = {
+	main: "Action Principale",
+	bonus: "Action Bonus",
+	reaction: "Action de Réaction",
+	concentration: "Action de Concentration",
+	movement: "Action de Déplacement",
+};
+
+nalfa.action_movement_cost_modes = {
+	none: "Aucun",
+	fixed: "Fixe",
+	variable: "Variable",
 };
 
 nalfa.trinket_types = {

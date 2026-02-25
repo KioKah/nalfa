@@ -1,6 +1,26 @@
 <div class="item-action-editor-layout">
 	<section class="sheet-body item-action-editor-body">
 		{{#if hasActionable}}
+			<div class="panel-section item-action-editor-identity">
+				<div class="item-action-editor-identity__row">
+					<span class="field__label">Nom</span>
+					<input
+						class="item-action-editor-identity__name"
+						name="system.{{actionPath}}name"
+						type="text"
+						value="{{actionData.name}}"
+						placeholder="{{defaultActionName}}"
+					/>
+					<span class="field__label">Abrégé</span>
+					<input
+						class="item-action-editor-identity__shorthand"
+						name="system.{{actionPath}}shorthand"
+						type="text"
+						value="{{actionData.shorthand}}"
+						placeholder="{{defaultActionShorthand}}"
+					/>
+				</div>
+			</div>
 			{{> "systems/nalfa/templates/partials/item/actionable.hbs"}}
 		{{else}}
 			<div class="sheet-section">
