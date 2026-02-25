@@ -1,214 +1,70 @@
-# Nalfa (Foundry VTT System V13)
+# Nalfa: A Foundry VTT System
 
-This repository is a Foundry Virtual Tabletop (V13) game system named `nalfa`.
+This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 
-## Development Phase Policy
+## Scope
 
-- This system is currently in development/testing only (no production users).
-- In active runtime scripts, prefer current schemas/APIs and remove legacy compatibility code.
-- Do not add migration shims unless a task explicitly asks for backward compatibility.
+- Prefer current APIs (V13) and schemas in runtime code.
+- Development/testing project (no production compatibility requirements).
+- Do not add backward-compatibility migrations unless explicitly requested.
+- If Foundry behavior is uncertain, ask to verify against `https://foundryvtt.com/api/`.
 
-## Documentation (Foundry API)
+## Runtime Entry Points
 
-If a change depends on Foundry V13 API details and you are not sure, check the official API docs:
-`https://foundryvtt.com/api/`.
-
-When working with an assistant that cannot reliably browse the docs, paste the relevant excerpt (or
-the exact class/method page + version) so the implementation can match Foundry's actual behavior.
-
-## Primary Entry Points
-
-- `system.json`: Foundry manifest (id, title, compatibility, entry assets).
-- `nalfa.mjs`: system bootstrap (init hooks, sheet registration, helpers, Dice So Nice).
-- `nalfa.css`: system styling (compiled from `less/`).
-- `template.json`: document type registration (schema now lives in data models).
-
-## What Runs In Foundry
-
-- `nalfa.mjs`
-  - Registers `CONFIG.nalfa` from `module/config.mjs`.
-  - Sets `CONFIG.Item.documentClass` to `module/sheets/nalfaItem.mjs`.
-  - Unregisters core v2 Actor/Item sheets and registers custom sheets:
+- `system.json`: manifest; loads `nalfa.mjs` and `nalfa.css`.
+- `nalfa.mjs`: system bootstrap on `Hooks.once("init")`.
+  - Registers `CONFIG.nalfa` (`module/config.mjs`).
+  - Registers Actor/Item data models (`module/data/models.mjs`).
+  - Sets custom document classes:
+    - `CONFIG.Item.documentClass = module/sheets/nalfaItem.mjs`
+    - `CONFIG.Combat.documentClass = module/documents/nalfaCombat.mjs`
+  - Registers default v2 sheets:
     - `module/sheets/nalfaCharacterSheet.mjs`
     - `module/sheets/nalfaItemSheet.mjs`
-  - Preloads Handlebars templates used by the sheets.
-  - Registers Handlebars helpers (labels, small utilities, and a few HTML-returning helpers).
-  - Integrates with the Dice So Nice module (custom dice labels for d4-d12).
+  - Exposes roll APIs on `game.nalfa.rolls` and `game.nalfa.macros`.
+  - Preloads Handlebars templates, registers helpers, and binds chat-card listeners.
+  - Integrates Dice So Nice presets.
 
-## Data Model
+## Main Code Areas
 
-- `module/data/models.mjs`
-  - `BaseActorData` defines stats (str/dex/int/wis/cha/con), attributes (hp/defense/evasion/etc),
-    skills, resistances, actions, spell charges, and UI state (`ui.valueMode`).
-  - `CharacterData`/`NPCData` extend the base schema and add type-specific fields.
-  - `BaseItemData` extensions define ALL items.
-- `template.json` only registers document types.
-
-## Core Code Layout
-
-- `module/config.mjs`: system dictionaries (stats, skills, damage types, rarities, etc). Used
-  by templates via `CONFIG.nalfa` and Handlebars helpers.
-- `module/sheets/nalfaCharacterSheet.mjs`: ActorSheetV2-based v2 sheet.
-  - Renders with multi-part Handlebars templates; derived values come from the data model.
-- `module/sheets/nalfaItemSheet.mjs`: ItemSheetV2-based v2 sheet.
-  - Minimal sheet for name, rarity, and description.
-  - Uses prose-mirror for rich text editing.
-- `module/sheets/nalfaItem.mjs`: custom Item document class.
-  - Implements `roll()` to post a chat card (uses `templates/chat/roll/weapon.hbs`).
-- `module/utils.mjs`: small helpers (round/clamp/enrichHTML) and a `prepareItem` router.
-  - Note: it imports `./prepareItems/currency.mjs`, but `module/prepareItems/` is not
-    present. This looks like legacy/unfinished wiring.
-
-## Templates
-
-- Character sheet templates
-  - `templates/sheets/character/header.hbs`
-  - `templates/sheets/character/tabs.hbs`
-  - `templates/sheets/character/body.hbs`
-  - `templates/partials/character/health.hbs`
-- Item sheet templates
-  - `templates/sheets/item/header.hbs`
-  - `templates/sheets/item/body.hbs`
-- Chat cards
-  - `templates/chat/roll/weapon.hbs`
-
-There is also a large `_old/` directory of legacy prototypes (older HBS, LESS, and sheet
-scripts). These are not referenced by current runtime code, but are kept as historical
-reference.
+- `module/data/models.mjs`: canonical schema and derived data logic.
+- `module/sheets/nalfaCharacterSheet.mjs`: character sheet (ActorSheetV2).
+- `module/sheets/nalfaItemSheet.mjs` and `module/sheets/item/*.mjs`: item sheet UI + handlers.
+- `module/rolls/*.mjs`: roll workflows and chat-card rendering.
+- `module/itemActions.mjs`: shared action defaults/builders.
+- `templates/`: sheet parts and chat templates.
+- `lang/en.json`, `lang/fr.json`: localization files.
 
 ## Styling
 
-- `less/`: source LESS (mixins, root variables, actor/item sheet styling, FA helpers).
-- `nalfa.css`: compiled output loaded by Foundry via `system.json`.
-- Only change `less/` files; `nalfa.css` is autogenerated (do not edit it directly).
-- Reminder: start the watcher when editing LESS: `npm run less:watch`.
-- Fonts are pulled from Google Fonts via `@font-face` rules in `less/root.less`.
+- Edit `less/*.less` files only; `nalfa.css` is auto-generated output.
+- When editing LESS files for the first time, remind user to run `npm run less:watch`.
+- Never compile CSS or run the above command yourself.
 
-## Assets
+## Legacy / Non-runtime
 
-- `icons/base_icons/*.svg`: default icons per planned item type.
+- `_old/` is historical reference only (not loaded at runtime).
+- `modules.txt` is local world tooling info, not system runtime config.
 
-## Localization
-
-- `lang/en.json` and `lang/fr.json`: currently very small.
-- Many UI labels are currently embedded in `module/config.mjs` rather than in `lang/`.
-
-## Dev Tooling (Local Foundry Source Symlinks)
-
-- `tools/create-symlinks.mjs`: optional helper to symlink Foundry's `client/`, `common/`, and
-  `tsconfig.json` into a local `foundry/` folder for IDE navigation/types.
-- `tools/foundry-config-example.yaml`: template for `foundry-config.yaml` (ignored by git).
-- `package.json` runs `npm run createSymlinks` on `postinstall`.
-- `jsconfig.json` configures path aliases to the symlinked `foundry/` sources.
-
-## Misc
-
-- `modules.txt`: a list of Foundry modules used in the author's world; not used by this
-  system at runtime.
-
-## Code Style
+## Formatting
 
 - Use Prettier formatting rules.
-- Limit line width to 92 characters.
-- Indentation:
-  - JS/MJS: tabs (4 wide)
-  - HBS/JSON/HTML/CSS/LESS: tabs (2 wide)
+- Max line width: 92.
+- Tabs:
+  - JS/MJS: tab width 4
+  - HBS/JSON/HTML/CSS/LESS: tab width 2
 
-## V2 Sheets Guide (Practical)
+## V2 Sheet Pitfalls And Patterns
 
-### Core Concepts
-
-- `ApplicationV2`: base lifecycle (render/close/rerender).
-- `DocumentSheetV2`: form + document update plumbing.
-- `ActorSheetV2` / `ItemSheetV2`: document-sheet specializations.
-- `HandlebarsApplicationMixin`: Handlebars rendering + `PARTS` + partial rerenders.
-- No jQuery-by-default: use DOM APIs (`this.element.querySelector(...)`).
-
-### Basic Shape
-
-```js
-const { HandlebarsApplicationMixin } = foundry.applications.api;
-const { ActorSheetV2 } = foundry.applications.sheets;
-export default class MySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
-	static DEFAULT_OPTIONS = { classes: ["my", "sheet"], form: { submitOnChange: true } };
-	static PARTS = {
-		header: { template: ".../header.hbs" },
-		sheet: { template: ".../body.hbs" },
-	};
-	async _prepareContext(options) {
-		const base = await super._prepareContext(options);
-		return {
-			...base,
-			actor: base.document,
-			sysData: base.document.system,
-			config: CONFIG.my,
-		};
-	}
-}
-```
-
-### DEFAULT_OPTIONS
-
-- `classes`: CSS scoping; becomes `.my.sheet` etc.
-- `position`: initial size; user resize persists in Foundry.
-- `form.submitOnChange: true`: makes edits persist immediately.
-- `actions`: click handlers via `data-action`.
-
-### PARTS And Templates
-
-- Parts render in order; each part template must have exactly one top-level element.
-- Common pattern: `header`, `tabs`, then one part per tab.
-- Preload templates in `Hooks.once("init")` with `foundry.applications.handlebars.loadTemplates([...])`.
-
-### Context And Form Binding
-
-- `_prepareContext()` is the async replacement for V1 `getData()`.
-- Read from context: `{{sysData.attributes.hp.value}}`.
-- Write to the document: `name="system.attributes.hp.value"`.
-- These are related but not the same: `name="..."` targets the Document data path directly.
-
-### Derived Data
-
-- Compute derived values in `TypeDataModel#prepareDerivedData()` and assign to `this` (system).
-- Keep it deterministic; avoid side-effects outside setting derived numbers/flags.
-
-### Actions vs \_onRender
-
-- Clicks: prefer `DEFAULT_OPTIONS.actions` + `data-action="..."`.
-- Everything else: bind in `_onRender(context, options)`.
-- Re-bind in `_onRender` because parts can rerender without a full app reload.
-
-### Tabs
-
-- Foundry stores active tab per group in `this.tabGroups`.
-- In `_onRender`, re-apply after rerender:
-  - `for (const [group, active] of Object.entries(this.tabGroups)) this.changeTab(active, group)`.
-- For structured tabs:
-  - `static TABS = { primary: { tabs: [{ id: "stats" }, { id: "inv" }], initial: "stats" } }`.
-  - `context.tabs = this._prepareTabs("primary")` in `_prepareContext()`.
-  - In `_preparePartContext(partId, context)`, set `context.tab = context.tabs[partId]`.
-- Template requirements: tab root needs `data-group="primary" data-tab="stats"` and class includes
-  `{{tab.cssClass}}` so Foundry can mark it active.
-- `templates/sheets/character/tabs.hbs` renders the `tabs` context from
-  `module/sheets/nalfaCharacterSheet.mjs` (`static TABS`) using `data-group="primary"` and
-  `data-tab` attributes.
-
-### Text Enrichment
-
-- Enrich before rendering (async): `await TextEditor.enrichHTML(...)`.
-- Render enriched HTML with triple-stash: `{{{enrichedDescription}}}`.
-- For editable rich text, use `<prose-mirror>` with `name="system.description"` and pass the
-  enriched HTML inside.
-
-### DragDrop / SearchFilter Quick Pattern
-
-- Create handlers/filters once (constructor or class fields), then bind them in `_onRender`.
-- DragDrop: `this.dragDrop.forEach((d) => d.bind(this.element))`.
-- SearchFilter: `filter.bind(this.element)`.
-
-### Troubleshooting Checklist
-
-- Button refreshes page: add `type="button"` (default submits the form).
-- Rendering fails: a part template has multiple root elements.
-- Tabs reset: restore via `changeTab` in `_onRender` and ensure `data-group`/`data-tab` exist.
-- Inputs not saving: `name="system..."` path wrong or `submitOnChange` is off.
+- **Template root rule**: every `PARTS` template should render exactly one top-level element. If a part has sibling root nodes, the sheet can fail to render with errors that look unrelated.
+- **Context vs form path**: values read from context (`{{sysData...}}`) are not automatically tied to where forms write. Persistence depends on the input `name="system..."` path targeting the real document data path.
+- **Rerender-safe listeners**: partial rerenders replace DOM nodes, so listeners attached to old nodes are lost. Bind non-action listeners in `_onRender` each time, not only once at construction.
+- **Prefer sheet actions for clicks**: use `DEFAULT_OPTIONS.actions` + `data-action` for click handlers where possible. It keeps wiring consistent and reduces brittle selector/event boilerplate.
+- **Tab state restoration**: rerenders can reset visible tab state if you do nothing. Keep tab state in `this.tabGroups`, then re-apply with `changeTab(active, group)` in `_onRender`.
+- **Tab markup contract**: tab panes must include both `data-group` and `data-tab`, and templates should output `{{tab.cssClass}}` for active-state classes. If one of these is missing, tabs appear to "work" but fail after rerender.
+- **Submit behavior surprises**: with `form.submitOnChange: true`, most edits persist immediately, but buttons still default to submit. Add `type="button"` on action buttons to avoid accidental form submits/page refresh behavior.
+- **Derived data discipline**: compute derived values in `TypeDataModel#prepareDerivedData()` and keep it deterministic. Avoid side effects (notifications, document updates, external calls) there to prevent loops and hard-to-reason state.
+- **Text enrichment timing**: enrich HTML asynchronously before template render (e.g. via `TextEditor.enrichHTML`). Render enriched output with triple-stash (`{{{...}}}`), while editable content should use `<prose-mirror name="system...">`.
+- **Editability guardrails**: only bind mutating controls when `this.isEditable` is true. This prevents confusing no-op interactions for read-only users and avoids accidental update attempts.
+- **DOM API default**: V2 code should rely on standard DOM APIs (`querySelector`, `addEventListener`) rather than jQuery assumptions. This avoids subtle mismatches between legacy snippets and V2 app behavior.
+- **Template preload hygiene**: preload all sheet/chat templates during `Hooks.once("init")` with `foundry.applications.handlebars.loadTemplates`. Missing preload entries commonly show up as runtime template-not-found errors when opening a specific sheet path.

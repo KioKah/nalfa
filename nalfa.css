@@ -1798,7 +1798,8 @@
 .nalfa.sheet.item-action-editor .item-actions__cost-note {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  align-self: center;
+  gap: 2px;
   font-size: 14px;
   line-height: 1;
   opacity: 0.85;
