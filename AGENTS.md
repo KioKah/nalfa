@@ -31,7 +31,7 @@ This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 - `module/sheets/nalfaCharacterSheet.mjs`: character sheet (ActorSheetV2).
 - `module/sheets/nalfaItemSheet.mjs` and `module/sheets/item/*.mjs`: item sheet UI + handlers.
 - `module/rolls/*.mjs`: roll workflows and chat-card rendering.
-- `module/itemActions.mjs`: shared action defaults/builders.
+- `module/embeddedActions.mjs`: shared embedded action defaults/builders.
 - `templates/`: sheet parts and chat templates.
 - `lang/en.json`, `lang/fr.json`: localization files.
 

@@ -1,4 +1,4 @@
-export const MAX_ITEM_ACTIONS = 3;
+export const MAX_EMBEDDED_ACTIONS = 3;
 
 export const createDefaultDamageFormula = () => ({
 	formula: "",
@@ -88,13 +88,13 @@ export const createDefaultActionData = () => ({
 	},
 });
 
-export const createDefaultItemAction = ({ name = "", shorthand = "" } = {}) => ({
+export const createDefaultEmbeddedAction = ({ name = "", shorthand = "" } = {}) => ({
 	name,
 	shorthand,
 	...createDefaultActionData(),
 });
 
-export const getDefaultItemActionName = (itemName, index) => {
+export const getDefaultEmbeddedActionName = (itemName, index) => {
 	const baseName = String(itemName ?? "").trim();
 	const fallbackName = "Action";
 	const resolvedBaseName = baseName || fallbackName;
@@ -103,4 +103,4 @@ export const getDefaultItemActionName = (itemName, index) => {
 	return `${resolvedBaseName} ${index + 1}`;
 };
 
-export const getDefaultItemActionShorthand = (index) => String(index + 1);
+export const getDefaultEmbeddedActionShorthand = (index) => String(index + 1);

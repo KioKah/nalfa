@@ -1,8 +1,8 @@
 import {
 	createDefaultDamageFormula,
-	getDefaultItemActionName,
-	getDefaultItemActionShorthand,
-} from "../../itemActions.mjs";
+	getDefaultEmbeddedActionName,
+	getDefaultEmbeddedActionShorthand,
+} from "../../embeddedActions.mjs";
 import { openRichTextEditorDialog } from "./richTextDialog.mjs";
 
 const DEFAULT_ITEM_ICON = "icons/svg/item-bag.svg";
@@ -27,9 +27,9 @@ const getItemImage = (item) => {
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
-export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(ItemSheetV2) {
+export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixin(ItemSheetV2) {
 	static DEFAULT_OPTIONS = {
-		classes: ["nalfa", "sheet", "item-action-editor"],
+		classes: ["nalfa", "sheet", "embedded-action-editor"],
 		position: {
 			width: 760,
 		},
@@ -62,7 +62,7 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 		const index = this._getActionIndex();
 		const actionData = this._draftAction;
 		const actionName = String(actionData?.name ?? "").trim();
-		const resolvedName = actionName || getDefaultItemActionName(this.item.name, index);
+		const resolvedName = actionName || getDefaultEmbeddedActionName(this.item.name, index);
 		return `Action - ${resolvedName}`;
 	}
 
@@ -76,8 +76,8 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 		const effectTextSource = actionData?.effect?.text ?? "";
 		const noteTextSource = actionData?.cost?.actions?.note ?? "";
 		const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
-		const defaultActionName = getDefaultItemActionName(item.name, actionIndex);
-		const defaultActionShorthand = getDefaultItemActionShorthand(actionIndex);
+		const defaultActionName = getDefaultEmbeddedActionName(item.name, actionIndex);
+		const defaultActionShorthand = getDefaultEmbeddedActionShorthand(actionIndex);
 		const actionDisplayName = String(actionData?.name ?? "").trim() || defaultActionName;
 		const actionDisplayShorthand =
 			String(actionData?.shorthand ?? "").trim() || defaultActionShorthand;
@@ -250,9 +250,9 @@ export default class NalfaItemActionEditor extends HandlebarsApplicationMixin(It
 
 	#getInitialDraftAction() {
 		const index = this._getActionIndex();
-		const itemActions = this.item.system?.actions;
-		if (!Array.isArray(itemActions) || !itemActions[index]) return null;
-		return foundry.utils.deepClone(itemActions[index]);
+		const embeddedActions = this.item.system?.actions;
+		if (!Array.isArray(embeddedActions) || !embeddedActions[index]) return null;
+		return foundry.utils.deepClone(embeddedActions[index]);
 	}
 
 	#getDraftPathFromSystemPath(systemPath) {

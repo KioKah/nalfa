@@ -4,7 +4,7 @@ import {
 	EQUIP_SLOT_NONE,
 	PRIMARY_TAB_GROUP,
 } from "./item/constants.mjs";
-import NalfaItemActionEditor from "./item/actionEditor.mjs";
+import NalfaEmbeddedActionEditor from "./item/actionEditor.mjs";
 import { buildItemSheetContext } from "./item/context.mjs";
 import {
 	buildEquippedSlotUpdate,
@@ -17,11 +17,11 @@ import {
 } from "./item/identification.mjs";
 import { openRichTextEditorDialog } from "./item/richTextDialog.mjs";
 import {
-	MAX_ITEM_ACTIONS,
-	createDefaultItemAction,
-	getDefaultItemActionName,
-	getDefaultItemActionShorthand,
-} from "../itemActions.mjs";
+	MAX_EMBEDDED_ACTIONS,
+	createDefaultEmbeddedAction,
+	getDefaultEmbeddedActionName,
+	getDefaultEmbeddedActionShorthand,
+} from "../embeddedActions.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -101,11 +101,17 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 				"[data-action='remove-array-entry']",
 				this._onRemoveArrayEntry,
 			);
-			this._bindClickAction("[data-action='add-item-action']", this._onAddItemAction);
-			this._bindClickAction("[data-action='edit-item-action']", this._onEditItemAction);
 			this._bindClickAction(
-				"[data-action='remove-item-action']",
-				this._onRemoveItemAction,
+				"[data-action='add-embedded-action']",
+				this._onAddEmbeddedAction,
+			);
+			this._bindClickAction(
+				"[data-action='edit-embedded-action']",
+				this._onEditEmbeddedAction,
+			);
+			this._bindClickAction(
+				"[data-action='remove-embedded-action']",
+				this._onRemoveEmbeddedAction,
 			);
 			this._bindChangeAction(
 				"[data-action='change-equipped-slot']",
@@ -175,36 +181,36 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		openRichTextEditorDialog(this.item, path, title);
 	}
 
-	async _onAddItemAction(event) {
+	async _onAddEmbeddedAction(event) {
 		event.preventDefault();
 
-		const itemActions = Array.isArray(this.item.system?.actions)
+		const embeddedActions = Array.isArray(this.item.system?.actions)
 			? foundry.utils.deepClone(this.item.system.actions)
 			: [];
-		if (itemActions.length >= MAX_ITEM_ACTIONS) return;
+		if (embeddedActions.length >= MAX_EMBEDDED_ACTIONS) return;
 
-		const actionIndex = itemActions.length;
-		const actionName = getDefaultItemActionName(this.item.name, actionIndex);
-		const actionShorthand = getDefaultItemActionShorthand(actionIndex);
-		itemActions.push(
-			createDefaultItemAction({ name: actionName, shorthand: actionShorthand }),
+		const actionIndex = embeddedActions.length;
+		const actionName = getDefaultEmbeddedActionName(this.item.name, actionIndex);
+		const actionShorthand = getDefaultEmbeddedActionShorthand(actionIndex);
+		embeddedActions.push(
+			createDefaultEmbeddedAction({ name: actionName, shorthand: actionShorthand }),
 		);
-		await this.item.update({ "system.actions": itemActions });
+		await this.item.update({ "system.actions": embeddedActions });
 	}
 
-	_onEditItemAction(event) {
+	_onEditEmbeddedAction(event) {
 		event.preventDefault();
 
 		const button = event.currentTarget;
 		const index = Number(button.dataset.index ?? -1);
 		if (!Number.isInteger(index) || index < 0) return;
 
-		const itemActions = this.item.system?.actions;
-		if (!Array.isArray(itemActions) || !itemActions[index]) return;
+		const embeddedActions = this.item.system?.actions;
+		if (!Array.isArray(embeddedActions) || !embeddedActions[index]) return;
 
 		const fallbackWidth = this.constructor.DEFAULT_OPTIONS.position?.width ?? 760;
 		const width = Number(this.position?.width ?? fallbackWidth) || fallbackWidth;
-		const editor = new NalfaItemActionEditor({
+		const editor = new NalfaEmbeddedActionEditor({
 			document: this.item,
 			actionIndex: index,
 			position: { width },
@@ -212,20 +218,20 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		editor.render({ force: true });
 	}
 
-	async _onRemoveItemAction(event) {
+	async _onRemoveEmbeddedAction(event) {
 		event.preventDefault();
 
 		const button = event.currentTarget;
 		const index = Number(button.dataset.index ?? -1);
 		if (!Number.isInteger(index) || index < 0) return;
 
-		const itemActions = Array.isArray(this.item.system?.actions)
+		const embeddedActions = Array.isArray(this.item.system?.actions)
 			? foundry.utils.deepClone(this.item.system.actions)
 			: [];
-		if (!itemActions[index]) return;
+		if (!embeddedActions[index]) return;
 
-		itemActions.splice(index, 1);
-		await this.item.update({ "system.actions": itemActions });
+		embeddedActions.splice(index, 1);
+		await this.item.update({ "system.actions": embeddedActions });
 	}
 
 	async _onChangeEquippedSlot(event) {

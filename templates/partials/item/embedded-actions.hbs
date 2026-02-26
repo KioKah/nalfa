@@ -1,0 +1,126 @@
+<div class="sheet-section embedded-actions">
+	<div class="embedded-actions__head">
+		<span class="field__label">Actions intégrées</span>
+		{{#if isEditable}}
+			<button
+				type="button"
+				class="array-action-btn"
+				data-action="add-embedded-action"
+				{{#unless canAddEmbeddedAction}}disabled{{/unless}}
+				title="Ajouter"
+			>
+				<i class="fa-light fa-square-plus"></i>
+			</button>
+		{{/if}}
+	</div>
+
+	{{#if embeddedActions.length}}
+		<div class="embedded-actions__list">
+			{{#each embeddedActions as |embeddedAction|}}
+				<div class="embedded-actions__row panel-section">
+					<div class="embedded-actions__icon">
+						<img
+							class="embedded-actions__image"
+							src="{{@root.itemImage}}"
+							alt="{{@root.item.name}}"
+						/>
+						<span class="embedded-actions__shorthand">{{embeddedAction.displayShorthand}}</span>
+					</div>
+
+					<div class="embedded-actions__main">
+						<div class="embedded-actions__line embedded-actions__line--title">
+							<div class="embedded-actions__title-main">
+								<div class="embedded-actions__cost-summary">
+									{{#each embeddedAction.resourceSummary.options as |costOption|}}
+										<span class="embedded-actions__cost-option">
+											{{#each costOption.tokens as |token|}}
+												<span
+													class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
+													title="{{token.title}}"
+												>
+													{{#if token.showAmount}}
+														<span class="embedded-actions__cost-token-amount">{{token.amountLabel}}</span>
+													{{/if}}
+													<i class="{{token.iconClass}}"></i>
+												</span>
+											{{/each}}
+											{{#if costOption.hasCondition}}
+												<span class="embedded-actions__cost-condition-mark">*</span>
+											{{/if}}
+										</span>
+										{{#unless @last}}
+											<span class="embedded-actions__cost-option-sep">/</span>
+										{{/unless}}
+									{{/each}}
+									{{#each embeddedAction.resourceSummary.additions as |token|}}
+										<span class="embedded-actions__cost-option-sep">+</span>
+										<span
+											class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
+											title="{{token.title}}"
+										>
+											{{#if token.showAmount}}
+												<span class="embedded-actions__cost-token-amount">{{token.amountLabel}}</span>
+											{{/if}}
+											<i class="{{token.iconClass}}"></i>
+										</span>
+									{{/each}}
+								</div>
+								{{#if embeddedAction.resourceSummary.note}}
+									<span
+										class="embedded-actions__cost-note"
+										title="{{embeddedAction.resourceSummary.note}}"
+									>
+										(<i class="fa-light fa-note-sticky"></i>)
+									</span>
+								{{/if}}
+								<span class="embedded-actions__name-label">{{embeddedAction.displayName}}</span>
+							</div>
+							<div class="embedded-actions__summary-stack">
+								{{#if embeddedAction.summaryTop}}
+									<span class="embedded-actions__summary embedded-actions__summary--top">
+										{{embeddedAction.summaryTop}}
+									</span>
+								{{/if}}
+								{{#if embeddedAction.summaryBottom}}
+									<span class="embedded-actions__summary embedded-actions__summary--bottom">
+										{{embeddedAction.summaryBottom}}
+									</span>
+								{{/if}}
+							</div>
+						</div>
+						{{#if embeddedAction.secondarySummary}}
+							<div class="embedded-actions__line embedded-actions__line--meta">
+								<span class="embedded-actions__secondary">{{embeddedAction.secondarySummary}}</span>
+							</div>
+						{{/if}}
+					</div>
+
+					{{#if @root.isEditable}}
+						<div class="embedded-actions__buttons">
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="edit-embedded-action"
+								data-index="{{embeddedAction.index}}"
+								title="Modifier"
+							>
+								<i class="fa-light fa-pen-to-square"></i>
+							</button>
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="remove-embedded-action"
+								data-index="{{embeddedAction.index}}"
+								title="Supprimer"
+							>
+								<i class="fa-light fa-square-minus"></i>
+							</button>
+						</div>
+					{{/if}}
+				</div>
+			{{/each}}
+		</div>
+	{{else}}
+		<p class="hint embedded-actions__empty">Aucune action.</p>
+	{{/if}}
+</div>

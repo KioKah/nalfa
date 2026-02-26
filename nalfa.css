@@ -883,7 +883,7 @@
 }
 .nalfa.sheet.item-sheet,
 .nalfa.sheet.item,
-.nalfa.sheet.item-action-editor {
+.nalfa.sheet.embedded-action-editor {
   min-width: 180px;
   max-width: calc(var(--item-width) + 2 * var(--nalfa-padding));
   min-height: 132px;
@@ -891,7 +891,7 @@
 }
 .nalfa.sheet.item-sheet > section.window-content,
 .nalfa.sheet.item > section.window-content,
-.nalfa.sheet.item-action-editor > section.window-content {
+.nalfa.sheet.embedded-action-editor > section.window-content {
   font-family: var(--nalfa-font-primary), var(--font-sans);
   font-size: 18px;
   color: var(--color-text-primary);
@@ -914,31 +914,31 @@
 }
 .nalfa.sheet.item-sheet .item-sheet-header__rarity,
 .nalfa.sheet.item .item-sheet-header__rarity,
-.nalfa.sheet.item-action-editor .item-sheet-header__rarity {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__rarity {
   flex: 0 1 125px;
   display: flex;
   align-items: center;
 }
 .nalfa.sheet.item-sheet .item-sheet-header__rarity select,
 .nalfa.sheet.item .item-sheet-header__rarity select,
-.nalfa.sheet.item-action-editor .item-sheet-header__rarity select {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__rarity select {
   width: 115px;
 }
 .nalfa.sheet.item-sheet .item-sheet-header__name,
 .nalfa.sheet.item .item-sheet-header__name,
-.nalfa.sheet.item-action-editor .item-sheet-header__name {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__name {
   flex: 1 1 340px;
   display: flex;
   align-items: center;
 }
 .nalfa.sheet.item-sheet .item-sheet-header__icon,
 .nalfa.sheet.item .item-sheet-header__icon,
-.nalfa.sheet.item-action-editor .item-sheet-header__icon {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__icon {
   flex: 0 0 64px;
 }
 .nalfa.sheet.item-sheet .item-sheet-header__shorthand,
 .nalfa.sheet.item .item-sheet-header__shorthand,
-.nalfa.sheet.item-action-editor .item-sheet-header__shorthand {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__shorthand {
   flex: 0 0 88px;
   display: flex;
   flex-direction: column;
@@ -948,7 +948,7 @@
 }
 .nalfa.sheet.item-sheet .item-sheet-header__shorthand input,
 .nalfa.sheet.item .item-sheet-header__shorthand input,
-.nalfa.sheet.item-action-editor .item-sheet-header__shorthand input {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__shorthand input {
   width: calc((1px * 4 + 2px) * (14 / 2));
   min-width: calc((1px * 4 + 2px) * (14 / 2));
   max-width: calc((1px * 4 + 2px) * (14 / 2));
@@ -960,7 +960,7 @@
 }
 .nalfa.sheet.item-sheet .item-sheet-header__recommended,
 .nalfa.sheet.item .item-sheet-header__recommended,
-.nalfa.sheet.item-action-editor .item-sheet-header__recommended {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__recommended {
   flex: 0 0 100px;
   display: flex;
   flex-direction: column;
@@ -970,7 +970,7 @@
 }
 .nalfa.sheet.item-sheet .item-sheet-header__recommended-values,
 .nalfa.sheet.item .item-sheet-header__recommended-values,
-.nalfa.sheet.item-action-editor .item-sheet-header__recommended-values {
+.nalfa.sheet.embedded-action-editor .item-sheet-header__recommended-values {
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -979,41 +979,41 @@
 }
 .nalfa.sheet.item-sheet .item-sheet-body,
 .nalfa.sheet.item .item-sheet-body,
-.nalfa.sheet.item-action-editor .item-sheet-body {
+.nalfa.sheet.embedded-action-editor .item-sheet-body {
   display: flex;
   flex-direction: column;
 }
 .nalfa.sheet.item-sheet .item-sheet-content,
 .nalfa.sheet.item .item-sheet-content,
-.nalfa.sheet.item-action-editor .item-sheet-content {
+.nalfa.sheet.embedded-action-editor .item-sheet-content {
   overflow: visible;
 }
 .nalfa.sheet.item-sheet .tab,
 .nalfa.sheet.item .tab,
-.nalfa.sheet.item-action-editor .tab {
+.nalfa.sheet.embedded-action-editor .tab {
   display: none;
 }
 .nalfa.sheet.item-sheet .tab.active,
 .nalfa.sheet.item .tab.active,
-.nalfa.sheet.item-action-editor .tab.active {
+.nalfa.sheet.embedded-action-editor .tab.active {
   display: block;
 }
 .nalfa.sheet.item-sheet .sheet-section,
 .nalfa.sheet.item .sheet-section,
-.nalfa.sheet.item-action-editor .sheet-section {
+.nalfa.sheet.embedded-action-editor .sheet-section {
   display: flex;
   flex-direction: column;
   gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet h2,
 .nalfa.sheet.item h2,
-.nalfa.sheet.item-action-editor h2,
+.nalfa.sheet.embedded-action-editor h2,
 .nalfa.sheet.item-sheet h3,
 .nalfa.sheet.item h3,
-.nalfa.sheet.item-action-editor h3,
+.nalfa.sheet.embedded-action-editor h3,
 .nalfa.sheet.item-sheet h4,
 .nalfa.sheet.item h4,
-.nalfa.sheet.item-action-editor h4 {
+.nalfa.sheet.embedded-action-editor h4 {
   margin: 0;
   padding: 0;
   border: 0;
@@ -1022,32 +1022,32 @@
 }
 .nalfa.sheet.item-sheet .sheet-section--physical,
 .nalfa.sheet.item .sheet-section--physical,
-.nalfa.sheet.item-action-editor .sheet-section--physical {
+.nalfa.sheet.embedded-action-editor .sheet-section--physical {
   flex: 0 0 auto;
   max-height: 98px;
   overflow: hidden;
 }
 .nalfa.sheet.item-sheet .hint,
 .nalfa.sheet.item .hint,
-.nalfa.sheet.item-action-editor .hint,
+.nalfa.sheet.embedded-action-editor .hint,
 .nalfa.sheet.item-sheet .field__meta,
 .nalfa.sheet.item .field__meta,
-.nalfa.sheet.item-action-editor .field__meta {
+.nalfa.sheet.embedded-action-editor .field__meta {
   font-size: 11px;
   opacity: 0.75;
 }
 .nalfa.sheet.item-sheet .label,
 .nalfa.sheet.item .label,
-.nalfa.sheet.item-action-editor .label,
+.nalfa.sheet.embedded-action-editor .label,
 .nalfa.sheet.item-sheet .field__label,
 .nalfa.sheet.item .field__label,
-.nalfa.sheet.item-action-editor .field__label {
+.nalfa.sheet.embedded-action-editor .field__label {
   font-weight: 600;
   font-size: 12px;
 }
 .nalfa.sheet.item-sheet .field,
 .nalfa.sheet.item .field,
-.nalfa.sheet.item-action-editor .field {
+.nalfa.sheet.embedded-action-editor .field {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1055,25 +1055,25 @@
 }
 .nalfa.sheet.item-sheet .field--inline,
 .nalfa.sheet.item .field--inline,
-.nalfa.sheet.item-action-editor .field--inline {
+.nalfa.sheet.embedded-action-editor .field--inline {
   display: inline-flex;
 }
 .nalfa.sheet.item-sheet .field--column,
 .nalfa.sheet.item .field--column,
-.nalfa.sheet.item-action-editor .field--column {
+.nalfa.sheet.embedded-action-editor .field--column {
   flex-direction: column;
   align-items: stretch;
 }
 .nalfa.sheet.item-sheet .button-row,
 .nalfa.sheet.item .button-row,
-.nalfa.sheet.item-action-editor .button-row {
+.nalfa.sheet.embedded-action-editor .button-row {
   display: flex;
   align-items: center;
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .richtext-field__head,
 .nalfa.sheet.item .richtext-field__head,
-.nalfa.sheet.item-action-editor .richtext-field__head {
+.nalfa.sheet.embedded-action-editor .richtext-field__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1081,7 +1081,7 @@
 }
 .nalfa.sheet.item-sheet .richtext-field__content,
 .nalfa.sheet.item .richtext-field__content,
-.nalfa.sheet.item-action-editor .richtext-field__content {
+.nalfa.sheet.embedded-action-editor .richtext-field__content {
   min-height: calc(16px + (6px * 2));
   max-height: calc((var(--font-size-14) * 1.4 * 6) + (6px * 2));
   height: fit-content;
@@ -1097,7 +1097,7 @@
 }
 .nalfa.sheet.item-sheet .richtext-field__content table,
 .nalfa.sheet.item .richtext-field__content table,
-.nalfa.sheet.item-action-editor .richtext-field__content table {
+.nalfa.sheet.embedded-action-editor .richtext-field__content table {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
@@ -1105,59 +1105,59 @@
 }
 .nalfa.sheet.item-sheet .richtext-field__content th,
 .nalfa.sheet.item .richtext-field__content th,
-.nalfa.sheet.item-action-editor .richtext-field__content th,
+.nalfa.sheet.embedded-action-editor .richtext-field__content th,
 .nalfa.sheet.item-sheet .richtext-field__content td,
 .nalfa.sheet.item .richtext-field__content td,
-.nalfa.sheet.item-action-editor .richtext-field__content td {
+.nalfa.sheet.embedded-action-editor .richtext-field__content td {
   border: 1px solid var(--nalfa-html-field-border-color);
   background: var(--nalfa-html-table-fill) !important;
 }
 .nalfa.sheet.item-sheet .richtext-field__content tbody tr,
 .nalfa.sheet.item .richtext-field__content tbody tr,
-.nalfa.sheet.item-action-editor .richtext-field__content tbody tr,
+.nalfa.sheet.embedded-action-editor .richtext-field__content tbody tr,
 .nalfa.sheet.item-sheet .richtext-field__content tbody tr:nth-child(even),
 .nalfa.sheet.item .richtext-field__content tbody tr:nth-child(even),
-.nalfa.sheet.item-action-editor .richtext-field__content tbody tr:nth-child(even),
+.nalfa.sheet.embedded-action-editor .richtext-field__content tbody tr:nth-child(even),
 .nalfa.sheet.item-sheet .richtext-field__content tbody tr:nth-child(odd),
 .nalfa.sheet.item .richtext-field__content tbody tr:nth-child(odd),
-.nalfa.sheet.item-action-editor .richtext-field__content tbody tr:nth-child(odd) {
+.nalfa.sheet.embedded-action-editor .richtext-field__content tbody tr:nth-child(odd) {
   background: transparent !important;
 }
 .nalfa.sheet.item-sheet .richtext-field__content > :first-child,
 .nalfa.sheet.item .richtext-field__content > :first-child,
-.nalfa.sheet.item-action-editor .richtext-field__content > :first-child {
+.nalfa.sheet.embedded-action-editor .richtext-field__content > :first-child {
   margin-top: 0;
 }
 .nalfa.sheet.item-sheet .richtext-field__content > :last-child,
 .nalfa.sheet.item .richtext-field__content > :last-child,
-.nalfa.sheet.item-action-editor .richtext-field__content > :last-child {
+.nalfa.sheet.embedded-action-editor .richtext-field__content > :last-child {
   margin-bottom: 0;
 }
 .nalfa.sheet.item-sheet .richtext-field__content > .tableWrapper:first-child > table,
 .nalfa.sheet.item .richtext-field__content > .tableWrapper:first-child > table,
-.nalfa.sheet.item-action-editor .richtext-field__content > .tableWrapper:first-child > table {
+.nalfa.sheet.embedded-action-editor .richtext-field__content > .tableWrapper:first-child > table {
   margin-top: 0;
 }
 .nalfa.sheet.item-sheet .richtext-field__content > .tableWrapper:last-child > table,
 .nalfa.sheet.item .richtext-field__content > .tableWrapper:last-child > table,
-.nalfa.sheet.item-action-editor .richtext-field__content > .tableWrapper:last-child > table {
+.nalfa.sheet.embedded-action-editor .richtext-field__content > .tableWrapper:last-child > table {
   margin-bottom: 0;
 }
 .nalfa.sheet.item-sheet .richtext-field__content p:empty::before,
 .nalfa.sheet.item .richtext-field__content p:empty::before,
-.nalfa.sheet.item-action-editor .richtext-field__content p:empty::before {
+.nalfa.sheet.embedded-action-editor .richtext-field__content p:empty::before {
   content: "\00a0";
 }
 .nalfa.sheet.item-sheet .richtext-field--description .richtext-field__content,
 .nalfa.sheet.item .richtext-field--description .richtext-field__content,
-.nalfa.sheet.item-action-editor .richtext-field--description .richtext-field__content {
+.nalfa.sheet.embedded-action-editor .richtext-field--description .richtext-field__content {
   min-height: calc(16px + (6px * 2));
   max-height: calc((var(--font-size-14) * 1.4 * 12) + (6px * 2));
   height: fit-content;
 }
 .nalfa.sheet.item-sheet .richtext-field__overlay-btn,
 .nalfa.sheet.item .richtext-field__overlay-btn,
-.nalfa.sheet.item-action-editor .richtext-field__overlay-btn {
+.nalfa.sheet.embedded-action-editor .richtext-field__overlay-btn {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -1168,18 +1168,18 @@
 }
 .nalfa.sheet.item-sheet .richtext-field--overlay-action,
 .nalfa.sheet.item .richtext-field--overlay-action,
-.nalfa.sheet.item-action-editor .richtext-field--overlay-action {
+.nalfa.sheet.embedded-action-editor .richtext-field--overlay-action {
   position: relative;
 }
 .nalfa.sheet.item-sheet .richtext-field--overlay-action:hover .richtext-field__overlay-btn,
 .nalfa.sheet.item .richtext-field--overlay-action:hover .richtext-field__overlay-btn,
-.nalfa.sheet.item-action-editor .richtext-field--overlay-action:hover .richtext-field__overlay-btn {
+.nalfa.sheet.embedded-action-editor .richtext-field--overlay-action:hover .richtext-field__overlay-btn {
   opacity: 1;
   pointer-events: auto;
 }
 .nalfa.sheet.item-sheet .array-action-btn,
 .nalfa.sheet.item .array-action-btn,
-.nalfa.sheet.item-action-editor .array-action-btn {
+.nalfa.sheet.embedded-action-editor .array-action-btn {
   width: 16px;
   height: 16px;
   min-width: 16px;
@@ -1190,14 +1190,14 @@
 }
 .nalfa.sheet.item-sheet .array-action-btn i,
 .nalfa.sheet.item .array-action-btn i,
-.nalfa.sheet.item-action-editor .array-action-btn i {
+.nalfa.sheet.embedded-action-editor .array-action-btn i {
   font-size: 16px;
   line-height: 1;
   pointer-events: none;
 }
 .nalfa.sheet.item-sheet .panel-section,
 .nalfa.sheet.item .panel-section,
-.nalfa.sheet.item-action-editor .panel-section {
+.nalfa.sheet.embedded-action-editor .panel-section {
   display: flex;
   flex-direction: column;
   gap: var(--nalfa-gap-text);
@@ -1207,7 +1207,7 @@
 }
 .nalfa.sheet.item-sheet .physical-flags,
 .nalfa.sheet.item .physical-flags,
-.nalfa.sheet.item-action-editor .physical-flags {
+.nalfa.sheet.embedded-action-editor .physical-flags {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
@@ -1216,27 +1216,27 @@
 }
 .nalfa.sheet.item-sheet .physical-flags--equip-select,
 .nalfa.sheet.item .physical-flags--equip-select,
-.nalfa.sheet.item-action-editor .physical-flags--equip-select {
+.nalfa.sheet.embedded-action-editor .physical-flags--equip-select {
   overflow: visible;
   gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .physical-flags--can-eq,
 .nalfa.sheet.item .physical-flags--can-eq,
-.nalfa.sheet.item-action-editor .physical-flags--can-eq {
+.nalfa.sheet.embedded-action-editor .physical-flags--can-eq {
   flex-wrap: wrap;
   overflow: visible;
   gap: 4px;
 }
 .nalfa.sheet.item-sheet .physical-flags--status,
 .nalfa.sheet.item .physical-flags--status,
-.nalfa.sheet.item-action-editor .physical-flags--status {
+.nalfa.sheet.embedded-action-editor .physical-flags--status {
   flex-wrap: wrap;
   overflow: visible;
   gap: 4px;
 }
 .nalfa.sheet.item-sheet .physical-row,
 .nalfa.sheet.item .physical-row,
-.nalfa.sheet.item-action-editor .physical-row {
+.nalfa.sheet.embedded-action-editor .physical-row {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -1244,7 +1244,7 @@
 }
 .nalfa.sheet.item-sheet .physical-row__label,
 .nalfa.sheet.item .physical-row__label,
-.nalfa.sheet.item-action-editor .physical-row__label {
+.nalfa.sheet.embedded-action-editor .physical-row__label {
   font-size: 12px;
   font-weight: 600;
   min-width: 40px;
@@ -1252,7 +1252,7 @@
 }
 .nalfa.sheet.item-sheet .physical-row__equip-select,
 .nalfa.sheet.item .physical-row__equip-select,
-.nalfa.sheet.item-action-editor .physical-row__equip-select {
+.nalfa.sheet.embedded-action-editor .physical-row__equip-select {
   height: calc(18px + 9px);
   width: calc((1px * 16 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -1262,34 +1262,34 @@
 }
 .nalfa.sheet.item-sheet .physical-row__lock-indicator,
 .nalfa.sheet.item .physical-row__lock-indicator,
-.nalfa.sheet.item-action-editor .physical-row__lock-indicator {
+.nalfa.sheet.embedded-action-editor .physical-row__lock-indicator {
   font-weight: 700;
   color: #b71c1c;
   white-space: nowrap;
 }
 .nalfa.sheet.item-sheet .physical-row__meta,
 .nalfa.sheet.item .physical-row__meta,
-.nalfa.sheet.item-action-editor .physical-row__meta {
+.nalfa.sheet.embedded-action-editor .physical-row__meta {
   display: inline-flex;
   align-items: center;
   margin-left: auto;
 }
 .nalfa.sheet.item-sheet .physical-row__meta input,
 .nalfa.sheet.item .physical-row__meta input,
-.nalfa.sheet.item-action-editor .physical-row__meta input {
+.nalfa.sheet.embedded-action-editor .physical-row__meta input {
   height: 22px;
   padding: 0 4px;
 }
 .nalfa.sheet.item-sheet .physical-row__meta .physical-row__quantity-input,
 .nalfa.sheet.item .physical-row__meta .physical-row__quantity-input,
-.nalfa.sheet.item-action-editor .physical-row__meta .physical-row__quantity-input {
+.nalfa.sheet.embedded-action-editor .physical-row__meta .physical-row__quantity-input {
   width: 42px;
   min-width: 42px;
   max-width: 42px;
 }
 .nalfa.sheet.item-sheet .physical-row__meta .physical-row__weight-input,
 .nalfa.sheet.item .physical-row__meta .physical-row__weight-input,
-.nalfa.sheet.item-action-editor .physical-row__meta .physical-row__weight-input {
+.nalfa.sheet.embedded-action-editor .physical-row__meta .physical-row__weight-input {
   width: calc((1px * 4.5 + 2px) * (18 / 2));
   min-width: calc((1px * 4.5 + 2px) * (18 / 2));
   max-width: calc((1px * 4.5 + 2px) * (18 / 2));
@@ -1297,42 +1297,42 @@
 }
 .nalfa.sheet.item-sheet .physical-row__currency-total,
 .nalfa.sheet.item .physical-row__currency-total,
-.nalfa.sheet.item-action-editor .physical-row__currency-total {
+.nalfa.sheet.embedded-action-editor .physical-row__currency-total {
   font-weight: 600;
   white-space: nowrap;
 }
 .nalfa.sheet.item-sheet .physical-row__currency-total--invalid,
 .nalfa.sheet.item .physical-row__currency-total--invalid,
-.nalfa.sheet.item-action-editor .physical-row__currency-total--invalid {
+.nalfa.sheet.embedded-action-editor .physical-row__currency-total--invalid {
   font-weight: 700;
   color: #b71c1c;
 }
 .nalfa.sheet.item-sheet .physical-row--can-eq,
 .nalfa.sheet.item .physical-row--can-eq,
-.nalfa.sheet.item-action-editor .physical-row--can-eq {
+.nalfa.sheet.embedded-action-editor .physical-row--can-eq {
   grid-template-columns: auto 1fr auto;
   align-items: start;
 }
 .nalfa.sheet.item-sheet .physical-row--can-eq .physical-flags:first-of-type,
 .nalfa.sheet.item .physical-row--can-eq .physical-flags:first-of-type,
-.nalfa.sheet.item-action-editor .physical-row--can-eq .physical-flags:first-of-type {
+.nalfa.sheet.embedded-action-editor .physical-row--can-eq .physical-flags:first-of-type {
   justify-self: start;
 }
 .nalfa.sheet.item-sheet .physical-row--can-eq .physical-flags:last-of-type,
 .nalfa.sheet.item .physical-row--can-eq .physical-flags:last-of-type,
-.nalfa.sheet.item-action-editor .physical-row--can-eq .physical-flags:last-of-type {
+.nalfa.sheet.embedded-action-editor .physical-row--can-eq .physical-flags:last-of-type {
   justify-self: end;
   padding-top: 2px;
 }
 .nalfa.sheet.item-sheet .physical-row--status,
 .nalfa.sheet.item .physical-row--status,
-.nalfa.sheet.item-action-editor .physical-row--status {
+.nalfa.sheet.embedded-action-editor .physical-row--status {
   grid-template-columns: auto 1fr;
   align-items: start;
 }
 .nalfa.sheet.item-sheet .tiny-check,
 .nalfa.sheet.item .tiny-check,
-.nalfa.sheet.item-action-editor .tiny-check {
+.nalfa.sheet.embedded-action-editor .tiny-check {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -1342,14 +1342,14 @@
 }
 .nalfa.sheet.item-sheet .tiny-check__label,
 .nalfa.sheet.item .tiny-check__label,
-.nalfa.sheet.item-action-editor .tiny-check__label {
+.nalfa.sheet.embedded-action-editor .tiny-check__label {
   font-size: 10px;
   line-height: 1;
   opacity: 0.8;
 }
 .nalfa.sheet.item-sheet .tiny-check--slot,
 .nalfa.sheet.item .tiny-check--slot,
-.nalfa.sheet.item-action-editor .tiny-check--slot {
+.nalfa.sheet.embedded-action-editor .tiny-check--slot {
   flex-direction: row;
   gap: 5px;
   padding: 2px 8px;
@@ -1360,46 +1360,46 @@
 }
 .nalfa.sheet.item-sheet .tiny-check--slot input,
 .nalfa.sheet.item .tiny-check--slot input,
-.nalfa.sheet.item-action-editor .tiny-check--slot input {
+.nalfa.sheet.embedded-action-editor .tiny-check--slot input {
   margin: 0;
 }
 .nalfa.sheet.item-sheet .tiny-check--slot .tiny-check__label,
 .nalfa.sheet.item .tiny-check--slot .tiny-check__label,
-.nalfa.sheet.item-action-editor .tiny-check--slot .tiny-check__label {
+.nalfa.sheet.embedded-action-editor .tiny-check--slot .tiny-check__label {
   font-size: 11px;
   line-height: 1.2;
   opacity: 0.95;
 }
 .nalfa.sheet.item-sheet .currency-config,
 .nalfa.sheet.item .currency-config,
-.nalfa.sheet.item-action-editor .currency-config {
+.nalfa.sheet.embedded-action-editor .currency-config {
   display: flex;
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .currency-config__summary,
 .nalfa.sheet.item .currency-config__summary,
-.nalfa.sheet.item-action-editor .currency-config__summary {
+.nalfa.sheet.embedded-action-editor .currency-config__summary {
   font-size: 13px;
   font-weight: 600;
 }
 .nalfa.sheet.item-sheet .currency-config__head,
 .nalfa.sheet.item .currency-config__head,
-.nalfa.sheet.item-action-editor .currency-config__head {
+.nalfa.sheet.embedded-action-editor .currency-config__head {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 .nalfa.sheet.item-sheet .currency-config__list,
 .nalfa.sheet.item .currency-config__list,
-.nalfa.sheet.item-action-editor .currency-config__list {
+.nalfa.sheet.embedded-action-editor .currency-config__list {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 .nalfa.sheet.item-sheet .currency-config__row,
 .nalfa.sheet.item .currency-config__row,
-.nalfa.sheet.item-action-editor .currency-config__row {
+.nalfa.sheet.embedded-action-editor .currency-config__row {
   display: grid;
   grid-template-columns: 72px 96px 114px 114px auto;
   align-items: end;
@@ -1407,18 +1407,18 @@
 }
 .nalfa.sheet.item-sheet .currency-config__field,
 .nalfa.sheet.item .currency-config__field,
-.nalfa.sheet.item-action-editor .currency-config__field {
+.nalfa.sheet.embedded-action-editor .currency-config__field {
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .currency-config__field .field__label,
 .nalfa.sheet.item .currency-config__field .field__label,
-.nalfa.sheet.item-action-editor .currency-config__field .field__label {
+.nalfa.sheet.embedded-action-editor .currency-config__field .field__label {
   font-size: 11px;
   opacity: 0.8;
 }
 .nalfa.sheet.item-sheet .currency-config__amount,
 .nalfa.sheet.item .currency-config__amount,
-.nalfa.sheet.item-action-editor .currency-config__amount {
+.nalfa.sheet.embedded-action-editor .currency-config__amount {
   width: calc((1px * 4 + 2px) * (18 / 2));
   min-width: calc((1px * 4 + 2px) * (18 / 2));
   max-width: calc((1px * 4 + 2px) * (18 / 2));
@@ -1430,7 +1430,7 @@
 }
 .nalfa.sheet.item-sheet .currency-config__name,
 .nalfa.sheet.item .currency-config__name,
-.nalfa.sheet.item-action-editor .currency-config__name {
+.nalfa.sheet.embedded-action-editor .currency-config__name {
   width: calc((1px * 6 + 2px) * (18 / 2));
   min-width: calc((1px * 6 + 2px) * (18 / 2));
   max-width: calc((1px * 6 + 2px) * (18 / 2));
@@ -1442,7 +1442,7 @@
 }
 .nalfa.sheet.item-sheet .currency-config__value,
 .nalfa.sheet.item .currency-config__value,
-.nalfa.sheet.item-action-editor .currency-config__value {
+.nalfa.sheet.embedded-action-editor .currency-config__value {
   width: calc((1px * 7 + 2px) * (18 / 2));
   min-width: calc((1px * 7 + 2px) * (18 / 2));
   max-width: calc((1px * 7 + 2px) * (18 / 2));
@@ -1454,7 +1454,7 @@
 }
 .nalfa.sheet.item-sheet .currency-config__weight,
 .nalfa.sheet.item .currency-config__weight,
-.nalfa.sheet.item-action-editor .currency-config__weight {
+.nalfa.sheet.embedded-action-editor .currency-config__weight {
   width: calc((1px * 7 + 2px) * (18 / 2));
   min-width: calc((1px * 7 + 2px) * (18 / 2));
   max-width: calc((1px * 7 + 2px) * (18 / 2));
@@ -1466,12 +1466,12 @@
 }
 .nalfa.sheet.item-sheet .currency-config__remove,
 .nalfa.sheet.item .currency-config__remove,
-.nalfa.sheet.item-action-editor .currency-config__remove {
+.nalfa.sheet.embedded-action-editor .currency-config__remove {
   justify-self: end;
 }
 .nalfa.sheet.item-sheet .currency-config__meta,
 .nalfa.sheet.item .currency-config__meta,
-.nalfa.sheet.item-action-editor .currency-config__meta {
+.nalfa.sheet.embedded-action-editor .currency-config__meta {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1479,13 +1479,13 @@
 }
 .nalfa.sheet.item-sheet .currency-config__base,
 .nalfa.sheet.item .currency-config__base,
-.nalfa.sheet.item-action-editor .currency-config__base {
+.nalfa.sheet.embedded-action-editor .currency-config__base {
   align-items: flex-start;
   gap: 3px;
 }
 .nalfa.sheet.item-sheet .currency-config__base-input,
 .nalfa.sheet.item .currency-config__base-input,
-.nalfa.sheet.item-action-editor .currency-config__base-input {
+.nalfa.sheet.embedded-action-editor .currency-config__base-input {
   width: calc((1px * 8 + 2px) * (18 / 2));
   min-width: calc((1px * 8 + 2px) * (18 / 2));
   max-width: calc((1px * 8 + 2px) * (18 / 2));
@@ -1497,14 +1497,14 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config,
 .nalfa.sheet.item .modifiers-config,
-.nalfa.sheet.item-action-editor .modifiers-config {
+.nalfa.sheet.embedded-action-editor .modifiers-config {
   display: flex;
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .modifiers-config__list,
 .nalfa.sheet.item .modifiers-config__list,
-.nalfa.sheet.item-action-editor .modifiers-config__list {
+.nalfa.sheet.embedded-action-editor .modifiers-config__list {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1512,7 +1512,7 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__row,
 .nalfa.sheet.item .modifiers-config__row,
-.nalfa.sheet.item-action-editor .modifiers-config__row {
+.nalfa.sheet.embedded-action-editor .modifiers-config__row {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -1521,12 +1521,12 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__row--labels,
 .nalfa.sheet.item .modifiers-config__row--labels,
-.nalfa.sheet.item-action-editor .modifiers-config__row--labels {
+.nalfa.sheet.embedded-action-editor .modifiers-config__row--labels {
   align-items: center;
 }
 .nalfa.sheet.item-sheet .modifiers-config__label,
 .nalfa.sheet.item .modifiers-config__label,
-.nalfa.sheet.item-action-editor .modifiers-config__label {
+.nalfa.sheet.embedded-action-editor .modifiers-config__label {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
@@ -1538,35 +1538,35 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__label--category,
 .nalfa.sheet.item .modifiers-config__label--category,
-.nalfa.sheet.item-action-editor .modifiers-config__label--category {
+.nalfa.sheet.embedded-action-editor .modifiers-config__label--category {
   width: calc((1px * 10 + 8px) * (18 / 2));
   min-width: calc((1px * 10 + 8px) * (18 / 2));
   max-width: calc((1px * 10 + 8px) * (18 / 2));
 }
 .nalfa.sheet.item-sheet .modifiers-config__label--attribute,
 .nalfa.sheet.item .modifiers-config__label--attribute,
-.nalfa.sheet.item-action-editor .modifiers-config__label--attribute {
+.nalfa.sheet.embedded-action-editor .modifiers-config__label--attribute {
   width: calc((1px * 13 + 8px) * (18 / 2));
   min-width: calc((1px * 13 + 8px) * (18 / 2));
   max-width: calc((1px * 13 + 8px) * (18 / 2));
 }
 .nalfa.sheet.item-sheet .modifiers-config__label--operation,
 .nalfa.sheet.item .modifiers-config__label--operation,
-.nalfa.sheet.item-action-editor .modifiers-config__label--operation {
+.nalfa.sheet.embedded-action-editor .modifiers-config__label--operation {
   width: calc((1px * 8 + 8px) * (18 / 2));
   min-width: calc((1px * 8 + 8px) * (18 / 2));
   max-width: calc((1px * 8 + 8px) * (18 / 2));
 }
 .nalfa.sheet.item-sheet .modifiers-config__label--value,
 .nalfa.sheet.item .modifiers-config__label--value,
-.nalfa.sheet.item-action-editor .modifiers-config__label--value {
+.nalfa.sheet.embedded-action-editor .modifiers-config__label--value {
   width: calc((1px * 4 + 2px) * (18 / 2));
   min-width: calc((1px * 4 + 2px) * (18 / 2));
   max-width: calc((1px * 4 + 2px) * (18 / 2));
 }
 .nalfa.sheet.item-sheet .modifiers-config__label--remove,
 .nalfa.sheet.item .modifiers-config__label--remove,
-.nalfa.sheet.item-action-editor .modifiers-config__label--remove {
+.nalfa.sheet.embedded-action-editor .modifiers-config__label--remove {
   flex: 0 0 auto;
   margin-left: auto;
   width: 16px;
@@ -1575,19 +1575,19 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__field,
 .nalfa.sheet.item .modifiers-config__field,
-.nalfa.sheet.item-action-editor .modifiers-config__field {
+.nalfa.sheet.embedded-action-editor .modifiers-config__field {
   min-width: 0;
   flex: 0 0 auto;
   flex-wrap: nowrap;
 }
 .nalfa.sheet.item-sheet .modifiers-config__control,
 .nalfa.sheet.item .modifiers-config__control,
-.nalfa.sheet.item-action-editor .modifiers-config__control {
+.nalfa.sheet.embedded-action-editor .modifiers-config__control {
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .modifiers-config__control--category,
 .nalfa.sheet.item .modifiers-config__control--category,
-.nalfa.sheet.item-action-editor .modifiers-config__control--category {
+.nalfa.sheet.embedded-action-editor .modifiers-config__control--category {
   height: calc(18px + 9px);
   width: calc((1px * 10 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -1597,7 +1597,7 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__control--attribute,
 .nalfa.sheet.item .modifiers-config__control--attribute,
-.nalfa.sheet.item-action-editor .modifiers-config__control--attribute {
+.nalfa.sheet.embedded-action-editor .modifiers-config__control--attribute {
   height: calc(18px + 9px);
   width: calc((1px * 13 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -1607,7 +1607,7 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__control--operation,
 .nalfa.sheet.item .modifiers-config__control--operation,
-.nalfa.sheet.item-action-editor .modifiers-config__control--operation {
+.nalfa.sheet.embedded-action-editor .modifiers-config__control--operation {
   height: calc(18px + 9px);
   width: calc((1px * 8 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -1617,7 +1617,7 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__control--value,
 .nalfa.sheet.item .modifiers-config__control--value,
-.nalfa.sheet.item-action-editor .modifiers-config__control--value {
+.nalfa.sheet.embedded-action-editor .modifiers-config__control--value {
   width: calc((1px * 4 + 2px) * (18 / 2));
   min-width: calc((1px * 4 + 2px) * (18 / 2));
   max-width: calc((1px * 4 + 2px) * (18 / 2));
@@ -1629,42 +1629,42 @@
 }
 .nalfa.sheet.item-sheet .modifiers-config__remove,
 .nalfa.sheet.item .modifiers-config__remove,
-.nalfa.sheet.item-action-editor .modifiers-config__remove {
+.nalfa.sheet.embedded-action-editor .modifiers-config__remove {
   flex: 0 0 auto;
   margin-left: auto;
 }
-.nalfa.sheet.item-sheet .item-actions,
-.nalfa.sheet.item .item-actions,
-.nalfa.sheet.item-action-editor .item-actions {
+.nalfa.sheet.item-sheet .embedded-actions,
+.nalfa.sheet.item .embedded-actions,
+.nalfa.sheet.embedded-action-editor .embedded-actions {
   display: flex;
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
-.nalfa.sheet.item-sheet .item-actions__head,
-.nalfa.sheet.item .item-actions__head,
-.nalfa.sheet.item-action-editor .item-actions__head {
+.nalfa.sheet.item-sheet .embedded-actions__head,
+.nalfa.sheet.item .embedded-actions__head,
+.nalfa.sheet.embedded-action-editor .embedded-actions__head {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
-.nalfa.sheet.item-sheet .item-actions__list,
-.nalfa.sheet.item .item-actions__list,
-.nalfa.sheet.item-action-editor .item-actions__list {
+.nalfa.sheet.item-sheet .embedded-actions__list,
+.nalfa.sheet.item .embedded-actions__list,
+.nalfa.sheet.embedded-action-editor .embedded-actions__list {
   display: flex;
   flex-direction: column;
   gap: var(--nalfa-gap-text);
 }
-.nalfa.sheet.item-sheet .item-actions__row,
-.nalfa.sheet.item .item-actions__row,
-.nalfa.sheet.item-action-editor .item-actions__row {
+.nalfa.sheet.item-sheet .embedded-actions__row,
+.nalfa.sheet.item .embedded-actions__row,
+.nalfa.sheet.embedded-action-editor .embedded-actions__row {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--nalfa-gap-text);
 }
-.nalfa.sheet.item-sheet .item-actions__icon,
-.nalfa.sheet.item .item-actions__icon,
-.nalfa.sheet.item-action-editor .item-actions__icon {
+.nalfa.sheet.item-sheet .embedded-actions__icon,
+.nalfa.sheet.item .embedded-actions__icon,
+.nalfa.sheet.embedded-action-editor .embedded-actions__icon {
   position: relative;
   width: 64px;
   height: 64px;
@@ -1675,17 +1675,17 @@
   background: color-mix(in srgb, var(--background), transparent 25%);
   overflow: hidden;
 }
-.nalfa.sheet.item-sheet .item-actions__icon img,
-.nalfa.sheet.item .item-actions__icon img,
-.nalfa.sheet.item-action-editor .item-actions__icon img {
+.nalfa.sheet.item-sheet .embedded-actions__icon img,
+.nalfa.sheet.item .embedded-actions__icon img,
+.nalfa.sheet.embedded-action-editor .embedded-actions__icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.nalfa.sheet.item-sheet .item-actions__shorthand,
-.nalfa.sheet.item .item-actions__shorthand,
-.nalfa.sheet.item-action-editor .item-actions__shorthand {
+.nalfa.sheet.item-sheet .embedded-actions__shorthand,
+.nalfa.sheet.item .embedded-actions__shorthand,
+.nalfa.sheet.embedded-action-editor .embedded-actions__shorthand {
   position: absolute;
   right: 4px;
   bottom: 4px;
@@ -1697,77 +1697,77 @@
   background: color-mix(in srgb, #000, transparent 30%);
   color: #fff;
 }
-.nalfa.sheet.item-sheet .item-actions__main,
-.nalfa.sheet.item .item-actions__main,
-.nalfa.sheet.item-action-editor .item-actions__main {
+.nalfa.sheet.item-sheet .embedded-actions__main,
+.nalfa.sheet.item .embedded-actions__main,
+.nalfa.sheet.embedded-action-editor .embedded-actions__main {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-.nalfa.sheet.item-sheet .item-actions__line,
-.nalfa.sheet.item .item-actions__line,
-.nalfa.sheet.item-action-editor .item-actions__line {
+.nalfa.sheet.item-sheet .embedded-actions__line,
+.nalfa.sheet.item .embedded-actions__line,
+.nalfa.sheet.embedded-action-editor .embedded-actions__line {
   display: flex;
   align-items: center;
   gap: var(--nalfa-padding);
   min-width: 0;
 }
-.nalfa.sheet.item-sheet .item-actions__line--title,
-.nalfa.sheet.item .item-actions__line--title,
-.nalfa.sheet.item-action-editor .item-actions__line--title {
+.nalfa.sheet.item-sheet .embedded-actions__line--title,
+.nalfa.sheet.item .embedded-actions__line--title,
+.nalfa.sheet.embedded-action-editor .embedded-actions__line--title {
   align-items: flex-start;
   justify-content: space-between;
 }
-.nalfa.sheet.item-sheet .item-actions__line--meta,
-.nalfa.sheet.item .item-actions__line--meta,
-.nalfa.sheet.item-action-editor .item-actions__line--meta {
+.nalfa.sheet.item-sheet .embedded-actions__line--meta,
+.nalfa.sheet.item .embedded-actions__line--meta,
+.nalfa.sheet.embedded-action-editor .embedded-actions__line--meta {
   padding-top: 2px;
 }
-.nalfa.sheet.item-sheet .item-actions__name-label,
-.nalfa.sheet.item .item-actions__name-label,
-.nalfa.sheet.item-action-editor .item-actions__name-label {
+.nalfa.sheet.item-sheet .embedded-actions__name-label,
+.nalfa.sheet.item .embedded-actions__name-label,
+.nalfa.sheet.embedded-action-editor .embedded-actions__name-label {
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 0 0 auto;
 }
-.nalfa.sheet.item-sheet .item-actions__title-main,
-.nalfa.sheet.item .item-actions__title-main,
-.nalfa.sheet.item-action-editor .item-actions__title-main {
+.nalfa.sheet.item-sheet .embedded-actions__title-main,
+.nalfa.sheet.item .embedded-actions__title-main,
+.nalfa.sheet.embedded-action-editor .embedded-actions__title-main {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
   flex: 0 1 auto;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-summary,
-.nalfa.sheet.item .item-actions__cost-summary,
-.nalfa.sheet.item-action-editor .item-actions__cost-summary {
+.nalfa.sheet.item-sheet .embedded-actions__cost-summary,
+.nalfa.sheet.item .embedded-actions__cost-summary,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-summary {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;
   white-space: nowrap;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-option,
-.nalfa.sheet.item .item-actions__cost-option,
-.nalfa.sheet.item-action-editor .item-actions__cost-option {
+.nalfa.sheet.item-sheet .embedded-actions__cost-option,
+.nalfa.sheet.item .embedded-actions__cost-option,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-option {
   display: inline-flex;
   align-items: center;
   gap: 2px;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-option-sep,
-.nalfa.sheet.item .item-actions__cost-option-sep,
-.nalfa.sheet.item-action-editor .item-actions__cost-option-sep {
+.nalfa.sheet.item-sheet .embedded-actions__cost-option-sep,
+.nalfa.sheet.item .embedded-actions__cost-option-sep,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-option-sep {
   font-size: 14px;
   opacity: 0.85;
   line-height: 1;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token,
-.nalfa.sheet.item .item-actions__cost-token,
-.nalfa.sheet.item-action-editor .item-actions__cost-token {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token,
+.nalfa.sheet.item .embedded-actions__cost-token,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -1775,54 +1775,54 @@
   line-height: 1;
   min-width: 16px;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token i,
-.nalfa.sheet.item .item-actions__cost-token i,
-.nalfa.sheet.item-action-editor .item-actions__cost-token i {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token i,
+.nalfa.sheet.item .embedded-actions__cost-token i,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token i {
   font-size: 16px;
   line-height: 1;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token--main,
-.nalfa.sheet.item .item-actions__cost-token--main,
-.nalfa.sheet.item-action-editor .item-actions__cost-token--main {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--main,
+.nalfa.sheet.item .embedded-actions__cost-token--main,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--main {
   color: var(--nalfa-color-action-main);
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token--bonus,
-.nalfa.sheet.item .item-actions__cost-token--bonus,
-.nalfa.sheet.item-action-editor .item-actions__cost-token--bonus {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--bonus,
+.nalfa.sheet.item .embedded-actions__cost-token--bonus,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--bonus {
   color: var(--nalfa-color-action-bonus);
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token--reaction,
-.nalfa.sheet.item .item-actions__cost-token--reaction,
-.nalfa.sheet.item-action-editor .item-actions__cost-token--reaction {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--reaction,
+.nalfa.sheet.item .embedded-actions__cost-token--reaction,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--reaction {
   color: var(--nalfa-color-action-reaction);
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token--concentration,
-.nalfa.sheet.item .item-actions__cost-token--concentration,
-.nalfa.sheet.item-action-editor .item-actions__cost-token--concentration {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--concentration,
+.nalfa.sheet.item .embedded-actions__cost-token--concentration,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--concentration {
   color: var(--nalfa-color-action-concentration);
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token--movement,
-.nalfa.sheet.item .item-actions__cost-token--movement,
-.nalfa.sheet.item-action-editor .item-actions__cost-token--movement {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--movement,
+.nalfa.sheet.item .embedded-actions__cost-token--movement,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--movement {
   color: var(--nalfa-color-action-movement);
 }
-.nalfa.sheet.item-sheet .item-actions__cost-token-amount,
-.nalfa.sheet.item .item-actions__cost-token-amount,
-.nalfa.sheet.item-action-editor .item-actions__cost-token-amount {
+.nalfa.sheet.item-sheet .embedded-actions__cost-token-amount,
+.nalfa.sheet.item .embedded-actions__cost-token-amount,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token-amount {
   font-size: 9px;
   line-height: 1;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-condition-mark,
-.nalfa.sheet.item .item-actions__cost-condition-mark,
-.nalfa.sheet.item-action-editor .item-actions__cost-condition-mark {
+.nalfa.sheet.item-sheet .embedded-actions__cost-condition-mark,
+.nalfa.sheet.item .embedded-actions__cost-condition-mark,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-condition-mark {
   font-size: 14px;
   line-height: 1;
   margin-left: 2px;
   opacity: 0.85;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-note,
-.nalfa.sheet.item .item-actions__cost-note,
-.nalfa.sheet.item-action-editor .item-actions__cost-note {
+.nalfa.sheet.item-sheet .embedded-actions__cost-note,
+.nalfa.sheet.item .embedded-actions__cost-note,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-note {
   display: inline-flex;
   align-items: center;
   align-self: center;
@@ -1832,55 +1832,55 @@
   opacity: 0.85;
   white-space: nowrap;
 }
-.nalfa.sheet.item-sheet .item-actions__cost-note i,
-.nalfa.sheet.item .item-actions__cost-note i,
-.nalfa.sheet.item-action-editor .item-actions__cost-note i {
+.nalfa.sheet.item-sheet .embedded-actions__cost-note i,
+.nalfa.sheet.item .embedded-actions__cost-note i,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-note i {
   font-size: 16px;
   line-height: 1;
 }
-.nalfa.sheet.item-sheet .item-actions__summary-stack,
-.nalfa.sheet.item .item-actions__summary-stack,
-.nalfa.sheet.item-action-editor .item-actions__summary-stack {
+.nalfa.sheet.item-sheet .embedded-actions__summary-stack,
+.nalfa.sheet.item .embedded-actions__summary-stack,
+.nalfa.sheet.embedded-action-editor .embedded-actions__summary-stack {
   display: flex;
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
   gap: 1px;
 }
-.nalfa.sheet.item-sheet .item-actions__summary,
-.nalfa.sheet.item .item-actions__summary,
-.nalfa.sheet.item-action-editor .item-actions__summary {
+.nalfa.sheet.item-sheet .embedded-actions__summary,
+.nalfa.sheet.item .embedded-actions__summary,
+.nalfa.sheet.embedded-action-editor .embedded-actions__summary {
   font-size: 11px;
   opacity: 0.8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.nalfa.sheet.item-sheet .item-actions__secondary,
-.nalfa.sheet.item .item-actions__secondary,
-.nalfa.sheet.item-action-editor .item-actions__secondary {
+.nalfa.sheet.item-sheet .embedded-actions__secondary,
+.nalfa.sheet.item .embedded-actions__secondary,
+.nalfa.sheet.embedded-action-editor .embedded-actions__secondary {
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.nalfa.sheet.item-sheet .item-actions__buttons,
-.nalfa.sheet.item .item-actions__buttons,
-.nalfa.sheet.item-action-editor .item-actions__buttons {
+.nalfa.sheet.item-sheet .embedded-actions__buttons,
+.nalfa.sheet.item .embedded-actions__buttons,
+.nalfa.sheet.embedded-action-editor .embedded-actions__buttons {
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 .nalfa.sheet.item-sheet .attack-config,
 .nalfa.sheet.item .attack-config,
-.nalfa.sheet.item-action-editor .attack-config {
+.nalfa.sheet.embedded-action-editor .attack-config {
   display: flex;
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .attack-config button,
 .nalfa.sheet.item .attack-config button,
-.nalfa.sheet.item-action-editor .attack-config button {
+.nalfa.sheet.embedded-action-editor .attack-config button {
   width: 16px;
   height: 16px;
   min-width: 16px;
@@ -1891,14 +1891,14 @@
 }
 .nalfa.sheet.item-sheet .attack-config button i,
 .nalfa.sheet.item .attack-config button i,
-.nalfa.sheet.item-action-editor .attack-config button i {
+.nalfa.sheet.embedded-action-editor .attack-config button i {
   font-size: 16px;
   line-height: 1;
   pointer-events: none;
 }
 .nalfa.sheet.item-sheet .attack-config__inline-row,
 .nalfa.sheet.item .attack-config__inline-row,
-.nalfa.sheet.item-action-editor .attack-config__inline-row {
+.nalfa.sheet.embedded-action-editor .attack-config__inline-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -1906,14 +1906,14 @@
 }
 .nalfa.sheet.item-sheet .attack-config__mode-row,
 .nalfa.sheet.item .attack-config__mode-row,
-.nalfa.sheet.item-action-editor .attack-config__mode-row {
+.nalfa.sheet.embedded-action-editor .attack-config__mode-row {
   justify-content: space-between;
   width: 100%;
   flex-wrap: nowrap;
 }
 .nalfa.sheet.item-sheet .attack-config__mode-select,
 .nalfa.sheet.item .attack-config__mode-select,
-.nalfa.sheet.item-action-editor .attack-config__mode-select {
+.nalfa.sheet.embedded-action-editor .attack-config__mode-select {
   height: calc(18px + 9px);
   width: calc((1px * 4 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -1925,7 +1925,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--zone-type,
 .nalfa.sheet.item .attack-config__cost-select--zone-type,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--zone-type {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--zone-type {
   height: calc(18px + 9px);
   width: calc((1px * 12 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -1937,14 +1937,14 @@
 }
 .nalfa.sheet.item-sheet .attack-config__toggles,
 .nalfa.sheet.item .attack-config__toggles,
-.nalfa.sheet.item-action-editor .attack-config__toggles {
+.nalfa.sheet.embedded-action-editor .attack-config__toggles {
   display: inline-flex;
   align-items: center;
   gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .attack-config__toggle,
 .nalfa.sheet.item .attack-config__toggle,
-.nalfa.sheet.item-action-editor .attack-config__toggle {
+.nalfa.sheet.embedded-action-editor .attack-config__toggle {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1953,19 +1953,19 @@
 }
 .nalfa.sheet.item-sheet .attack-config__toggle--push-end,
 .nalfa.sheet.item .attack-config__toggle--push-end,
-.nalfa.sheet.item-action-editor .attack-config__toggle--push-end {
+.nalfa.sheet.embedded-action-editor .attack-config__toggle--push-end {
   margin-left: auto;
 }
 .nalfa.sheet.item-sheet .attack-config__sections,
 .nalfa.sheet.item .attack-config__sections,
-.nalfa.sheet.item-action-editor .attack-config__sections {
+.nalfa.sheet.embedded-action-editor .attack-config__sections {
   display: flex;
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .attack-config__section,
 .nalfa.sheet.item .attack-config__section,
-.nalfa.sheet.item-action-editor .attack-config__section {
+.nalfa.sheet.embedded-action-editor .attack-config__section {
   display: flex;
   flex-direction: column;
   padding: 8px;
@@ -1979,24 +1979,24 @@
 }
 .nalfa.sheet.item-sheet .attack-config__section--stack,
 .nalfa.sheet.item .attack-config__section--stack,
-.nalfa.sheet.item-action-editor .attack-config__section--stack {
+.nalfa.sheet.embedded-action-editor .attack-config__section--stack {
   grid-template-columns: 1fr;
 }
 .nalfa.sheet.item-sheet .attack-config__section-title,
 .nalfa.sheet.item .attack-config__section-title,
-.nalfa.sheet.item-action-editor .attack-config__section-title {
+.nalfa.sheet.embedded-action-editor .attack-config__section-title {
   display: flex;
   align-items: center;
   min-height: 24px;
 }
 .nalfa.sheet.item-sheet .attack-config__section--row .attack-config__section-title,
 .nalfa.sheet.item .attack-config__section--row .attack-config__section-title,
-.nalfa.sheet.item-action-editor .attack-config__section--row .attack-config__section-title {
+.nalfa.sheet.embedded-action-editor .attack-config__section--row .attack-config__section-title {
   padding-top: 2px;
 }
 .nalfa.sheet.item-sheet .attack-config__fields,
 .nalfa.sheet.item .attack-config__fields,
-.nalfa.sheet.item-action-editor .attack-config__fields {
+.nalfa.sheet.embedded-action-editor .attack-config__fields {
   display: flex;
   flex-direction: column;
   gap: var(--nalfa-gap-text);
@@ -2004,7 +2004,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__fields--row,
 .nalfa.sheet.item .attack-config__fields--row,
-.nalfa.sheet.item-action-editor .attack-config__fields--row {
+.nalfa.sheet.embedded-action-editor .attack-config__fields--row {
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
@@ -2012,32 +2012,32 @@
 }
 .nalfa.sheet.item-sheet .attack-config__measure,
 .nalfa.sheet.item .attack-config__measure,
-.nalfa.sheet.item-action-editor .attack-config__measure {
+.nalfa.sheet.embedded-action-editor .attack-config__measure {
   display: inline-flex;
   align-items: center;
   gap: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__row-sep,
 .nalfa.sheet.item .attack-config__row-sep,
-.nalfa.sheet.item-action-editor .attack-config__row-sep {
+.nalfa.sheet.embedded-action-editor .attack-config__row-sep {
   font-weight: 600;
   opacity: 0.85;
   white-space: nowrap;
 }
 .nalfa.sheet.item-sheet .attack-config__grow-input,
 .nalfa.sheet.item .attack-config__grow-input,
-.nalfa.sheet.item-action-editor .attack-config__grow-input {
+.nalfa.sheet.embedded-action-editor .attack-config__grow-input {
   flex: 1 1 220px;
   min-width: 160px;
 }
 .nalfa.sheet.item-sheet .attack-config__cost-row,
 .nalfa.sheet.item .attack-config__cost-row,
-.nalfa.sheet.item-action-editor .attack-config__cost-row {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-row {
   gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .attack-config__cost-entry,
 .nalfa.sheet.item .attack-config__cost-entry,
-.nalfa.sheet.item-action-editor .attack-config__cost-entry {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-entry {
   display: flex;
   align-items: center;
   gap: var(--nalfa-gap-text);
@@ -2046,12 +2046,12 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-entry--actions,
 .nalfa.sheet.item .attack-config__cost-entry--actions,
-.nalfa.sheet.item-action-editor .attack-config__cost-entry--actions {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-entry--actions {
   align-items: flex-start;
 }
 .nalfa.sheet.item-sheet .attack-config__action-costs,
 .nalfa.sheet.item .attack-config__action-costs,
-.nalfa.sheet.item-action-editor .attack-config__action-costs {
+.nalfa.sheet.embedded-action-editor .attack-config__action-costs {
   display: inline-flex;
   align-items: center;
   gap: var(--nalfa-gap-text);
@@ -2059,7 +2059,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__action-costs--column,
 .nalfa.sheet.item .attack-config__action-costs--column,
-.nalfa.sheet.item-action-editor .attack-config__action-costs--column {
+.nalfa.sheet.embedded-action-editor .attack-config__action-costs--column {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -2068,7 +2068,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__action-option,
 .nalfa.sheet.item .attack-config__action-option,
-.nalfa.sheet.item-action-editor .attack-config__action-option {
+.nalfa.sheet.embedded-action-editor .attack-config__action-option {
   display: flex;
   flex-direction: column;
   gap: var(--nalfa-gap-text);
@@ -2076,50 +2076,50 @@
 }
 .nalfa.sheet.item-sheet .attack-config__action-option-meta,
 .nalfa.sheet.item .attack-config__action-option-meta,
-.nalfa.sheet.item-action-editor .attack-config__action-option-meta {
+.nalfa.sheet.embedded-action-editor .attack-config__action-option-meta {
   display: flex;
   align-items: center;
   gap: var(--nalfa-gap-text);
 }
 .nalfa.sheet.item-sheet .attack-config__action-note-field,
 .nalfa.sheet.item .attack-config__action-note-field,
-.nalfa.sheet.item-action-editor .attack-config__action-note-field {
+.nalfa.sheet.embedded-action-editor .attack-config__action-note-field {
   width: 100%;
 }
 .nalfa.sheet.item-sheet .attack-config__action-note-field .richtext-field__content,
 .nalfa.sheet.item .attack-config__action-note-field .richtext-field__content,
-.nalfa.sheet.item-action-editor .attack-config__action-note-field .richtext-field__content {
+.nalfa.sheet.embedded-action-editor .attack-config__action-note-field .richtext-field__content {
   min-height: calc(16px + (6px * 2));
   max-height: calc((var(--font-size-14) * 1.4 * 3) + (6px * 2));
   height: fit-content;
 }
 .nalfa.sheet.item-sheet .attack-config__action-note-field .richtext-field__content--placeholder p,
 .nalfa.sheet.item .attack-config__action-note-field .richtext-field__content--placeholder p,
-.nalfa.sheet.item-action-editor .attack-config__action-note-field .richtext-field__content--placeholder p {
+.nalfa.sheet.embedded-action-editor .attack-config__action-note-field .richtext-field__content--placeholder p {
   opacity: 0.65;
 }
 .nalfa.sheet.item-sheet .attack-config__action-options-head,
 .nalfa.sheet.item .attack-config__action-options-head,
-.nalfa.sheet.item-action-editor .attack-config__action-options-head {
+.nalfa.sheet.embedded-action-editor .attack-config__action-options-head {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 .nalfa.sheet.item-sheet .attack-config__action-option-remove,
 .nalfa.sheet.item .attack-config__action-option-remove,
-.nalfa.sheet.item-action-editor .attack-config__action-option-remove {
+.nalfa.sheet.embedded-action-editor .attack-config__action-option-remove {
   margin-left: auto;
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost,
 .nalfa.sheet.item .attack-config__action-cost,
-.nalfa.sheet.item-action-editor .attack-config__action-cost {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost {
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon,
 .nalfa.sheet.item .attack-config__action-cost-icon,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon {
   width: 16px;
   height: 16px;
   display: inline-flex;
@@ -2129,38 +2129,38 @@
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon i,
 .nalfa.sheet.item .attack-config__action-cost-icon i,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon i {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon i {
   font-size: 14px;
   line-height: 1;
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon--main,
 .nalfa.sheet.item .attack-config__action-cost-icon--main,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon--main {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--main {
   color: var(--nalfa-color-action-main);
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon--bonus,
 .nalfa.sheet.item .attack-config__action-cost-icon--bonus,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon--bonus {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--bonus {
   color: var(--nalfa-color-action-bonus);
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon--reaction,
 .nalfa.sheet.item .attack-config__action-cost-icon--reaction,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon--reaction {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--reaction {
   color: var(--nalfa-color-action-reaction);
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon--concentration,
 .nalfa.sheet.item .attack-config__action-cost-icon--concentration,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon--concentration {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--concentration {
   color: var(--nalfa-color-action-concentration);
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon--movement,
 .nalfa.sheet.item .attack-config__action-cost-icon--movement,
-.nalfa.sheet.item-action-editor .attack-config__action-cost-icon--movement {
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--movement {
   color: var(--nalfa-color-action-movement);
 }
 .nalfa.sheet.item-sheet .attack-config__cost-label,
 .nalfa.sheet.item .attack-config__cost-label,
-.nalfa.sheet.item-action-editor .attack-config__cost-label {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-label {
   font-weight: 600;
   opacity: 0.9;
   line-height: 24px;
@@ -2168,7 +2168,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-input,
 .nalfa.sheet.item .attack-config__cost-input,
-.nalfa.sheet.item-action-editor .attack-config__cost-input {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-input {
   width: calc((1px * 3 + 2px) * (18 / 2));
   min-width: calc((1px * 3 + 2px) * (18 / 2));
   max-width: calc((1px * 3 + 2px) * (18 / 2));
@@ -2181,13 +2181,13 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select,
 .nalfa.sheet.item .attack-config__cost-select,
-.nalfa.sheet.item-action-editor .attack-config__cost-select {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select {
   flex: 0 0 auto;
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--action,
 .nalfa.sheet.item .attack-config__cost-select--action,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--action {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--action {
   height: calc(18px + 9px);
   width: calc((1px * 17 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2197,7 +2197,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--movement,
 .nalfa.sheet.item .attack-config__cost-select--movement,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--movement {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--movement {
   height: calc(18px + 9px);
   width: calc((1px * 8 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2207,7 +2207,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--ester,
 .nalfa.sheet.item .attack-config__cost-select--ester,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--ester {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--ester {
   height: calc(18px + 9px);
   width: calc((1px * 8 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2217,7 +2217,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--uses,
 .nalfa.sheet.item .attack-config__cost-select--uses,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--uses {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--uses {
   height: calc(18px + 9px);
   width: calc((1px * 11 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2227,7 +2227,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--cooldown,
 .nalfa.sheet.item .attack-config__cost-select--cooldown,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--cooldown {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--cooldown {
   height: calc(18px + 9px);
   width: calc((1px * 7 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2237,7 +2237,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--target-unit,
 .nalfa.sheet.item .attack-config__cost-select--target-unit,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--target-unit {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--target-unit {
   height: calc(18px + 9px);
   width: calc((1px * 7 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2247,7 +2247,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--target-visibility,
 .nalfa.sheet.item .attack-config__cost-select--target-visibility,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--target-visibility {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--target-visibility {
   height: calc(18px + 9px);
   width: calc((1px * 10 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2257,7 +2257,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__cost-select--zone-shape,
 .nalfa.sheet.item .attack-config__cost-select--zone-shape,
-.nalfa.sheet.item-action-editor .attack-config__cost-select--zone-shape {
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--zone-shape {
   height: calc(18px + 9px);
   width: calc((1px * 6 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2267,12 +2267,12 @@
 }
 .nalfa.sheet.item-sheet .attack-config__materials-head,
 .nalfa.sheet.item .attack-config__materials-head,
-.nalfa.sheet.item-action-editor .attack-config__materials-head {
+.nalfa.sheet.embedded-action-editor .attack-config__materials-head {
   justify-content: space-between;
 }
 .nalfa.sheet.item-sheet .attack-config__material-row,
 .nalfa.sheet.item .attack-config__material-row,
-.nalfa.sheet.item-action-editor .attack-config__material-row {
+.nalfa.sheet.embedded-action-editor .attack-config__material-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -2280,7 +2280,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__damage-row,
 .nalfa.sheet.item .attack-config__damage-row,
-.nalfa.sheet.item-action-editor .attack-config__damage-row {
+.nalfa.sheet.embedded-action-editor .attack-config__damage-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2289,7 +2289,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__damage-main,
 .nalfa.sheet.item .attack-config__damage-main,
-.nalfa.sheet.item-action-editor .attack-config__damage-main {
+.nalfa.sheet.embedded-action-editor .attack-config__damage-main {
   display: inline-flex;
   align-items: center;
   gap: var(--nalfa-gap-text);
@@ -2298,13 +2298,13 @@
 }
 .nalfa.sheet.item-sheet .attack-config__damage-formula,
 .nalfa.sheet.item .attack-config__damage-formula,
-.nalfa.sheet.item-action-editor .attack-config__damage-formula {
+.nalfa.sheet.embedded-action-editor .attack-config__damage-formula {
   flex: 1 1 220px;
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .attack-config__damage-tail,
 .nalfa.sheet.item .attack-config__damage-tail,
-.nalfa.sheet.item-action-editor .attack-config__damage-tail {
+.nalfa.sheet.embedded-action-editor .attack-config__damage-tail {
   display: inline-flex;
   align-items: center;
   gap: var(--nalfa-gap-text);
@@ -2312,7 +2312,7 @@
 }
 .nalfa.sheet.item-sheet .attack-config__damage-type,
 .nalfa.sheet.item .attack-config__damage-type,
-.nalfa.sheet.item-action-editor .attack-config__damage-type {
+.nalfa.sheet.embedded-action-editor .attack-config__damage-type {
   height: calc(18px + 9px);
   width: calc((1px * 10 + 8px) * (18 / 2));
   border-radius: 3px;
@@ -2322,26 +2322,26 @@
 }
 .nalfa.sheet.item-sheet .action-specific,
 .nalfa.sheet.item .action-specific,
-.nalfa.sheet.item-action-editor .action-specific {
+.nalfa.sheet.embedded-action-editor .action-specific {
   display: flex;
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .action-specific__checks,
 .nalfa.sheet.item .action-specific__checks,
-.nalfa.sheet.item-action-editor .action-specific__checks {
+.nalfa.sheet.embedded-action-editor .action-specific__checks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .action-specific__subgrid,
 .nalfa.sheet.item .action-specific__subgrid,
-.nalfa.sheet.item-action-editor .action-specific__subgrid {
+.nalfa.sheet.embedded-action-editor .action-specific__subgrid {
   gap: calc(var(--nalfa-padding) / 2);
 }
 .nalfa.sheet.item-sheet .action-specific__subpanel,
 .nalfa.sheet.item .action-specific__subpanel,
-.nalfa.sheet.item-action-editor .action-specific__subpanel {
+.nalfa.sheet.embedded-action-editor .action-specific__subpanel {
   display: flex;
   flex-direction: column;
   gap: var(--nalfa-gap-text);
@@ -2349,28 +2349,28 @@
   border-radius: 4px;
   background: color-mix(in srgb, var(--background), transparent 25%);
 }
-.nalfa.sheet.item-sheet .item-action-editor-body,
-.nalfa.sheet.item .item-action-editor-body,
-.nalfa.sheet.item-action-editor .item-action-editor-body {
+.nalfa.sheet.item-sheet .embedded-action-editor-body,
+.nalfa.sheet.item .embedded-action-editor-body,
+.nalfa.sheet.embedded-action-editor .embedded-action-editor-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow: visible;
   padding-inline-end: 0;
 }
-.nalfa.sheet.item-sheet.item-action-editor,
-.nalfa.sheet.item.item-action-editor,
-.nalfa.sheet.item-action-editor.item-action-editor {
+.nalfa.sheet.item-sheet.embedded-action-editor,
+.nalfa.sheet.item.embedded-action-editor,
+.nalfa.sheet.embedded-action-editor.embedded-action-editor {
   max-height: 920px;
 }
-.nalfa.sheet.item-sheet.item-action-editor > section.window-content,
-.nalfa.sheet.item.item-action-editor > section.window-content,
-.nalfa.sheet.item-action-editor.item-action-editor > section.window-content {
+.nalfa.sheet.item-sheet.embedded-action-editor > section.window-content,
+.nalfa.sheet.item.embedded-action-editor > section.window-content,
+.nalfa.sheet.embedded-action-editor.embedded-action-editor > section.window-content {
   max-height: 850px;
   height: auto;
 }
-.nalfa.sheet.item-sheet.item-action-editor form,
-.nalfa.sheet.item.item-action-editor form,
-.nalfa.sheet.item-action-editor.item-action-editor form {
+.nalfa.sheet.item-sheet.embedded-action-editor form,
+.nalfa.sheet.item.embedded-action-editor form,
+.nalfa.sheet.embedded-action-editor.embedded-action-editor form {
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -2379,59 +2379,59 @@
 @media (max-width: 720px) {
   .nalfa.sheet.item-sheet .grid--two,
   .nalfa.sheet.item .grid--two,
-  .nalfa.sheet.item-action-editor .grid--two,
+  .nalfa.sheet.embedded-action-editor .grid--two,
   .nalfa.sheet.item-sheet .action-specific__checks,
   .nalfa.sheet.item .action-specific__checks,
-  .nalfa.sheet.item-action-editor .action-specific__checks {
+  .nalfa.sheet.embedded-action-editor .action-specific__checks {
     grid-template-columns: 1fr;
   }
   .nalfa.sheet.item-sheet .attack-config__section,
   .nalfa.sheet.item .attack-config__section,
-  .nalfa.sheet.item-action-editor .attack-config__section,
+  .nalfa.sheet.embedded-action-editor .attack-config__section,
   .nalfa.sheet.item-sheet .attack-config__material-row,
   .nalfa.sheet.item .attack-config__material-row,
-  .nalfa.sheet.item-action-editor .attack-config__material-row {
+  .nalfa.sheet.embedded-action-editor .attack-config__material-row {
     grid-template-columns: 1fr;
   }
   .nalfa.sheet.item-sheet .attack-config__damage-row,
   .nalfa.sheet.item .attack-config__damage-row,
-  .nalfa.sheet.item-action-editor .attack-config__damage-row {
+  .nalfa.sheet.embedded-action-editor .attack-config__damage-row {
     flex-wrap: wrap;
   }
   .nalfa.sheet.item-sheet .attack-config__damage-main,
   .nalfa.sheet.item .attack-config__damage-main,
-  .nalfa.sheet.item-action-editor .attack-config__damage-main,
+  .nalfa.sheet.embedded-action-editor .attack-config__damage-main,
   .nalfa.sheet.item-sheet .attack-config__damage-tail,
   .nalfa.sheet.item .attack-config__damage-tail,
-  .nalfa.sheet.item-action-editor .attack-config__damage-tail {
+  .nalfa.sheet.embedded-action-editor .attack-config__damage-tail {
     width: 100%;
     margin-left: 0;
   }
   .nalfa.sheet.item-sheet .attack-config__action-option-meta,
   .nalfa.sheet.item .attack-config__action-option-meta,
-  .nalfa.sheet.item-action-editor .attack-config__action-option-meta {
+  .nalfa.sheet.embedded-action-editor .attack-config__action-option-meta {
     flex-wrap: wrap;
   }
-  .nalfa.sheet.item-sheet .item-actions__row,
-  .nalfa.sheet.item .item-actions__row,
-  .nalfa.sheet.item-action-editor .item-actions__row {
+  .nalfa.sheet.item-sheet .embedded-actions__row,
+  .nalfa.sheet.item .embedded-actions__row,
+  .nalfa.sheet.embedded-action-editor .embedded-actions__row {
     grid-template-columns: 64px 1fr;
   }
-  .nalfa.sheet.item-sheet .item-actions__buttons,
-  .nalfa.sheet.item .item-actions__buttons,
-  .nalfa.sheet.item-action-editor .item-actions__buttons {
+  .nalfa.sheet.item-sheet .embedded-actions__buttons,
+  .nalfa.sheet.item .embedded-actions__buttons,
+  .nalfa.sheet.embedded-action-editor .embedded-actions__buttons {
     grid-column: 1 / -1;
     justify-content: flex-end;
   }
   .nalfa.sheet.item-sheet .currency-config__row,
   .nalfa.sheet.item .currency-config__row,
-  .nalfa.sheet.item-action-editor .currency-config__row {
+  .nalfa.sheet.embedded-action-editor .currency-config__row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
   }
   .nalfa.sheet.item-sheet .currency-config__remove,
   .nalfa.sheet.item .currency-config__remove,
-  .nalfa.sheet.item-action-editor .currency-config__remove {
+  .nalfa.sheet.embedded-action-editor .currency-config__remove {
     justify-self: start;
   }
 }

@@ -5,10 +5,10 @@ import {
 	PRIMARY_TAB_GROUP,
 } from "./constants.mjs";
 import {
-	MAX_ITEM_ACTIONS,
-	getDefaultItemActionName,
-	getDefaultItemActionShorthand,
-} from "../../itemActions.mjs";
+	MAX_EMBEDDED_ACTIONS,
+	getDefaultEmbeddedActionName,
+	getDefaultEmbeddedActionShorthand,
+} from "../../embeddedActions.mjs";
 import {
 	getEquippedOptions,
 	getEquippedSlotValue,
@@ -18,21 +18,21 @@ import {
 const DEFAULT_ITEM_ICON = "icons/svg/item-bag.svg";
 
 const buildVisibleTabs = ({
-	actionTabLabel,
+	embeddedActionsTabLabel,
 	activeTab,
 	hasSpecific,
 	isIdentificationLocked,
 	item,
 	rawTabs,
 	showModifiersTab,
-	showActionableTab,
+	showEmbeddedActionsTab,
 }) => {
 	const tabIds = [];
 	if (isIdentificationLocked) {
 		tabIds.push("description");
 	} else {
 		if (hasSpecific) tabIds.push("specific");
-		if (showActionableTab) tabIds.push("actionable");
+		if (showEmbeddedActionsTab) tabIds.push("actionable");
 		if (showModifiersTab) tabIds.push("modifiers");
 		tabIds.push("description");
 	}
@@ -47,7 +47,7 @@ const buildVisibleTabs = ({
 			tabId === "specific"
 				? specificTabLabel
 				: tabId === "actionable"
-					? actionTabLabel
+					? embeddedActionsTabLabel
 					: tab.label;
 		tabs[tabId] = {
 			...tab,
@@ -387,16 +387,16 @@ const buildActionSecondarySummary = (actionData) => {
 	return tags.filter(Boolean).join(" | ");
 };
 
-const buildItemActionRows = ({ item, config }) => {
-	const itemActions = Array.isArray(item.system?.actions) ? item.system.actions : [];
+const buildEmbeddedActionRows = ({ item, config }) => {
+	const embeddedActions = Array.isArray(item.system?.actions) ? item.system.actions : [];
 
-	return itemActions.map((actionData, index) => {
+	return embeddedActions.map((actionData, index) => {
 		const storedName = String(actionData?.name ?? "");
 		const trimmedName = storedName.trim();
-		const defaultName = getDefaultItemActionName(item.name, index);
+		const defaultName = getDefaultEmbeddedActionName(item.name, index);
 		const storedShorthand = String(actionData?.shorthand ?? "");
 		const trimmedShorthand = storedShorthand.trim();
-		const defaultShorthand = getDefaultItemActionShorthand(index);
+		const defaultShorthand = getDefaultEmbeddedActionShorthand(index);
 
 		return {
 			index,
@@ -416,18 +416,20 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 	const item = baseData.document;
 	const rawTabs = sheet._prepareTabs(PRIMARY_TAB_GROUP);
 	const isActionItem = item.type === "Action";
-	const hasItemActions = Array.isArray(item.system?.actions);
+	const hasEmbeddedActions = Array.isArray(item.system?.actions);
 	const actionData = isActionItem ? item.system : null;
 	const actionPath = isActionItem ? "" : "actions.0.";
-	const defaultActionShorthand = getDefaultItemActionShorthand(0);
+	const defaultActionShorthand = getDefaultEmbeddedActionShorthand(0);
 	const actionHeaderShorthand =
 		String(item.system?.shorthand ?? "").trim() || defaultActionShorthand;
-	const hasActionable = isActionItem ? actionData !== null : hasItemActions;
-	const showActionableTab = hasItemActions && !isActionItem;
-	const itemActions = showActionableTab ? buildItemActionRows({ item, config }) : [];
-	const itemActionsCount = itemActions.length;
-	const canAddItemAction = itemActionsCount < MAX_ITEM_ACTIONS;
-	const actionTabLabel = itemActionsCount >= 2 ? "Actions" : "Action";
+	const hasActionable = isActionItem ? actionData !== null : hasEmbeddedActions;
+	const showEmbeddedActionsTab = hasEmbeddedActions && !isActionItem;
+	const embeddedActions = showEmbeddedActionsTab
+		? buildEmbeddedActionRows({ item, config })
+		: [];
+	const embeddedActionsCount = embeddedActions.length;
+	const canAddEmbeddedAction = embeddedActionsCount < MAX_EMBEDDED_ACTIONS;
+	const embeddedActionsTabLabel = embeddedActionsCount >= 2 ? "Actions" : "Action";
 	const isCurrencyItem = item.type === "Currency";
 	const hasSpecific = ITEM_TYPES_WITH_SPECIFIC.has(item.type);
 	const hasModifiers = ITEM_TYPES_WITH_MODIFIERS.has(item.type);
@@ -439,14 +441,14 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 		needsIdentification === true && identificationData?.identified !== true;
 
 	const { tabs, activeTab } = buildVisibleTabs({
-		actionTabLabel,
+		embeddedActionsTabLabel,
 		activeTab: sheet.tabGroups?.[PRIMARY_TAB_GROUP],
 		hasSpecific,
 		isIdentificationLocked,
 		item,
 		rawTabs,
 		showModifiersTab,
-		showActionableTab,
+		showEmbeddedActionsTab,
 	});
 
 	const { descriptionValue, loretextValue } = getDescriptionData(item);
@@ -495,11 +497,11 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			isActionItem,
 			tabs,
 			hasActionable,
-			showActionableTab,
-			itemActions,
-			itemActionsCount,
-			canAddItemAction,
-			maxItemActions: MAX_ITEM_ACTIONS,
+			showEmbeddedActionsTab,
+			embeddedActions,
+			embeddedActionsCount,
+			canAddEmbeddedAction,
+			maxEmbeddedActions: MAX_EMBEDDED_ACTIONS,
 			hasModifiers,
 			showModifiersTab,
 			modifierRows,

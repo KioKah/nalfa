@@ -2,7 +2,7 @@
 
 .nalfa.sheet.item-sheet,
 .nalfa.sheet.item,
-.nalfa.sheet.item-action-editor {
+.nalfa.sheet.embedded-action-editor {
 	min-width: 180px;
 	max-width: calc(var(--item-width) + 2 * var(--nalfa-padding));
 	min-height: 132px;
@@ -556,7 +556,7 @@
 		}
 	}
 
-	.item-actions {
+	.embedded-actions {
 		display: flex;
 		flex-direction: column;
 		gap: calc(var(--nalfa-padding) / 2);
@@ -1103,14 +1103,14 @@
 		}
 	}
 
-	.item-action-editor-body {
+	.embedded-action-editor-body {
 		flex: 1 1 auto;
 		min-height: 0;
 		overflow: visible;
 		padding-inline-end: 0;
 	}
 
-	&.item-action-editor {
+	&.embedded-action-editor {
 		max-height: 920px;
 
 		> section.window-content {
@@ -1151,11 +1151,11 @@
 			flex-wrap: wrap;
 		}
 
-		.item-actions__row {
+		.embedded-actions__row {
 			grid-template-columns: 64px 1fr;
 		}
 
-		.item-actions__buttons {
+		.embedded-actions__buttons {
 			grid-column: 1 / -1;
 			justify-content: flex-end;
 		}

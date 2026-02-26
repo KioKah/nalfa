@@ -1,8 +1,8 @@
 import {
 	createDefaultDamageFormula,
-	createDefaultItemAction,
-	getDefaultItemActionShorthand,
-} from "../itemActions.mjs";
+	createDefaultEmbeddedAction,
+	getDefaultEmbeddedActionShorthand,
+} from "../embeddedActions.mjs";
 
 const { TypeDataModel } = foundry.abstract;
 const fields = foundry.data.fields;
@@ -195,13 +195,13 @@ const actionSchemaDefinition = () => ({
 
 const actionSchema = () => schemaField(actionSchemaDefinition());
 
-const itemActionSchemaDefinition = () => ({
+const embeddedActionSchemaDefinition = () => ({
 	name: stringField(""),
 	shorthand: stringField(""),
 	...actionSchemaDefinition(),
 });
 
-const itemActionSchema = () => schemaField(itemActionSchemaDefinition());
+const embeddedActionSchema = () => schemaField(embeddedActionSchemaDefinition());
 
 const baseAttributesSchema = () => ({
 	hp: schemaField({
@@ -860,8 +860,8 @@ const currencyPhysicalSchema = () => ({
 });
 
 const actionableSchema = () => ({
-	actions: arrayField(itemActionSchema(), [
-		createDefaultItemAction({ shorthand: getDefaultItemActionShorthand(0) }),
+	actions: arrayField(embeddedActionSchema(), [
+		createDefaultEmbeddedAction({ shorthand: getDefaultEmbeddedActionShorthand(0) }),
 	]),
 });
 
