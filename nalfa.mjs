@@ -24,6 +24,7 @@ import {
 import { registerHalfMinimumDiceModifier } from "./module/rolls/diceModifiers.mjs";
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
+import * as actionExecution from "./module/rolls/actionExecution.mjs";
 import { round } from "./module/utils.mjs";
 
 import { DiceSystem } from "../../modules/dice-so-nice/api.js";
@@ -107,9 +108,18 @@ Hooks.once("init", function () {
 	CONFIG.Item.documentClass = NalfaItem;
 	game.nalfa = {
 		...(game.nalfa ?? {}),
-		rolls: rollHandlers,
+		rolls: {
+			...rollHandlers,
+			...actionExecution,
+		},
 		macros: rollMacros,
 	};
+
+	Hooks.on("hotbarDrop", async (hotbar, data, slot) => {
+		void hotbar;
+		if (!game.nalfa?.macros?.createHotbarMacro) return true;
+		return game.nalfa.macros.createHotbarMacro(data, slot);
+	});
 
 	foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
 		foundry.documents.Actor,

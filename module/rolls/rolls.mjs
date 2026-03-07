@@ -72,6 +72,36 @@ const getCompareSymbol = (isGreaterOrEqualThan) => {
 	return isGreaterOrEqualThan ? "⩾" : "＜";
 };
 
+const promptEnemyAttackBonus = async (defaultValue = 0) => {
+	return new Promise((resolve) => {
+		const inputId = foundry.utils.randomID();
+		new Dialog({
+			title: "JdF - Stat attaquant",
+			content: `
+				<div class="form-group">
+					<label for="${inputId}">Stat Physique / Stat Incant de l'attaquant</label>
+					<input id="${inputId}" type="number" value="${Number(defaultValue ?? 0)}" />
+				</div>
+			`,
+			buttons: {
+				confirm: {
+					label: "Lancer",
+					callback: (html) => {
+						const input = html[0]?.querySelector(`#${inputId}`);
+						resolve(Number(input?.value ?? defaultValue ?? 0));
+					},
+				},
+				cancel: {
+					label: "Annuler",
+					callback: () => resolve(null),
+				},
+			},
+			default: "confirm",
+			close: () => resolve(null),
+		}).render(true);
+	});
+};
+
 const DEFAULT_ACTOR_DAMAGE_DIE = "d2+1";
 const DEFAULT_ACTOR_DAMAGE_TYPE = "none";
 
@@ -164,13 +194,16 @@ export const rollSkill = async (actor, skillKey) => {
 	return rollData;
 };
 
-export const rollAttack = async (actor, mode = "physical") => {
+export const rollAttackFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;
-	const attack = actor.system?.attack ?? {};
-	const jdt = attack.jdt ?? {};
+
+	const jdt = actionData?.jdt ?? {};
+	const requestedMode = options.mode ?? actionData?.mode ?? "physical";
 	const resolvedMode =
-		mode === "incant" || mode === "physical" || mode === "none"
-			? mode
+		requestedMode === "incant" ||
+		requestedMode === "physical" ||
+		requestedMode === "none"
+			? requestedMode
 			: "none";
 	const rollStats = actor.system?.roll_stats ?? {};
 	const physicalStats = rollStats.physical ?? {};
@@ -206,10 +239,9 @@ export const rollAttack = async (actor, mode = "physical") => {
 			: (resolvedMode === "physical" ? physicalValue : 0);
 	const modifier = statValue + bonusValue;
 	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(modifier);
-	const weapon = actor.system?.weapon ?? {};
-	const attackName = getAttackName(attack, weapon);
+	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleLabel = "JdT";
-	const titleName = attackName;
+	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const titleValue = roll.total;
 	const attackSuffix = formatStatSuffix(statKey, statName, modifier, bonusValue);
 	const formulaText = `d20 [${dieResult ?? "-"}]${attackSuffix}`;
@@ -235,6 +267,15 @@ export const rollAttack = async (actor, mode = "physical") => {
 	});
 
 	return rollData;
+};
+
+export const rollAttack = async (actor, mode = "physical") => {
+	if (!actor) return null;
+
+	const attack = actor.system?.attack ?? {};
+	const weapon = actor.system?.weapon ?? {};
+	const titleName = getAttackName(attack, weapon);
+	return rollAttackFromAction(actor, attack, { mode, titleName });
 };
 
 export const rollDamage = async (actor, config = {}) => {
@@ -288,11 +329,12 @@ export const rollDamage = async (actor, config = {}) => {
 	};
 };
 
-export const rollDamageSet = async (actor) => {
+export const rollDamageSetFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;
-	const attack = actor.system?.attack ?? {};
-	const jdd = attack.jdd ?? {};
-	const attackName = getAttackName(attack);
+
+	const jdd = actionData?.jdd ?? {};
+	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
+	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const entries = (jdd.damage_formulas ?? []).map((entry) => ({
 		formula: entry?.formula,
 		statKey: entry?.stat,
@@ -304,7 +346,7 @@ export const rollDamageSet = async (actor) => {
 		const result = await rollDamage(actor, {
 			...entry,
 			titleLabel: "JdD",
-			titleName: attackName,
+			titleName,
 		});
 		if (result) results.push(result);
 	}
@@ -312,16 +354,25 @@ export const rollDamageSet = async (actor) => {
 	return results.length ? results : null;
 };
 
-export const rollSavePrompt = async (actor) => {
+export const rollDamageSet = async (actor) => {
 	if (!actor) return null;
+
 	const attack = actor.system?.attack ?? {};
-	const jds = attack.jds ?? {};
+	const titleName = getAttackName(attack);
+	return rollDamageSetFromAction(actor, attack, { titleName });
+};
+
+export const rollSavePromptFromAction = async (actor, actionData = {}, options = {}) => {
+	if (!actor) return null;
+
+	const jds = actionData?.jds ?? {};
 	const statKey = jds.stat ?? "";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, "");
 	const statLabel =
 		statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
-	const dc = Number(jds.dd ?? 0);
-	const titleName = getAttackName(attack);
+	const dc = Number(options.dc ?? jds.dd ?? 0);
+	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
+	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const content = await foundry.applications.handlebars.renderTemplate(
 		"systems/nalfa/templates/chat/roll/prompt-save.hbs",
 		{
@@ -331,11 +382,20 @@ export const rollSavePrompt = async (actor) => {
 			dc,
 		},
 	);
+
 	return ChatMessage.create({
 		user: game.user.id,
 		speaker: ChatMessage.getSpeaker({ actor }),
 		content,
 	});
+};
+
+export const rollSavePrompt = async (actor) => {
+	if (!actor) return null;
+
+	const attack = actor.system?.attack ?? {};
+	const titleName = getAttackName(attack);
+	return rollSavePromptFromAction(actor, attack, { titleName });
 };
 
 export const rollSaveTarget = async (actor, statKey, dc, titleName) => {
@@ -404,22 +464,36 @@ export const rollStatSave = async (actor, statKey) => {
 	};
 };
 
-export const rollConcentration = async (actor, statKey, dc) => {
+export const rollConcentrationFromAction = async (
+	actor,
+	actionData = {},
+	options = {},
+) => {
 	if (!actor) return null;
-	const attack = actor.system?.attack ?? {};
-	const concentration = attack.concentration ?? {};
-	const resolvedStatKey = statKey ?? concentration.stat ?? "";
+
+	const concentration = actionData?.concentration ?? {};
+	const resolvedStatKey = options.statKey ?? concentration.stat ?? "";
 	const statName = getLabel(CONFIG.nalfa.stats, resolvedStatKey, resolvedStatKey);
-	const modifier = resolvedStatKey ? getStatTotal(actor, resolvedStatKey) : 0;
+	const attackerStatValue = await promptEnemyAttackBonus(
+		options.enemyAttackBonus ?? concentration.enemy_attack_bonus ?? 0,
+	);
+	if (attackerStatValue === null) return null;
+
+	const actorStatValue = resolvedStatKey ? getStatTotal(actor, resolvedStatKey) : 0;
+	const modifier = actorStatValue - Number(attackerStatValue ?? 0);
 	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(modifier);
-	const targetDc = Number(dc ?? concentration.dd ?? 0);
+	const targetDc = Number(options.dc ?? concentration.dd ?? 0);
 	const isSuccess = Number(roll.total ?? 0) >= targetDc;
-	const titleLabel = "Concentr";
-	const titleName = getAttackName(attack);
+	const titleLabel = "JdF";
+	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
+	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const titleValue = roll.total;
-	const concentrSuffix = formatStatSuffix(resolvedStatKey, statName, modifier, modifier);
 	const compareSymbol = getCompareSymbol(isSuccess);
-	const formulaText = `d20 [${dieResult ?? "-"}]${concentrSuffix} ${compareSymbol} DD ${targetDc}`;
+	const attackerStatNumber = Math.max(0, Number(attackerStatValue ?? 0));
+	const statPart = resolvedStatKey ? `${statName} (${actorStatValue})` : "Stat (?)";
+	const formulaText =
+		`d20 [${dieResult ?? "-"}] - ${attackerStatNumber} + ${statPart} ` +
+		`${compareSymbol} DD ${targetDc}`;
 
 	const rollData = {
 		type: "concentration",
@@ -444,6 +518,18 @@ export const rollConcentration = async (actor, statKey, dc) => {
 	});
 
 	return rollData;
+};
+
+export const rollConcentration = async (actor, statKey, dc) => {
+	if (!actor) return null;
+
+	const attack = actor.system?.attack ?? {};
+	const titleName = getAttackName(attack);
+	return rollConcentrationFromAction(actor, attack, {
+		statKey,
+		dc,
+		titleName,
+	});
 };
 
 export const rollInitiative = async (actor, options = {}) => {

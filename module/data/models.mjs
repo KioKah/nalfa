@@ -198,6 +198,10 @@ const actionSchema = () => schemaField(actionSchemaDefinition());
 const embeddedActionSchemaDefinition = () => ({
 	name: stringField(""),
 	shorthand: stringField(""),
+	source_uuid: stringField(""),
+	source_version: stringField(""),
+	source_hash: stringField(""),
+	always_refresh: booleanField(false),
 	...actionSchemaDefinition(),
 });
 

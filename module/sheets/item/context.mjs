@@ -129,14 +129,40 @@ const buildModifierRows = ({ modifiers, config }) => {
 	});
 };
 
-const htmlToPlainText = (value) => {
+const htmlToPlainText = (value, { preserveLineBreaks = false } = {}) => {
 	const html = String(value ?? "");
 	if (!html) return "";
 
 	const container = document.createElement("div");
 	container.innerHTML = html;
+
+	if (!preserveLineBreaks) {
+		return String(container.textContent ?? "")
+			.replace(/\s+/g, " ")
+			.trim();
+	}
+
+	for (const element of container.querySelectorAll("br")) {
+		element.replaceWith(document.createTextNode("\n"));
+	}
+
+	for (const element of container.querySelectorAll("p, div, li")) {
+		if (element.lastChild?.nodeType !== Node.TEXT_NODE) {
+			element.append(document.createTextNode("\n"));
+			continue;
+		}
+
+		const text = element.lastChild.textContent ?? "";
+		if (!text.endsWith("\n")) {
+			element.lastChild.textContent = `${text}\n`;
+		}
+	}
+
 	return String(container.textContent ?? "")
-		.replace(/\s+/g, " ")
+		.replace(/\r/g, "")
+		.replace(/[ \t\f\v]+/g, " ")
+		.replace(/[ \t\f\v]*\n[ \t\f\v]*/g, "\n")
+		.replace(/\n{3,}/g, "\n\n")
 		.trim();
 };
 
@@ -276,13 +302,20 @@ const buildActionResourceSummary = ({ actionData, config }) => {
 	return {
 		options,
 		additions,
-		note: htmlToPlainText(actionData?.cost?.actions?.note ?? ""),
+		note: htmlToPlainText(actionData?.cost?.actions?.note ?? "", {
+			preserveLineBreaks: true,
+		}),
 	};
 };
 
 const toFiniteNumber = (value, fallback = 0) => {
 	const number = Number(value);
 	return Number.isFinite(number) ? number : fallback;
+};
+
+const formatSignedNumber = (value) => {
+	const number = toFiniteNumber(value, 0);
+	return number >= 0 ? `+${number}` : `${number}`;
 };
 
 const getActorStatValue = (item, statKey) => {
@@ -299,7 +332,7 @@ const getActorStatValue = (item, statKey) => {
 	return 0;
 };
 
-const buildActionTopSummary = (item, actionData, config) => {
+const buildActionCoreSummary = (item, actionData, config) => {
 	const mode = String(actionData?.mode ?? "physical");
 	const modeLabel = config.attack_mode?.[mode] ?? mode;
 	const esterUnit = String(actionData?.cost?.ester?.unit ?? "none");
@@ -312,8 +345,7 @@ const buildActionTopSummary = (item, actionData, config) => {
 		const statValue = getActorStatValue(item, statKey);
 		const bonus = toFiniteNumber(actionData?.jdt?.bonus, 0);
 		const total = statValue + bonus;
-		const signedTotal = total >= 0 ? `+${total}` : `${total}`;
-		jdParts.push(`JdT ${signedTotal}`);
+		jdParts.push(`JdT ${formatSignedNumber(total)}`);
 	}
 
 	if (actionData?.jds?.enabled) {
@@ -327,6 +359,73 @@ const buildActionTopSummary = (item, actionData, config) => {
 	return `${modeWithTier} : ${jdParts.join(" & ")}`;
 };
 
+const buildActionRequirementSummary = (actionData) => {
+	const requiresText = htmlToPlainText(actionData?.requires ?? "");
+	if (!requiresText) return "";
+	return requiresText;
+};
+
+const getCooldownUnitShort = (unit) => {
+	const key = String(unit ?? "none");
+	if (key === "turns") return "t";
+	if (key === "rounds") return "r";
+	const fallback = key.trim().charAt(0).toLowerCase();
+	return fallback || "";
+};
+
+const buildActionCdSummary = (actionData) => {
+	const cooldown = actionData?.cost?.cooldown ?? {};
+	const unit = String(cooldown.unit ?? "none");
+	if (unit === "none") return "";
+
+	const amount = toFiniteNumber(cooldown.amount, 0);
+	const unitShort = getCooldownUnitShort(unit);
+	if (!unitShort) return "";
+	if (amount > 0) return `CD ${amount}${unitShort}`;
+	return `CD ${unitShort}`;
+};
+
+const getUsesUnitShort = (unit) => {
+	const key = String(unit ?? "none");
+	if (key === "sr") return "CR";
+	if (key === "lr") return "LR";
+	if (key === "consumable") return "Consom.";
+	return "";
+};
+
+const buildActionUsesSummary = (actionData) => {
+	const uses = actionData?.cost?.uses ?? {};
+	const unit = String(uses.unit ?? "none");
+	if (unit === "none") return "";
+
+	const hasValue = Number.isFinite(Number(uses.value));
+	const hasMax = Number.isFinite(Number(uses.max));
+	if (!hasValue && !hasMax) return "";
+
+	const value = hasValue ? Number(uses.value) : null;
+	const max = hasMax ? Number(uses.max) : null;
+	const countLabel =
+		value !== null && max !== null
+			? `${value}/${max}`
+			: (value !== null ? `${value}` : (max !== null ? `${max}` : ""));
+	const unitLabel = getUsesUnitShort(unit);
+
+	if (countLabel && unitLabel) return `${countLabel} (${unitLabel})`;
+	if (countLabel) return countLabel;
+	if (unitLabel) return unitLabel;
+	return "";
+};
+
+const buildActionConcentrationSummary = (actionData, config) => {
+	if (!actionData?.concentration?.enabled) return "";
+
+	const concentration = actionData?.concentration ?? {};
+	const statKey = String(concentration.stat ?? "none");
+	const statLabel = String(config.stats_optional?.[statKey] ?? statKey).trim() || "?";
+	const dd = toFiniteNumber(concentration.dd, 0);
+	return `(JdF ${dd} ${statLabel}-StatAttaquant)`;
+};
+
 const buildRangeDetailSummary = (actionData, config) => {
 	const rangeType = String(actionData?.range_type ?? "ranged");
 	if (rangeType === "melee") return "Allonge";
@@ -334,9 +433,18 @@ const buildRangeDetailSummary = (actionData, config) => {
 	const zone = actionData?.selection?.zone ?? {};
 	const shape = String(zone.shape ?? "circle");
 	const rangeParts = [];
+	const reachDisadvantageIcon =
+		'<span class="embedded-actions__reach-disadvantage" data-tooltip="Désavantage en portée d\'Allonge">' +
+		'<i class="fa-light fa-arrows-left-right embedded-actions__reach-disadvantage-base"></i>' +
+		'<i class="fa-light fa-triangle-exclamation embedded-actions__reach-disadvantage-alert"></i>' +
+		"</span>";
 
 	if (rangeType === "pure_ranged") {
 		rangeParts.push(`${toFiniteNumber(zone.min_range, 0)} m`, "↔");
+	}
+
+	if (rangeType === "ranged") {
+		rangeParts.push(reachDisadvantageIcon);
 	}
 
 	rangeParts.push(`${toFiniteNumber(zone.range, 0)} m`);
@@ -345,20 +453,16 @@ const buildRangeDetailSummary = (actionData, config) => {
 		rangeParts.push(`~ ${toFiniteNumber(zone.long_range, 0)} m (Longue)`);
 	}
 
-	if (rangeType === "ranged") {
-		rangeParts.push("[D-Av. Allonge]");
-	}
-
 	const rangeText = rangeParts.join(" ");
 	if (shape === "circle") return rangeText;
 
 	const shapeLabel = config.area_shapes?.[shape] ?? shape;
 	const secondary = toFiniteNumber(zone.range_secondary, 0);
-	const secondaryLabel = shape === "line" ? `${secondary} m de largeur` : `${secondary}°`;
-	return `${rangeText} <${shapeLabel} ${secondaryLabel}>`;
+	const secondaryLabel = shape === "line" ? `${secondary}m de large` : `${secondary}°`;
+	return `${rangeText} &lt;${shapeLabel} ${secondaryLabel}&gt;`;
 };
 
-const buildActionBottomSummary = (actionData, config) => {
+const buildActionRangeSummary = (actionData, config) => {
 	const rangeType = String(actionData?.range_type ?? "ranged");
 	const rangeTypeLabel = config.range_types?.[rangeType] ?? rangeType;
 	const rangeSummary = buildRangeDetailSummary(actionData, config);
@@ -367,24 +471,58 @@ const buildActionBottomSummary = (actionData, config) => {
 	return `${rangeTypeLabel} : ${rangeSummary}`;
 };
 
-const buildActionSecondarySummary = (actionData) => {
-	const tags = [];
+const buildActionDamageSummary = (item, actionData) => {
+	if (!actionData?.jdd?.enabled) return "";
 
-	if (actionData?.jdd?.enabled) {
-		const formulas = Array.isArray(actionData?.jdd?.damage_formulas)
-			? actionData.jdd.damage_formulas
-			: [];
-		const formulaText = formulas
-			.map((formulaData) => String(formulaData?.formula ?? "").trim())
-			.filter(Boolean)
-			.join(" + ");
-		tags.push(formulaText ? `JdD ${formulaText}` : "JdD");
-	}
+	const formulas = Array.isArray(actionData?.jdd?.damage_formulas)
+		? actionData.jdd.damage_formulas
+		: [];
+	const damageParts = formulas
+		.map((formulaData) => {
+			const formulaText = String(formulaData?.formula ?? "").trim();
+			const statKey = String(formulaData?.stat ?? "none");
+			if (!formulaText && statKey === "none") return "";
 
-	const actionNote = htmlToPlainText(actionData?.cost?.actions?.note ?? "");
-	if (actionNote) tags.push(actionNote);
+			if (statKey === "none") return formulaText;
 
-	return tags.filter(Boolean).join(" | ");
+			const statBonus = getActorStatValue(item, statKey);
+			const statText = formatSignedNumber(statBonus);
+			if (!formulaText) return statText;
+			return `${formulaText}${statText}`;
+		})
+		.filter(Boolean)
+		.join(" + ");
+
+	return damageParts ? `JdD ${damageParts}` : "JdD";
+};
+
+const buildActionRightSummaryRows = (actionData) => {
+	const rows = [];
+	const requirementSummary = buildActionRequirementSummary(actionData);
+	if (requirementSummary) rows.push(requirementSummary);
+
+	const cooldownSummary = buildActionCdSummary(actionData);
+	const usesSummary = buildActionUsesSummary(actionData);
+	const costRow = [cooldownSummary, usesSummary].filter(Boolean).join(", ");
+	if (costRow) rows.push(costRow);
+
+	return rows;
+};
+
+const buildEmbeddedActionDetailRows = (item, actionData, config) => {
+	const coreSummary = buildActionCoreSummary(item, actionData, config);
+	const concentrationSummary = buildActionConcentrationSummary(actionData, config);
+	const detailRow1 = concentrationSummary
+		? (coreSummary ? `${coreSummary} ${concentrationSummary}` : concentrationSummary)
+		: coreSummary;
+
+	const detailRow2Parts = [
+		buildActionRangeSummary(actionData, config),
+		buildActionDamageSummary(item, actionData),
+	].filter(Boolean);
+
+	const detailRow2 = detailRow2Parts.join(" | ");
+	return { detailRow1, detailRow2 };
 };
 
 const buildEmbeddedActionRows = ({ item, config }) => {
@@ -397,6 +535,16 @@ const buildEmbeddedActionRows = ({ item, config }) => {
 		const storedShorthand = String(actionData?.shorthand ?? "");
 		const trimmedShorthand = storedShorthand.trim();
 		const defaultShorthand = getDefaultEmbeddedActionShorthand(index);
+		const sourceUuid = String(actionData?.source_uuid ?? "").trim();
+		const sourceVersion = String(actionData?.source_version ?? "").trim();
+		const hasSource = sourceUuid.length > 0;
+		const alwaysRefresh = hasSource && actionData?.always_refresh === true;
+		const summaryRows = buildActionRightSummaryRows(actionData);
+		const { detailRow1, detailRow2 } = buildEmbeddedActionDetailRows(
+			item,
+			actionData,
+			config,
+		);
 
 		return {
 			index,
@@ -404,10 +552,14 @@ const buildEmbeddedActionRows = ({ item, config }) => {
 			defaultShorthand,
 			displayName: trimmedName || defaultName,
 			displayShorthand: trimmedShorthand || defaultShorthand,
+			hasSource,
+			sourceUuid,
+			sourceVersion,
+			alwaysRefresh,
 			resourceSummary: buildActionResourceSummary({ actionData, config }),
-			summaryTop: buildActionTopSummary(item, actionData, config),
-			summaryBottom: buildActionBottomSummary(actionData, config),
-			secondarySummary: buildActionSecondarySummary(actionData),
+			summaryRows,
+			detailRow1,
+			detailRow2,
 		};
 	});
 };

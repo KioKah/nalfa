@@ -62,7 +62,7 @@
 					name="system.{{actionPath}}requires"
 					type="text"
 					value="{{actionData.requires}}"
-					placeholder="Condition d'utilisation"
+					placeholder="Si... (condition d'utilisation)"
 				/>
 			</div>
 		</div>
@@ -167,6 +167,15 @@
 							</span>
 							<span class="attack-config__row-sep">↔</span>
 						{{/if}}
+						{{#if (eq actionData.range_type "ranged")}}
+							<span
+								class="attack-config__row-sep attack-config__reach-disadvantage"
+								data-tooltip="Désavantage en portée d'Allonge"
+							>
+								<i class="fa-light fa-arrows-left-right attack-config__reach-disadvantage-base"></i>
+								<i class="fa-light fa-triangle-exclamation attack-config__reach-disadvantage-alert"></i>
+							</span>
+						{{/if}}
 						<span class="attack-config__measure">
 							<input
 								class="attack-config__cost-input"
@@ -190,9 +199,6 @@
 								<span class="attack-config__row-sep">m</span>
 							</span>
 							<span class="attack-config__row-sep">(Longue)</span>
-						{{/if}}
-						{{#if (eq actionData.range_type "ranged")}}
-							<span class="attack-config__row-sep">[D-Av. Allonge]</span>
 						{{/if}}
 						<label class="attack-config__toggle attack-config__toggle--push-end">
 							<input
@@ -220,6 +226,7 @@
 							data-action="open-richtext-editor"
 							data-path="system.{{actionPath}}effect.text"
 							data-title="Effet"
+							data-tooltip="Modifier l'effet"
 						>
 							<i class="fa-light fa-pen-to-square"></i>
 						</button>
@@ -241,8 +248,8 @@
 							<div class="attack-config__action-option panel-section attack-config__action-option--primary">
 								<div class="attack-config__action-costs">
 									<label
-										class="attack-config__action-cost"
-										title="{{@root.config.action_cost_hover_labels.main}}"
+									class="attack-config__action-cost"
+									data-tooltip="{{@root.config.action_cost_hover_labels.main}}"
 									>
 										<span
 											class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
@@ -259,8 +266,8 @@
 										/>
 									</label>
 									<label
-										class="attack-config__action-cost"
-										title="{{@root.config.action_cost_hover_labels.bonus}}"
+									class="attack-config__action-cost"
+									data-tooltip="{{@root.config.action_cost_hover_labels.bonus}}"
 									>
 										<span
 											class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
@@ -277,8 +284,8 @@
 										/>
 									</label>
 									<label
-										class="attack-config__action-cost"
-										title="{{@root.config.action_cost_hover_labels.reaction}}"
+									class="attack-config__action-cost"
+									data-tooltip="{{@root.config.action_cost_hover_labels.reaction}}"
 									>
 										<span
 											class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
@@ -315,6 +322,7 @@
 									data-action="open-richtext-editor"
 									data-path="system.{{actionPath}}cost.actions.note"
 									data-title="Note"
+									data-tooltip="Modifier la note de coût"
 								>
 									<i class="fa-light fa-pen-to-square"></i>
 								</button>
@@ -336,7 +344,7 @@
 								data-action="add-array-entry"
 								data-path="{{actionPath}}cost.actions.options"
 								data-entry-type="action-resource-option"
-								title="Ajouter une option"
+								data-tooltip="Ajouter une option de coût"
 							>
 								<i class="fa-light fa-square-plus"></i>
 							</button>
@@ -347,8 +355,8 @@
 								<div class="attack-config__action-option panel-section">
 									<div class="attack-config__action-costs">
 										<label
-											class="attack-config__action-cost"
-											title="{{@root.config.action_cost_hover_labels.main}}"
+										class="attack-config__action-cost"
+										data-tooltip="{{@root.config.action_cost_hover_labels.main}}"
 										>
 											<span
 												class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
@@ -365,8 +373,8 @@
 											/>
 										</label>
 										<label
-											class="attack-config__action-cost"
-											title="{{@root.config.action_cost_hover_labels.bonus}}"
+										class="attack-config__action-cost"
+										data-tooltip="{{@root.config.action_cost_hover_labels.bonus}}"
 										>
 											<span
 												class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
@@ -383,8 +391,8 @@
 											/>
 										</label>
 										<label
-											class="attack-config__action-cost"
-											title="{{@root.config.action_cost_hover_labels.reaction}}"
+										class="attack-config__action-cost"
+										data-tooltip="{{@root.config.action_cost_hover_labels.reaction}}"
 										>
 											<span
 												class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
@@ -405,9 +413,9 @@
 											class="array-action-btn attack-config__action-option-remove"
 											data-action="remove-array-entry"
 											data-path="{{@root.actionPath}}cost.actions.options"
-											data-index="{{optionIndex}}"
-											data-minimum="1"
-											title="Supprimer l'option"
+										data-index="{{optionIndex}}"
+										data-minimum="1"
+										data-tooltip="Supprimer cette option de coût"
 										>
 											<i class="fa-light fa-square-minus"></i>
 										</button>
@@ -630,6 +638,7 @@
 										data-action="add-array-entry"
 										data-path="{{@root.actionPath}}jdd.damage_formulas"
 										data-entry-type="damage-formula"
+										data-tooltip="Ajouter une formule de dégâts"
 									>
 										<i class="fa-light fa-square-plus"></i>
 									</button>
@@ -640,6 +649,7 @@
 										data-path="{{@root.actionPath}}jdd.damage_formulas"
 										data-index="{{index}}"
 										data-minimum="1"
+										data-tooltip="Supprimer cette formule de dégâts"
 									>
 										<i class="fa-light fa-square-minus"></i>
 									</button>
@@ -696,6 +706,7 @@
 											data-action="add-array-entry"
 											data-path="{{@root.actionPath}}jdd_saved.damage_formulas"
 											data-entry-type="damage-formula"
+											data-tooltip="Ajouter une formule de dégâts sauvegardés"
 										>
 											<i class="fa-light fa-square-plus"></i>
 										</button>
@@ -706,6 +717,7 @@
 											data-path="{{@root.actionPath}}jdd_saved.damage_formulas"
 											data-index="{{index}}"
 											data-minimum="1"
+											data-tooltip="Supprimer cette formule de dégâts sauvegardés"
 										>
 											<i class="fa-light fa-square-minus"></i>
 										</button>

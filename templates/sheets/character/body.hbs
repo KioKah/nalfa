@@ -35,6 +35,7 @@
 									class="stat-save-value value-mode--values border-color-{{statKey}}"
 									data-action="roll-stat-save"
 									data-stat="{{statKey}}"
+									data-tooltip="Lancer la sauvegarde de {{lookup ../config.stats statKey}}"
 									role="button"
 								>
 									<i class="stat-save-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
@@ -65,10 +66,11 @@
 										<span class="skill-name value-mode--values">{{skillName skillKey}}</span>
 										<span class="skill-name skill-name--key value-mode--edit">{{skillKey}}</span>
 										<span
-											class="skill-value skill-value--roll value-mode--values border-color-{{statKey}}"
-											data-action="roll-skill"
-											data-skill="{{skillKey}}"
-											role="button"
+										class="skill-value skill-value--roll value-mode--values border-color-{{statKey}}"
+										data-action="roll-skill"
+										data-skill="{{skillKey}}"
+										data-tooltip="Lancer {{skillName skillKey}}"
+										role="button"
 										>
 											<i class="skill-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
 											<span class="skill-value__text">{{skillObj.value}}</span>

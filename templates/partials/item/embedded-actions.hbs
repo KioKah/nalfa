@@ -1,4 +1,4 @@
-<div class="sheet-section embedded-actions">
+<div class="sheet-section embedded-actions" data-drop-zone="embedded-actions">
 	<div class="embedded-actions__head">
 		<span class="field__label">Actions intégrées</span>
 		{{#if isEditable}}
@@ -7,7 +7,7 @@
 				class="array-action-btn"
 				data-action="add-embedded-action"
 				{{#unless canAddEmbeddedAction}}disabled{{/unless}}
-				title="Ajouter"
+				data-tooltip="Ajouter une action intégrée"
 			>
 				<i class="fa-light fa-square-plus"></i>
 			</button>
@@ -18,11 +18,17 @@
 		<div class="embedded-actions__list">
 			{{#each embeddedActions as |embeddedAction|}}
 				<div class="embedded-actions__row panel-section">
-					<div class="embedded-actions__icon">
+					<div
+						class="embedded-actions__icon"
+						data-draggable="embedded-action"
+						draggable="true"
+						data-index="{{embeddedAction.index}}"
+					>
 						<img
 							class="embedded-actions__image"
 							src="{{@root.itemImage}}"
 							alt="{{@root.item.name}}"
+							draggable="false"
 						/>
 						<span class="embedded-actions__shorthand">{{embeddedAction.displayShorthand}}</span>
 					</div>
@@ -35,8 +41,8 @@
 										<span class="embedded-actions__cost-option">
 											{{#each costOption.tokens as |token|}}
 												<span
-													class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
-													title="{{token.title}}"
+												class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
+												data-tooltip="{{token.title}}"
 												>
 													{{#if token.showAmount}}
 														<span class="embedded-actions__cost-token-amount">{{token.amountLabel}}</span>
@@ -56,7 +62,7 @@
 										<span class="embedded-actions__cost-option-sep">+</span>
 										<span
 											class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
-											title="{{token.title}}"
+											data-tooltip="{{token.title}}"
 										>
 											{{#if token.showAmount}}
 												<span class="embedded-actions__cost-token-amount">{{token.amountLabel}}</span>
@@ -68,52 +74,122 @@
 								{{#if embeddedAction.resourceSummary.note}}
 									<span
 										class="embedded-actions__cost-note"
-										title="{{embeddedAction.resourceSummary.note}}"
+										data-tooltip="{{embeddedAction.resourceSummary.note}}"
+										data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
 									>
 										(<i class="fa-light fa-note-sticky"></i>)
 									</span>
 								{{/if}}
 								<span class="embedded-actions__name-label">{{embeddedAction.displayName}}</span>
 							</div>
-							<div class="embedded-actions__summary-stack">
-								{{#if embeddedAction.summaryTop}}
-									<span class="embedded-actions__summary embedded-actions__summary--top">
-										{{embeddedAction.summaryTop}}
-									</span>
-								{{/if}}
-								{{#if embeddedAction.summaryBottom}}
-									<span class="embedded-actions__summary embedded-actions__summary--bottom">
-										{{embeddedAction.summaryBottom}}
-									</span>
-								{{/if}}
-							</div>
+							{{#if embeddedAction.summaryRows.length}}
+								<div class="embedded-actions__summary-stack">
+									{{#each embeddedAction.summaryRows as |summaryRow|}}
+										<span class="embedded-actions__summary">
+											{{summaryRow}}
+										</span>
+									{{/each}}
+								</div>
+							{{/if}}
 						</div>
-						{{#if embeddedAction.secondarySummary}}
+						{{#if embeddedAction.detailRow1}}
 							<div class="embedded-actions__line embedded-actions__line--meta">
-								<span class="embedded-actions__secondary">{{embeddedAction.secondarySummary}}</span>
+								<span class="embedded-actions__secondary embedded-actions__secondary--top">
+									{{embeddedAction.detailRow1}}
+								</span>
+							</div>
+						{{/if}}
+						{{#if embeddedAction.detailRow2}}
+							<div class="embedded-actions__line embedded-actions__line--meta">
+								<span class="embedded-actions__secondary embedded-actions__secondary--bottom">
+									{{{embeddedAction.detailRow2}}}
+								</span>
 							</div>
 						{{/if}}
 					</div>
 
 					{{#if @root.isEditable}}
 						<div class="embedded-actions__buttons">
+							{{#if embeddedAction.hasSource}}
+								<div class="embedded-actions__buttons-sync">
+									<button
+										type="button"
+										class="array-action-btn embedded-actions__sync-btn {{#if embeddedAction.alwaysRefresh}}embedded-actions__sync-btn--auto{{/if}}"
+										data-action="refresh-embedded-action-source"
+										data-index="{{embeddedAction.index}}"
+										data-tooltip="Synchroniser avec la source"
+									>
+										<i class="fa-light fa-arrows-rotate"></i>
+										{{#if embeddedAction.alwaysRefresh}}
+											<span class="embedded-actions__sync-auto">
+												<i class="fa-solid fa-check"></i>
+											</span>
+										{{/if}}
+									</button>
+									<button
+										type="button"
+										class="array-action-btn"
+										data-action="open-embedded-action-source"
+										data-index="{{embeddedAction.index}}"
+										data-tooltip="Ouvrir la source"
+									>
+										<i class="fa-light fa-arrow-up-right-from-square"></i>
+									</button>
+									<button
+										type="button"
+										class="array-action-btn"
+										data-action="detach-embedded-action-source"
+										data-index="{{embeddedAction.index}}"
+										data-tooltip="Détacher la source"
+									>
+										<i class="fa-light fa-link-slash"></i>
+									</button>
+								</div>
+							{{/if}}
+
+							<div class="embedded-actions__buttons-main">
+								<button
+									type="button"
+									class="array-action-btn"
+									data-action="use-embedded-action"
+									data-index="{{embeddedAction.index}}"
+									data-tooltip="Utiliser l'action"
+								>
+									<i class="fa-light fa-dice-d20"></i>
+								</button>
+								<button
+									type="button"
+									class="array-action-btn"
+									data-action="edit-embedded-action"
+									data-index="{{embeddedAction.index}}"
+									data-tooltip="Modifier l'action"
+								>
+									<i class="fa-light fa-pen-to-square"></i>
+								</button>
+							</div>
+
+							<div class="embedded-actions__buttons-danger">
+								<button
+									type="button"
+									class="array-action-btn"
+									data-action="remove-embedded-action"
+									data-index="{{embeddedAction.index}}"
+									data-tooltip="Supprimer l'action"
+								>
+									<i class="fa-light fa-square-minus"></i>
+								</button>
+							</div>
+						</div>
+					{{else}}
+						<div class="embedded-actions__buttons">
 							<button
 								type="button"
 								class="array-action-btn"
-								data-action="edit-embedded-action"
+								data-action="use-embedded-action"
 								data-index="{{embeddedAction.index}}"
-								title="Modifier"
+								data-tooltip="Utiliser l'action"
 							>
-								<i class="fa-light fa-pen-to-square"></i>
-							</button>
-							<button
-								type="button"
-								class="array-action-btn"
-								data-action="remove-embedded-action"
-								data-index="{{embeddedAction.index}}"
-								title="Supprimer"
-							>
-								<i class="fa-light fa-square-minus"></i>
+								<i class="fa-light fa-dice-d20"></i>
 							</button>
 						</div>
 					{{/if}}
