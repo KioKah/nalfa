@@ -410,6 +410,7 @@
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
   padding: var(--nalfa-padding);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   min-width: 0;
@@ -663,6 +664,7 @@
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
   padding: var(--nalfa-padding);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   --nalfa-stat-field-border-color: var(--color-text-primary);
@@ -1207,6 +1209,7 @@
   flex-direction: column;
   gap: var(--nalfa-gap-text);
   padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
 }
@@ -2081,6 +2084,7 @@
   display: flex;
   flex-direction: column;
   padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   display: grid;
@@ -2488,6 +2492,7 @@
   flex-direction: column;
   gap: var(--nalfa-gap-text);
   padding: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 4px;
   background: color-mix(in srgb, var(--background), transparent 25%);
 }

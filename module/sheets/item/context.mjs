@@ -423,7 +423,7 @@ const buildActionConcentrationSummary = (actionData, config) => {
 	const statKey = String(concentration.stat ?? "none");
 	const statLabel = String(config.stats_optional?.[statKey] ?? statKey).trim() || "?";
 	const dd = toFiniteNumber(concentration.dd, 0);
-	return `(JdF ${dd} ${statLabel}-StatAttaquant)`;
+	return `(JdF ${dd} ${statLabel})`;
 };
 
 const buildRangeDetailSummary = (actionData, config) => {
