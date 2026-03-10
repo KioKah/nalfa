@@ -27,8 +27,6 @@ import * as rollHandlers from "./module/rolls/rolls.mjs";
 import * as actionExecution from "./module/rolls/actionExecution.mjs";
 import { round } from "./module/utils.mjs";
 
-import { DiceSystem } from "../../modules/dice-so-nice/api.js";
-
 async function preloadHandlebarsTemplates() {
 	console.log("nalfa | Preloading Handlebars Templates");
 
@@ -319,14 +317,21 @@ Hooks.on("createItem", (sysData) => {
 
 // DELETED : "Armor", https://game-icons.net/1x1/delapouite/abdominal-armor.html
 
-Hooks.once("diceSoNiceReady", (dice3d) => {
+Hooks.once("diceSoNiceReady", async (dice3d) => {
+	let DiceSystem;
+	try {
+		({ DiceSystem } = await import("/modules/dice-so-nice/api.js"));
+	} catch (error) {
+		console.warn("nalfa | Dice So Nice API unavailable, skipping integration.", error);
+		return;
+	}
+
 	/**
 	 * Register a new system
 	 * The id is to be used with the addDicePreset method
 	 * The name can be a localized string
 	 * The group is a string that is only used to group multiple systems in the system list. Could be the name of the brand, or of a collection
 	 * The mode, "preferred" or "default". "preferred" will enable this system by default until a user changes it to anything else. Default will add the system as a choice left to each user.
-	 * @param {DiceSystem} mySystem
 	 */
 	const mySystem = new DiceSystem("nalfa", "Nalfa", "preferred");
 	dice3d.addSystem(mySystem);
