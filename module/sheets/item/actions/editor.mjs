@@ -2,27 +2,10 @@ import {
 	createDefaultDamageFormula,
 	getDefaultEmbeddedActionName,
 	getDefaultEmbeddedActionShorthand,
-} from "../../embeddedActions.mjs";
-import { openRichTextEditorDialog } from "./richTextDialog.mjs";
-
-const DEFAULT_ITEM_ICON = "icons/svg/item-bag.svg";
-
-const htmlToPlainText = (value) => {
-	const html = String(value ?? "");
-	if (!html) return "";
-
-	const container = document.createElement("div");
-	container.innerHTML = html;
-	return String(container.textContent ?? "")
-		.replace(/\s+/g, " ")
-		.trim();
-};
-
-const getItemImage = (item) => {
-	const defaultItemIcon = item.constructor?.DEFAULT_ICON ?? DEFAULT_ITEM_ICON;
-	const defaultArtwork = item.constructor?.getDefaultArtwork?.(item.toObject()) ?? {};
-	return item.img === defaultItemIcon ? (defaultArtwork.img ?? item.img) : item.img;
-};
+} from "../../../embeddedActions.mjs";
+import { buildDefaultArrayEntry } from "../arrays.mjs";
+import { openRichTextEditorDialog } from "../dialogs/richTextDialog.mjs";
+import { getItemImage, htmlToPlainText } from "../utils.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -233,19 +216,11 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 	}
 
 	#buildDefaultArrayEntry(entryType) {
-		switch (entryType) {
-			case "action-resource-option":
-				return {
-					main: 1,
-					bonus: 0,
-					reaction: 0,
-					condition: "",
-				};
-			case "damage-formula":
-				return createDefaultDamageFormula();
-			default:
-				return "";
+		if (entryType === "damage-formula") {
+			return createDefaultDamageFormula();
 		}
+
+		return buildDefaultArrayEntry(entryType);
 	}
 
 	#getInitialDraftAction() {

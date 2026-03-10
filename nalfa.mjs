@@ -1,5 +1,4 @@
 import { nalfa } from "./module/config.mjs";
-// import { applyMutationObserver } from "./module/utils.mjs";
 import NalfaItemSheet from "./module/sheets/nalfaItemSheet.mjs";
 import NalfaCharacterSheet from "./module/sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "./module/sheets/nalfaItem.mjs";
@@ -25,7 +24,6 @@ import { registerHalfMinimumDiceModifier } from "./module/rolls/diceModifiers.mj
 import * as rollMacros from "./module/rolls/macros.mjs";
 import * as rollHandlers from "./module/rolls/rolls.mjs";
 import * as actionExecution from "./module/rolls/actionExecution.mjs";
-import { round } from "./module/utils.mjs";
 
 async function preloadHandlebarsTemplates() {
 	console.log("nalfa | Preloading Handlebars Templates");
@@ -253,6 +251,10 @@ Hooks.once("init", function () {
 			.join(", ");
 	});
 });
+
+function round(value, decimals = 6) {
+	return Number(Math.round(value * 10 ** decimals) / 10 ** decimals);
+}
 
 Hooks.on("renderChatMessageHTML", (message, html) => {
 	const root = html?.querySelector ? html : null;

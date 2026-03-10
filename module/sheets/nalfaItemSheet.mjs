@@ -4,8 +4,8 @@ import {
 	EQUIP_SLOT_NONE,
 	PRIMARY_TAB_GROUP,
 } from "./item/constants.mjs";
-import NalfaEmbeddedActionEditor from "./item/actionEditor.mjs";
-import { buildItemSheetContext } from "./item/context.mjs";
+import NalfaEmbeddedActionEditor from "./item/actions/editor.mjs";
+import { buildItemSheetContext } from "./item/context/index.mjs";
 import {
 	buildEquippedSlotUpdate,
 	getEquippedSlotValue,
@@ -15,7 +15,7 @@ import {
 	buildIdentifiedUpdate,
 	buildNeedsIdentificationUpdate,
 } from "./item/identification.mjs";
-import { openRichTextEditorDialog } from "./item/richTextDialog.mjs";
+import { openRichTextEditorDialog } from "./item/dialogs/richTextDialog.mjs";
 import {
 	MAX_EMBEDDED_ACTIONS,
 	clearEmbeddedActionSource,

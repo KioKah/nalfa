@@ -1,170 +1,14 @@
 import {
-	ITEM_TYPES_WITH_MODIFIERS,
-	ITEM_TYPES_WITH_PHYSICAL,
-	ITEM_TYPES_WITH_SPECIFIC,
-	PRIMARY_TAB_GROUP,
-} from "./constants.mjs";
-import {
 	MAX_EMBEDDED_ACTIONS,
 	getDefaultEmbeddedActionName,
 	getDefaultEmbeddedActionShorthand,
-} from "../../embeddedActions.mjs";
+} from "../../../embeddedActions.mjs";
 import {
-	getEquippedOptions,
-	getEquippedSlotValue,
-	isEquippedSlotLocked,
-} from "./equipment.mjs";
-
-const DEFAULT_ITEM_ICON = "icons/svg/item-bag.svg";
-
-const buildVisibleTabs = ({
-	embeddedActionsTabLabel,
-	activeTab,
-	hasSpecific,
-	isIdentificationLocked,
-	item,
-	rawTabs,
-	showModifiersTab,
-	showEmbeddedActionsTab,
-}) => {
-	const tabIds = [];
-	if (isIdentificationLocked) {
-		tabIds.push("description");
-	} else {
-		if (hasSpecific) tabIds.push("specific");
-		if (showEmbeddedActionsTab) tabIds.push("actionable");
-		if (showModifiersTab) tabIds.push("modifiers");
-		tabIds.push("description");
-	}
-
-	const resolvedActiveTab = tabIds.includes(activeTab) ? activeTab : tabIds[0];
-	const specificTabLabel = item.type;
-	const tabs = {};
-
-	for (const tabId of tabIds) {
-		const tab = rawTabs[tabId] ?? { id: tabId };
-		const tabLabel =
-			tabId === "specific"
-				? specificTabLabel
-				: tabId === "actionable"
-					? embeddedActionsTabLabel
-					: tab.label;
-		tabs[tabId] = {
-			...tab,
-			label: tabLabel,
-			cssClass: tabId === resolvedActiveTab ? "active" : "",
-		};
-	}
-
-	return {
-		tabs,
-		activeTab: resolvedActiveTab,
-	};
-};
-
-const getDescriptionData = (item) => {
-	const descriptionData = item.system?.description ?? {};
-	return {
-		descriptionValue:
-			typeof descriptionData === "string" ? descriptionData : (descriptionData.text ?? ""),
-		loretextValue:
-			typeof descriptionData === "string" ? "" : (descriptionData.loretext ?? ""),
-	};
-};
-
-const getItemImage = (item) => {
-	const defaultItemIcon = item.constructor?.DEFAULT_ICON ?? DEFAULT_ITEM_ICON;
-	const defaultArtwork = item.constructor?.getDefaultArtwork?.(item.toObject()) ?? {};
-	return item.img === defaultItemIcon ? (defaultArtwork.img ?? item.img) : item.img;
-};
-
-const resolveModifierCategory = ({
-	category,
-	modifierPath,
-	pathCategories,
-	pathsByCategory,
-	defaultCategory,
-}) => {
-	if (category && Object.hasOwn(pathsByCategory, category)) {
-		return category;
-	}
-
-	for (const [categoryKey, groupPaths] of Object.entries(pathsByCategory)) {
-		if (Object.hasOwn(groupPaths, modifierPath)) {
-			return categoryKey;
-		}
-	}
-
-	if (Object.hasOwn(pathsByCategory, defaultCategory)) {
-		return defaultCategory;
-	}
-
-	const firstCategory = Object.keys(pathCategories)[0] ?? "";
-	return Object.hasOwn(pathsByCategory, firstCategory) ? firstCategory : "";
-};
-
-const buildModifierRows = ({ modifiers, config }) => {
-	const pathCategories = config.modifier_path_categories ?? {};
-	const pathsByCategory = config.modifier_base_paths_by_category ?? {};
-	const defaultCategory = Object.keys(pathCategories)[0] ?? "";
-
-	return modifiers.map((modifier) => {
-		const selectedPath = String(modifier.path ?? "").trim();
-		const category = resolveModifierCategory({
-			category: modifier.category,
-			modifierPath: selectedPath,
-			pathCategories,
-			pathsByCategory,
-			defaultCategory,
-		});
-
-		const categoryPaths = pathsByCategory[category] ?? {};
-		const resolvedPath = Object.hasOwn(categoryPaths, selectedPath) ? selectedPath : "";
-
-		return {
-			...modifier,
-			resolvedCategory: category,
-			resolvedPath,
-		};
-	});
-};
-
-const htmlToPlainText = (value, { preserveLineBreaks = false } = {}) => {
-	const html = String(value ?? "");
-	if (!html) return "";
-
-	const container = document.createElement("div");
-	container.innerHTML = html;
-
-	if (!preserveLineBreaks) {
-		return String(container.textContent ?? "")
-			.replace(/\s+/g, " ")
-			.trim();
-	}
-
-	for (const element of container.querySelectorAll("br")) {
-		element.replaceWith(document.createTextNode("\n"));
-	}
-
-	for (const element of container.querySelectorAll("p, div, li")) {
-		if (element.lastChild?.nodeType !== Node.TEXT_NODE) {
-			element.append(document.createTextNode("\n"));
-			continue;
-		}
-
-		const text = element.lastChild.textContent ?? "";
-		if (!text.endsWith("\n")) {
-			element.lastChild.textContent = `${text}\n`;
-		}
-	}
-
-	return String(container.textContent ?? "")
-		.replace(/\r/g, "")
-		.replace(/[ \t\f\v]+/g, " ")
-		.replace(/[ \t\f\v]*\n[ \t\f\v]*/g, "\n")
-		.replace(/\n{3,}/g, "\n\n")
-		.trim();
-};
+	formatSignedNumber,
+	getActorStatValue,
+	htmlToPlainText,
+	toFiniteNumber,
+} from "../utils.mjs";
 
 const ACTION_RESOURCE_TOKEN_META = Object.freeze({
 	main: {
@@ -308,30 +152,6 @@ const buildActionResourceSummary = ({ actionData, config }) => {
 	};
 };
 
-const toFiniteNumber = (value, fallback = 0) => {
-	const number = Number(value);
-	return Number.isFinite(number) ? number : fallback;
-};
-
-const formatSignedNumber = (value) => {
-	const number = toFiniteNumber(value, 0);
-	return number >= 0 ? `+${number}` : `${number}`;
-};
-
-const getActorStatValue = (item, statKey) => {
-	if (!statKey || statKey === "none") return 0;
-
-	const actor = item.actor ?? item.parent ?? null;
-	const actorSystem = actor?.system ?? {};
-	const rollStatValue = actorSystem?.roll_stats?.[statKey]?.value;
-	if (Number.isFinite(Number(rollStatValue))) return Number(rollStatValue);
-
-	const statValue = actorSystem?.stats?.[statKey]?.value;
-	if (Number.isFinite(Number(statValue))) return Number(statValue);
-
-	return 0;
-};
-
 const buildActionCoreSummary = (item, actionData, config) => {
 	const mode = String(actionData?.mode ?? "physical");
 	const modeLabel = config.attack_mode?.[mode] ?? mode;
@@ -360,9 +180,7 @@ const buildActionCoreSummary = (item, actionData, config) => {
 };
 
 const buildActionRequirementSummary = (actionData) => {
-	const requiresText = htmlToPlainText(actionData?.requires ?? "");
-	if (!requiresText) return "";
-	return requiresText;
+	return htmlToPlainText(actionData?.requires ?? "");
 };
 
 const getCooldownUnitShort = (unit) => {
@@ -529,11 +347,9 @@ const buildEmbeddedActionRows = ({ item, config }) => {
 	const embeddedActions = Array.isArray(item.system?.actions) ? item.system.actions : [];
 
 	return embeddedActions.map((actionData, index) => {
-		const storedName = String(actionData?.name ?? "");
-		const trimmedName = storedName.trim();
+		const trimmedName = String(actionData?.name ?? "").trim();
 		const defaultName = getDefaultEmbeddedActionName(item.name, index);
-		const storedShorthand = String(actionData?.shorthand ?? "");
-		const trimmedShorthand = storedShorthand.trim();
+		const trimmedShorthand = String(actionData?.shorthand ?? "").trim();
 		const defaultShorthand = getDefaultEmbeddedActionShorthand(index);
 		const sourceUuid = String(actionData?.source_uuid ?? "").trim();
 		const sourceVersion = String(actionData?.source_version ?? "").trim();
@@ -564,9 +380,7 @@ const buildEmbeddedActionRows = ({ item, config }) => {
 	});
 };
 
-export const buildItemSheetContext = async ({ baseData, config, sheet, textEditor }) => {
-	const item = baseData.document;
-	const rawTabs = sheet._prepareTabs(PRIMARY_TAB_GROUP);
+export const buildActionableContext = ({ item, config }) => {
 	const isActionItem = item.type === "Action";
 	const hasEmbeddedActions = Array.isArray(item.system?.actions);
 	const actionData = isActionItem ? item.system : null;
@@ -582,123 +396,28 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 	const embeddedActionsCount = embeddedActions.length;
 	const canAddEmbeddedAction = embeddedActionsCount < MAX_EMBEDDED_ACTIONS;
 	const embeddedActionsTabLabel = embeddedActionsCount >= 2 ? "Actions" : "Action";
-	const isCurrencyItem = item.type === "Currency";
-	const hasSpecific = ITEM_TYPES_WITH_SPECIFIC.has(item.type);
-	const hasModifiers = ITEM_TYPES_WITH_MODIFIERS.has(item.type);
-	const hasPhysical = ITEM_TYPES_WITH_PHYSICAL.has(item.type);
-	const showModifiersTab = hasModifiers && Array.isArray(item.system?.modifiers);
-	const identificationData = isCurrencyItem ? undefined : item.system?.identification;
-	const needsIdentification = identificationData?.needs_identification ?? false;
-	const isIdentificationLocked =
-		needsIdentification === true && identificationData?.identified !== true;
-
-	const { tabs, activeTab } = buildVisibleTabs({
-		embeddedActionsTabLabel,
-		activeTab: sheet.tabGroups?.[PRIMARY_TAB_GROUP],
-		hasSpecific,
-		isIdentificationLocked,
-		item,
-		rawTabs,
-		showModifiersTab,
-		showEmbeddedActionsTab,
-	});
-
-	const { descriptionValue, loretextValue } = getDescriptionData(item);
-	const unidentifiedDescription =
-		item.system?.identification?.unidentified?.description ?? "";
-	const unidentifiedLoretext = item.system?.identification?.unidentified?.loretext ?? "";
-	const useUnidentifiedPresentation =
-		needsIdentification === true && identificationData?.identified !== true;
-	const currentDescriptionNamePath = useUnidentifiedPresentation
-		? "system.identification.unidentified.description"
-		: "system.description.text";
-	const currentDescriptionEnriched = useUnidentifiedPresentation
-		? await textEditor.enrichHTML(unidentifiedDescription, { async: true })
-		: await textEditor.enrichHTML(descriptionValue, { async: true });
-	const currentDescriptionLabel = "Description";
-	const currentLoretextNamePath = useUnidentifiedPresentation
-		? "system.identification.unidentified.loretext"
-		: "system.description.loretext";
-	const currentLoretextEnriched = useUnidentifiedPresentation
-		? await textEditor.enrichHTML(unidentifiedLoretext, { async: true })
-		: await textEditor.enrichHTML(loretextValue, { async: true });
-	const currentLoretextLabel = "Loretext";
-
 	const actionMode = actionData?.mode ?? "physical";
-	const isActionModeIncant = actionMode === "incant";
-	const isActionModePhysical = actionMode === "physical";
 	const effectTextSource = actionData?.effect?.text ?? "";
 	const noteTextSource = actionData?.cost?.actions?.note ?? "";
 	const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
-	const equippableState = item.system?.equippable ?? {};
-	const equippedState = item.system?.equipped ?? {};
-	const equippedSlot = getEquippedSlotValue(equippedState, equippableState);
-	const equippedOptions = getEquippedOptions(equippableState);
-	const isEquipLocked = isEquippedSlotLocked(item.system);
-	const modifiers = Array.isArray(item.system?.modifiers) ? item.system.modifiers : [];
-	const modifierRows = buildModifierRows({ modifiers, config });
 
 	return {
-		activeTab,
-		sheetData: {
-			isOwner: sheet.item.isOwner,
-			isEditable: sheet.isEditable,
-			item,
-			itemImage: getItemImage(item),
-			sysData: item.system,
-			isActionItem,
-			tabs,
-			hasActionable,
-			showEmbeddedActionsTab,
-			embeddedActions,
-			embeddedActionsCount,
-			canAddEmbeddedAction,
-			maxEmbeddedActions: MAX_EMBEDDED_ACTIONS,
-			hasModifiers,
-			showModifiersTab,
-			modifierRows,
-			actionData,
-			actionPath,
-			defaultActionShorthand,
-			actionHeaderShorthand,
-			isCurrencyItem,
-			isActionModeIncant,
-			isActionModePhysical,
-			hasSpecific,
-			hasPhysical,
-			hasRarity: item.system?.rarity !== undefined,
-			hasIdentification: !isCurrencyItem && item.system?.identification !== undefined,
-			hasRecommendedLevel: item.system?.recommended_level !== undefined,
-			isIdentificationLocked,
-			useUnidentifiedPresentation,
-			currentDescriptionNamePath,
-			currentDescriptionEnriched,
-			currentDescriptionLabel,
-			currentLoretextNamePath,
-			currentLoretextEnriched,
-			currentLoretextLabel,
-			equippedSlot,
-			equippedOptions,
-			isEquipLocked,
-			descriptionValue,
-			loretextValue,
-			config,
-			noteHasContent,
-			enrichedHTML: {
-				description: {
-					loretext: await textEditor.enrichHTML(loretextValue, {
-						async: true,
-					}),
-				},
-				effect: {
-					text: await textEditor.enrichHTML(effectTextSource, {
-						async: true,
-					}),
-				},
-				note: await textEditor.enrichHTML(noteTextSource, {
-					async: true,
-				}),
-			},
-		},
+		isActionItem,
+		actionData,
+		actionPath,
+		defaultActionShorthand,
+		actionHeaderShorthand,
+		hasActionable,
+		showEmbeddedActionsTab,
+		embeddedActions,
+		embeddedActionsCount,
+		canAddEmbeddedAction,
+		maxEmbeddedActions: MAX_EMBEDDED_ACTIONS,
+		embeddedActionsTabLabel,
+		isActionModeIncant: actionMode === "incant",
+		isActionModePhysical: actionMode === "physical",
+		effectTextSource,
+		noteTextSource,
+		noteHasContent,
 	};
 };
