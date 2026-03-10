@@ -1,7 +1,7 @@
 import {
 	normalizeHalfMinimumFormula,
 	toShortHalfMinimumFormula,
-} from "./diceModifiers.mjs";
+} from "../core/diceModifiers.mjs";
 import {
 	evaluateRoll,
 	getAttackName,
@@ -12,7 +12,7 @@ import {
 	postRollMessage,
 	resolveDamageFormula,
 	resolveDamageType,
-} from "./shared.mjs";
+} from "../core/shared.mjs";
 
 export const normalizeDamageFormula = (formula = "") => {
 	return normalizeHalfMinimumFormula(formula);

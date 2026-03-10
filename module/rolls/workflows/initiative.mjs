@@ -1,4 +1,8 @@
-import { getStatBasedValue, postRollMessage, rollD20WithModifier } from "./shared.mjs";
+import {
+	getStatBasedValue,
+	postRollMessage,
+	rollD20WithModifier,
+} from "../core/shared.mjs";
 
 export const rollInitiative = async (actor, options = {}) => {
 	if (!actor) return null;

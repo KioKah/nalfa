@@ -17,10 +17,10 @@ import {
 	WeaponData,
 } from "../data/models.mjs";
 import NalfaCombat from "../documents/nalfaCombat.mjs";
-import { registerHalfMinimumDiceModifier } from "../rolls/diceModifiers.mjs";
-import * as rollMacros from "../rolls/macros.mjs";
-import * as rollHandlers from "../rolls/rolls.mjs";
-import * as actionExecution from "../rolls/actionExecution.mjs";
+import { registerHalfMinimumDiceModifier } from "../rolls/core/diceModifiers.mjs";
+import * as rollMacros from "../rolls/actions/macros.mjs";
+import * as rollHandlers from "../rolls/index.mjs";
+import * as actionExecution from "../rolls/actions/execution.mjs";
 import NalfaCharacterSheet from "../sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "../sheets/nalfaItem.mjs";
 import NalfaItemSheet from "../sheets/nalfaItemSheet.mjs";

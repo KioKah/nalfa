@@ -6,7 +6,7 @@ import {
 	postRollMessage,
 	promptEnemyAttackBonus,
 	rollD20WithModifier,
-} from "./shared.mjs";
+} from "../core/shared.mjs";
 
 export const rollConcentrationFromAction = async (
 	actor,

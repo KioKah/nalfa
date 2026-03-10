@@ -3,7 +3,7 @@ import {
 	rollConcentrationFromAction,
 	rollDamageSetFromAction,
 	rollSavePromptFromAction,
-} from "./rolls.mjs";
+} from "../index.mjs";
 
 const getActionTitle = ({ actionData = {}, sourceItem = null, titleName = "" } = {}) => {
 	const explicitTitle = String(titleName ?? "").trim();

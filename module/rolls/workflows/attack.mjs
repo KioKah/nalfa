@@ -5,7 +5,7 @@ import {
 	getStatTotal,
 	postRollMessage,
 	rollD20WithModifier,
-} from "./shared.mjs";
+} from "../core/shared.mjs";
 
 export const rollAttackFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;

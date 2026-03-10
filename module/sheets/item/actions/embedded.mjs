@@ -12,7 +12,7 @@ import {
 	ACTION_REF_TYPES,
 	HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
 } from "../../../actions/refs.mjs";
-import { executeActionPrompt } from "../../../rolls/actionExecution.mjs";
+import { executeActionPrompt } from "../../../rolls/actions/execution.mjs";
 import { PRIMARY_TAB_GROUP } from "../constants.mjs";
 import NalfaEmbeddedActionEditor from "./editor.mjs";
 

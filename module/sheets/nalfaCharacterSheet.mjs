@@ -5,7 +5,7 @@ import {
 	rollSavePrompt,
 	rollSkill,
 	rollStatSave,
-} from "../rolls/rolls.mjs";
+} from "../rolls/index.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
