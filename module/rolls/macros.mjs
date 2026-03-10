@@ -9,11 +9,11 @@ import {
 	createEmbeddedActionFromSourceItem,
 	getDefaultEmbeddedActionName,
 	hasEmbeddedActionSource,
-} from "../embeddedActions.mjs";
+} from "../actions/embedded.mjs";
 import {
 	ACTION_REF_TYPES,
 	HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
-} from "../actionRefs.mjs";
+} from "../actions/refs.mjs";
 
 const getMacroActor = () => {
 	return (

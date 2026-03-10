@@ -2,7 +2,7 @@ import {
 	MAX_EMBEDDED_ACTIONS,
 	getDefaultEmbeddedActionName,
 	getDefaultEmbeddedActionShorthand,
-} from "../../../embeddedActions.mjs";
+} from "../../../actions/embedded.mjs";
 import {
 	formatSignedNumber,
 	getActorStatValue,

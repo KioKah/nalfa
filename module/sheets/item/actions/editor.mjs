@@ -1,8 +1,8 @@
+import { createDefaultDamageFormula } from "../../../actions/core.mjs";
 import {
-	createDefaultDamageFormula,
 	getDefaultEmbeddedActionName,
 	getDefaultEmbeddedActionShorthand,
-} from "../../../embeddedActions.mjs";
+} from "../../../actions/embedded.mjs";
 import { buildDefaultArrayEntry } from "../arrays.mjs";
 import { openRichTextEditorDialog } from "../dialogs/richTextDialog.mjs";
 import { getItemImage, htmlToPlainText } from "../utils.mjs";
