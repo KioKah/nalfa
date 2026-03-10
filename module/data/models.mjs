@@ -1,4 +1,4 @@
-export { BaseActorData, CharacterData, NPCData } from "./models/actors.mjs";
+export { BaseActorData, CharacterData, NPCData } from "./models/actors/index.mjs";
 export {
 	ActionData,
 	BackpackData,
@@ -14,4 +14,4 @@ export {
 	TrinketData,
 	WeaponAttributeData,
 	WeaponData,
-} from "./models/items.mjs";
+} from "./models/items/index.mjs";
