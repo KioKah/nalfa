@@ -12,26 +12,34 @@ This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 ## Runtime Entry Points
 
 - `system.json`: manifest; loads `nalfa.mjs` and `nalfa.css`.
-- `nalfa.mjs`: system bootstrap on `Hooks.once("init")`.
+- `nalfa.mjs`: thin entrypoint; wires bootstrap hooks from `module/bootstrap/*`.
+- `module/bootstrap/init.mjs`: main `Hooks.once("init")` registration.
   - Registers `CONFIG.nalfa` (`module/config.mjs`).
   - Registers Actor/Item data models (`module/data/models.mjs`).
   - Sets custom document classes:
     - `CONFIG.Item.documentClass = module/sheets/nalfaItem.mjs`
     - `CONFIG.Combat.documentClass = module/documents/nalfaCombat.mjs`
-  - Registers default v2 sheets:
+  - Registers default V2 sheets:
     - `module/sheets/nalfaCharacterSheet.mjs`
     - `module/sheets/nalfaItemSheet.mjs`
   - Exposes roll APIs on `game.nalfa.rolls` and `game.nalfa.macros`.
-  - Preloads Handlebars templates, registers helpers, and binds chat-card listeners.
-  - Integrates Dice So Nice presets.
+- `module/bootstrap/templates.mjs`: template preload list.
+- `module/bootstrap/handlebars.mjs`: Handlebars helpers.
+- `module/bootstrap/chat.mjs`: chat-card listeners.
+- `module/bootstrap/diceSoNice.mjs`: Dice So Nice integration.
 
 ## Main Code Areas
 
-- `module/data/models.mjs`: canonical schema and derived data logic.
+- `module/data/models.mjs`: barrel export for data models.
+- `module/data/models/actors/*`: actor schemas and derived data logic.
+- `module/data/models/items/*`: item schemas and derived data logic.
+- `module/actions/*`: action defaults and embedded-action source/sync helpers.
 - `module/sheets/nalfaCharacterSheet.mjs`: character sheet (ActorSheetV2).
-- `module/sheets/nalfaItemSheet.mjs` and `module/sheets/item/*.mjs`: item sheet UI + handlers.
-- `module/rolls/*.mjs`: roll workflows and chat-card rendering.
-- `module/embeddedActions.mjs`: shared embedded action defaults/builders.
+- `module/sheets/nalfaItemSheet.mjs` and `module/sheets/item/*`: item sheet shell, context builders, handlers, dialogs, and embedded-action UI.
+- `module/rolls/index.mjs`: barrel export for roll workflows.
+- `module/rolls/core/*`: shared roll helpers and dice modifiers.
+- `module/rolls/workflows/*`: skill / attack / damage / save / concentration / initiative rolls.
+- `module/rolls/actions/*`: action execution prompt and hotbar/macro handling.
 - `templates/`: sheet parts and chat templates.
 - `lang/en.json`, `lang/fr.json`: localization files.
 
@@ -43,7 +51,7 @@ This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 
 ## Legacy / Non-runtime
 
-- `_old/` is historical reference only (not loaded at runtime).
+- `_old/` is historical reference only (not loaded at runtime); what remains there is intentionally kept reference material.
 - `modules.txt` is local world tooling info, not system runtime config.
 
 ## Formatting
