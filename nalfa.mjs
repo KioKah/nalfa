@@ -286,6 +286,74 @@ Hooks.on("renderChatMessageHTML", (message, html) => {
 	});
 });
 
+const getContextEntryMessage = (entry) => {
+	const messageId = entry?.dataset?.messageId ?? "";
+	if (!messageId) return null;
+	return game.messages?.get(messageId) ?? null;
+};
+
+const isNalfaRollCardEntry = (entry) => {
+	if (entry?.querySelector(".nalfa-roll-card")) return true;
+
+	const message = getContextEntryMessage(entry);
+	if (!message) return false;
+	const content = String(message.content ?? "");
+	return content.includes("nalfa-roll-card");
+};
+
+const getActionSheetFlag = (message) => {
+	const flag = message?.getFlag?.("nalfa", "actionSheet");
+	if (!flag || typeof flag !== "object") return null;
+
+	const sourceItemUuid = String(flag.sourceItemUuid ?? "").trim();
+	if (!sourceItemUuid) return null;
+
+	return {
+		sourceItemUuid,
+	};
+};
+
+const hasActionSheetContext = (entry) => {
+	const message = getContextEntryMessage(entry);
+	if (!message) return false;
+	if (!isNalfaRollCardEntry(entry)) return false;
+	return Boolean(getActionSheetFlag(message));
+};
+
+const openActionSheetFromEntry = async (entry) => {
+	const message = getContextEntryMessage(entry);
+	const actionSheetFlag = getActionSheetFlag(message);
+	if (!actionSheetFlag) {
+		ui.notifications.warn("Aucune fiche d'action liée.");
+		return;
+	}
+
+	const sourceItem = await fromUuid(actionSheetFlag.sourceItemUuid);
+	if (!(sourceItem instanceof Item)) {
+		ui.notifications.warn("Action liée introuvable.");
+		return;
+	}
+
+	if (!sourceItem.sheet) {
+		ui.notifications.warn("Impossible d'ouvrir la fiche d'action.");
+		return;
+	}
+
+	sourceItem.sheet.render(true);
+};
+
+Hooks.on("getChatMessageContextOptions", (chatLog, entryOptions) => {
+	void chatLog;
+	entryOptions.push({
+		name: "Ouvrir la fiche d'action",
+		icon: '<i class="fa-solid fa-book-open"></i>',
+		condition: (entry) => hasActionSheetContext(entry),
+		callback: (entry) => {
+			void openActionSheetFromEntry(entry);
+		},
+	});
+});
+
 // Hooks.on("renderActorSheet", (app, html, data) => {
 // 	console.warn("🚀 ~ Hooks.on ~ renderActorSheet:\n", html);
 // 	applyMutationObserver(html[0]);

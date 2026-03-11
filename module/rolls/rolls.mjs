@@ -142,6 +142,33 @@ const postRollMessage = async (actor, templateKey, data, messageOptions = {}) =>
 	});
 };
 
+const withActionSheetFlag = (messageOptions = {}, chatContext = null) => {
+	const sourceItemUuid = String(chatContext?.sourceItemUuid ?? "").trim();
+	if (!sourceItemUuid) return messageOptions;
+
+	const actionSheetFlag = {
+		sourceItemUuid,
+	};
+
+	if (Number.isInteger(chatContext?.actionIndex) && chatContext.actionIndex >= 0) {
+		actionSheetFlag.actionIndex = chatContext.actionIndex;
+	}
+
+	const actionName = String(chatContext?.actionName ?? "").trim();
+	if (actionName) actionSheetFlag.actionName = actionName;
+
+	return {
+		...messageOptions,
+		flags: {
+			...(messageOptions.flags ?? {}),
+			nalfa: {
+				...(messageOptions.flags?.nalfa ?? {}),
+				actionSheet: actionSheetFlag,
+			},
+		},
+	};
+};
+
 const rollD20WithModifier = async (modifier) => {
 	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
 	const dieResult = getD20Result(roll);
@@ -196,6 +223,10 @@ export const rollSkill = async (actor, skillKey) => {
 
 export const rollAttackFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;
+	const messageOptions = withActionSheetFlag(
+		options.messageOptions ?? {},
+		options.chatContext,
+	);
 
 	const jdt = actionData?.jdt ?? {};
 	const requestedMode = options.mode ?? actionData?.mode ?? "physical";
@@ -264,7 +295,7 @@ export const rollAttackFromAction = async (actor, actionData = {}, options = {})
 		formulaText,
 		isCrit,
 		isFumble,
-	});
+	}, messageOptions);
 
 	return rollData;
 };
@@ -280,6 +311,10 @@ export const rollAttack = async (actor, mode = "physical") => {
 
 export const rollDamage = async (actor, config = {}) => {
 	if (!actor) return null;
+	const messageOptions = withActionSheetFlag(
+		config.messageOptions ?? {},
+		config.chatContext,
+	);
 	const rawFormula = (config.formula ?? "").trim();
 	if (!rawFormula) return null;
 	const resolvedFormula = resolveDamageFormula(rawFormula, actor);
@@ -320,7 +355,7 @@ export const rollDamage = async (actor, config = {}) => {
 		titleValue,
 		formulaText,
 		damageTypeLabel,
-	});
+	}, messageOptions);
 
 	return {
 		roll,
@@ -347,6 +382,8 @@ export const rollDamageSetFromAction = async (actor, actionData = {}, options = 
 			...entry,
 			titleLabel: "JdD",
 			titleName,
+			messageOptions: options.messageOptions,
+			chatContext: options.chatContext,
 		});
 		if (result) results.push(result);
 	}
@@ -364,6 +401,10 @@ export const rollDamageSet = async (actor) => {
 
 export const rollSavePromptFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;
+	const messageOptions = withActionSheetFlag(
+		options.messageOptions ?? {},
+		options.chatContext,
+	);
 
 	const jds = actionData?.jds ?? {};
 	const statKey = jds.stat ?? "";
@@ -387,6 +428,7 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 		user: game.user.id,
 		speaker: ChatMessage.getSpeaker({ actor }),
 		content,
+		...messageOptions,
 	});
 };
 
@@ -470,6 +512,10 @@ export const rollConcentrationFromAction = async (
 	options = {},
 ) => {
 	if (!actor) return null;
+	const messageOptions = withActionSheetFlag(
+		options.messageOptions ?? {},
+		options.chatContext,
+	);
 
 	const concentration = actionData?.concentration ?? {};
 	const resolvedStatKey = options.statKey ?? concentration.stat ?? "";
@@ -515,7 +561,7 @@ export const rollConcentrationFromAction = async (
 		isSuccess,
 		isCrit,
 		isFumble,
-	});
+	}, messageOptions);
 
 	return rollData;
 };

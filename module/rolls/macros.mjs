@@ -309,6 +309,7 @@ export const runActionRef = async (actionRef = {}) => {
 			actionData,
 			sourceItem: item,
 			titleName: buildEmbeddedActionTitle({ item, actionData, actionIndex }),
+			actionIndex,
 		});
 	}
 

@@ -438,6 +438,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 			actionData,
 			sourceItem: this.item,
 			titleName: this._getEmbeddedActionDisplayName(actionData, index),
+			actionIndex: index,
 		});
 	}
 
