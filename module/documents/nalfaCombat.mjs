@@ -1,4 +1,4 @@
-import { rollInitiative as rollNalfaInitiative } from "../rolls/rolls.mjs";
+import { rollInitiative as rollNalfaInitiative } from "../rolls/index.mjs";
 
 export default class NalfaCombat extends Combat {
 	async rollInitiative(ids, options = {}) {

@@ -1,4 +1,4 @@
-const buildDefaultArrayEntry = (entryType) => {
+export const buildDefaultArrayEntry = (entryType) => {
 	switch (entryType) {
 		case "action-resource-option":
 			return {

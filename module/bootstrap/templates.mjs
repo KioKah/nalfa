@@ -1,0 +1,42 @@
+const TEMPLATE_PATHS = [
+	"systems/nalfa/templates/sheets/character/header.hbs",
+	"systems/nalfa/templates/sheets/character/tabs.hbs",
+	"systems/nalfa/templates/sheets/character/body.hbs",
+	"systems/nalfa/templates/partials/character/combat-overview.hbs",
+	"systems/nalfa/templates/sheets/item/header.hbs",
+	"systems/nalfa/templates/sheets/item/tabs.hbs",
+	"systems/nalfa/templates/sheets/item/body.hbs",
+	"systems/nalfa/templates/sheets/item/action-editor-header.hbs",
+	"systems/nalfa/templates/sheets/item/action-editor-separator.hbs",
+	"systems/nalfa/templates/sheets/item/action-editor.hbs",
+	"systems/nalfa/templates/partials/item/item-specific.hbs",
+	"systems/nalfa/templates/partials/item/embedded-actions.hbs",
+	"systems/nalfa/templates/partials/item/actionable.hbs",
+	"systems/nalfa/templates/partials/item/modifiers.hbs",
+	"systems/nalfa/templates/partials/item/description.hbs",
+	"systems/nalfa/templates/partials/item/physical.hbs",
+	"systems/nalfa/templates/partials/item/specific/weapon.hbs",
+	"systems/nalfa/templates/partials/item/specific/trinket.hbs",
+	"systems/nalfa/templates/partials/item/specific/tool.hbs",
+	"systems/nalfa/templates/partials/item/specific/backpack.hbs",
+	"systems/nalfa/templates/partials/item/specific/consumable.hbs",
+	"systems/nalfa/templates/partials/item/specific/loot.hbs",
+	"systems/nalfa/templates/partials/item/specific/book.hbs",
+	"systems/nalfa/templates/partials/item/specific/action.hbs",
+	"systems/nalfa/templates/partials/item/specific/currency.hbs",
+	"systems/nalfa/templates/partials/item/specific/race.hbs",
+	"systems/nalfa/templates/partials/item/specific/class.hbs",
+	"systems/nalfa/templates/partials/item/specific/job.hbs",
+	"systems/nalfa/templates/partials/item/specific/weapon-attribute.hbs",
+	"systems/nalfa/templates/chat/roll/skill.hbs",
+	"systems/nalfa/templates/chat/roll/attack.hbs",
+	"systems/nalfa/templates/chat/roll/damage.hbs",
+	"systems/nalfa/templates/chat/roll/save.hbs",
+	"systems/nalfa/templates/chat/roll/initiative.hbs",
+	"systems/nalfa/templates/chat/roll/prompt-save.hbs",
+];
+
+export const preloadHandlebarsTemplates = async () => {
+	console.log("nalfa | Preloading Handlebars Templates");
+	return foundry.applications.handlebars.loadTemplates(TEMPLATE_PATHS);
+};
