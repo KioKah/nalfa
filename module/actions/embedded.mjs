@@ -25,7 +25,7 @@ export const getDefaultEmbeddedActionName = (itemName, index) => {
 	return `${resolvedBaseName} ${index + 1}`;
 };
 
-export const getDefaultEmbeddedActionShorthand = (index) => String(index + 1);
+export const getDefaultEmbeddedActionShorthand = () => "";
 
 const toSourceVersion = (sourceItem) => {
 	const modifiedTime = Number(sourceItem?._stats?.modifiedTime ?? 0);

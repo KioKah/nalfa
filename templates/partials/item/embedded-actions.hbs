@@ -30,7 +30,9 @@
 							alt="{{@root.item.name}}"
 							draggable="false"
 						/>
-						<span class="embedded-actions__shorthand">{{embeddedAction.displayShorthand}}</span>
+						{{#if embeddedAction.displayShorthand}}
+							<span class="embedded-actions__shorthand">{{embeddedAction.displayShorthand}}</span>
+						{{/if}}
 					</div>
 
 					<div class="embedded-actions__main">
@@ -157,6 +159,7 @@
 								>
 									<i class="fa-light fa-dice-d20"></i>
 								</button>
+								{{#unless embeddedAction.alwaysRefresh}}
 								<button
 									type="button"
 									class="array-action-btn"
@@ -166,6 +169,7 @@
 								>
 									<i class="fa-light fa-pen-to-square"></i>
 								</button>
+								{{/unless}}
 							</div>
 
 							<div class="embedded-actions__buttons-danger">

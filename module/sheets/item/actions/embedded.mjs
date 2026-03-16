@@ -16,6 +16,35 @@ import { executeActionPrompt } from "../../../rolls/actions/execution.mjs";
 import { PRIMARY_TAB_GROUP } from "../constants.mjs";
 import NalfaEmbeddedActionEditor from "./editor.mjs";
 
+const { DialogV2 } = foundry.applications.api;
+
+const ACTION_DIALOG_CLASSES = ["nalfa", "sheet", "nalfa-action-dialog"];
+
+const waitForActionDialog = (dialogConfig, { closeValue = null } = {}) => {
+	return new Promise((resolve) => {
+		let settled = false;
+		const settle = (value) => {
+			if (settled) return;
+			settled = true;
+			resolve(value);
+		};
+
+		const dialog = new DialogV2({
+			classes: ACTION_DIALOG_CLASSES,
+			...dialogConfig,
+			submit: (result) => {
+				settle(result);
+			},
+		});
+
+		dialog.addEventListener("close", () => {
+			settle(closeValue);
+		});
+
+		dialog.render({ force: true });
+	});
+};
+
 const getEmbeddedActions = (item) => {
 	return Array.isArray(item.system?.actions) ? item.system.actions : [];
 };
@@ -35,24 +64,28 @@ const getEmbeddedActionDropData = (event) => {
 };
 
 const confirmActionDialog = ({ title, content, confirmLabel = "Confirmer" } = {}) => {
-	return new Promise((resolve) => {
-		new Dialog({
-			title,
-			content,
-			buttons: {
-				confirm: {
-					label: confirmLabel,
-					callback: () => resolve(true),
-				},
-				cancel: {
-					label: "Annuler",
-					callback: () => resolve(false),
-				},
+	return waitForActionDialog(
+		{
+			window: {
+				title,
 			},
-			default: "cancel",
-			close: () => resolve(false),
-		}).render(true);
-	});
+			content,
+			buttons: [
+				{
+					action: "confirm",
+					label: confirmLabel,
+					callback: () => true,
+				},
+				{
+					action: "cancel",
+					label: "Annuler",
+					default: true,
+					callback: () => false,
+				},
+			],
+		},
+		{ closeValue: false },
+	);
 };
 
 const isEmbeddedActionDropTarget = (sheet, event) => {
@@ -261,6 +294,15 @@ export const handleEditEmbeddedAction = (sheet, event) => {
 
 	const embeddedActions = sheet.item.system?.actions;
 	if (!Array.isArray(embeddedActions) || !embeddedActions[index]) return;
+	if (
+		hasEmbeddedActionSource(embeddedActions[index]) &&
+		embeddedActions[index].always_refresh === true
+	) {
+		ui.notifications.warn(
+			"Désactive l'auto-sync avant de modifier cette action intégrée.",
+		);
+		return;
+	}
 
 	const fallbackWidth = sheet.constructor.DEFAULT_OPTIONS.position?.width ?? 760;
 	const width = Number(sheet.position?.width ?? fallbackWidth) || fallbackWidth;
@@ -364,37 +406,43 @@ export const handleRefreshEmbeddedActionSource = async (sheet, event) => {
 	}
 
 	const isAutoEnabled = actionData.always_refresh === true;
-	const dialogButtons = {
-		syncNow: {
-			label: "Synchroniser maintenant",
-			callback: () => {
-				void refreshEmbeddedActionAtIndex(sheet, index, {
-					forceRefresh: true,
-					notifyOnMissingSource: true,
-					notifyWhenUpdated: true,
-					notifyWhenUnchanged: true,
-				});
-			},
+	void waitForActionDialog({
+		window: {
+			title: "Synchronisation de l'action intégrée",
 		},
-		toggleAuto: {
-			label: isAutoEnabled ? "Désactiver l'auto-sync" : "Activer l'auto-sync",
-			callback: () => {
-				void setEmbeddedActionAlwaysRefresh(sheet, index, !isAutoEnabled, {
-					notify: true,
-				});
-			},
-		},
-		cancel: {
-			label: "Annuler",
-		},
-	};
-
-	new Dialog({
-		title: "Synchronisation de l'action intégrée",
 		content: `<p>Que veux-tu faire pour cette action liée ?</p>`,
-		buttons: dialogButtons,
-		default: "syncNow",
-	}).render(true);
+		buttons: [
+			{
+				action: "syncNow",
+				label: "Synchroniser maintenant",
+				default: true,
+				callback: () => {
+					void refreshEmbeddedActionAtIndex(sheet, index, {
+						forceRefresh: true,
+						notifyOnMissingSource: true,
+						notifyWhenUpdated: true,
+						notifyWhenUnchanged: true,
+					});
+					return "syncNow";
+				},
+			},
+			{
+				action: "toggleAuto",
+				label: isAutoEnabled ? "Désactiver l'auto-sync" : "Activer l'auto-sync",
+				callback: () => {
+					void setEmbeddedActionAlwaysRefresh(sheet, index, !isAutoEnabled, {
+						notify: true,
+					});
+					return "toggleAuto";
+				},
+			},
+			{
+				action: "cancel",
+				label: "Annuler",
+				callback: () => "cancel",
+			},
+		],
+	});
 };
 
 export const handleOpenEmbeddedActionSource = async (sheet, event) => {

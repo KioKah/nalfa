@@ -41,58 +41,39 @@ Ce plan ne reliste pas ce qui est deja acquis. Il couvre uniquement :
 
 ---
 
-## vA.1 - Re-aligner la doc et les infos de projet
+## vA.1 - Valider le socle deja construit
 
-- [ ] Remplacer la description placeholder de `system.json`.
-- [ ] Ajouter un `README` minimal :
-  - scope actuel du systeme,
-  - version Foundry ciblee,
-  - workflow LESS,
-  - dependances optionnelles / attendues,
-  - setup de dev local.
-- [ ] Documenter clairement le role des nouveaux `plan v*.md`.
-- [ ] Documenter l'etat reel des modules optionnels (notamment Dice So Nice).
-
-QA manuel
-
-- [ ] Un nouveau dev peut comprendre comment lancer / modifier le systeme sans lire tout le repo.
-- [ ] Les infos de base du projet sont suffisantes pour eviter les ambiguities de setup.
-
----
-
-## vA.2 - Valider le socle deja construit
-
-- [ ] Faire une passe manuelle actor sheet :
-  - [ ] changement d'onglet,
-  - [ ] changement de `valueMode`,
-  - [ ] edition stats / saves / ressources,
-  - [ ] boutons de rolls.
-- [ ] Faire une passe manuelle item sheet sur des types representatifs :
-  - [ ] `Weapon`,
-  - [ ] `Trinket`,
-  - [ ] `Action`,
-  - [ ] `Currency`,
-  - [ ] `Class`.
-- [ ] Valider les embedded actions :
-  - [ ] ajout manuel,
-  - [ ] edition,
-  - [ ] suppression,
-  - [ ] drag & drop depuis un item `Action`,
-  - [ ] synchronisation depuis la source,
-  - [ ] execution depuis item et hotbar.
-- [ ] Valider l'equipement / desequipement et les warnings de configuration d'arme.
-- [ ] Valider l'initiative custom via `NalfaCombat`.
+- [x] Faire une passe manuelle actor sheet :
+  - [x] changement d'onglet,
+  - [x] changement de `valueMode`,
+  - [x] edition stats / saves / ressources,
+  - [x] boutons de rolls.
+- [x] Faire une passe manuelle item sheet sur des types representatifs :
+  - [x] `Weapon`,
+  - [x] `Trinket`,
+  - [x] `Action`,
+  - [x] `Currency`,
+  - [x] `Class`.
+- [x] Valider les embedded actions :
+  - [x] ajout manuel,
+  - [x] edition,
+  - [x] suppression,
+  - [x] drag & drop depuis un item `Action`,
+  - [x] synchronisation depuis la source,
+  - [x] execution depuis item et hotbar.
+- [x] Valider l'equipement / desequipement et les warnings de configuration d'arme.
+- [x] Valider l'initiative custom via `NalfaCombat`.
 
 QA manuel
 
-- [ ] Aucun workflow principal ne produit d'erreur console bloquante.
-- [ ] Aucun rerender ne casse les listeners ou l'etat d'onglet.
+- [x] Aucun workflow principal ne produit d'erreur console bloquante.
+- [x] Aucun rerender ne casse les listeners ou l'etat d'onglet.
 
 ---
 
-## vA.3 - Fermer les points partiellement termines
+## vA.2 - Fermer les points partiellement termines
 
-### vA.3.1 - Critiques et degats
+### vA.2.1 - Critiques et degats
 
 - [ ] Completer la regle de critique sur JdT : doubler uniquement les des de degats,
       pas les bonus de stat.
@@ -102,7 +83,7 @@ QA manuel
 
 - [ ] Cas normal vs crit : seule la partie des change.
 
-### vA.3.2 - Sauvegardes standardisees
+### vA.2.2 - Sauvegardes standardisees
 
 - [ ] Garder le workflow actuel base sur les actions, mais ajouter un mode standard
       quand il n'y a pas de source d'action complete.
@@ -120,7 +101,7 @@ QA manuel
 
 - [ ] Une sauvegarde depuis une action et une sauvegarde "manuelle" donnent des cartes lisibles.
 
-### vA.3.3 - Integrations optionnelles robustes
+### vA.2.3 - Integrations optionnelles robustes
 
 - [ ] Rendre l'integration Dice So Nice fail-soft si le module / chemin n'est pas present.
 - [ ] Decider si cette integration est une option documentee ou une dependance obligatoire.
@@ -129,7 +110,7 @@ QA manuel
 
 - [ ] Le systeme charge sans crash avec et sans Dice So Nice.
 
-### vA.3.4 - Clarifier l'UI existante
+### vA.2.4 - Clarifier l'UI existante
 
 - [ ] Clarifier dans l'UI ce que signifient `Lecture`, `Modification`, `Alteration`.
 - [ ] Revoir les labels / aides rapides autour de `valueMode`.
@@ -141,7 +122,7 @@ QA manuel
 
 ---
 
-## vA.4 - Routine de recette manuelle et hygiene repo
+## vA.3 - Routine de recette manuelle et hygiene repo
 
 - [ ] Ecrire une checklist manuelle officielle pour les verifications Foundry principales.
 - [ ] Definir un petit jeu de donnees de reference pour la recette manuelle :
@@ -157,9 +138,9 @@ QA manuel
 
 ---
 
-## vA.5 - Refactors cibles avant nouveaux gros ajouts
+## vA.4 - Refactors cibles avant nouveaux gros ajouts
 
-### vA.5.1 - Bootstrap
+### vA.4.1 - Bootstrap
 
 - [ ] Sortir de `nalfa.mjs` ce qui n'a pas besoin de vivre dans l'entrypoint :
   - [ ] preload templates,
@@ -167,7 +148,7 @@ QA manuel
   - [ ] hooks chat,
   - [ ] integration Dice So Nice.
 
-### vA.5.2 - Rolls
+### vA.4.2 - Rolls
 
 - [ ] Decouper `module/rolls/rolls.mjs` en sous-domaines :
   - [ ] utilitaires communs,
@@ -175,13 +156,13 @@ QA manuel
   - [ ] saves / concentration,
   - [ ] initiative.
 
-### vA.5.3 - Item sheet
+### vA.4.3 - Item sheet
 
 - [ ] Continuer l'extraction de `module/sheets/nalfaItemSheet.mjs`.
 - [ ] Sortir de `module/sheets/item/context.mjs` les helpers purement presentation / formatage.
 - [ ] Isoler la logique embedded actions dans un bloc plus autonome.
 
-### vA.5.4 - Data models
+### vA.4.4 - Data models
 
 - [ ] Commencer a decomposer `module/data/models.mjs` sans changer le schema public.
 - [ ] Separer au minimum :
@@ -192,4 +173,4 @@ QA manuel
 
 QA manuel
 
-- [ ] Les refactors n'introduisent pas de regression visible sur les workflows valides en vA.2.
+- [ ] Les refactors n'introduisent pas de regression visible sur les workflows valides en vA.1.

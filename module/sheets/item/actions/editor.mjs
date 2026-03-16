@@ -299,6 +299,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		const currentActions = this.item.system?.actions;
 		if (!Array.isArray(currentActions) || !currentActions[index]) return;
 
-		await this.item.update({ [`system.actions.${index}`]: this._draftAction });
+		const nextActions = foundry.utils.deepClone(currentActions);
+		nextActions[index] = foundry.utils.deepClone(this._draftAction);
+		await this.item.update({ "system.actions": nextActions });
 	}
 }

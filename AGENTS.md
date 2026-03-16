@@ -64,6 +64,8 @@ This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 
 ## V2 Sheet Pitfalls And Patterns
 
+**PREFER V2 Objects over V1 ones.**
+
 - **Template root rule (per PART)**: each template referenced by a single `PARTS` entry
   should render exactly one top-level element. If that one part template has sibling root
   nodes, the sheet can fail to render with errors that look unrelated.

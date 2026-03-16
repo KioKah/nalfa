@@ -5,6 +5,35 @@ import {
 	rollSavePromptFromAction,
 } from "../index.mjs";
 
+const { DialogV2 } = foundry.applications.api;
+
+const ACTION_DIALOG_CLASSES = ["nalfa", "sheet", "nalfa-action-dialog"];
+
+const waitForActionDialog = (dialogConfig, { closeValue = null } = {}) => {
+	return new Promise((resolve) => {
+		let settled = false;
+		const settle = (value) => {
+			if (settled) return;
+			settled = true;
+			resolve(value);
+		};
+
+		const dialog = new DialogV2({
+			classes: ACTION_DIALOG_CLASSES,
+			...dialogConfig,
+			submit: (result) => {
+				settle(result);
+			},
+		});
+
+		dialog.addEventListener("close", () => {
+			settle(closeValue);
+		});
+
+		dialog.render({ force: true });
+	});
+};
+
 const getActionTitle = ({ actionData = {}, sourceItem = null, titleName = "" } = {}) => {
 	const explicitTitle = String(titleName ?? "").trim();
 	if (explicitTitle) return explicitTitle;
@@ -118,24 +147,24 @@ export const executeActionPrompt = async ({
 		return choices[0].run();
 	}
 
-	return new Promise((resolve) => {
-		const buttons = {};
-
-		for (const choice of choices) {
-			buttons[choice.id] = {
-				label: choice.label,
-				callback: () => {
-					void choice.run().then((result) => resolve(result));
-				},
-			};
-		}
-
-		new Dialog({
-			title: `Action - ${resolvedTitle}`,
+	const selectedChoice = await waitForActionDialog(
+		{
+			window: {
+				title: `Action - ${resolvedTitle}`,
+			},
 			content: `<p>Quel jet veux-tu lancer ?</p>`,
-			buttons,
-			default: choices[0].id,
-			close: () => resolve(null),
-		}).render(true);
-	});
+			buttons: choices.map((choice, index) => {
+				return {
+					action: choice.id,
+					label: choice.label,
+					default: index === 0,
+					callback: () => choice,
+				};
+			}),
+		},
+		{ closeValue: null },
+	);
+
+	if (!selectedChoice) return null;
+	return selectedChoice.run();
 };
