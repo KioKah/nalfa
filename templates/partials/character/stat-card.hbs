@@ -1,0 +1,71 @@
+<div class="skill-by-stat color-{{statKey}}">
+  <div class="stat">
+    <div class="stat-info">
+      <div class="stat-left">
+        <span class="stat-name">{{lookup config.stats statKey}}</span>
+        <span class="stat-value value-mode--values">{{statObj.value}}</span>
+        <input
+          class="stat-input value-mode--base"
+          name="system.stats.{{statKey}}.base"
+          type="number"
+          value="{{statObj.base}}"
+          data-dtype="Number"
+        />
+        <input
+          class="stat-input value-mode--alt"
+          name="system.stats.{{statKey}}.alt"
+          type="number"
+          value="{{statObj.alt}}"
+          data-dtype="Number"
+        />
+      </div>
+      <div class="stat-right">
+        <span class="stat-save">Sauv</span>
+        {{#if rollable}}
+          <span
+            class="stat-save-value value-mode--values border-color-{{statKey}}"
+            data-action="roll-stat-save"
+            data-stat="{{statKey}}"
+            data-tooltip="Lancer la sauvegarde de {{lookup config.stats statKey}}"
+            role="button"
+          >
+            <i class="stat-save-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+            <span class="stat-save-value__text">{{statObj.save.value}}</span>
+          </span>
+        {{else}}
+          <span class="stat-save-value value-mode--values border-color-{{statKey}}">
+            <i class="stat-save-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+            <span class="stat-save-value__text">{{statObj.save.value}}</span>
+          </span>
+        {{/if}}
+        <input
+          class="stat-save-input value-mode--base"
+          name="system.stats.{{statKey}}.save.base"
+          type="number"
+          value="{{statObj.save.base}}"
+          data-dtype="Number"
+        />
+        <input
+          class="stat-save-input value-mode--alt"
+          name="system.stats.{{statKey}}.save.alt"
+          type="number"
+          value="{{statObj.save.alt}}"
+          data-dtype="Number"
+        />
+      </div>
+    </div>
+    <div class="stat-separator"></div>
+  </div>
+  {{#each sysData.attributes.skills as |skillObj skillKey|}}
+    {{#if (eq skillObj.stat statKey)}}
+      {{>
+        "systems/nalfa/templates/partials/character/skill-row.hbs"
+        skillObj=skillObj
+        skillKey=skillKey
+        statKey=statKey
+        config=@root.config
+        rollable=@root.rollable
+      }}
+    {{/if}}
+  {{/each}}
+</div>

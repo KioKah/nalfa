@@ -1,0 +1,55 @@
+<div class="attack-config__damage-row">
+  <div class="attack-config__damage-main">
+    <input
+      class="attack-config__damage-formula"
+      name="system.{{actionPath}}{{damagePath}}.{{index}}.formula"
+      type="text"
+      value="{{damage.formula}}"
+      placeholder="{{formulaPlaceholder}}"
+    />
+    <span class="attack-config__row-sep">+</span>
+    <select
+      class="stat-physical"
+      name="system.{{actionPath}}{{damagePath}}.{{index}}.stat"
+    >
+      {{#if isActionModeIncant}}
+        {{selectOptions config.stats_optional_incant selected=damage.stat}}
+      {{else if isActionModePhysical}}
+        {{selectOptions config.stats_optional_physical selected=damage.stat}}
+      {{else}}
+        {{selectOptions config.stats_optional selected=damage.stat}}
+      {{/if}}
+    </select>
+  </div>
+  <div class="attack-config__damage-tail">
+    <span class="attack-config__row-sep">:</span>
+    <select
+      class="attack-config__damage-type"
+      name="system.{{actionPath}}{{damagePath}}.{{index}}.type"
+    >
+      {{selectOptions config.all_damage_types selected=damage.type}}
+    </select>
+  </div>
+  {{#if showAddButton}}
+    <button
+      type="button"
+      data-action="add-array-entry"
+      data-path="{{actionPath}}{{damagePath}}"
+      data-entry-type="damage-formula"
+      data-tooltip="{{addTooltip}}"
+    >
+      <i class="fa-light fa-square-plus"></i>
+    </button>
+  {{else}}
+    <button
+      type="button"
+      data-action="remove-array-entry"
+      data-path="{{actionPath}}{{damagePath}}"
+      data-index="{{index}}"
+      data-minimum="1"
+      data-tooltip="{{removeTooltip}}"
+    >
+      <i class="fa-light fa-square-minus"></i>
+    </button>
+  {{/if}}
+</div>

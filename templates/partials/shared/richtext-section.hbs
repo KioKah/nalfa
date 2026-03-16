@@ -1,0 +1,23 @@
+<div class="{{contentClass}}">
+  {{#unless readonly}}
+    <button
+      type="button"
+      class="array-action-btn richtext-field__overlay-btn"
+      data-action="open-richtext-editor"
+      data-path="{{namePath}}"
+      data-title="{{title}}"
+      data-tooltip="{{editTooltip}}"
+    >
+      <i class="fa-light fa-pen-to-square"></i>
+    </button>
+  {{/unless}}
+  {{#if hasContent}}
+    <div class="richtext-field__content">{{{content}}}</div>
+  {{else if placeholderHtml}}
+    <div class="richtext-field__content richtext-field__content--placeholder">
+      {{{placeholderHtml}}}
+    </div>
+  {{else}}
+    <div class="richtext-field__content">{{{content}}}</div>
+  {{/if}}
+</div>

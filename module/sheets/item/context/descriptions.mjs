@@ -44,8 +44,10 @@ export const buildDescriptionContext = async ({
 		currentDescriptionNamePath,
 		currentDescriptionEnriched,
 		currentDescriptionLabel: "Description",
+		currentDescriptionEditTooltip: "Modifier la description",
 		currentLoretextNamePath,
 		currentLoretextEnriched,
 		currentLoretextLabel: "Loretext",
+		currentLoretextEditTooltip: "Modifier le loretext",
 	};
 };

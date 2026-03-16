@@ -1,0 +1,80 @@
+<div class="attack-config__action-option panel-section {{#if isPrimary}}attack-config__action-option--primary{{/if}}">
+  <div class="attack-config__action-costs">
+    <label
+      class="attack-config__action-cost"
+      data-tooltip="{{config.action_cost_hover_labels.main}}"
+    >
+      <span
+        class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
+        aria-hidden="true"
+      >
+        <i class="fa-light fa-sword"></i>
+      </span>
+      <input
+        class="attack-config__cost-input"
+        name="system.{{actionPath}}cost.actions.options.{{optionIndex}}.main"
+        type="number"
+        value="{{option.main}}"
+        data-dtype="Number"
+      />
+    </label>
+    <label
+      class="attack-config__action-cost"
+      data-tooltip="{{config.action_cost_hover_labels.bonus}}"
+    >
+      <span
+        class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
+        aria-hidden="true"
+      >
+        <i class="fa-light fa-plus"></i>
+      </span>
+      <input
+        class="attack-config__cost-input"
+        name="system.{{actionPath}}cost.actions.options.{{optionIndex}}.bonus"
+        type="number"
+        value="{{option.bonus}}"
+        data-dtype="Number"
+      />
+    </label>
+    <label
+      class="attack-config__action-cost"
+      data-tooltip="{{config.action_cost_hover_labels.reaction}}"
+    >
+      <span
+        class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
+        aria-hidden="true"
+      >
+        <i class="fa-light fa-rotate-left"></i>
+      </span>
+      <input
+        class="attack-config__cost-input"
+        name="system.{{actionPath}}cost.actions.options.{{optionIndex}}.reaction"
+        type="number"
+        value="{{option.reaction}}"
+        data-dtype="Number"
+      />
+    </label>
+    {{#if showRemoveButton}}
+      <button
+        type="button"
+        class="array-action-btn attack-config__action-option-remove"
+        data-action="remove-array-entry"
+        data-path="{{actionPath}}cost.actions.options"
+        data-index="{{optionIndex}}"
+        data-minimum="1"
+        data-tooltip="Supprimer cette option de coût"
+      >
+        <i class="fa-light fa-square-minus"></i>
+      </button>
+    {{/if}}
+  </div>
+  <div class="attack-config__action-option-meta">
+    <input
+      class="attack-config__grow-input"
+      name="system.{{actionPath}}cost.actions.options.{{optionIndex}}.condition"
+      type="text"
+      value="{{option.condition}}"
+      placeholder="Condition (optionnelle)"
+    />
+  </div>
+</div>

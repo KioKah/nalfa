@@ -1,0 +1,23 @@
+<div class="attack-config__section attack-config__section--row">
+  <div class="attack-config__section-title">
+    <span class="field__label">{{label}}</span>
+  </div>
+  <div class="attack-config__fields">
+    {{#each damageFormulas as |damage index|}}
+      {{>
+        "systems/nalfa/templates/partials/item/actionable/damage-formula-row.hbs"
+        actionPath=@root.actionPath
+        damagePath=@root.damagePath
+        damage=damage
+        index=index
+        config=@root.config
+        isActionModeIncant=@root.isActionModeIncant
+        isActionModePhysical=@root.isActionModePhysical
+        showAddButton=(eq index 0)
+        addTooltip=@root.addTooltip
+        removeTooltip=@root.removeTooltip
+        formulaPlaceholder=@root.formulaPlaceholder
+      }}
+    {{/each}}
+  </div>
+</div>

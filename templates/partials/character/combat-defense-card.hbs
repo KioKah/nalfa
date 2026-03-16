@@ -1,0 +1,54 @@
+<div class="combat-overview__card">
+  <div class="combat-overview__title">vs JdT</div>
+  <div class="combat-overview__separator"></div>
+  <div class="combat-overview__line">
+    <div class="field field--inline combat-overview__stat">
+      <span class="field__label">Défense</span>
+      <span class="field__total combat-overview__value">{{sysData.attributes.defense.value}}</span>
+      {{#if (eq sysData.ui.valueMode "values")}}
+        <span class="field__meta field__meta--formula">
+          ({{lookup config.profiles sysData.profile}}{{formulaSignedNumber sysData.attributes.defense.base}}{{formulaSignedNumber sysData.attributes.defense.alt}})
+        </span>
+      {{/if}}
+      <input
+        class="value-mode value-mode--base"
+        name="system.attributes.defense.base"
+        type="number"
+        value="{{sysData.attributes.defense.base}}"
+        data-dtype="Number"
+      />
+      <input
+        class="value-mode value-mode--alt"
+        name="system.attributes.defense.alt"
+        type="number"
+        value="{{sysData.attributes.defense.alt}}"
+        data-dtype="Number"
+      />
+    </div>
+  </div>
+  <div class="combat-overview__line">
+    <div class="field field--inline combat-overview__stat">
+      <span class="field__label">Évasion</span>
+      <span class="field__total combat-overview__value">{{sysData.attributes.evasion.value}}</span>
+      {{#if (eq sysData.ui.valueMode "values")}}
+        <span class="field__meta field__meta--formula">
+          ({{sysData.attributes.evasion.base}}{{formulaSignedNumber sysData.attributes.evasion.alt}})
+        </span>
+      {{/if}}
+      <input
+        class="value-mode value-mode--base"
+        name="system.attributes.evasion.base"
+        type="number"
+        value="{{sysData.attributes.evasion.base}}"
+        data-dtype="Number"
+      />
+      <input
+        class="value-mode value-mode--alt"
+        name="system.attributes.evasion.alt"
+        type="number"
+        value="{{sysData.attributes.evasion.alt}}"
+        data-dtype="Number"
+      />
+    </div>
+  </div>
+</div>

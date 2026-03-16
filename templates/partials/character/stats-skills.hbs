@@ -1,0 +1,15 @@
+<div class="sheet-section">
+  <h2>Stats &amp; Compétences</h2>
+  <div class="skills-by-stat">
+    {{#each sysData.stats as |statObj statKey|}}
+      {{>
+        "systems/nalfa/templates/partials/character/stat-card.hbs"
+        statObj=statObj
+        statKey=statKey
+        sysData=@root.sysData
+        config=@root.config
+        rollable=@root.rollable
+      }}
+    {{/each}}
+  </div>
+</div>

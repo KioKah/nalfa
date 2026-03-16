@@ -68,6 +68,8 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 		sheetData: {
 			isOwner: sheet.item.isOwner,
 			isEditable: sheet.isEditable,
+			readonly: !sheet.isEditable,
+			rollable: sheet.item.isOwner,
 			item,
 			itemImage: getItemImage(item),
 			sysData: item.system,

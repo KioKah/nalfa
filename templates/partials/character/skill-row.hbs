@@ -1,0 +1,45 @@
+<div class="skill {{skillObj.default_stat}}">
+  <div class="skill-info">
+    <span class="skill-name value-mode--values">{{skillName skillKey}}</span>
+    <span class="skill-name skill-name--key value-mode--edit">{{skillKey}}</span>
+    {{#if rollable}}
+      <span
+        class="skill-value skill-value--roll value-mode--values border-color-{{statKey}}"
+        data-action="roll-skill"
+        data-skill="{{skillKey}}"
+        data-tooltip="Lancer {{skillName skillKey}}"
+        role="button"
+      >
+        <i class="skill-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+        <span class="skill-value__text">{{skillObj.value}}</span>
+      </span>
+    {{else}}
+      <span class="skill-value skill-value--roll value-mode--values border-color-{{statKey}}">
+        <i class="skill-value__icon fa-thin fa-dice-d20" aria-hidden="true"></i>
+        <span class="skill-value__text">{{skillObj.value}}</span>
+      </span>
+    {{/if}}
+    <div class="skill-controls value-mode--edit">
+      <select
+        class="skill-stat value-mode--base"
+        name="system.attributes.skills.{{skillKey}}.stat"
+      >
+        {{selectOptions config.stats selected=skillObj.stat}}
+      </select>
+      <input
+        class="value-mode--base"
+        name="system.attributes.skills.{{skillKey}}.base"
+        type="number"
+        value="{{skillObj.base}}"
+        data-dtype="Number"
+      />
+      <input
+        class="value-mode--alt"
+        name="system.attributes.skills.{{skillKey}}.alt"
+        type="number"
+        value="{{skillObj.alt}}"
+        data-dtype="Number"
+      />
+    </div>
+  </div>
+</div>

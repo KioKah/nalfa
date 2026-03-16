@@ -1,0 +1,33 @@
+<div class="attack-config__section attack-config__section--row">
+  <div class="attack-config__section-title">
+    <span class="field__label">JdS</span>
+  </div>
+  <div class="attack-config__fields attack-config__fields--row">
+    <select class="stat" name="system.{{actionPath}}jds.stat">
+      {{selectOptions config.stats_optional selected=actionData.jds.stat}}
+    </select>
+    <span class="attack-config__row-sep">vs DD</span>
+    <input
+      name="system.{{actionPath}}jds.dd"
+      type="number"
+      value="{{actionData.jds.dd}}"
+      data-dtype="Number"
+    />
+    <span class="attack-config__row-sep">-&gt;</span>
+    <input
+      class="attack-config__grow-input"
+      name="system.{{actionPath}}jds.text"
+      type="text"
+      value="{{actionData.jds.text}}"
+      placeholder="Effet si réussite"
+    />
+    <label class="attack-config__toggle">
+      <input
+        type="checkbox"
+        name="system.{{actionPath}}jds.jdd_saved"
+        {{checked actionData.jds.jdd_saved}}
+      />
+      <span>JdD?</span>
+    </label>
+  </div>
+</div>

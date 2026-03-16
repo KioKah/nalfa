@@ -1,760 +1,113 @@
 {{#if hasActionable}}
-	<div class="sheet-section attack-config">
-		<div class="attack-config__section attack-config__section--row">
-			<div class="attack-config__section-title">
-				<span class="field__label">Mode</span>
-			</div>
-			<div class="attack-config__fields attack-config__fields--row attack-config__mode-row">
-				<select class="attack-config__mode-select" name="system.{{actionPath}}mode">
-					{{selectOptions config.attack_mode selected=actionData.mode}}
-				</select>
-				<select
-					class="attack-config__cost-select attack-config__cost-select--zone-type"
-					name="system.{{actionPath}}range_type"
-				>
-					{{selectOptions config.range_types selected=actionData.range_type}}
-				</select>
+  <div class="sheet-section attack-config">
+    {{>
+      "systems/nalfa/templates/partials/item/actionable/mode.hbs"
+      actionPath=actionPath
+      actionData=actionData
+      config=config
+    }}
+    {{>
+      "systems/nalfa/templates/partials/item/actionable/requirements.hbs"
+      actionPath=actionPath
+      actionData=actionData
+    }}
+    {{>
+      "systems/nalfa/templates/partials/item/actionable/targeting.hbs"
+      actionPath=actionPath
+      actionData=actionData
+      config=config
+    }}
+    <div class="attack-config__section attack-config__section--row">
+      <div class="attack-config__section-title">
+        <span class="field__label">Effet</span>
+      </div>
+      <div class="attack-config__fields">
+        {{>
+          "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+          title="Effet"
+          namePath=effectNamePath
+          editTooltip="Modifier l'effet"
+          content=enrichedHTML.effect.text
+          hasContent=true
+          readonly=readonly
+          contentClass="richtext-field richtext-field--overlay-action"
+        }}
+      </div>
+    </div>
+    {{>
+      "systems/nalfa/templates/partials/item/actionable/costs.hbs"
+      actionPath=actionPath
+      actionData=actionData
+      config=config
+      noteNamePath=noteNamePath
+      noteHasContent=noteHasContent
+      enrichedHTML=enrichedHTML
+      readonly=readonly
+    }}
 
-				<div class="attack-config__inline-row attack-config__toggles">
-					<label class="attack-config__toggle">
-						<input
-							type="checkbox"
-							name="system.{{actionPath}}jdt.enabled"
-							{{checked actionData.jdt.enabled}}
-						/>
-						<span>JdT?</span>
-					</label>
-					<label class="attack-config__toggle">
-						<input
-							type="checkbox"
-							name="system.{{actionPath}}jds.enabled"
-							{{checked actionData.jds.enabled}}
-						/>
-						<span>JdS?</span>
-					</label>
-					<label class="attack-config__toggle">
-						<input
-							type="checkbox"
-							name="system.{{actionPath}}jdd.enabled"
-							{{checked actionData.jdd.enabled}}
-						/>
-						<span>JdD?</span>
-					</label>
-					<label class="attack-config__toggle">
-						<input
-							type="checkbox"
-							name="system.{{actionPath}}concentration.enabled"
-							{{checked actionData.concentration.enabled}}
-						/>
-						<span>JdF?</span>
-					</label>
-				</div>
-			</div>
-		</div>
+    <div class="attack-config__sections">
+      {{#if actionData.jdt.enabled}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/roll-jdt.hbs"
+          actionPath=actionPath
+          actionData=actionData
+          config=config
+          isActionModeIncant=isActionModeIncant
+          isActionModePhysical=isActionModePhysical
+        }}
+      {{/if}}
 
-		<div class="attack-config__section attack-config__section--row">
-			<div class="attack-config__section-title">
-				<span class="field__label">Préreq.</span>
-			</div>
-			<div class="attack-config__fields attack-config__fields--row">
-				<input
-					class="attack-config__grow-input"
-					name="system.{{actionPath}}requires"
-					type="text"
-					value="{{actionData.requires}}"
-					placeholder="Si... (condition d'utilisation)"
-				/>
-			</div>
-		</div>
+      {{#if actionData.jds.enabled}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/roll-jds.hbs"
+          actionPath=actionPath
+          actionData=actionData
+          config=config
+        }}
+      {{/if}}
 
-		<div class="attack-config__section attack-config__section--row">
-			<div class="attack-config__section-title">
-				<span class="field__label">Ciblage</span>
-			</div>
-			<div class="attack-config__fields">
-				<div class="attack-config__fields attack-config__fields--row">
-					<span class="attack-config__row-sep">
-						{{pluralTargetLabel "Cible" actionData.selection.target.amount}}
-					</span>
-					{{#unless (eq actionData.selection.target.unit "self")}}
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}selection.target.amount"
-							type="number"
-							value="{{actionData.selection.target.amount}}"
-							data-dtype="Number"
-						/>
-					{{/unless}}
-					<select
-						class="attack-config__cost-select attack-config__cost-select--target-unit"
-						name="system.{{actionPath}}selection.target.unit"
-					>
-						{{#each config.selection_target_units}}
-							<option
-								value="{{@key}}"
-								{{#if (eq @key ../actionData.selection.target.unit)}}selected{{/if}}
-							>
-								{{#if (eq @key "self")}}
-									{{this}}
-								{{else}}
-									{{pluralTargetLabel this ../actionData.selection.target.amount}}
-								{{/if}}
-							</option>
-						{{/each}}
-					</select>
-					{{#unless (eq actionData.selection.target.unit "self")}}
-						<select
-							class="attack-config__cost-select attack-config__cost-select--target-visibility"
-							name="system.{{actionPath}}selection.target.visibility"
-						>
-							{{#each config.target_visibility}}
-								<option
-									value="{{@key}}"
-									{{#if (eq @key ../actionData.selection.target.visibility)}}selected{{/if}}
-								>
-									{{pluralTargetLabel this ../actionData.selection.target.amount}}
-								</option>
-							{{/each}}
-						</select>
-						<label class="attack-config__toggle attack-config__toggle--push-end">
-							<input
-								type="checkbox"
-								name="system.{{actionPath}}selection.target.include_self"
-								{{checked actionData.selection.target.include_self}}
-							/>
-							<span>Soi inclus?</span>
-						</label>
-					{{/unless}}
-				</div>
-				{{#unless (eq actionData.range_type "melee")}}
-					<div class="attack-config__fields attack-config__fields--row">
-						<span class="attack-config__row-sep">Zone</span>
-						<select
-							class="attack-config__cost-select attack-config__cost-select--zone-shape"
-							name="system.{{actionPath}}selection.zone.shape"
-						>
-							{{selectOptions config.area_shapes selected=actionData.selection.zone.shape}}
-						</select>
-						{{#unless (eq actionData.selection.zone.shape "circle")}}
-							<span class="attack-config__measure">
-								<input
-									class="attack-config__cost-input"
-									name="system.{{actionPath}}selection.zone.range_secondary"
-									type="number"
-									value="{{actionData.selection.zone.range_secondary}}"
-									data-dtype="Number"
-								/>
-								<span class="attack-config__row-sep">
-									{{#if (eq actionData.selection.zone.shape "line")}}m de largeur{{else}}°{{/if}}
-								</span>
-							</span>
-						{{/unless}}
-					</div>
-				{{/unless}}
-				{{#unless (eq actionData.range_type "melee")}}
-					<div class="attack-config__fields attack-config__fields--row">
-						<span class="attack-config__row-sep">Portée</span>
-						{{#if (eq actionData.range_type "pure_ranged")}}
-							<span class="attack-config__measure">
-								<input
-									class="attack-config__cost-input"
-									name="system.{{actionPath}}selection.zone.min_range"
-									type="number"
-									value="{{actionData.selection.zone.min_range}}"
-									data-dtype="Number"
-								/>
-								<span class="attack-config__row-sep">m</span>
-							</span>
-							<span class="attack-config__row-sep">↔</span>
-						{{/if}}
-						{{#if (eq actionData.range_type "ranged")}}
-							<span
-								class="attack-config__row-sep attack-config__reach-disadvantage"
-								data-tooltip="Désavantage en portée d'Allonge"
-							>
-								<i class="fa-light fa-arrows-left-right attack-config__reach-disadvantage-base"></i>
-								<i class="fa-light fa-triangle-exclamation attack-config__reach-disadvantage-alert"></i>
-							</span>
-						{{/if}}
-						<span class="attack-config__measure">
-							<input
-								class="attack-config__cost-input"
-								name="system.{{actionPath}}selection.zone.range"
-								type="number"
-								value="{{actionData.selection.zone.range}}"
-								data-dtype="Number"
-							/>
-							<span class="attack-config__row-sep">m</span>
-						</span>
-						{{#if actionData.selection.zone.has_long_range}}
-							<span class="attack-config__row-sep">~</span>
-							<span class="attack-config__measure">
-								<input
-									class="attack-config__cost-input"
-									name="system.{{actionPath}}selection.zone.long_range"
-									type="number"
-									value="{{actionData.selection.zone.long_range}}"
-									data-dtype="Number"
-								/>
-								<span class="attack-config__row-sep">m</span>
-							</span>
-							<span class="attack-config__row-sep">(Longue)</span>
-						{{/if}}
-						<label class="attack-config__toggle attack-config__toggle--push-end">
-							<input
-								type="checkbox"
-								name="system.{{actionPath}}selection.zone.has_long_range"
-								{{checked actionData.selection.zone.has_long_range}}
-							/>
-							<span>Longue?</span>
-						</label>
-					</div>
-				{{/unless}}
-			</div>
-		</div>
+      {{#if actionData.jdd.enabled}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/roll-jdd.hbs"
+          label="JdD"
+          actionPath=actionPath
+          damagePath="jdd.damage_formulas"
+          damageFormulas=actionData.jdd.damage_formulas
+          config=config
+          isActionModeIncant=isActionModeIncant
+          isActionModePhysical=isActionModePhysical
+          addTooltip="Ajouter une formule de dégâts"
+          removeTooltip="Supprimer cette formule de dégâts"
+          formulaPlaceholder="2d6+1"
+        }}
+      {{/if}}
 
-		<div class="attack-config__section attack-config__section--row">
-			<div class="attack-config__section-title">
-				<span class="field__label">Effet</span>
-			</div>
-			<div class="attack-config__fields">
-				<div class="richtext-field richtext-field--overlay-action">
-					{{#if isEditable}}
-						<button
-							type="button"
-							class="array-action-btn richtext-field__overlay-btn"
-							data-action="open-richtext-editor"
-							data-path="system.{{actionPath}}effect.text"
-							data-title="Effet"
-							data-tooltip="Modifier l'effet"
-						>
-							<i class="fa-light fa-pen-to-square"></i>
-						</button>
-					{{/if}}
-					<div class="richtext-field__content">{{{enrichedHTML.effect.text}}}</div>
-				</div>
-			</div>
-		</div>
+      {{#if actionData.jds.enabled}}
+        {{#if actionData.jds.jdd_saved}}
+          {{>
+            "systems/nalfa/templates/partials/item/actionable/roll-jdd.hbs"
+            label="JdD Sauv"
+            actionPath=actionPath
+            damagePath="jdd_saved.damage_formulas"
+            damageFormulas=actionData.jdd_saved.damage_formulas
+            config=config
+            isActionModeIncant=isActionModeIncant
+            isActionModePhysical=isActionModePhysical
+            addTooltip="Ajouter une formule de dégâts sauvegardés"
+            removeTooltip="Supprimer cette formule de dégâts sauvegardés"
+            formulaPlaceholder="2d6"
+          }}
+        {{/if}}
+      {{/if}}
 
-		<div class="attack-config__section attack-config__section--row">
-			<div class="attack-config__section-title">
-				<span class="field__label">Coût</span>
-			</div>
-			<div class="attack-config__fields attack-config__cost-row">
-				<div class="attack-config__cost-entry attack-config__cost-entry--actions">
-					<span class="attack-config__cost-label">Action</span>
-					<div class="attack-config__action-costs attack-config__action-costs--column">
-						{{#with (lookup actionData.cost.actions.options 0) as |firstOption|}}
-							<div class="attack-config__action-option panel-section attack-config__action-option--primary">
-								<div class="attack-config__action-costs">
-									<label
-									class="attack-config__action-cost"
-									data-tooltip="{{@root.config.action_cost_hover_labels.main}}"
-									>
-										<span
-											class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
-											aria-hidden="true"
-										>
-											<i class="fa-light fa-sword"></i>
-										</span>
-										<input
-											class="attack-config__cost-input"
-											name="system.{{@root.actionPath}}cost.actions.options.0.main"
-											type="number"
-											value="{{firstOption.main}}"
-											data-dtype="Number"
-										/>
-									</label>
-									<label
-									class="attack-config__action-cost"
-									data-tooltip="{{@root.config.action_cost_hover_labels.bonus}}"
-									>
-										<span
-											class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
-											aria-hidden="true"
-										>
-											<i class="fa-light fa-plus"></i>
-										</span>
-										<input
-											class="attack-config__cost-input"
-											name="system.{{@root.actionPath}}cost.actions.options.0.bonus"
-											type="number"
-											value="{{firstOption.bonus}}"
-											data-dtype="Number"
-										/>
-									</label>
-									<label
-									class="attack-config__action-cost"
-									data-tooltip="{{@root.config.action_cost_hover_labels.reaction}}"
-									>
-										<span
-											class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
-											aria-hidden="true"
-										>
-											<i class="fa-light fa-rotate-left"></i>
-										</span>
-										<input
-											class="attack-config__cost-input"
-											name="system.{{@root.actionPath}}cost.actions.options.0.reaction"
-											type="number"
-											value="{{firstOption.reaction}}"
-											data-dtype="Number"
-										/>
-									</label>
-								</div>
-								<div class="attack-config__action-option-meta">
-									<input
-										class="attack-config__grow-input"
-										name="system.{{@root.actionPath}}cost.actions.options.0.condition"
-										type="text"
-										value="{{firstOption.condition}}"
-										placeholder="Condition (optionnelle)"
-									/>
-								</div>
-							</div>
-						{{/with}}
-
-						<div class="richtext-field richtext-field--overlay-action attack-config__action-note-field">
-							{{#if isEditable}}
-								<button
-									type="button"
-									class="array-action-btn richtext-field__overlay-btn"
-									data-action="open-richtext-editor"
-									data-path="system.{{actionPath}}cost.actions.note"
-									data-title="Note"
-									data-tooltip="Modifier la note de coût"
-								>
-									<i class="fa-light fa-pen-to-square"></i>
-								</button>
-							{{/if}}
-							{{#if noteHasContent}}
-								<div class="richtext-field__content">{{{enrichedHTML.note}}}</div>
-							{{else}}
-								<div class="richtext-field__content richtext-field__content--placeholder">
-									<p>Ex : Annulation Gratuite</p>
-								</div>
-							{{/if}}
-						</div>
-
-						<div class="attack-config__action-options-head">
-							<span class="hint">Si plusieurs options :</span>
-							<button
-								type="button"
-								class="array-action-btn"
-								data-action="add-array-entry"
-								data-path="{{actionPath}}cost.actions.options"
-								data-entry-type="action-resource-option"
-								data-tooltip="Ajouter une option de coût"
-							>
-								<i class="fa-light fa-square-plus"></i>
-							</button>
-						</div>
-
-						{{#each actionData.cost.actions.options as |option optionIndex|}}
-							{{#unless @first}}
-								<div class="attack-config__action-option panel-section">
-									<div class="attack-config__action-costs">
-										<label
-										class="attack-config__action-cost"
-										data-tooltip="{{@root.config.action_cost_hover_labels.main}}"
-										>
-											<span
-												class="attack-config__action-cost-icon attack-config__action-cost-icon--main"
-												aria-hidden="true"
-											>
-												<i class="fa-light fa-sword"></i>
-											</span>
-											<input
-												class="attack-config__cost-input"
-												name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.main"
-												type="number"
-												value="{{option.main}}"
-												data-dtype="Number"
-											/>
-										</label>
-										<label
-										class="attack-config__action-cost"
-										data-tooltip="{{@root.config.action_cost_hover_labels.bonus}}"
-										>
-											<span
-												class="attack-config__action-cost-icon attack-config__action-cost-icon--bonus"
-												aria-hidden="true"
-											>
-												<i class="fa-light fa-plus"></i>
-											</span>
-											<input
-												class="attack-config__cost-input"
-												name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.bonus"
-												type="number"
-												value="{{option.bonus}}"
-												data-dtype="Number"
-											/>
-										</label>
-										<label
-										class="attack-config__action-cost"
-										data-tooltip="{{@root.config.action_cost_hover_labels.reaction}}"
-										>
-											<span
-												class="attack-config__action-cost-icon attack-config__action-cost-icon--reaction"
-												aria-hidden="true"
-											>
-												<i class="fa-light fa-rotate-left"></i>
-											</span>
-											<input
-												class="attack-config__cost-input"
-												name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.reaction"
-												type="number"
-												value="{{option.reaction}}"
-												data-dtype="Number"
-											/>
-										</label>
-										<button
-											type="button"
-											class="array-action-btn attack-config__action-option-remove"
-											data-action="remove-array-entry"
-											data-path="{{@root.actionPath}}cost.actions.options"
-										data-index="{{optionIndex}}"
-										data-minimum="1"
-										data-tooltip="Supprimer cette option de coût"
-										>
-											<i class="fa-light fa-square-minus"></i>
-										</button>
-									</div>
-									<div class="attack-config__action-option-meta">
-										<input
-											class="attack-config__grow-input"
-											name="system.{{@root.actionPath}}cost.actions.options.{{optionIndex}}.condition"
-											type="text"
-											value="{{option.condition}}"
-											placeholder="Condition (optionnelle)"
-										/>
-									</div>
-								</div>
-							{{/unless}}
-						{{/each}}
-					</div>
-				</div>
-
-				<div class="attack-config__cost-entry">
-					<span class="attack-config__cost-label">Action de Déplacement</span>
-					<select
-						class="attack-config__cost-select attack-config__cost-select--movement"
-						name="system.{{actionPath}}cost.movement.mode"
-					>
-						{{selectOptions config.action_movement_cost_modes selected=actionData.cost.movement.mode}}
-					</select>
-					{{#if (eq actionData.cost.movement.mode "fixed")}}
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.movement.amount"
-							type="number"
-							value="{{actionData.cost.movement.amount}}"
-							data-dtype="Number"
-						/>
-					{{else if (eq actionData.cost.movement.mode "variable")}}
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.movement.variable"
-							type="text"
-							value="{{actionData.cost.movement.variable}}"
-							placeholder="X"
-						/>
-					{{/if}}
-				</div>
-
-				<div class="attack-config__cost-entry">
-					<span class="attack-config__cost-label">Sort</span>
-					{{#unless (eq actionData.cost.ester.unit "none")}}
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.ester.amount"
-							type="number"
-							value="{{actionData.cost.ester.amount}}"
-							data-dtype="Number"
-						/>
-					{{/unless}}
-					<select
-						class="attack-config__cost-select attack-config__cost-select--ester"
-						name="system.{{actionPath}}cost.ester.unit"
-					>
-						{{selectOptions config.ester_levels selected=actionData.cost.ester.unit}}
-					</select>
-				</div>
-
-				<div class="attack-config__cost-entry">
-					<span class="attack-config__cost-label">Utilisations</span>
-					{{#unless (eq actionData.cost.uses.unit "none")}}
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.uses.value"
-							type="number"
-							value="{{actionData.cost.uses.value}}"
-							data-dtype="Number"
-						/>
-						<span class="attack-config__row-sep">/</span>
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.uses.max"
-							type="number"
-							value="{{actionData.cost.uses.max}}"
-							data-dtype="Number"
-						/>
-					{{/unless}}
-					<select
-						class="attack-config__cost-select attack-config__cost-select--uses"
-						name="system.{{actionPath}}cost.uses.unit"
-					>
-						{{selectOptions config.uses_units selected=actionData.cost.uses.unit}}
-					</select>
-				</div>
-
-				<div class="attack-config__cost-entry">
-					<span class="attack-config__cost-label">Cooldown</span>
-					{{#unless (eq actionData.cost.cooldown.unit "none")}}
-						<input
-							class="attack-config__cost-input"
-							name="system.{{actionPath}}cost.cooldown.amount"
-							type="number"
-							value="{{actionData.cost.cooldown.amount}}"
-							data-dtype="Number"
-						/>
-					{{/unless}}
-					<select
-						class="attack-config__cost-select attack-config__cost-select--cooldown"
-						name="system.{{actionPath}}cost.cooldown.unit"
-					>
-						{{selectOptions config.cooldown_units selected=actionData.cost.cooldown.unit}}
-					</select>
-				</div>
-			</div>
-		</div>
-
-		<div class="attack-config__sections">
-			{{#if actionData.jdt.enabled}}
-				<div class="attack-config__section attack-config__section--row">
-					<div class="attack-config__section-title">
-						<span class="field__label">JdT</span>
-					</div>
-					<div class="attack-config__fields attack-config__fields--row">
-						<span class="attack-config__row-sep">d20 +</span>
-						<select class="stat-physical" name="system.{{actionPath}}jdt.stat">
-							{{#if isActionModeIncant}}
-								{{selectOptions config.stats_optional_incant selected=actionData.jdt.stat}}
-							{{else if isActionModePhysical}}
-								{{selectOptions config.stats_optional_physical selected=actionData.jdt.stat}}
-							{{else}}
-								{{selectOptions config.stats_optional selected=actionData.jdt.stat}}
-							{{/if}}
-						</select>
-						<span class="attack-config__row-sep">+</span>
-						<input
-							name="system.{{actionPath}}jdt.bonus"
-							type="number"
-							value="{{actionData.jdt.bonus}}"
-							data-dtype="Number"
-						/>
-					</div>
-				</div>
-			{{/if}}
-
-			{{#if actionData.jds.enabled}}
-				<div class="attack-config__section attack-config__section--row">
-					<div class="attack-config__section-title">
-						<span class="field__label">JdS</span>
-					</div>
-					<div class="attack-config__fields attack-config__fields--row">
-						<select class="stat" name="system.{{actionPath}}jds.stat">
-							{{selectOptions config.stats_optional selected=actionData.jds.stat}}
-						</select>
-						<span class="attack-config__row-sep">vs DD</span>
-						<input
-							name="system.{{actionPath}}jds.dd"
-							type="number"
-							value="{{actionData.jds.dd}}"
-							data-dtype="Number"
-						/>
-						<span class="attack-config__row-sep">-&gt;</span>
-						<input
-							class="attack-config__grow-input"
-							name="system.{{actionPath}}jds.text"
-							type="text"
-							value="{{actionData.jds.text}}"
-							placeholder="Effet si réussite"
-						/>
-						<label class="attack-config__toggle">
-							<input
-								type="checkbox"
-								name="system.{{actionPath}}jds.jdd_saved"
-								{{checked actionData.jds.jdd_saved}}
-							/>
-							<span>JdD?</span>
-						</label>
-					</div>
-				</div>
-			{{/if}}
-
-			{{#if actionData.jdd.enabled}}
-				<div class="attack-config__section attack-config__section--row">
-					<div class="attack-config__section-title">
-						<span class="field__label">JdD</span>
-					</div>
-					<div class="attack-config__fields">
-						{{#each actionData.jdd.damage_formulas as |damage index|}}
-							<div class="attack-config__damage-row">
-								<div class="attack-config__damage-main">
-									<input
-										class="attack-config__damage-formula"
-										name="system.{{@root.actionPath}}jdd.damage_formulas.{{index}}.formula"
-										type="text"
-										value="{{damage.formula}}"
-										placeholder="2d6+1"
-									/>
-									<span class="attack-config__row-sep">+</span>
-									<select
-										class="stat-physical"
-										name="system.{{@root.actionPath}}jdd.damage_formulas.{{index}}.stat"
-									>
-										{{#if @root.isActionModeIncant}}
-											{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
-										{{else if @root.isActionModePhysical}}
-											{{selectOptions @root.config.stats_optional_physical selected=damage.stat}}
-										{{else}}
-											{{selectOptions @root.config.stats_optional selected=damage.stat}}
-										{{/if}}
-									</select>
-								</div>
-								<div class="attack-config__damage-tail">
-									<span class="attack-config__row-sep">:</span>
-									<select
-										class="attack-config__damage-type"
-										name="system.{{@root.actionPath}}jdd.damage_formulas.{{index}}.type"
-									>
-										{{selectOptions @root.config.all_damage_types selected=damage.type}}
-									</select>
-								</div>
-								{{#if (eq index 0)}}
-									<button
-										type="button"
-										data-action="add-array-entry"
-										data-path="{{@root.actionPath}}jdd.damage_formulas"
-										data-entry-type="damage-formula"
-										data-tooltip="Ajouter une formule de dégâts"
-									>
-										<i class="fa-light fa-square-plus"></i>
-									</button>
-								{{else}}
-									<button
-										type="button"
-										data-action="remove-array-entry"
-										data-path="{{@root.actionPath}}jdd.damage_formulas"
-										data-index="{{index}}"
-										data-minimum="1"
-										data-tooltip="Supprimer cette formule de dégâts"
-									>
-										<i class="fa-light fa-square-minus"></i>
-									</button>
-								{{/if}}
-							</div>
-						{{/each}}
-					</div>
-				</div>
-			{{/if}}
-
-			{{#if actionData.jds.enabled}}
-				{{#if actionData.jds.jdd_saved}}
-					<div class="attack-config__section attack-config__section--row">
-						<div class="attack-config__section-title">
-							<span class="field__label">JdD Sauv</span>
-						</div>
-						<div class="attack-config__fields">
-							{{#each actionData.jdd_saved.damage_formulas as |damage index|}}
-								<div class="attack-config__damage-row">
-									<div class="attack-config__damage-main">
-										<input
-											class="attack-config__damage-formula"
-											name="system.{{@root.actionPath}}jdd_saved.damage_formulas.{{index}}.formula"
-											type="text"
-											value="{{damage.formula}}"
-											placeholder="2d6"
-										/>
-										<span class="attack-config__row-sep">+</span>
-										<select
-											class="stat-physical"
-											name="system.{{@root.actionPath}}jdd_saved.damage_formulas.{{index}}.stat"
-										>
-											{{#if @root.isActionModeIncant}}
-												{{selectOptions @root.config.stats_optional_incant selected=damage.stat}}
-											{{else if @root.isActionModePhysical}}
-												{{selectOptions @root.config.stats_optional_physical selected=damage.stat}}
-											{{else}}
-												{{selectOptions @root.config.stats_optional selected=damage.stat}}
-											{{/if}}
-										</select>
-									</div>
-									<div class="attack-config__damage-tail">
-										<span class="attack-config__row-sep">:</span>
-										<select
-											class="attack-config__damage-type"
-											name="system.{{@root.actionPath}}jdd_saved.damage_formulas.{{index}}.type"
-										>
-											{{selectOptions @root.config.all_damage_types selected=damage.type}}
-										</select>
-									</div>
-									{{#if (eq index 0)}}
-										<button
-											type="button"
-											data-action="add-array-entry"
-											data-path="{{@root.actionPath}}jdd_saved.damage_formulas"
-											data-entry-type="damage-formula"
-											data-tooltip="Ajouter une formule de dégâts sauvegardés"
-										>
-											<i class="fa-light fa-square-plus"></i>
-										</button>
-									{{else}}
-										<button
-											type="button"
-											data-action="remove-array-entry"
-											data-path="{{@root.actionPath}}jdd_saved.damage_formulas"
-											data-index="{{index}}"
-											data-minimum="1"
-											data-tooltip="Supprimer cette formule de dégâts sauvegardés"
-										>
-											<i class="fa-light fa-square-minus"></i>
-										</button>
-									{{/if}}
-								</div>
-							{{/each}}
-						</div>
-					</div>
-				{{/if}}
-			{{/if}}
-
-			{{#if actionData.concentration.enabled}}
-				<div class="attack-config__section attack-config__section--row">
-					<div class="attack-config__section-title">
-						<span class="field__label">Concentr.</span>
-					</div>
-					<div class="attack-config__fields attack-config__fields--row">
-						<select class="stat" name="system.{{actionPath}}concentration.stat">
-							{{selectOptions config.stats_optional selected=actionData.concentration.stat}}
-						</select>
-						<span class="attack-config__row-sep">vs DD</span>
-						<input
-							name="system.{{actionPath}}concentration.dd"
-							type="number"
-							value="{{actionData.concentration.dd}}"
-							data-dtype="Number"
-						/>
-						<span class="attack-config__row-sep">+ Stat Physique/Incant</span>
-						<input
-							name="system.{{actionPath}}concentration.enemy_attack_bonus"
-							type="number"
-							value="{{actionData.concentration.enemy_attack_bonus}}"
-							data-dtype="Number"
-						/>
-					</div>
-				</div>
-			{{/if}}
-		</div>
-	</div>
+      {{#if actionData.concentration.enabled}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/roll-concentration.hbs"
+          actionPath=actionPath
+          actionData=actionData
+          config=config
+        }}
+      {{/if}}
+    </div>
+  </div>
 {{/if}}

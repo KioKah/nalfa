@@ -1,0 +1,18 @@
+<div class="sheet-section">
+  <h2>Charges de sorts</h2>
+  <div class="grid grid--four">
+    {{#each sysData.spell_charges}}
+      <div class="field field--inline">
+        <span class="field__label">{{@key}}</span>
+        <input
+          name="system.spell_charges.{{@key}}.value"
+          type="number"
+          value="{{value}}"
+          data-dtype="Number"
+        />
+        <span class="field__separator">/</span>
+        <span class="field__total">{{max}}</span>
+      </div>
+    {{/each}}
+  </div>
+</div>

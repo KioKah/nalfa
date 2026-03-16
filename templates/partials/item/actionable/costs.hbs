@@ -1,0 +1,155 @@
+<div class="attack-config__section attack-config__section--row">
+  <div class="attack-config__section-title">
+    <span class="field__label">Coût</span>
+  </div>
+  <div class="attack-config__fields attack-config__cost-row">
+    <div class="attack-config__cost-entry attack-config__cost-entry--actions">
+      <span class="attack-config__cost-label">Action</span>
+      <div class="attack-config__action-costs attack-config__action-costs--column">
+        {{#with (lookup actionData.cost.actions.options 0) as |firstOption|}}
+          {{>
+            "systems/nalfa/templates/partials/item/actionable/cost-action-option.hbs"
+            actionPath=@root.actionPath
+            option=firstOption
+            optionIndex=0
+            config=@root.config
+            isPrimary=true
+            showRemoveButton=false
+          }}
+        {{/with}}
+
+        {{>
+          "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+          title="Note"
+          namePath=noteNamePath
+          editTooltip="Modifier la note de coût"
+          content=enrichedHTML.note
+          hasContent=noteHasContent
+          placeholderHtml="<p>Ex : Annulation Gratuite</p>"
+          readonly=readonly
+          contentClass="richtext-field richtext-field--overlay-action attack-config__action-note-field"
+        }}
+
+        <div class="attack-config__action-options-head">
+          <span class="hint">Si plusieurs options :</span>
+          <button
+            type="button"
+            class="array-action-btn"
+            data-action="add-array-entry"
+            data-path="{{actionPath}}cost.actions.options"
+            data-entry-type="action-resource-option"
+            data-tooltip="Ajouter une option de coût"
+          >
+            <i class="fa-light fa-square-plus"></i>
+          </button>
+        </div>
+
+        {{#each actionData.cost.actions.options as |option optionIndex|}}
+          {{#unless @first}}
+            {{>
+              "systems/nalfa/templates/partials/item/actionable/cost-action-option.hbs"
+              actionPath=@root.actionPath
+              option=option
+              optionIndex=optionIndex
+              config=@root.config
+              isPrimary=false
+              showRemoveButton=true
+            }}
+          {{/unless}}
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="attack-config__cost-entry">
+      <span class="attack-config__cost-label">Action de Déplacement</span>
+      <select
+        class="attack-config__cost-select attack-config__cost-select--movement"
+        name="system.{{actionPath}}cost.movement.mode"
+      >
+        {{selectOptions config.action_movement_cost_modes selected=actionData.cost.movement.mode}}
+      </select>
+      {{#if (eq actionData.cost.movement.mode "fixed")}}
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.movement.amount"
+          type="number"
+          value="{{actionData.cost.movement.amount}}"
+          data-dtype="Number"
+        />
+      {{else if (eq actionData.cost.movement.mode "variable")}}
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.movement.variable"
+          type="text"
+          value="{{actionData.cost.movement.variable}}"
+          placeholder="X"
+        />
+      {{/if}}
+    </div>
+
+    <div class="attack-config__cost-entry">
+      <span class="attack-config__cost-label">Sort</span>
+      {{#unless (eq actionData.cost.ester.unit "none")}}
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.ester.amount"
+          type="number"
+          value="{{actionData.cost.ester.amount}}"
+          data-dtype="Number"
+        />
+      {{/unless}}
+      <select
+        class="attack-config__cost-select attack-config__cost-select--ester"
+        name="system.{{actionPath}}cost.ester.unit"
+      >
+        {{selectOptions config.ester_levels selected=actionData.cost.ester.unit}}
+      </select>
+    </div>
+
+    <div class="attack-config__cost-entry">
+      <span class="attack-config__cost-label">Utilisations</span>
+      {{#unless (eq actionData.cost.uses.unit "none")}}
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.uses.value"
+          type="number"
+          value="{{actionData.cost.uses.value}}"
+          data-dtype="Number"
+        />
+        <span class="field__separator">/</span>
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.uses.max"
+          type="number"
+          value="{{actionData.cost.uses.max}}"
+          data-dtype="Number"
+        />
+      {{/unless}}
+      <select
+        class="attack-config__cost-select attack-config__cost-select--uses"
+        name="system.{{actionPath}}cost.uses.unit"
+      >
+        {{selectOptions config.uses_units selected=actionData.cost.uses.unit}}
+      </select>
+    </div>
+
+    <div class="attack-config__cost-entry">
+      <span class="attack-config__cost-label">Cooldown</span>
+      {{#unless (eq actionData.cost.cooldown.unit "none")}}
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.cooldown.amount"
+          type="number"
+          value="{{actionData.cost.cooldown.amount}}"
+          data-dtype="Number"
+        />
+      {{/unless}}
+      <select
+        class="attack-config__cost-select attack-config__cost-select--cooldown"
+        name="system.{{actionPath}}cost.cooldown.unit"
+      >
+        {{selectOptions config.cooldown_units selected=actionData.cost.cooldown.unit}}
+      </select>
+    </div>
+  </div>
+</div>

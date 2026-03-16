@@ -1,0 +1,51 @@
+<div class="attack-config__section attack-config__section--row">
+  <div class="attack-config__section-title">
+    <span class="field__label">Mode</span>
+  </div>
+  <div class="attack-config__fields attack-config__fields--row attack-config__mode-row">
+    <select class="attack-config__mode-select" name="system.{{actionPath}}mode">
+      {{selectOptions config.attack_mode selected=actionData.mode}}
+    </select>
+    <select
+      class="attack-config__cost-select attack-config__cost-select--zone-type"
+      name="system.{{actionPath}}range_type"
+    >
+      {{selectOptions config.range_types selected=actionData.range_type}}
+    </select>
+
+    <div class="attack-config__inline-row attack-config__toggles">
+      <label class="attack-config__toggle">
+        <input
+          type="checkbox"
+          name="system.{{actionPath}}jdt.enabled"
+          {{checked actionData.jdt.enabled}}
+        />
+        <span>JdT?</span>
+      </label>
+      <label class="attack-config__toggle">
+        <input
+          type="checkbox"
+          name="system.{{actionPath}}jds.enabled"
+          {{checked actionData.jds.enabled}}
+        />
+        <span>JdS?</span>
+      </label>
+      <label class="attack-config__toggle">
+        <input
+          type="checkbox"
+          name="system.{{actionPath}}jdd.enabled"
+          {{checked actionData.jdd.enabled}}
+        />
+        <span>JdD?</span>
+      </label>
+      <label class="attack-config__toggle">
+        <input
+          type="checkbox"
+          name="system.{{actionPath}}concentration.enabled"
+          {{checked actionData.concentration.enabled}}
+        />
+        <span>JdF?</span>
+      </label>
+    </div>
+  </div>
+</div>

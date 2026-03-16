@@ -1,0 +1,44 @@
+<div class="sheet-section">
+  <h2>Actions</h2>
+  <div class="grid grid--three">
+    {{#each sysData.actions}}
+      <div class="field field--inline">
+        <span class="field__label">{{actionName @key}}</span>
+        <div class="field__row">
+          <input
+            name="system.actions.{{@key}}.value"
+            type="number"
+            value="{{value}}"
+            data-dtype="Number"
+          />
+          <span class="field__separator">/</span>
+          <span class="field__total">{{max}}</span>
+          <input
+            class="value-mode value-mode--base"
+            name="system.actions.{{@key}}.base"
+            type="number"
+            value="{{base}}"
+            data-dtype="Number"
+          />
+          <input
+            class="value-mode value-mode--alt"
+            name="system.actions.{{@key}}.alt"
+            type="number"
+            value="{{alt}}"
+            data-dtype="Number"
+          />
+          {{#if (eq @key "movement")}}
+            <span class="value-mode value-mode--alt field__separator">x</span>
+            <input
+              class="value-mode value-mode--alt"
+              name="system.actions.{{@key}}.alt_mult"
+              type="number"
+              value="{{alt_mult}}"
+              data-dtype="Number"
+            />
+          {{/if}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

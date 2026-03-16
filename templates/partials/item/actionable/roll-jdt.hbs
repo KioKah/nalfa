@@ -1,0 +1,24 @@
+<div class="attack-config__section attack-config__section--row">
+  <div class="attack-config__section-title">
+    <span class="field__label">JdT</span>
+  </div>
+  <div class="attack-config__fields attack-config__fields--row">
+    <span class="attack-config__row-sep">d20 +</span>
+    <select class="stat-physical" name="system.{{actionPath}}jdt.stat">
+      {{#if isActionModeIncant}}
+        {{selectOptions config.stats_optional_incant selected=actionData.jdt.stat}}
+      {{else if isActionModePhysical}}
+        {{selectOptions config.stats_optional_physical selected=actionData.jdt.stat}}
+      {{else}}
+        {{selectOptions config.stats_optional selected=actionData.jdt.stat}}
+      {{/if}}
+    </select>
+    <span class="attack-config__row-sep">+</span>
+    <input
+      name="system.{{actionPath}}jdt.bonus"
+      type="number"
+      value="{{actionData.jdt.bonus}}"
+      data-dtype="Number"
+    />
+  </div>
+</div>

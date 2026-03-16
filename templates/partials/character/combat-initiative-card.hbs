@@ -1,0 +1,54 @@
+<div class="combat-overview__card">
+  <div class="combat-overview__title">Init &amp; P. Passive</div>
+  <div class="combat-overview__separator"></div>
+  <div class="combat-overview__line">
+    <div class="field field--inline combat-overview__stat">
+      <span class="field__label">Initiative</span>
+      <span class="field__total combat-overview__value">{{sysData.attributes.initiative.value}}</span>
+      {{#if (eq sysData.ui.valueMode "values")}}
+        <span class="field__meta field__meta--formula">
+          ({{sysData.attributes.initiative.stat_coef}}&times;{{lookup config.stats sysData.attributes.initiative.stat}}{{formulaSignedNumber sysData.attributes.initiative.base}}{{formulaSignedNumber sysData.attributes.initiative.alt}})
+        </span>
+      {{/if}}
+      <input
+        class="value-mode value-mode--base"
+        name="system.attributes.initiative.base"
+        type="number"
+        value="{{sysData.attributes.initiative.base}}"
+        data-dtype="Number"
+      />
+      <input
+        class="value-mode value-mode--alt"
+        name="system.attributes.initiative.alt"
+        type="number"
+        value="{{sysData.attributes.initiative.alt}}"
+        data-dtype="Number"
+      />
+    </div>
+  </div>
+  <div class="combat-overview__line">
+    <div class="field field--inline combat-overview__stat">
+      <span class="field__label combat-overview__label--stacked">Perception<br />passive</span>
+      <span class="field__total combat-overview__value">{{sysData.attributes.passive_percep.value}}</span>
+      {{#if (eq sysData.ui.valueMode "values")}}
+        <span class="field__meta field__meta--formula">
+          ({{lookup config.stats sysData.attributes.passive_percep.stat}}{{formulaSignedNumber sysData.attributes.passive_percep.base}}{{formulaSignedNumber sysData.attributes.passive_percep.alt}})
+        </span>
+      {{/if}}
+      <input
+        class="value-mode value-mode--base"
+        name="system.attributes.passive_percep.base"
+        type="number"
+        value="{{sysData.attributes.passive_percep.base}}"
+        data-dtype="Number"
+      />
+      <input
+        class="value-mode value-mode--alt"
+        name="system.attributes.passive_percep.alt"
+        type="number"
+        value="{{sysData.attributes.passive_percep.alt}}"
+        data-dtype="Number"
+      />
+    </div>
+  </div>
+</div>

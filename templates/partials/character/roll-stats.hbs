@@ -1,0 +1,12 @@
+<div class="sheet-section roll-stats">
+  {{#if (eq sysData.ui.valueMode "base")}}
+    {{> "systems/nalfa/templates/partials/character/roll-stats-base.hbs" sysData=sysData config=config}}
+  {{else if (eq sysData.ui.valueMode "alt")}}
+    {{> "systems/nalfa/templates/partials/character/roll-stats-alt.hbs" sysData=sysData config=config}}
+  {{else}}
+    {{> "systems/nalfa/templates/partials/character/roll-stats-values.hbs" sysData=sysData config=config}}
+  {{/if}}
+  {{#if sysData.weapon_state.warning}}
+    <div class="roll-stats__warning">⚠ {{sysData.weapon_state.warning}}</div>
+  {{/if}}
+</div>

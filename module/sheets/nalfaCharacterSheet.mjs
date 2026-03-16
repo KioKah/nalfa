@@ -80,6 +80,8 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		return {
 			isOwner: this.actor.isOwner,
 			isEditable: this.isEditable,
+			readonly: !this.isEditable,
+			rollable: this.actor.isOwner,
 			actor: baseData.document,
 			sysData: sysData,
 			config: CONFIG.nalfa,

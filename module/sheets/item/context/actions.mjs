@@ -421,6 +421,8 @@ export const buildActionableContext = ({ item, config }) => {
 	const effectTextSource = actionData?.effect?.text ?? "";
 	const noteTextSource = actionData?.cost?.actions?.note ?? "";
 	const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
+	const effectNamePath = `system.${actionPath}effect.text`;
+	const noteNamePath = `system.${actionPath}cost.actions.note`;
 
 	return {
 		isActionItem,
@@ -447,5 +449,7 @@ export const buildActionableContext = ({ item, config }) => {
 		effectTextSource,
 		noteTextSource,
 		noteHasContent,
+		effectNamePath,
+		noteNamePath,
 	};
 };

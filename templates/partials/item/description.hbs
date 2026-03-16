@@ -1,134 +1,35 @@
 <div class="sheet-section richtext-field richtext-field--description">
-	<div class="richtext-field__head">
-		<span class="field__label">{{currentDescriptionLabel}}</span>
-	</div>
-	<div class="richtext-field richtext-field--description richtext-field--overlay-action">
-		{{#if isEditable}}
-			<button
-				type="button"
-				class="array-action-btn richtext-field__overlay-btn"
-				data-action="open-richtext-editor"
-				data-path="{{currentDescriptionNamePath}}"
-				data-title="{{currentDescriptionLabel}}"
-				data-tooltip="Modifier {{currentDescriptionLabel}}"
-			>
-				<i class="fa-light fa-pen-to-square"></i>
-			</button>
-		{{/if}}
-		<div class="richtext-field__content">{{{currentDescriptionEnriched}}}</div>
-	</div>
+  <div class="richtext-field__head">
+    <span class="field__label">{{currentDescriptionLabel}}</span>
+  </div>
+  {{>
+    "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+    title=currentDescriptionLabel
+    namePath=currentDescriptionNamePath
+    editTooltip=currentDescriptionEditTooltip
+    content=currentDescriptionEnriched
+    hasContent=true
+    readonly=readonly
+    contentClass="richtext-field richtext-field--description richtext-field--overlay-action"
+  }}
 </div>
 
 <div class="sheet-section sheet-section--loretext richtext-field richtext-field--description">
-	<div class="richtext-field__head">
-		<span class="field__label">{{currentLoretextLabel}}</span>
-	</div>
-	<div class="richtext-field richtext-field--description richtext-field--overlay-action">
-		{{#if isEditable}}
-			<button
-				type="button"
-				class="array-action-btn richtext-field__overlay-btn"
-				data-action="open-richtext-editor"
-				data-path="{{currentLoretextNamePath}}"
-				data-title="{{currentLoretextLabel}}"
-				data-tooltip="Modifier {{currentLoretextLabel}}"
-			>
-				<i class="fa-light fa-pen-to-square"></i>
-			</button>
-		{{/if}}
-		<div class="richtext-field__content">{{{currentLoretextEnriched}}}</div>
-	</div>
+  <div class="richtext-field__head">
+    <span class="field__label">{{currentLoretextLabel}}</span>
+  </div>
+  {{>
+    "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+    title=currentLoretextLabel
+    namePath=currentLoretextNamePath
+    editTooltip=currentLoretextEditTooltip
+    content=currentLoretextEnriched
+    hasContent=true
+    readonly=readonly
+    contentClass="richtext-field richtext-field--description richtext-field--overlay-action"
+  }}
 </div>
 
 {{#if hasIdentification}}
-	<div class="sheet-section panel-section">
-		<div class="physical-row physical-row--can-eq">
-			<span class="physical-row__label">Peut équiper :</span>
-			<div class="physical-flags physical-flags--can-eq">
-				<label class="tiny-check tiny-check--slot">
-					<input
-						type="checkbox"
-						name="system.equippable.main_hand"
-						{{checked sysData.equippable.main_hand}}
-					/>
-					<span class="tiny-check__label">Main principale</span>
-				</label>
-				<label class="tiny-check tiny-check--slot">
-					<input
-						type="checkbox"
-						name="system.equippable.off_hand"
-						{{checked sysData.equippable.off_hand}}
-					/>
-					<span class="tiny-check__label">Main secondaire</span>
-				</label>
-				<label class="tiny-check tiny-check--slot">
-					<input
-						type="checkbox"
-						name="system.equippable.two_handed"
-						{{checked sysData.equippable.two_handed}}
-					/>
-					<span class="tiny-check__label">Deux mains</span>
-				</label>
-				<label class="tiny-check tiny-check--slot">
-					<input
-						type="checkbox"
-						name="system.equippable.body"
-						{{checked sysData.equippable.body}}
-					/>
-					<span class="tiny-check__label">Corps</span>
-				</label>
-			</div>
-		</div>
-
-		<div class="physical-row physical-row--status">
-			<span class="physical-row__label">Statut :</span>
-			<div class="physical-flags physical-flags--status">
-				<label class="tiny-check tiny-check--slot">
-					<input type="checkbox" name="system.cursed" {{checked sysData.cursed}}/>
-					<span class="tiny-check__label">Maudit</span>
-				</label>
-				<label class="tiny-check tiny-check--slot">
-					<input
-						type="checkbox"
-						name="system.identification.needs_identification"
-						{{checked sysData.identification.needs_identification}}
-					/>
-					<span class="tiny-check__label">Besoin d'identification</span>
-				</label>
-				{{#if sysData.identification.needs_identification}}
-					<label class="tiny-check tiny-check--slot">
-						<input
-							type="checkbox"
-							name="system.identification.identified"
-							{{checked sysData.identification.identified}}
-						/>
-						<span class="tiny-check__label">Identifié</span>
-					</label>
-				{{/if}}
-			</div>
-		</div>
-
-		{{#if sysData.identification.needs_identification}}
-			<div class="grid grid--two">
-				<label class="field">
-					<span class="field__label">Nom réel</span>
-					<input
-						class="fixed"
-						name="system.identification.true_name"
-						type="text"
-						value="{{sysData.identification.true_name}}"
-					/>
-				</label>
-				<label class="field">
-					<span class="field__label">Nom inconnu</span>
-					<input
-						class="fixed"
-						name="system.identification.unidentified.name"
-						type="text"
-						value="{{sysData.identification.unidentified.name}}"
-					/>
-				</label>
-			</div>
-		{{/if}}
-	</div>
+  {{> "systems/nalfa/templates/partials/item/description-identification.hbs" sysData=sysData}}
 {{/if}}

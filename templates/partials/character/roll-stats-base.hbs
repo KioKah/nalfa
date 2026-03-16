@@ -1,0 +1,54 @@
+<div class="roll-stats__row">
+  <div class="roll-stats__group roll-stats__group--physical">
+    <label class="field roll-stats__item">
+      <span class="field__label">Stat Physique</span>
+      <input
+        name="system.roll_stats.physical.base"
+        type="number"
+        value="{{sysData.roll_stats.physical.base}}"
+        data-dtype="Number"
+      />
+    </label>
+    <div class="field roll-stats__item roll-stats__item--aux">
+      <div class="roll-stats__aux-row">
+        <span class="field__label">Allonge</span>
+        <input
+          name="system.attributes.reach.base"
+          type="number"
+          value="{{sysData.attributes.reach.base}}"
+          data-dtype="Number"
+        />
+        <span class="field__meta">m</span>
+      </div>
+      <div class="roll-stats__aux-row">
+        <span class="field__label">dA</span>
+        <span class="roll-stats__value roll-stats__value--compact">{{sysData.da.value}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="roll-stats__separator" aria-hidden="true"></div>
+  <div class="roll-stats__group roll-stats__group--incant">
+    <label class="field roll-stats__item">
+      <span class="field__label">Stat Incant</span>
+      <select class="stat" name="system.roll_stats.incant.stat">
+        {{selectOptions config.stats_optional selected=sysData.roll_stats.incant.stat}}
+      </select>
+      <input
+        name="system.roll_stats.incant.base"
+        type="number"
+        value="{{sysData.roll_stats.incant.base}}"
+        data-dtype="Number"
+      />
+    </label>
+    <label class="field roll-stats__item">
+      <span class="field__label">Portée</span>
+      <span class="field__separator">&times;</span>
+      <input
+        name="system.attributes.range_coef.base"
+        type="number"
+        value="{{sysData.attributes.range_coef.base}}"
+        data-dtype="Number"
+      />
+    </label>
+  </div>
+</div>

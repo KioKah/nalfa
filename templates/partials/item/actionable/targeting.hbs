@@ -1,0 +1,145 @@
+<div class="attack-config__section attack-config__section--row">
+  <div class="attack-config__section-title">
+    <span class="field__label">Ciblage</span>
+  </div>
+  <div class="attack-config__fields">
+    <div class="attack-config__fields attack-config__fields--row">
+      <span class="attack-config__row-sep">
+        {{pluralTargetLabel "Cible" actionData.selection.target.amount}}
+      </span>
+      {{#unless (eq actionData.selection.target.unit "self")}}
+        <input
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}selection.target.amount"
+          type="number"
+          value="{{actionData.selection.target.amount}}"
+          data-dtype="Number"
+        />
+      {{/unless}}
+      <select
+        class="attack-config__cost-select attack-config__cost-select--target-unit"
+        name="system.{{actionPath}}selection.target.unit"
+      >
+        {{#each config.selection_target_units}}
+          <option
+            value="{{@key}}"
+            {{#if (eq @key ../actionData.selection.target.unit)}}selected{{/if}}
+          >
+            {{#if (eq @key "self")}}
+              {{this}}
+            {{else}}
+              {{pluralTargetLabel this ../actionData.selection.target.amount}}
+            {{/if}}
+          </option>
+        {{/each}}
+      </select>
+      {{#unless (eq actionData.selection.target.unit "self")}}
+        <select
+          class="attack-config__cost-select attack-config__cost-select--target-visibility"
+          name="system.{{actionPath}}selection.target.visibility"
+        >
+          {{#each config.target_visibility}}
+            <option
+              value="{{@key}}"
+              {{#if (eq @key ../actionData.selection.target.visibility)}}selected{{/if}}
+            >
+              {{pluralTargetLabel this ../actionData.selection.target.amount}}
+            </option>
+          {{/each}}
+        </select>
+        <label class="attack-config__toggle attack-config__toggle--push-end">
+          <input
+            type="checkbox"
+            name="system.{{actionPath}}selection.target.include_self"
+            {{checked actionData.selection.target.include_self}}
+          />
+          <span>Soi inclus?</span>
+        </label>
+      {{/unless}}
+    </div>
+    {{#unless (eq actionData.range_type "melee")}}
+      <div class="attack-config__fields attack-config__fields--row">
+        <span class="attack-config__row-sep">Zone</span>
+        <select
+          class="attack-config__cost-select attack-config__cost-select--zone-shape"
+          name="system.{{actionPath}}selection.zone.shape"
+        >
+          {{selectOptions config.area_shapes selected=actionData.selection.zone.shape}}
+        </select>
+        {{#unless (eq actionData.selection.zone.shape "circle")}}
+          <span class="attack-config__measure">
+            <input
+              class="attack-config__cost-input"
+              name="system.{{actionPath}}selection.zone.range_secondary"
+              type="number"
+              value="{{actionData.selection.zone.range_secondary}}"
+              data-dtype="Number"
+            />
+            <span class="attack-config__row-sep">
+              {{#if (eq actionData.selection.zone.shape "line")}}m de largeur{{else}}°{{/if}}
+            </span>
+          </span>
+        {{/unless}}
+      </div>
+    {{/unless}}
+    {{#unless (eq actionData.range_type "melee")}}
+      <div class="attack-config__fields attack-config__fields--row">
+        <span class="attack-config__row-sep">Portée</span>
+        {{#if (eq actionData.range_type "pure_ranged")}}
+          <span class="attack-config__measure">
+            <input
+              class="attack-config__cost-input"
+              name="system.{{actionPath}}selection.zone.min_range"
+              type="number"
+              value="{{actionData.selection.zone.min_range}}"
+              data-dtype="Number"
+            />
+            <span class="attack-config__row-sep">m</span>
+          </span>
+          <span class="attack-config__row-sep">↔</span>
+        {{/if}}
+        {{#if (eq actionData.range_type "ranged")}}
+          <span
+            class="attack-config__row-sep attack-config__reach-disadvantage"
+            data-tooltip="Désavantage en portée d'Allonge"
+          >
+            <i class="fa-light fa-arrows-left-right attack-config__reach-disadvantage-base"></i>
+            <i class="fa-light fa-triangle-exclamation attack-config__reach-disadvantage-alert"></i>
+          </span>
+        {{/if}}
+        <span class="attack-config__measure">
+          <input
+            class="attack-config__cost-input"
+            name="system.{{actionPath}}selection.zone.range"
+            type="number"
+            value="{{actionData.selection.zone.range}}"
+            data-dtype="Number"
+          />
+          <span class="attack-config__row-sep">m</span>
+        </span>
+        {{#if actionData.selection.zone.has_long_range}}
+          <span class="attack-config__row-sep">~</span>
+          <span class="attack-config__measure">
+            <input
+              class="attack-config__cost-input"
+              name="system.{{actionPath}}selection.zone.long_range"
+              type="number"
+              value="{{actionData.selection.zone.long_range}}"
+              data-dtype="Number"
+            />
+            <span class="attack-config__row-sep">m</span>
+          </span>
+          <span class="attack-config__row-sep">(Longue)</span>
+        {{/if}}
+        <label class="attack-config__toggle attack-config__toggle--push-end">
+          <input
+            type="checkbox"
+            name="system.{{actionPath}}selection.zone.has_long_range"
+            {{checked actionData.selection.zone.has_long_range}}
+          />
+          <span>Longue?</span>
+        </label>
+      </div>
+    {{/unless}}
+  </div>
+</div>
