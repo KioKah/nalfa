@@ -1,7 +1,10 @@
 import {
+	formatEmbeddedActionShorthand,
 	MAX_EMBEDDED_ACTIONS,
 	getDefaultEmbeddedActionName,
 	getDefaultEmbeddedActionShorthand,
+	renderEmbeddedActionShorthand,
+	resolveEmbeddedActionShorthand,
 } from "../../../actions/embedded.mjs";
 import {
 	formatSignedNumber,
@@ -343,40 +346,50 @@ const buildEmbeddedActionDetailRows = (item, actionData, config) => {
 	return { detailRow1, detailRow2 };
 };
 
+export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
+	const trimmedName = String(actionData?.name ?? "").trim();
+	const defaultName = getDefaultEmbeddedActionName(item.name, index);
+	const actionName = trimmedName || defaultName;
+	const sourceUuid = String(actionData?.source_uuid ?? "").trim();
+	const sourceVersion = String(actionData?.source_version ?? "").trim();
+	const hasSource = sourceUuid.length > 0;
+	const alwaysRefresh = hasSource && actionData?.always_refresh === true;
+	const resolvedShorthand = resolveEmbeddedActionShorthand({
+		shorthand: actionData?.shorthand,
+		actionName,
+		preferGenerated: alwaysRefresh,
+	});
+	const defaultShorthand = getDefaultEmbeddedActionShorthand(actionName);
+	const summaryRows = buildActionRightSummaryRows(actionData);
+	const { detailRow1, detailRow2 } = buildEmbeddedActionDetailRows(
+		item,
+		actionData,
+		config,
+	);
+
+	return {
+		index,
+		defaultName,
+		defaultShorthand,
+		displayName: trimmedName || defaultName,
+		displayShorthand: formatEmbeddedActionShorthand(resolvedShorthand),
+		displayShorthandHtml: renderEmbeddedActionShorthand(resolvedShorthand),
+		hasSource,
+		sourceUuid,
+		sourceVersion,
+		alwaysRefresh,
+		resourceSummary: buildActionResourceSummary({ actionData, config }),
+		summaryRows,
+		detailRow1,
+		detailRow2,
+	};
+};
+
 const buildEmbeddedActionRows = ({ item, config }) => {
 	const embeddedActions = Array.isArray(item.system?.actions) ? item.system.actions : [];
 
 	return embeddedActions.map((actionData, index) => {
-		const trimmedName = String(actionData?.name ?? "").trim();
-		const defaultName = getDefaultEmbeddedActionName(item.name, index);
-		const trimmedShorthand = String(actionData?.shorthand ?? "").trim();
-		const defaultShorthand = getDefaultEmbeddedActionShorthand(index);
-		const sourceUuid = String(actionData?.source_uuid ?? "").trim();
-		const sourceVersion = String(actionData?.source_version ?? "").trim();
-		const hasSource = sourceUuid.length > 0;
-		const alwaysRefresh = hasSource && actionData?.always_refresh === true;
-		const summaryRows = buildActionRightSummaryRows(actionData);
-		const { detailRow1, detailRow2 } = buildEmbeddedActionDetailRows(
-			item,
-			actionData,
-			config,
-		);
-
-		return {
-			index,
-			defaultName,
-			defaultShorthand,
-			displayName: trimmedName || defaultName,
-			displayShorthand: trimmedShorthand || defaultShorthand,
-			hasSource,
-			sourceUuid,
-			sourceVersion,
-			alwaysRefresh,
-			resourceSummary: buildActionResourceSummary({ actionData, config }),
-			summaryRows,
-			detailRow1,
-			detailRow2,
-		};
+		return buildEmbeddedActionRow({ item, actionData, index, config });
 	});
 };
 
@@ -385,9 +398,17 @@ export const buildActionableContext = ({ item, config }) => {
 	const hasEmbeddedActions = Array.isArray(item.system?.actions);
 	const actionData = isActionItem ? item.system : null;
 	const actionPath = isActionItem ? "" : "actions.0.";
-	const defaultActionShorthand = getDefaultEmbeddedActionShorthand(0);
+	const actionDefaultName = String(actionData?.name ?? "").trim() || item.name;
+	const defaultActionShorthand = getDefaultEmbeddedActionShorthand(actionDefaultName);
+	const resolvedActionShorthand = resolveEmbeddedActionShorthand({
+		shorthand: item.system?.shorthand,
+		actionName: actionDefaultName,
+	});
 	const actionHeaderShorthand =
-		String(item.system?.shorthand ?? "").trim() || defaultActionShorthand;
+		formatEmbeddedActionShorthand(resolvedActionShorthand || defaultActionShorthand);
+	const actionHeaderShorthandHtml = renderEmbeddedActionShorthand(
+		resolvedActionShorthand || defaultActionShorthand,
+	);
 	const hasActionable = isActionItem ? actionData !== null : hasEmbeddedActions;
 	const showEmbeddedActionsTab = hasEmbeddedActions && !isActionItem;
 	const embeddedActions = showEmbeddedActionsTab
@@ -407,10 +428,17 @@ export const buildActionableContext = ({ item, config }) => {
 		actionPath,
 		defaultActionShorthand,
 		actionHeaderShorthand,
+		actionHeaderShorthandHtml,
 		hasActionable,
 		showEmbeddedActionsTab,
 		embeddedActions,
 		embeddedActionsCount,
+		showEmbeddedActionsHeader: true,
+		showEmbeddedActionIcon: true,
+		showEmbeddedActionControls: true,
+		embeddedActionReadonly: false,
+		enableEmbeddedActionDrop: true,
+		enableEmbeddedActionDrag: true,
 		canAddEmbeddedAction,
 		maxEmbeddedActions: MAX_EMBEDDED_ACTIONS,
 		embeddedActionsTabLabel,

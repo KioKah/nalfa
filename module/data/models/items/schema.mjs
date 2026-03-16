@@ -159,7 +159,7 @@ const embeddedActionSchema = () => {
 };
 
 const defaultEmbeddedActionArrayInitial = () => [
-	createDefaultEmbeddedAction({ shorthand: getDefaultEmbeddedActionShorthand(0) }),
+	createDefaultEmbeddedAction({ shorthand: getDefaultEmbeddedActionShorthand("") }),
 ];
 
 export const itemDescriptionSchema = (textInitial = "", loretextInitial = "") => ({

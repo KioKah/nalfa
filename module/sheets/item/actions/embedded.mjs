@@ -7,6 +7,7 @@ import {
 	getDefaultEmbeddedActionShorthand,
 	hasEmbeddedActionSource,
 	isEmbeddedActionSourceChanged,
+	resolveEmbeddedActionShorthand,
 } from "../../../actions/embedded.mjs";
 import {
 	ACTION_REF_TYPES,
@@ -346,6 +347,12 @@ export const handleEmbeddedActionDragStart = (sheet, event) => {
 
 	const actionData = embeddedActions[index];
 	const actionName = getEmbeddedActionDisplayName(sheet, actionData, index);
+	const sourceUuid = String(actionData?.source_uuid ?? "").trim();
+	const actionShorthand = resolveEmbeddedActionShorthand({
+		shorthand: actionData?.shorthand,
+		actionName,
+		preferGenerated: sourceUuid.length > 0 && actionData?.always_refresh === true,
+	});
 	const actorUuid = sheet.item.parent instanceof Actor ? sheet.item.parent.uuid : "";
 	const payload = {
 		type: HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
@@ -354,6 +361,9 @@ export const handleEmbeddedActionDragStart = (sheet, event) => {
 		actionIndex: index,
 		actorUuid,
 		actionName,
+		actionShorthand,
+		sourceUuid,
+		img: sheet.item.img,
 	};
 
 	event.dataTransfer.setData("text/plain", JSON.stringify(payload));

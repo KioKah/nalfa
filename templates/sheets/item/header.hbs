@@ -2,7 +2,7 @@
 	{{#if isActionItem}}
 		<div class="item-sheet-header__icon embedded-actions__icon">
 			<img src="{{itemImage}}" data-edit="img" data-tooltip="{{item.name}}" height="64" width="64"/>
-			<span class="embedded-actions__shorthand">{{actionHeaderShorthand}}</span>
+			<span class="embedded-actions__shorthand">{{{actionHeaderShorthandHtml}}}</span>
 		</div>
 	{{else}}
 		<img src="{{itemImage}}" data-edit="img" data-tooltip="{{item.name}}" height="64" width="64"/>

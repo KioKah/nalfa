@@ -4,6 +4,7 @@ import {
 	rollDamageSetFromAction,
 	rollSavePromptFromAction,
 } from "../index.mjs";
+import { buildEmbeddedActionRow } from "../../sheets/item/context/actions.mjs";
 
 const { DialogV2 } = foundry.applications.api;
 
@@ -45,6 +46,30 @@ const getActionTitle = ({ actionData = {}, sourceItem = null, titleName = "" } =
 	if (sourceName) return sourceName;
 
 	return "Action";
+};
+
+const renderActionDialogContent = async ({ actionData, sourceItem, titleName }) => {
+	if (!(sourceItem instanceof Item)) {
+		return `<p>${foundry.utils.escapeHTML(titleName)}</p>`;
+	}
+
+	const embeddedAction = buildEmbeddedActionRow({
+		item: sourceItem,
+		actionData,
+		index: 0,
+		config: CONFIG.nalfa,
+	});
+
+	return renderTemplate("systems/nalfa/templates/partials/item/integrated-action.hbs", {
+		embeddedAction,
+		item: sourceItem,
+		itemImage: sourceItem.img,
+		showIcon: true,
+		enableDrag: false,
+		readonly: true,
+		rollable: false,
+		isEditable: false,
+	});
 };
 
 const buildActionChatContext = ({ sourceItem = null, titleName = "", actionIndex = -1 }) => {
@@ -147,12 +172,18 @@ export const executeActionPrompt = async ({
 		return choices[0].run();
 	}
 
+	const content = await renderActionDialogContent({
+		actionData,
+		sourceItem,
+		titleName: resolvedTitle,
+	});
+
 	const selectedChoice = await waitForActionDialog(
 		{
 			window: {
 				title: `Action - ${resolvedTitle}`,
 			},
-			content: `<p>Quel jet veux-tu lancer ?</p>`,
+			content,
 			buttons: choices.map((choice, index) => {
 				return {
 					action: choice.id,

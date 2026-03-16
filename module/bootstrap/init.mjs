@@ -93,6 +93,10 @@ const registerHotbarHook = () => {
 		if (!game.nalfa?.macros?.createHotbarMacro) return true;
 		return game.nalfa.macros.createHotbarMacro(data, slot);
 	});
+
+	Hooks.on("renderHotbar", (hotbar, html) => {
+		game.nalfa?.macros?.renderHotbarActionShorthand?.(hotbar, html);
+	});
 };
 
 export const registerInitHook = () => {

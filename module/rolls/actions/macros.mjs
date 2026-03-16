@@ -1,4 +1,4 @@
-export { createHotbarMacro } from "./hotbar.mjs";
+export { createHotbarMacro, renderHotbarActionShorthand } from "./hotbar.mjs";
 export {
 	rollBasicAttackMacro,
 	rollBasicDamageMacro,

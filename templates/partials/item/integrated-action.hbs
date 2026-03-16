@@ -1,0 +1,186 @@
+<div class="embedded-actions__row panel-section">
+	{{#if showIcon}}
+		<div
+			class="embedded-actions__icon"
+			{{#if enableDrag}}data-draggable="embedded-action" draggable="true"{{/if}}
+			data-index="{{embeddedAction.index}}"
+		>
+			<img
+				class="embedded-actions__image"
+				src="{{itemImage}}"
+				alt="{{item.name}}"
+				draggable="false"
+			/>
+			{{#if embeddedAction.displayShorthand}}
+				<span class="embedded-actions__shorthand">{{{embeddedAction.displayShorthandHtml}}}</span>
+			{{/if}}
+		</div>
+	{{/if}}
+
+	<div class="embedded-actions__main">
+		<div class="embedded-actions__line embedded-actions__line--title">
+			<div class="embedded-actions__title-main">
+				<div class="embedded-actions__cost-summary">
+					{{#each embeddedAction.resourceSummary.options as |costOption|}}
+						<span class="embedded-actions__cost-option">
+							{{#each costOption.tokens as |token|}}
+								<span
+									class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
+									data-tooltip="{{token.title}}"
+								>
+									{{#if token.showAmount}}
+										<span class="embedded-actions__cost-token-amount">{{token.amountLabel}}</span>
+									{{/if}}
+									<i class="{{token.iconClass}}"></i>
+								</span>
+							{{/each}}
+							{{#if costOption.hasCondition}}
+								<span class="embedded-actions__cost-condition-mark">*</span>
+							{{/if}}
+						</span>
+						{{#unless @last}}
+							<span class="embedded-actions__cost-option-sep">/</span>
+						{{/unless}}
+					{{/each}}
+					{{#each embeddedAction.resourceSummary.additions as |token|}}
+						<span class="embedded-actions__cost-option-sep">+</span>
+						<span
+							class="embedded-actions__cost-token embedded-actions__cost-token--{{token.colorClass}}"
+							data-tooltip="{{token.title}}"
+						>
+							{{#if token.showAmount}}
+								<span class="embedded-actions__cost-token-amount">{{token.amountLabel}}</span>
+							{{/if}}
+							<i class="{{token.iconClass}}"></i>
+						</span>
+					{{/each}}
+				</div>
+				{{#if embeddedAction.resourceSummary.note}}
+					<span
+						class="embedded-actions__cost-note"
+						data-tooltip="{{embeddedAction.resourceSummary.note}}"
+						data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+					>
+						(<i class="fa-light fa-note-sticky"></i>)
+					</span>
+				{{/if}}
+				<span class="embedded-actions__name-label">{{embeddedAction.displayName}}</span>
+			</div>
+			{{#if embeddedAction.summaryRows.length}}
+				<div class="embedded-actions__summary-stack">
+					{{#each embeddedAction.summaryRows as |summaryRow|}}
+						<span class="embedded-actions__summary">
+							{{summaryRow}}
+						</span>
+					{{/each}}
+				</div>
+			{{/if}}
+		</div>
+		{{#if embeddedAction.detailRow1}}
+			<div class="embedded-actions__line embedded-actions__line--meta">
+				<span class="embedded-actions__secondary embedded-actions__secondary--top">
+					{{embeddedAction.detailRow1}}
+				</span>
+			</div>
+		{{/if}}
+		{{#if embeddedAction.detailRow2}}
+			<div class="embedded-actions__line embedded-actions__line--meta">
+				<span class="embedded-actions__secondary embedded-actions__secondary--bottom">
+					{{{embeddedAction.detailRow2}}}
+				</span>
+			</div>
+		{{/if}}
+	</div>
+
+	{{#unless readonly}}
+		{{#if isEditable}}
+			<div class="embedded-actions__buttons">
+				{{#if embeddedAction.hasSource}}
+					<div class="embedded-actions__buttons-sync">
+						<button
+							type="button"
+							class="array-action-btn embedded-actions__sync-btn {{#if embeddedAction.alwaysRefresh}}embedded-actions__sync-btn--auto{{/if}}"
+							data-action="refresh-embedded-action-source"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Synchroniser avec la source"
+						>
+							<i class="fa-light fa-arrows-rotate"></i>
+							{{#if embeddedAction.alwaysRefresh}}
+								<span class="embedded-actions__sync-auto">
+									<i class="fa-solid fa-check"></i>
+								</span>
+							{{/if}}
+						</button>
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="open-embedded-action-source"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Ouvrir la source"
+						>
+							<i class="fa-light fa-arrow-up-right-from-square"></i>
+						</button>
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="detach-embedded-action-source"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Détacher la source"
+						>
+							<i class="fa-light fa-link-slash"></i>
+						</button>
+					</div>
+				{{/if}}
+
+				<div class="embedded-actions__buttons-main">
+					{{#if rollable}}
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="use-embedded-action"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Utiliser l'action"
+						>
+							<i class="fa-light fa-dice-d20"></i>
+						</button>
+					{{/if}}
+					{{#unless embeddedAction.alwaysRefresh}}
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="edit-embedded-action"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Modifier l'action"
+						>
+							<i class="fa-light fa-pen-to-square"></i>
+						</button>
+					{{/unless}}
+				</div>
+
+				<div class="embedded-actions__buttons-danger">
+					<button
+						type="button"
+						class="array-action-btn"
+						data-action="remove-embedded-action"
+						data-index="{{embeddedAction.index}}"
+						data-tooltip="Supprimer l'action"
+					>
+						<i class="fa-light fa-square-minus"></i>
+					</button>
+				</div>
+			</div>
+		{{else if rollable}}
+			<div class="embedded-actions__buttons">
+				<button
+					type="button"
+					class="array-action-btn"
+					data-action="use-embedded-action"
+					data-index="{{embeddedAction.index}}"
+					data-tooltip="Utiliser l'action"
+				>
+					<i class="fa-light fa-dice-d20"></i>
+				</button>
+			</div>
+		{{/if}}
+	{{/unless}}
+</div>

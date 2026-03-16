@@ -1,7 +1,10 @@
 import { createDefaultDamageFormula } from "../../../actions/core.mjs";
 import {
+	formatEmbeddedActionShorthand,
 	getDefaultEmbeddedActionName,
 	getDefaultEmbeddedActionShorthand,
+	renderEmbeddedActionShorthand,
+	resolveEmbeddedActionShorthand,
 } from "../../../actions/embedded.mjs";
 import { buildDefaultArrayEntry } from "../arrays.mjs";
 import { openRichTextEditorDialog } from "../dialogs/richTextDialog.mjs";
@@ -60,10 +63,24 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		const noteTextSource = actionData?.cost?.actions?.note ?? "";
 		const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
 		const defaultActionName = getDefaultEmbeddedActionName(item.name, actionIndex);
-		const defaultActionShorthand = getDefaultEmbeddedActionShorthand(actionIndex);
+		const actionName = String(actionData?.name ?? "").trim() || defaultActionName;
+		const defaultActionShorthand = getDefaultEmbeddedActionShorthand(actionName);
 		const actionDisplayName = String(actionData?.name ?? "").trim() || defaultActionName;
-		const actionDisplayShorthand =
-			String(actionData?.shorthand ?? "").trim() || defaultActionShorthand;
+		const alwaysRefresh = actionData?.always_refresh === true;
+		const actionDisplayShorthand = formatEmbeddedActionShorthand(
+			resolveEmbeddedActionShorthand({
+				shorthand: actionData?.shorthand,
+				actionName,
+				preferGenerated: alwaysRefresh,
+			}),
+		);
+		const actionDisplayShorthandHtml = renderEmbeddedActionShorthand(
+			resolveEmbeddedActionShorthand({
+				shorthand: actionData?.shorthand,
+				actionName,
+				preferGenerated: alwaysRefresh,
+			}),
+		);
 		const { TextEditor } = foundry.applications.ux;
 
 		return {
@@ -78,6 +95,7 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			defaultActionShorthand,
 			actionDisplayName,
 			actionDisplayShorthand,
+			actionDisplayShorthandHtml,
 			isActionModeIncant: actionMode === "incant",
 			isActionModePhysical: actionMode === "physical",
 			config: CONFIG.nalfa,
