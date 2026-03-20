@@ -31,6 +31,7 @@
     </select>
   </div>
   {{#if showAddButton}}
+    {{#unless readonly}}
     <button
       type="button"
       data-action="add-array-entry"
@@ -40,7 +41,9 @@
     >
       <i class="fa-light fa-square-plus"></i>
     </button>
+    {{/unless}}
   {{else}}
+    {{#unless readonly}}
     <button
       type="button"
       data-action="remove-array-entry"
@@ -51,5 +54,6 @@
     >
       <i class="fa-light fa-square-minus"></i>
     </button>
+    {{/unless}}
   {{/if}}
 </div>

@@ -1,8 +1,11 @@
-<header class="nalfa-sheet-header">
+<header
+	class="nalfa-sheet-header"
+	data-readonly-section="{{#if readonly}}true{{else}}false{{/if}}"
+>
 	<div class="item-sheet-header__icon embedded-actions__icon">
 		<img
 			src="{{itemImage}}"
-			data-edit="img"
+			{{#unless readonly}}data-edit="img"{{/unless}}
 			data-tooltip="{{actionDisplayName}}"
 			height="64"
 			width="64"
@@ -16,6 +19,7 @@
 			type="text"
 			value="{{actionData.name}}"
 			placeholder="{{defaultActionName}}"
+			{{#if readonly}}disabled{{/if}}
 		/>
 	</div>
 
@@ -26,6 +30,7 @@
 			type="text"
 			value="{{actionData.shorthand}}"
 			placeholder="{{defaultActionShorthand}}"
+			{{#if readonly}}disabled{{/if}}
 		/>
 	</div>
 </header>

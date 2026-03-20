@@ -1,5 +1,8 @@
 {{#if hasActionable}}
-  <div class="sheet-section attack-config">
+  <div
+    class="sheet-section attack-config"
+    data-readonly-section="{{#if readonly}}true{{else}}false{{/if}}"
+  >
     {{>
       "systems/nalfa/templates/partials/item/actionable/mode.hbs"
       actionPath=actionPath

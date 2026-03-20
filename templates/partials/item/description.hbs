@@ -31,5 +31,9 @@
 </div>
 
 {{#if hasIdentification}}
-  {{> "systems/nalfa/templates/partials/item/description-identification.hbs" sysData=sysData}}
+  {{>
+    "systems/nalfa/templates/partials/item/description-identification.hbs"
+    sysData=sysData
+    readonly=readonly
+  }}
 {{/if}}

@@ -8,6 +8,11 @@ import {
 } from "../../../actions/embedded.mjs";
 import { buildDefaultArrayEntry } from "../arrays.mjs";
 import { openRichTextEditorDialog } from "../dialogs/richTextDialog.mjs";
+import {
+	applyReadonlyItemSections,
+	canManageItemSheetRules,
+	canRollItemSheet,
+} from "../permissions.mjs";
 import { getItemImage, htmlToPlainText } from "../utils.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -82,10 +87,14 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			}),
 		);
 		const { TextEditor } = foundry.applications.ux;
+		const readonly = !canManageItemSheetRules(this);
+		const rollable = canRollItemSheet(this.item);
 
 		return {
 			isOwner: this.item.isOwner,
 			isEditable: this.isEditable,
+			readonly,
+			rollable,
 			item,
 			itemImage: getItemImage(item),
 			hasActionable,
@@ -98,6 +107,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			actionDisplayShorthandHtml,
 			isActionModeIncant: actionMode === "incant",
 			isActionModePhysical: actionMode === "physical",
+			effectNamePath: `system.actions.${actionIndex}.effect.text`,
+			noteNamePath: `system.actions.${actionIndex}.cost.actions.note`,
 			config: CONFIG.nalfa,
 			noteHasContent,
 			enrichedHTML: {
@@ -115,7 +126,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 
 	async _onRender(context, options) {
 		await super._onRender(context, options);
-		if (!this.isEditable) return;
+		applyReadonlyItemSections(this.element);
+		if (!canManageItemSheetRules(this)) return;
 		this.element?.querySelector("form")?.addEventListener("submit", (event) => {
 			event.preventDefault();
 		});

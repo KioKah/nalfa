@@ -56,16 +56,16 @@
     </div>
     <div class="stat-separator"></div>
   </div>
-  {{#each sysData.attributes.skills as |skillObj skillKey|}}
-    {{#if (eq skillObj.stat statKey)}}
-      {{>
-        "systems/nalfa/templates/partials/character/skill-row.hbs"
-        skillObj=skillObj
-        skillKey=skillKey
-        statKey=statKey
-        config=@root.config
-        rollable=@root.rollable
-      }}
-    {{/if}}
-  {{/each}}
+	{{#each skills as |skillObj skillKey|}}
+		{{#if (eq skillObj.stat statKey)}}
+			{{>
+				"systems/nalfa/templates/partials/character/skill-row.hbs"
+				skillObj=skillObj
+				skillKey=skillKey
+				statKey=statKey
+				config=config
+				rollable=rollable
+			}}
+		{{/if}}
+	{{/each}}
 </div>

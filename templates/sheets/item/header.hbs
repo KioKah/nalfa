@@ -1,7 +1,13 @@
 <header class="nalfa-sheet-header">
 	{{#if isActionItem}}
 		<div class="item-sheet-header__icon embedded-actions__icon">
-			<img src="{{itemImage}}" data-edit="img" data-tooltip="{{item.name}}" height="64" width="64"/>
+			<img
+				src="{{itemImage}}"
+				{{#unless readonly}}data-edit="img"{{/unless}}
+				data-tooltip="{{item.name}}"
+				height="64"
+				width="64"
+			/>
 			<span class="embedded-actions__shorthand">{{{actionHeaderShorthandHtml}}}</span>
 		</div>
 	{{else}}
@@ -12,7 +18,7 @@
 		<div class="item-sheet-header__rarity">
 			<label class="field field--inline">
 				<span class="field__label">Rareté :</span>
-				<select name="system.rarity">
+				<select name="system.rarity" {{#if readonly}}disabled{{/if}}>
 					{{selectOptions config.rarity selected=sysData.rarity}}
 				</select>
 			</label>
@@ -20,7 +26,13 @@
 	{{/if}}
 
 	<div class="item-sheet-header__name">
-		<input name="name" type="text" value="{{item.name}}" placeholder="Nom"/>
+		<input
+			name="name"
+			type="text"
+			value="{{item.name}}"
+			placeholder="Nom"
+			{{#if isActionItem}}{{#if readonly}}disabled{{/if}}{{/if}}
+		/>
 	</div>
 
 	{{#if isActionItem}}
@@ -31,6 +43,7 @@
 				type="text"
 				value="{{sysData.shorthand}}"
 				placeholder="{{defaultActionShorthand}}"
+				{{#if readonly}}disabled{{/if}}
 			/>
 		</div>
 	{{else if hasRecommendedLevel}}
@@ -42,6 +55,7 @@
 					type="number"
 					value="{{sysData.recommended_level.min}}"
 					data-dtype="Number"
+					{{#if readonly}}disabled{{/if}}
 				/>
 				<span class="field__separator">-</span>
 				<input
@@ -49,6 +63,7 @@
 					type="number"
 					value="{{sysData.recommended_level.max}}"
 					data-dtype="Number"
+					{{#if readonly}}disabled{{/if}}
 				/>
 			</div>
 		</div>

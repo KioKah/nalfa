@@ -20,6 +20,7 @@ import {
 	handleToggleIdentified,
 	handleToggleNeedsIdentification,
 } from "./handlers.mjs";
+import { canManageItemSheetRules, canRollItemSheet } from "./permissions.mjs";
 
 const bindElements = (sheet, selector, eventName, handler) => {
 	sheet.element?.querySelectorAll(selector).forEach((element) => {
@@ -55,60 +56,74 @@ export const restoreItemSheetTabs = (sheet) => {
 };
 
 export const bindItemSheetInteractions = (sheet) => {
-	bindElements(sheet, "[data-action='use-embedded-action']", "click", handleUseEmbeddedAction);
-	bindElements(
-		sheet,
-		"[data-draggable='embedded-action']",
-		"dragstart",
-		handleEmbeddedActionDragStart,
-	);
-	bindEmbeddedActionDropZone(sheet);
+	const canManageRules = canManageItemSheetRules(sheet);
+	const canRoll = canRollItemSheet(sheet.item);
+
+	if (canRoll) {
+		bindElements(sheet, "[data-action='use-embedded-action']", "click", handleUseEmbeddedAction);
+		bindElements(
+			sheet,
+			"[data-draggable='embedded-action']",
+			"dragstart",
+			handleEmbeddedActionDragStart,
+		);
+	}
+
+	if (canManageRules) bindEmbeddedActionDropZone(sheet);
 
 	if (!sheet.isEditable) return;
 
-	bindElements(sheet, "[data-action='add-array-entry']", "click", handleAddArrayEntry);
-	bindElements(
-		sheet,
-		"[data-action='remove-array-entry']",
-		"click",
-		handleRemoveArrayEntry,
-	);
-	bindElements(
-		sheet,
-		"[data-action='add-embedded-action']",
-		"click",
-		handleAddEmbeddedAction,
-	);
-	bindElements(
-		sheet,
-		"[data-action='edit-embedded-action']",
-		"click",
-		handleEditEmbeddedAction,
-	);
-	bindElements(
-		sheet,
-		"[data-action='remove-embedded-action']",
-		"click",
-		handleRemoveEmbeddedAction,
-	);
-	bindElements(
-		sheet,
-		"[data-action='refresh-embedded-action-source']",
-		"click",
-		handleRefreshEmbeddedActionSource,
-	);
-	bindElements(
-		sheet,
-		"[data-action='open-embedded-action-source']",
-		"click",
-		handleOpenEmbeddedActionSource,
-	);
-	bindElements(
-		sheet,
-		"[data-action='detach-embedded-action-source']",
-		"click",
-		handleDetachEmbeddedActionSource,
-	);
+	if (canManageRules) {
+		bindElements(sheet, "[data-action='add-array-entry']", "click", handleAddArrayEntry);
+		bindElements(
+			sheet,
+			"[data-action='remove-array-entry']",
+			"click",
+			handleRemoveArrayEntry,
+		);
+		bindElements(
+			sheet,
+			"[data-action='add-embedded-action']",
+			"click",
+			handleAddEmbeddedAction,
+		);
+		bindElements(
+			sheet,
+			"[data-action='edit-embedded-action']",
+			"click",
+			handleEditEmbeddedAction,
+		);
+		bindElements(
+			sheet,
+			"[data-action='remove-embedded-action']",
+			"click",
+			handleRemoveEmbeddedAction,
+		);
+		bindElements(
+			sheet,
+			"[data-action='refresh-embedded-action-source']",
+			"click",
+			handleRefreshEmbeddedActionSource,
+		);
+		bindElements(
+			sheet,
+			"[data-action='open-embedded-action-source']",
+			"click",
+			handleOpenEmbeddedActionSource,
+		);
+		bindElements(
+			sheet,
+			"[data-action='detach-embedded-action-source']",
+			"click",
+			handleDetachEmbeddedActionSource,
+		);
+		bindElements(
+			sheet,
+			"[data-action='open-richtext-editor']",
+			"click",
+			handleOpenRichTextEditor,
+		);
+	}
 	bindElements(
 		sheet,
 		"[data-action='change-equipped-slot']",
@@ -132,11 +147,5 @@ export const bindItemSheetInteractions = (sheet) => {
 		"[data-action='change-modifier-category']",
 		"change",
 		handleChangeModifierCategory,
-	);
-	bindElements(
-		sheet,
-		"[data-action='open-richtext-editor']",
-		"click",
-		handleOpenRichTextEditor,
 	);
 };

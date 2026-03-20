@@ -10,9 +10,11 @@ import {
 	buildNeedsIdentificationUpdate,
 } from "./identification.mjs";
 import { openRichTextEditorDialog } from "./dialogs/richTextDialog.mjs";
+import { canManageItemSheetRules } from "./permissions.mjs";
 
 export const handleAddArrayEntry = async (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 	const button = event.currentTarget;
 	const path = button.dataset.path;
 	if (!path) return;
@@ -23,6 +25,7 @@ export const handleAddArrayEntry = async (sheet, event) => {
 
 export const handleRemoveArrayEntry = async (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 	const button = event.currentTarget;
 	const path = button.dataset.path;
 	const index = Number(button.dataset.index ?? -1);
@@ -35,6 +38,7 @@ export const handleRemoveArrayEntry = async (sheet, event) => {
 export const handleOpenRichTextEditor = (sheet, event) => {
 	event.preventDefault();
 	event.stopPropagation();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const button = event.currentTarget;
 	const path = button.dataset.path;
@@ -77,6 +81,7 @@ export const handleToggleNeedsIdentification = async (sheet, event) => {
 	event.preventDefault();
 	event.stopImmediatePropagation();
 	event.stopPropagation();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const isEnabled = Boolean(event.currentTarget.checked);
 	await sheet.item.update(buildNeedsIdentificationUpdate(sheet.item, isEnabled));
@@ -86,6 +91,7 @@ export const handleToggleIdentified = async (sheet, event) => {
 	event.preventDefault();
 	event.stopImmediatePropagation();
 	event.stopPropagation();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const isIdentified = Boolean(event.currentTarget.checked);
 	await sheet.item.update(buildIdentifiedUpdate(sheet.item, isIdentified));
@@ -95,6 +101,7 @@ export const handleChangeModifierCategory = async (sheet, event) => {
 	event.preventDefault();
 	event.stopImmediatePropagation();
 	event.stopPropagation();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const select = event.currentTarget;
 	const index = Number(select.dataset.index ?? -1);

@@ -55,6 +55,7 @@
       />
     </label>
     {{#if showRemoveButton}}
+      {{#unless readonly}}
       <button
         type="button"
         class="array-action-btn attack-config__action-option-remove"
@@ -66,6 +67,7 @@
       >
         <i class="fa-light fa-square-minus"></i>
       </button>
+      {{/unless}}
     {{/if}}
   </div>
   <div class="attack-config__action-option-meta">

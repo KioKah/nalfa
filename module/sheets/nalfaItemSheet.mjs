@@ -5,6 +5,7 @@ import {
 import { bindItemSheetInteractions, restoreItemSheetTabs } from "./item/bindings.mjs";
 import { PRIMARY_TAB_GROUP } from "./item/constants.mjs";
 import { buildItemSheetContext } from "./item/context/index.mjs";
+import { applyReadonlyItemSections, canManageItemSheetRules } from "./item/permissions.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -73,8 +74,9 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 	async _onRender(context, options) {
 		await super._onRender(context, options);
 		restoreItemSheetTabs(this);
+		applyReadonlyItemSections(this.element);
 
-		if (!this._didAutoRefreshEmbeddedActions) {
+		if (!this._didAutoRefreshEmbeddedActions && canManageItemSheetRules(this)) {
 			this._didAutoRefreshEmbeddedActions = true;
 			const refreshed = await refreshAlwaysRefreshEmbeddedActions(this);
 			if (refreshed) return;

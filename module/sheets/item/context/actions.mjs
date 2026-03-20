@@ -393,7 +393,13 @@ const buildEmbeddedActionRows = ({ item, config }) => {
 	});
 };
 
-export const buildActionableContext = ({ item, config }) => {
+export const buildActionableContext = ({
+	item,
+	config,
+	readonly = false,
+	rollable = false,
+	isEditable = false,
+} = {}) => {
 	const isActionItem = item.type === "Action";
 	const hasEmbeddedActions = Array.isArray(item.system?.actions);
 	const actionData = isActionItem ? item.system : null;
@@ -438,10 +444,10 @@ export const buildActionableContext = ({ item, config }) => {
 		showEmbeddedActionsHeader: true,
 		showEmbeddedActionIcon: true,
 		showEmbeddedActionControls: true,
-		embeddedActionReadonly: false,
-		enableEmbeddedActionDrop: true,
-		enableEmbeddedActionDrag: true,
-		canAddEmbeddedAction,
+		embeddedActionReadonly: readonly,
+		enableEmbeddedActionDrop: !readonly && isEditable,
+		enableEmbeddedActionDrag: rollable,
+		canAddEmbeddedAction: !readonly && canAddEmbeddedAction,
 		maxEmbeddedActions: MAX_EMBEDDED_ACTIONS,
 		embeddedActionsTabLabel,
 		isActionModeIncant: actionMode === "incant",

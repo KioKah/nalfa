@@ -10,6 +10,7 @@ import {
 	isEquippedSlotLocked,
 } from "../equipment.mjs";
 import { getItemImage } from "../utils.mjs";
+import { canManageItemSheetRules, canRollItemSheet } from "../permissions.mjs";
 import { buildActionableContext } from "./actions.mjs";
 import { buildDescriptionContext, getDescriptionData } from "./descriptions.mjs";
 import { buildModifierRows } from "./modifiers.mjs";
@@ -17,8 +18,16 @@ import { buildVisibleTabs } from "./tabs.mjs";
 
 export const buildItemSheetContext = async ({ baseData, config, sheet, textEditor }) => {
 	const item = baseData.document;
+	const readonly = !canManageItemSheetRules(sheet);
+	const rollable = canRollItemSheet(item);
 	const rawTabs = sheet._prepareTabs(PRIMARY_TAB_GROUP);
-	const actionableContext = buildActionableContext({ item, config });
+	const actionableContext = buildActionableContext({
+		item,
+		config,
+		readonly,
+		rollable,
+		isEditable: sheet.isEditable,
+	});
 	const isCurrencyItem = item.type === "Currency";
 	const hasSpecific = ITEM_TYPES_WITH_SPECIFIC.has(item.type);
 	const hasModifiers = ITEM_TYPES_WITH_MODIFIERS.has(item.type);
@@ -68,8 +77,8 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 		sheetData: {
 			isOwner: sheet.item.isOwner,
 			isEditable: sheet.isEditable,
-			readonly: !sheet.isEditable,
-			rollable: sheet.item.isOwner,
+			readonly,
+			rollable,
 			item,
 			itemImage: getItemImage(item),
 			sysData: item.system,

@@ -1,4 +1,7 @@
-<div class="sheet-section">
+<div
+	class="sheet-section"
+	data-readonly-section="{{#if readonly}}true{{else}}false{{/if}}"
+>
 	{{#if (eq item.type "Weapon")}}
 		{{> "systems/nalfa/templates/partials/item/specific/weapon.hbs"}}
 	{{else if (eq item.type "Trinket")}}

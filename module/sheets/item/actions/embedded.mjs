@@ -15,6 +15,7 @@ import {
 } from "../../../actions/refs.mjs";
 import { executeActionPrompt } from "../../../rolls/actions/execution.mjs";
 import { PRIMARY_TAB_GROUP } from "../constants.mjs";
+import { canManageItemSheetRules } from "../permissions.mjs";
 import NalfaEmbeddedActionEditor from "./editor.mjs";
 
 const { DialogV2 } = foundry.applications.api;
@@ -118,6 +119,7 @@ export const getEmbeddedActionDisplayName = (sheet, actionData, index) => {
 };
 
 export const refreshAlwaysRefreshEmbeddedActions = async (sheet) => {
+	if (!canManageItemSheetRules(sheet)) return false;
 	const embeddedActions = getEmbeddedActionsClone(sheet.item);
 	if (!embeddedActions.length) return false;
 
@@ -233,7 +235,7 @@ export const setEmbeddedActionAlwaysRefresh = async (
 };
 
 export const handleEmbeddedActionDragOver = (sheet, event) => {
-	if (!sheet.isEditable) return;
+	if (!canManageItemSheetRules(sheet)) return;
 	if (!Array.isArray(sheet.item.system?.actions)) return;
 
 	event.preventDefault();
@@ -247,7 +249,7 @@ export const handleEmbeddedActionDrop = async (sheet, event) => {
 };
 
 export const handleEmbeddedActionItemDrop = async (sheet, event, dropData) => {
-	if (!sheet.isEditable) return false;
+	if (!canManageItemSheetRules(sheet)) return false;
 	if (!isEmbeddedActionDropTarget(sheet, event)) return false;
 
 	const canStoreEmbeddedActions = Array.isArray(sheet.item.system?.actions);
@@ -274,6 +276,7 @@ export const handleEmbeddedActionItemDrop = async (sheet, event, dropData) => {
 
 export const handleAddEmbeddedAction = async (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const embeddedActions = getEmbeddedActionsClone(sheet.item);
 	if (embeddedActions.length >= MAX_EMBEDDED_ACTIONS) return;
@@ -289,6 +292,7 @@ export const handleAddEmbeddedAction = async (sheet, event) => {
 
 export const handleEditEmbeddedAction = (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const index = getEventIndex(event);
 	if (index === null) return;
@@ -317,6 +321,7 @@ export const handleEditEmbeddedAction = (sheet, event) => {
 
 export const handleRemoveEmbeddedAction = async (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const index = getEventIndex(event);
 	if (index === null) return;
@@ -379,7 +384,11 @@ export const handleUseEmbeddedAction = async (sheet, event) => {
 	let actionData = sheet.item.system?.actions?.[index] ?? null;
 	if (!actionData) return;
 
-	if (actionData.always_refresh === true && hasEmbeddedActionSource(actionData)) {
+	if (
+		actionData.always_refresh === true &&
+		hasEmbeddedActionSource(actionData) &&
+		canManageItemSheetRules(sheet)
+	) {
 		const refreshResult = await refreshEmbeddedActionAtIndex(sheet, index, {
 			onlyIfAlwaysRefresh: true,
 			notifyOnMissingSource: true,
@@ -405,6 +414,7 @@ export const handleUseEmbeddedAction = async (sheet, event) => {
 
 export const handleRefreshEmbeddedActionSource = async (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const index = getEventIndex(event);
 	if (index === null) return;
@@ -476,6 +486,7 @@ export const handleOpenEmbeddedActionSource = async (sheet, event) => {
 
 export const handleDetachEmbeddedActionSource = async (sheet, event) => {
 	event.preventDefault();
+	if (!canManageItemSheetRules(sheet)) return;
 
 	const index = getEventIndex(event);
 	if (index === null) return;

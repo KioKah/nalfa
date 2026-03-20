@@ -92,8 +92,8 @@
 		{{/if}}
 	</div>
 
-	{{#unless readonly}}
-		{{#if isEditable}}
+	{{#if isEditable}}
+		{{#unless readonly}}
 			<div class="embedded-actions__buttons">
 				{{#if embeddedAction.hasSource}}
 					<div class="embedded-actions__buttons-sync">
@@ -169,18 +169,33 @@
 					</button>
 				</div>
 			</div>
-		{{else if rollable}}
-			<div class="embedded-actions__buttons">
-				<button
-					type="button"
-					class="array-action-btn"
-					data-action="use-embedded-action"
-					data-index="{{embeddedAction.index}}"
-					data-tooltip="Utiliser l'action"
-				>
-					<i class="fa-light fa-dice-d20"></i>
-				</button>
-			</div>
+		{{/unless}}
+		{{#if readonly}}
+			{{#if rollable}}
+				<div class="embedded-actions__buttons">
+					<button
+						type="button"
+						class="array-action-btn"
+						data-action="use-embedded-action"
+						data-index="{{embeddedAction.index}}"
+						data-tooltip="Utiliser l'action"
+					>
+						<i class="fa-light fa-dice-d20"></i>
+					</button>
+				</div>
+			{{/if}}
 		{{/if}}
-	{{/unless}}
+	{{else if rollable}}
+		<div class="embedded-actions__buttons">
+			<button
+				type="button"
+				class="array-action-btn"
+				data-action="use-embedded-action"
+				data-index="{{embeddedAction.index}}"
+				data-tooltip="Utiliser l'action"
+			>
+				<i class="fa-light fa-dice-d20"></i>
+			</button>
+		</div>
+	{{/if}}
 </div>

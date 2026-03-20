@@ -3,6 +3,7 @@
 		<div class="embedded-actions__head">
 			<span class="field__label">Actions intégrées</span>
 			{{#if isEditable}}
+			{{#unless embeddedActionReadonly}}
 			<button
 				type="button"
 				class="array-action-btn"
@@ -12,6 +13,7 @@
 			>
 				<i class="fa-light fa-square-plus"></i>
 			</button>
+			{{/unless}}
 			{{/if}}
 		</div>
 	{{/if}}
@@ -27,7 +29,7 @@
 					showIcon=@root.showEmbeddedActionIcon
 					enableDrag=@root.enableEmbeddedActionDrag
 					readonly=@root.embeddedActionReadonly
-					rollable=true
+					rollable=@root.rollable
 					isEditable=@root.isEditable
 				}}
 			{{/each}}
