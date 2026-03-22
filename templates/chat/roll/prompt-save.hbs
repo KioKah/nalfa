@@ -8,6 +8,13 @@
 			{{/if}}
 		</h3>
 	</header>
+	<div class="nalfa-roll-summary">
+		<span>
+			{{#if targetName}}{{targetName}} · {{/if}}Sauv {{dc}} {{statLabel}}
+			{{#if (formulaSignedNumber targetStatValue)}}({{formulaSignedNumber targetStatValue}}){{/if}}
+			{{#if sourceTokenName}}contre {{sourceTokenName}}{{/if}}
+		</span>
+	</div>
 	<div class="nalfa-roll-action">
 		<button
 			type="button"
@@ -16,6 +23,16 @@
 			data-dc="{{dc}}"
 			data-stat="{{statKey}}"
 			data-name="{{titleName}}"
+			data-stat-label="{{statLabel}}"
+			data-stat-value="{{targetStatValue}}"
+			data-target-token-uuid="{{targetTokenUuid}}"
+			data-target-actor-uuid="{{targetActorUuid}}"
+			data-source-token-uuid="{{sourceTokenUuid}}"
+			data-source-token-name="{{sourceTokenName}}"
+			data-context-id="{{contextId}}"
+			data-source-item-uuid="{{sourceItemUuid}}"
+			data-action-index="{{actionIndex}}"
+			data-action-name="{{actionName}}"
 			data-tooltip="Lancer le jet de sauvegarde"
 		>
 			Sauv {{dc}} {{statLabel}}

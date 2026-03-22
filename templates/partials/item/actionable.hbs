@@ -85,21 +85,27 @@
         }}
       {{/if}}
 
-      {{#if actionData.jds.enabled}}
-        {{#if actionData.jds.jdd_saved}}
-          {{>
-            "systems/nalfa/templates/partials/item/actionable/roll-jdd.hbs"
-            label="JdD Sauv"
-            actionPath=actionPath
-            damagePath="jdd_saved.damage_formulas"
-            damageFormulas=actionData.jdd_saved.damage_formulas
-            config=config
-            isActionModeIncant=isActionModeIncant
-            isActionModePhysical=isActionModePhysical
-            addTooltip="Ajouter une formule de dégâts sauvegardés"
-            removeTooltip="Supprimer cette formule de dégâts sauvegardés"
-            formulaPlaceholder="2d6"
-          }}
+      {{#if actionData.jdd.enabled}}
+        {{#if actionData.jds.enabled}}
+        {{#unless actionData.jds.fails_on_save}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/roll-jdd.hbs"
+          label="JdD Sauv"
+          actionPath=actionPath
+          damagePath="jdd_saved.damage_formulas"
+          damageFormulas=actionData.jdd_saved.damage_formulas
+          config=config
+          isActionModeIncant=isActionModeIncant
+          isActionModePhysical=isActionModePhysical
+          addTooltip="Ajouter une formule de dégâts sauvegardés"
+          removeTooltip="Supprimer cette formule de dégâts sauvegardés"
+          formulaPlaceholder="2d6"
+          savedDamageModePath="jdd_saved.mode"
+          savedDamageMode=actionData.jdd_saved.mode
+          showSavedDamageModeSelector=true
+          showDamageFormulas=(eq actionData.jdd_saved.mode "other")
+        }}
+        {{/unless}}
         {{/if}}
       {{/if}}
 

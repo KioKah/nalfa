@@ -141,6 +141,7 @@
 
 				<div class="embedded-actions__buttons-main">
 					{{#if rollable}}
+						{{#if embeddedAction.hasPrimaryRolls}}
 						<button
 							type="button"
 							class="array-action-btn"
@@ -150,6 +151,7 @@
 						>
 							<i class="fa-light fa-dice-d20"></i>
 						</button>
+						{{/if}}
 					{{/if}}
 					{{#unless embeddedAction.alwaysRefresh}}
 						<button
@@ -165,6 +167,17 @@
 				</div>
 
 				<div class="embedded-actions__buttons-danger">
+					{{#if embeddedAction.hasConcentrationRoll}}
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="use-embedded-action-concentration"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Lancer le JdF"
+						>
+							<i class="fa-light fa-bullseye"></i>
+						</button>
+					{{/if}}
 					<button
 						type="button"
 						class="array-action-btn"
@@ -179,7 +192,49 @@
 		{{/unless}}
 		{{#if readonly}}
 			{{#if rollable}}
+				{{#if embeddedAction.hasAnyRolls}}
 				<div class="embedded-actions__buttons">
+					{{#if embeddedAction.hasConcentrationRoll}}
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="use-embedded-action-concentration"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Lancer le JdF"
+						>
+							<i class="fa-light fa-bullseye"></i>
+						</button>
+					{{/if}}
+					{{#if embeddedAction.hasPrimaryRolls}}
+						<button
+							type="button"
+							class="array-action-btn"
+							data-action="use-embedded-action"
+							data-index="{{embeddedAction.index}}"
+							data-tooltip="Utiliser l'action"
+						>
+							<i class="fa-light fa-dice-d20"></i>
+						</button>
+					{{/if}}
+				</div>
+				{{/if}}
+			{{/if}}
+		{{/if}}
+	{{else if rollable}}
+		{{#if embeddedAction.hasAnyRolls}}
+			<div class="embedded-actions__buttons">
+				{{#if embeddedAction.hasConcentrationRoll}}
+					<button
+						type="button"
+						class="array-action-btn"
+						data-action="use-embedded-action-concentration"
+						data-index="{{embeddedAction.index}}"
+						data-tooltip="Lancer le JdF"
+					>
+						<i class="fa-light fa-bullseye"></i>
+					</button>
+				{{/if}}
+				{{#if embeddedAction.hasPrimaryRolls}}
 					<button
 						type="button"
 						class="array-action-btn"
@@ -189,20 +244,8 @@
 					>
 						<i class="fa-light fa-dice-d20"></i>
 					</button>
-				</div>
-			{{/if}}
+				{{/if}}
+			</div>
 		{{/if}}
-	{{else if rollable}}
-		<div class="embedded-actions__buttons">
-			<button
-				type="button"
-				class="array-action-btn"
-				data-action="use-embedded-action"
-				data-index="{{embeddedAction.index}}"
-				data-tooltip="Utiliser l'action"
-			>
-				<i class="fa-light fa-dice-d20"></i>
-			</button>
-		</div>
 	{{/if}}
 </div>

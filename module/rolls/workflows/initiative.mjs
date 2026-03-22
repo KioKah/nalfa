@@ -13,6 +13,7 @@ export const rollInitiative = async (actor, options = {}) => {
 	const titleLabel = "Init";
 	const titleValue = roll.total;
 	const formulaText = `d20 [${dieResult ?? "-"}] + Init (${modifier})`;
+	const showCriticalState = false;
 
 	const rollData = {
 		type: "initiative",
@@ -33,8 +34,8 @@ export const rollInitiative = async (actor, options = {}) => {
 			titleName,
 			titleValue,
 			formulaText,
-			isCrit,
-			isFumble,
+			isCrit: showCriticalState ? isCrit : false,
+			isFumble: showCriticalState ? isFumble : false,
 		},
 		messageOptions,
 	);

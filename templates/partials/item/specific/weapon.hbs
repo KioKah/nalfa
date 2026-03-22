@@ -46,8 +46,14 @@
 	</div>
 	<label class="field field--inline">
 		<span class="field__label">Type de dégâts</span>
-		<select name="system.damage_type">
-			{{selectOptions config.standard_damage_types selected=sysData.damage_type}}
+		<select name="system.damage_type" data-action="change-damage-type">
+			{{#if (lookup config.fusion_damage_types sysData.damage_type)}}
+				<option value="{{sysData.damage_type}}" data-special-damage-type="true" selected>
+					{{lookup config.fusion_damage_types sysData.damage_type}}
+				</option>
+			{{/if}}
+			{{selectOptions config.base_standard_damage_types selected=sysData.damage_type}}
+			<option value="__special_damage_type__">Types spéciaux</option>
 		</select>
 	</label>
 </div>

@@ -75,8 +75,12 @@ export const skillSchema = (statKey) =>
 		default_stat: stringField(statKey),
 	});
 
-export const resistanceSchema = () =>
+export const resistanceSchema = (coefInitial = 1) =>
 	schemaField({
+		coef: numberField(coefInitial),
+		alt_mult: numberField(1),
 		value: numberField(0),
-		immune: booleanField(false),
+		alt: numberField(0),
+		used_coef: numberValueField(null),
+		used_value: numberValueField(null),
 	});

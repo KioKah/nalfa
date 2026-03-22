@@ -2,6 +2,7 @@ export const createDefaultDamageFormula = () => ({
 	formula: "",
 	type: "none",
 	stat: "none",
+	effect: "damage",
 });
 
 export const createDefaultActionData = () => ({
@@ -41,7 +42,7 @@ export const createDefaultActionData = () => ({
 	},
 	selection: {
 		target: {
-			amount: 1,
+			amount: "1",
 			unit: "enemy",
 			visibility: "visible",
 			include_self: false,
@@ -68,7 +69,7 @@ export const createDefaultActionData = () => ({
 		dd: 0,
 		stat: "none",
 		text: "",
-		jdd_saved: false,
+		fails_on_save: false,
 	},
 	jdd: {
 		enabled: false,
@@ -76,6 +77,7 @@ export const createDefaultActionData = () => ({
 	},
 	jdd_saved: {
 		enabled: false,
+		mode: "same",
 		damage_formulas: [createDefaultDamageFormula()],
 	},
 	concentration: {

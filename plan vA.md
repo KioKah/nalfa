@@ -75,8 +75,7 @@ QA manuel
 
 ### vA.2.1 - Critiques et degats
 
-- [ ] Completer la regle de critique sur JdT : doubler uniquement les des de degats,
-      pas les bonus de stat.
+- [ ] Completer la regle de critique sur JdT : doubler uniquement les des de degats, pas les bonus de stat.
 - [ ] Verifier l'affichage chat en cas de critique pour que le comportement soit lisible.
 
 QA manuel
@@ -85,17 +84,14 @@ QA manuel
 
 ### vA.2.2 - Sauvegardes standardisees
 
-- [ ] Garder le workflow actuel base sur les actions, mais ajouter un mode standard
-      quand il n'y a pas de source d'action complete.
-- [ ] Ajouter la saisie de `X` et de `StatSauv` quand la sauvegarde est lancee hors item /
-      hors action structuree.
+- [ ] Garder le workflow actuel base sur les actions, mais ajouter un mode standard quand il n'y a pas de source d'action complete.
+- [ ] Ajouter la saisie de `X` et de `StatSauv` quand la sauvegarde est lancee hors item / hors action structuree.
 - [ ] Afficher dans la chat card la decomposition utile :
   - [ ] X,
   - [ ] stat de l'attaquant si pertinente,
   - [ ] DD finale,
   - [ ] stat de sauvegarde cible.
-- [ ] Ajouter un emplacement clair pour le texte "effet en cas de reussite" si cette info
-      doit rester manuelle.
+- [ ] Ajouter un emplacement clair pour le texte "effet en cas de reussite" si cette info doit rester manuelle.
 
 QA manuel
 
@@ -103,8 +99,8 @@ QA manuel
 
 ### vA.2.3 - Integrations optionnelles robustes
 
-- [ ] Rendre l'integration Dice So Nice fail-soft si le module / chemin n'est pas present.
-- [ ] Decider si cette integration est une option documentee ou une dependance obligatoire.
+- [x] Rendre l'integration Dice So Nice fail-soft si le module / chemin n'est pas present.
+- [x] Decider si cette integration est une option documentee ou une dependance obligatoire.
 
 QA manuel
 
@@ -112,29 +108,27 @@ QA manuel
 
 ### vA.2.4 - Clarifier l'UI existante
 
-- [ ] Clarifier dans l'UI ce que signifient `Lecture`, `Modification`, `Alteration`.
-- [ ] Revoir les labels / aides rapides autour de `valueMode`.
-- [ ] S'assurer que les ecrans deja riches restent lisibles sur desktop et mobile.
+- [x] Clarifier dans l'UI ce que signifient `Lecture`, `Modification`, `Alteration`.
+- [x] Revoir les labels / aides rapides autour de `valueMode`.
 
 QA manuel
 
-- [ ] Un utilisateur comprend ce qui est editable dans chaque mode sans lire le code.
+- [x] Un utilisateur comprend ce qui est editable dans chaque mode sans lire le code.
 
 ---
 
 ## vA.3 - Routine de recette manuelle et hygiene repo
 
-- [ ] Ecrire une checklist manuelle officielle pour les verifications Foundry principales.
-- [ ] Definir un petit jeu de donnees de reference pour la recette manuelle :
-      actors, items, actions, equipements, combat.
-- [ ] Reprendre cette checklist avant les gros refactors et les ajouts de regles.
-- [ ] Decider explicitement du sort de `node_modules/` versionne dans git.
-- [ ] Clarifier la politique de fichiers generes / de reference (`nalfa.css`, `* copy.hbs`,
+- [.] Ecrire une checklist manuelle officielle pour les verifications Foundry principales.
+- [.] Definir un petit jeu de donnees de reference pour la recette manuelle : actors, items, actions, equipements, combat.
+- [x] Reprendre cette checklist avant les gros refactors et les ajouts de regles.
+- [x] Decider explicitement du sort de `node_modules/` versionne dans git.
+- [x] Clarifier la politique de fichiers generes / de reference (`nalfa.css`, `* copy.hbs`,
       `_old/`).
 
 QA manuel
 
-- [ ] La recette manuelle est rapide a relancer et couvre les workflows les plus sensibles.
+- [.] La recette manuelle est rapide a relancer et couvre les workflows les plus sensibles.
 
 ---
 
@@ -142,35 +136,35 @@ QA manuel
 
 ### vA.4.1 - Bootstrap
 
-- [ ] Sortir de `nalfa.mjs` ce qui n'a pas besoin de vivre dans l'entrypoint :
-  - [ ] preload templates,
-  - [ ] registration des helpers,
-  - [ ] hooks chat,
-  - [ ] integration Dice So Nice.
+- [x] Sortir de `nalfa.mjs` ce qui n'a pas besoin de vivre dans l'entrypoint :
+  - [x] preload templates,
+  - [x] registration des helpers,
+  - [x] hooks chat,
+  - [x] integration Dice So Nice.
 
 ### vA.4.2 - Rolls
 
-- [ ] Decouper `module/rolls/rolls.mjs` en sous-domaines :
-  - [ ] utilitaires communs,
-  - [ ] attaques / degats,
-  - [ ] saves / concentration,
-  - [ ] initiative.
+- [x] Decouper `module/rolls/rolls.mjs` en sous-domaines :
+  - [x] utilitaires communs,
+  - [x] attaques / degats,
+  - [x] saves / concentration,
+  - [x] initiative.
 
 ### vA.4.3 - Item sheet
 
-- [ ] Continuer l'extraction de `module/sheets/nalfaItemSheet.mjs`.
-- [ ] Sortir de `module/sheets/item/context.mjs` les helpers purement presentation / formatage.
-- [ ] Isoler la logique embedded actions dans un bloc plus autonome.
+- [x] Continuer l'extraction de `module/sheets/nalfaItemSheet.mjs`.
+- [x] Sortir de `module/sheets/item/context.mjs` les helpers purement presentation / formatage.
+- [x] Isoler la logique embedded actions dans un bloc plus autonome.
 
 ### vA.4.4 - Data models
 
-- [ ] Commencer a decomposer `module/data/models.mjs` sans changer le schema public.
-- [ ] Separer au minimum :
-  - [ ] schemas actor,
-  - [ ] schemas item,
-  - [ ] derivees actor,
-  - [ ] helpers equipement / modificateurs / currency.
+- [x] Commencer a decomposer `module/data/models.mjs` sans changer le schema public.
+- [x] Separer au minimum :
+  - [x] schemas actor,
+  - [x] schemas item,
+  - [x] derivees actor,
+  - [x] helpers equipement / modificateurs / currency.
 
 QA manuel
 
-- [ ] Les refactors n'introduisent pas de regression visible sur les workflows valides en vA.1.
+- [x] Les refactors n'introduisent pas de regression visible sur les workflows valides en vA.1.

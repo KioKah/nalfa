@@ -636,10 +636,8 @@
 				-1px 1px 0 rgba(0, 0, 0, 0.95),
 				1px -1px 0 rgba(0, 0, 0, 0.95),
 				-1px -1px 0 rgba(0, 0, 0, 0.95);
-			filter:
-				drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.95))
-				drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95))
-				drop-shadow(0 0 4px rgba(0, 0, 0, 0.8));
+			filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.95))
+				drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.8));
 			pointer-events: none;
 		}
 
@@ -894,6 +892,7 @@
 			justify-content: space-between;
 			width: 100%;
 			flex-wrap: nowrap;
+			gap: 8px;
 		}
 
 		&__mode-select {
@@ -904,10 +903,14 @@
 		}
 
 		&__cost-select--zone-type {
-			@zone-type-width: calc((1px * 12 + 8px) * (unit(18px) / 2));
-			.chr-select-block(@chr: 12);
+			@zone-type-width: calc((1px * 11 + 8px) * (unit(18px) / 2));
+			.chr-select-block(@chr: 11);
 			min-width: @zone-type-width;
 			max-width: @zone-type-width;
+		}
+
+		&__damage-effect {
+			.chr-select-block(@chr: 6);
 		}
 
 		&__toggles {
@@ -916,12 +919,21 @@
 			gap: var(--nalfa-gap-text);
 		}
 
+		&__mode-row .attack-config__toggles {
+			gap: 6px;
+			flex: 0 1 auto;
+		}
+
 		&__toggle {
 			display: inline-flex;
 			align-items: center;
 			gap: 4px;
 			font-size: 12px;
 			white-space: nowrap;
+		}
+
+		&__mode-row .attack-config__toggle {
+			gap: 2px;
 		}
 
 		&__toggle--push-end {
@@ -971,6 +983,10 @@
 			gap: var(--nalfa-gap-text);
 		}
 
+		&__fields--row.attack-config__toggles {
+			align-items: center;
+		}
+
 		&__measure {
 			display: inline-flex;
 			align-items: center;
@@ -980,6 +996,18 @@
 		&__row-sep {
 			font-weight: 600;
 			opacity: 0.85;
+			white-space: nowrap;
+		}
+
+		&__saved-damage-note {
+			display: inline-flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			font-size: 10px;
+			line-height: 1;
+			font-weight: 600;
+			opacity: 0.8;
 			white-space: nowrap;
 		}
 
@@ -1013,6 +1041,11 @@
 		&__grow-input {
 			flex: 1 1 220px;
 			min-width: 160px;
+		}
+
+		&__grow-input--jds-text {
+			flex-basis: 180px;
+			min-width: 120px;
 		}
 
 		&__cost-row {
@@ -1306,6 +1339,123 @@
 
 		.currency-config__remove {
 			justify-self: start;
+		}
+	}
+}
+
+.nalfa.sheet.nalfa-action-dialog {
+	.nalfa-action-dialog__targets {
+		margin-top: var(--nalfa-gap-text);
+		font-size: 12px;
+		line-height: 1.4;
+
+		p {
+			margin: 0;
+		}
+
+		ul {
+			margin: 0;
+			padding-left: 0;
+			list-style: none;
+		}
+
+		li + li,
+		p + p,
+		ul + p {
+			margin-top: 4px;
+		}
+
+		.nalfa-action-dialog__target-outcomes {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			margin-right: 6px;
+		}
+
+		.nalfa-action-dialog__target-row {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.nalfa-action-dialog__target-text {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+
+		.nalfa-action-dialog__target-outcome {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			min-width: 16px;
+			height: 16px;
+			padding: 0 4px;
+			border-radius: 999px;
+			font-size: 10px;
+			font-weight: 700;
+			line-height: 1;
+			color: #fff;
+			vertical-align: text-top;
+			cursor: pointer;
+		}
+
+		.nalfa-action-dialog__target-outcome--success {
+			background: #2e7d32;
+		}
+
+		.nalfa-action-dialog__target-outcome--warning {
+			background: #d29922;
+			color: #111;
+		}
+
+		.nalfa-action-dialog__target-outcome--fail {
+			background: #b71c1c;
+		}
+
+		.nalfa-action-dialog__target-edit {
+			flex: 0 0 auto;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 16px;
+			height: 16px;
+			color: var(--color-text-primary);
+			text-decoration: none;
+			cursor: pointer;
+
+			i {
+				font-size: 14px;
+				line-height: 1;
+				pointer-events: none;
+			}
+		}
+	}
+}
+
+.nalfa.sheet.nalfa-action-dialog.nalfa-action-dialog--manual-edit {
+	max-width: calc(380px + 2 * var(--nalfa-padding));
+
+	> section.window-content {
+		.nalfa-sheet-setup(@width: 380px);
+		max-height: unset;
+		overflow-y: hidden;
+		scrollbar-gutter: auto;
+		padding-inline-end: var(--nalfa-padding);
+	}
+
+	.nalfa-action-dialog__manual-edit {
+		display: grid;
+		gap: 8px;
+	}
+
+	.nalfa-action-dialog__manual-row {
+		.label-control-row(@label-width: 44px);
+		margin: 0;
+		align-items: center;
+
+		select {
+			width: 100%;
 		}
 	}
 }

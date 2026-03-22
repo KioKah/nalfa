@@ -6,6 +6,7 @@ import {
 	rollSkill,
 	rollStatSave,
 } from "../rolls/index.mjs";
+import { openRichTextEditorDialog } from "./item/dialogs/richTextDialog.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -46,6 +47,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		primary: {
 			tabs: [
 				{ id: "character", label: "Personnage" },
+				{ id: "bio", label: "Bio" },
 				{ id: "resources", label: "Ressources" },
 				{ id: "combat", label: "Combat" },
 			],
@@ -56,8 +58,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	/** ─── PREPARE CONTEXT ──────────────────────────────────────── */
 	async _prepareContext(options) {
 		const baseData = await super._prepareContext(options);
+		const { TextEditor } = foundry.applications.ux;
 		const sysData = baseData.document.system;
 		const tabs = this._prepareTabs("primary");
+		const bioValue = String(sysData.description ?? "");
+		const bioEnriched = await TextEditor.enrichHTML(bioValue, { async: true });
 		const hpValue = Number(sysData.attributes?.hp?.value ?? 0);
 		const hpMax = Math.max(1, Number(sysData.attributes?.hp?.max ?? 0));
 		const isKO = hpValue <= 0;
@@ -77,6 +82,40 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			};
 		}
 
+		const bioResistances = Object.entries(CONFIG.nalfa.base_standard_damage_types)
+			.filter(([key]) => key !== "none")
+			.map(([key, label]) => {
+				const resistance = sysData.attributes?.resistances?.[key] ?? {};
+				const defaultCoef = key === "soin" || key === "abso" ? -1 : 1;
+				const baseCoef = Number.isFinite(Number(resistance.coef))
+					? Number(resistance.coef)
+					: defaultCoef;
+				const altMult = Number.isFinite(Number(resistance.alt_mult))
+					? Number(resistance.alt_mult)
+					: 1;
+				const baseValue = Number.isFinite(Number(resistance.value))
+					? Number(resistance.value)
+					: 0;
+				const altValue = Number.isFinite(Number(resistance.alt)) ? Number(resistance.alt) : 0;
+				const usedCoef = Number.isFinite(Number(resistance.used_coef))
+					? Number(resistance.used_coef)
+					: baseCoef * altMult;
+				const usedValue = Number.isFinite(Number(resistance.used_value))
+					? Number(resistance.used_value)
+					: baseValue + altValue;
+				return {
+					key,
+					label,
+					coef: baseCoef,
+					alt_mult: altMult,
+					value: baseValue,
+					alt: altValue,
+					usedCoef,
+					usedValue,
+					isDefault: usedCoef === 1 && usedValue === 0,
+				};
+			});
+
 		return {
 			isOwner: this.actor.isOwner,
 			isEditable: this.isEditable,
@@ -86,6 +125,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			sysData: sysData,
 			config: CONFIG.nalfa,
 			tabs,
+			bioEnriched,
+			hasBioContent: bioValue.trim().length > 0,
+			bioResistances,
 			isKO,
 			deathTick,
 		};
@@ -98,6 +140,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 				if (active) this.changeTab(active, group);
 			}
 		}
+		this.element
+			?.querySelector("[data-action='open-richtext-editor']")
+			?.addEventListener("click", this._onOpenRichTextEditor.bind(this));
 		this.element
 			?.querySelector("[data-action='roll-basic-attack']")
 			?.addEventListener("click", this._onRollBasicAttack.bind(this));
@@ -125,6 +170,19 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 	async _onRollBasicAttack(event) {
 		event.preventDefault();
 		return rollAttack(this.actor, "physical");
+	}
+
+	_onOpenRichTextEditor(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		if (!this.isEditable) return;
+
+		const button = event.currentTarget;
+		const path = button?.dataset?.path;
+		if (!path) return;
+
+		const title = button.dataset.title || "Éditeur";
+		openRichTextEditorDialog(this.actor, path, title);
 	}
 
 	async _onRollBasicDamage(event) {

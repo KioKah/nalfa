@@ -13,7 +13,10 @@ import {
 	ACTION_REF_TYPES,
 	HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
 } from "../../../actions/refs.mjs";
-import { executeActionPrompt } from "../../../rolls/actions/execution.mjs";
+import {
+	executeActionConcentrationPrompt,
+	executeActionPrompt,
+} from "../../../rolls/actions/execution.mjs";
 import { PRIMARY_TAB_GROUP } from "../constants.mjs";
 import { canManageItemSheetRules } from "../permissions.mjs";
 import NalfaEmbeddedActionEditor from "./editor.mjs";
@@ -404,6 +407,43 @@ export const handleUseEmbeddedAction = async (sheet, event) => {
 	}
 
 	return executeActionPrompt({
+		actor,
+		actionData,
+		sourceItem: sheet.item,
+		titleName: getEmbeddedActionDisplayName(sheet, actionData, index),
+		actionIndex: index,
+	});
+};
+
+export const handleUseEmbeddedActionConcentration = async (sheet, event) => {
+	event.preventDefault();
+
+	const index = getEventIndex(event);
+	if (index === null) return;
+
+	let actionData = sheet.item.system?.actions?.[index] ?? null;
+	if (!actionData?.concentration?.enabled) return;
+
+	if (
+		actionData.always_refresh === true &&
+		hasEmbeddedActionSource(actionData) &&
+		canManageItemSheetRules(sheet)
+	) {
+		const refreshResult = await refreshEmbeddedActionAtIndex(sheet, index, {
+			onlyIfAlwaysRefresh: true,
+			notifyOnMissingSource: true,
+			notifyWhenUpdated: false,
+		});
+		actionData = refreshResult.actionData ?? actionData;
+	}
+
+	const actor = resolveActorForEmbeddedAction(sheet);
+	if (!actor) {
+		ui.notifications.warn("Aucun acteur sélectionné.");
+		return;
+	}
+
+	return executeActionConcentrationPrompt({
 		actor,
 		actionData,
 		sourceItem: sheet.item,

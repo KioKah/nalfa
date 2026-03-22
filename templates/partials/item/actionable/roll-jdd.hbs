@@ -3,22 +3,56 @@
     <span class="field__label">{{label}}</span>
   </div>
   <div class="attack-config__fields">
-    {{#each damageFormulas as |damage index|}}
-      {{>
-        "systems/nalfa/templates/partials/item/actionable/damage-formula-row.hbs"
-        actionPath=@root.actionPath
-        damagePath=@root.damagePath
-        damage=damage
-        index=index
-        config=@root.config
-        isActionModeIncant=@root.isActionModeIncant
-        isActionModePhysical=@root.isActionModePhysical
-        readonly=@root.readonly
-        showAddButton=(eq index 0)
-        addTooltip=@root.addTooltip
-        removeTooltip=@root.removeTooltip
-        formulaPlaceholder=@root.formulaPlaceholder
-      }}
-    {{/each}}
+    {{#if showSavedDamageModeSelector}}
+      <div class="attack-config__fields--row attack-config__toggles">
+        <label class="attack-config__toggle">
+          <input
+            type="radio"
+            name="system.{{actionPath}}{{savedDamageModePath}}"
+            value="same"
+            {{checked (eq savedDamageMode "same")}}
+          />
+          <span>= JdD</span>
+        </label>
+        <label class="attack-config__toggle">
+          <input
+            type="radio"
+            name="system.{{actionPath}}{{savedDamageModePath}}"
+            value="half"
+            {{checked (eq savedDamageMode "half")}}
+          />
+          <span>= JdD /2</span>
+        </label>
+        <label class="attack-config__toggle">
+          <input
+            type="radio"
+            name="system.{{actionPath}}{{savedDamageModePath}}"
+            value="other"
+            {{checked (eq savedDamageMode "other")}}
+          />
+          <span>Autre</span>
+        </label>
+      </div>
+    {{/if}}
+
+    {{#unless (eq showDamageFormulas false)}}
+      {{#each damageFormulas as |damage index|}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/damage-formula-row.hbs"
+          actionPath=../actionPath
+          damagePath=../damagePath
+          damage=damage
+          index=index
+          config=../config
+          isActionModeIncant=../isActionModeIncant
+          isActionModePhysical=../isActionModePhysical
+          readonly=../readonly
+          showAddButton=(eq index 0)
+          addTooltip=../addTooltip
+          removeTooltip=../removeTooltip
+          formulaPlaceholder=../formulaPlaceholder
+        }}
+      {{/each}}
+    {{/unless}}
   </div>
 </div>

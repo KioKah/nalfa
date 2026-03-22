@@ -8,11 +8,13 @@ import {
 	handleOpenEmbeddedActionSource,
 	handleRefreshEmbeddedActionSource,
 	handleRemoveEmbeddedAction,
+	handleUseEmbeddedActionConcentration,
 	handleUseEmbeddedAction,
 } from "./actions/embedded.mjs";
 import { PRIMARY_TAB_GROUP } from "./constants.mjs";
 import {
 	handleAddArrayEntry,
+	handleChangeDamageType,
 	handleChangeEquippedSlot,
 	handleChangeModifierCategory,
 	handleOpenRichTextEditor,
@@ -61,6 +63,12 @@ export const bindItemSheetInteractions = (sheet) => {
 
 	if (canRoll) {
 		bindElements(sheet, "[data-action='use-embedded-action']", "click", handleUseEmbeddedAction);
+		bindElements(
+			sheet,
+			"[data-action='use-embedded-action-concentration']",
+			"click",
+			handleUseEmbeddedActionConcentration,
+		);
 		bindElements(
 			sheet,
 			"[data-draggable='embedded-action']",
@@ -147,5 +155,11 @@ export const bindItemSheetInteractions = (sheet) => {
 		"[data-action='change-modifier-category']",
 		"change",
 		handleChangeModifierCategory,
+	);
+	bindElements(
+		sheet,
+		"[data-action='change-damage-type']",
+		"change",
+		handleChangeDamageType,
 	);
 };

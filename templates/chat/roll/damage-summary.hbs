@@ -1,0 +1,38 @@
+<div class="nalfa-chat-card nalfa-roll-card">
+	<header class="nalfa-roll-header">
+		<h3 class="nalfa-roll-title">
+			<span class="nalfa-roll-name">{{titleName}}</span>
+		</h3>
+	</header>
+	<div class="nalfa-roll-list">
+		{{#each rows as |row|}}
+			<div class="nalfa-roll-list__row">
+				<div class="nalfa-roll-summary nalfa-roll-summary--damage">
+					<span class="nalfa-roll-list__name">{{row.targetName}}</span>
+					{{#if row.summaryParts}}
+						<span class="nalfa-roll-list__value">
+							{{#each row.summaryParts as |part|}}
+								<span class="nalfa-roll-list__value-part">
+									<span class="nalfa-roll-total-value nalfa-roll-list__value-number">{{part.amount}}</span>
+									<span class="nalfa-roll-list__value-unit">{{part.unit}}</span>
+								</span>
+							{{/each}}
+							{{#if row.isDead}}
+								<span class="nalfa-roll-list__value-icon nalfa-roll-list__value-icon--danger"><i class="fa-solid fa-skull"></i></span>
+							{{else if row.isKo}}
+								<span class="nalfa-roll-list__value-icon nalfa-roll-list__value-icon--danger">KO</span>
+							{{/if}}
+						</span>
+					{{/if}}
+				</div>
+				{{#if row.detailLines}}
+					<div class="nalfa-roll-details nalfa-roll-details--stacked">
+						{{#each row.detailLines as |line|}}
+							<span class="nalfa-roll-formula">{{line}}</span>
+						{{/each}}
+					</div>
+				{{/if}}
+			</div>
+		{{/each}}
+	</div>
+</div>

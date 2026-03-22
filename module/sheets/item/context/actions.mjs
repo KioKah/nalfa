@@ -162,6 +162,14 @@ const buildActionCoreSummary = (item, actionData, config) => {
 	const esterLabel = String(config.ester_levels_short?.[esterUnit] ?? "").trim();
 	const modeWithTier = esterLabel ? `${modeLabel} ${esterLabel}` : modeLabel;
 	const jdParts = [];
+	const getSavedDamageInlineHint = () => {
+		if (!actionData?.jdd?.enabled) return "";
+
+		const mode = String(actionData?.jdd_saved?.mode ?? "same");
+		if (mode === "half") return "JdD /2";
+		if (mode === "other") return "JdD modifié";
+		return "";
+	};
 
 	if (actionData?.jdt?.enabled) {
 		const statKey = String(actionData?.jdt?.stat ?? "none");
@@ -175,7 +183,18 @@ const buildActionCoreSummary = (item, actionData, config) => {
 		const dd = toFiniteNumber(actionData?.jds?.dd, 0);
 		const stat = String(actionData?.jds?.stat ?? "none");
 		const statLabel = (config.stats_optional?.[stat] ?? stat) || "?";
-		jdParts.push(`JdS ${dd} ${statLabel}`);
+		const outcomeText = actionData?.jds?.fails_on_save
+			? "Échoue"
+			: String(actionData?.jds?.text ?? "").trim();
+		const savedDamageHint = getSavedDamageInlineHint();
+		const formattedOutcomeText =
+			outcomeText && savedDamageHint ? `${outcomeText},` : outcomeText;
+		const outcomeParts = [formattedOutcomeText, savedDamageHint].filter(Boolean);
+		const outcomeSummary = outcomeParts.join(" ");
+		const saveSummary = outcomeSummary
+			? `JdS ${dd} ${statLabel} -> ${outcomeSummary}`
+			: `JdS ${dd} ${statLabel}`;
+		jdParts.push(saveSummary);
 	}
 
 	if (jdParts.length === 0) return modeWithTier;
@@ -244,7 +263,7 @@ const buildActionConcentrationSummary = (actionData, config) => {
 	const statKey = String(concentration.stat ?? "none");
 	const statLabel = String(config.stats_optional?.[statKey] ?? statKey).trim() || "?";
 	const dd = toFiniteNumber(concentration.dd, 0);
-	return `(JdF ${dd} ${statLabel})`;
+	return `JdF ${dd} ${statLabel}`;
 };
 
 const buildRangeDetailSummary = (actionData, config) => {
@@ -292,12 +311,7 @@ const buildActionRangeSummary = (actionData, config) => {
 	return `${rangeTypeLabel} : ${rangeSummary}`;
 };
 
-const buildActionDamageSummary = (item, actionData) => {
-	if (!actionData?.jdd?.enabled) return "";
-
-	const formulas = Array.isArray(actionData?.jdd?.damage_formulas)
-		? actionData.jdd.damage_formulas
-		: [];
+const buildDamageFormulaSummary = (item, formulas) => {
 	const damageParts = formulas
 		.map((formulaData) => {
 			const formulaText = String(formulaData?.formula ?? "").trim();
@@ -314,7 +328,24 @@ const buildActionDamageSummary = (item, actionData) => {
 		.filter(Boolean)
 		.join(" + ");
 
+	return damageParts;
+};
+
+const buildActionDamageSummary = (item, actionData) => {
+	if (!actionData?.jdd?.enabled) return "";
+
+	const formulas = Array.isArray(actionData?.jdd?.damage_formulas)
+		? actionData.jdd.damage_formulas
+		: [];
+	const damageParts = buildDamageFormulaSummary(item, formulas);
+
 	return damageParts ? `JdD ${damageParts}` : "JdD";
+};
+
+const buildSavedDamageSummary = (item, actionData) => {
+	void item;
+	void actionData;
+	return "";
 };
 
 const buildActionRightSummaryRows = (actionData) => {
@@ -333,13 +364,12 @@ const buildActionRightSummaryRows = (actionData) => {
 const buildEmbeddedActionDetailRows = (item, actionData, config) => {
 	const coreSummary = buildActionCoreSummary(item, actionData, config);
 	const concentrationSummary = buildActionConcentrationSummary(actionData, config);
-	const detailRow1 = concentrationSummary
-		? (coreSummary ? `${coreSummary} ${concentrationSummary}` : concentrationSummary)
-		: coreSummary;
+	const detailRow1 = [coreSummary, concentrationSummary].filter(Boolean).join(" | ");
 
 	const detailRow2Parts = [
 		buildActionRangeSummary(actionData, config),
 		buildActionDamageSummary(item, actionData),
+		buildSavedDamageSummary(item, actionData),
 	].filter(Boolean);
 
 	const detailRow2 = detailRow2Parts.join(" | ");
@@ -367,6 +397,12 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 		config,
 	);
 
+	const hasPrimaryRolls =
+		actionData?.jdt?.enabled === true ||
+		actionData?.jds?.enabled === true ||
+		actionData?.jdd?.enabled === true;
+	const hasConcentrationRoll = actionData?.concentration?.enabled === true;
+
 	return {
 		index,
 		defaultName,
@@ -379,6 +415,9 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 		sourceVersion,
 		alwaysRefresh,
 		resourceSummary: buildActionResourceSummary({ actionData, config }),
+		hasPrimaryRolls,
+		hasConcentrationRoll,
+		hasAnyRolls: hasPrimaryRolls || hasConcentrationRoll,
 		summaryRows,
 		detailRow1,
 		detailRow2,

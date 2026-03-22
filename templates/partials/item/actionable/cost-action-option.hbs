@@ -70,13 +70,15 @@
       {{/unless}}
     {{/if}}
   </div>
-  <div class="attack-config__action-option-meta">
-    <input
-      class="attack-config__grow-input"
-      name="system.{{actionPath}}cost.actions.options.{{optionIndex}}.condition"
-      type="text"
-      value="{{option.condition}}"
-      placeholder="Condition (optionnelle)"
-    />
-  </div>
+  {{#if showConditionInput}}
+    <div class="attack-config__action-option-meta">
+      <input
+        class="attack-config__grow-input"
+        name="system.{{actionPath}}cost.actions.options.{{optionIndex}}.condition"
+        type="text"
+        value="{{option.condition}}"
+        placeholder="Condition (optionnelle)"
+      />
+    </div>
+  {{/if}}
 </div>

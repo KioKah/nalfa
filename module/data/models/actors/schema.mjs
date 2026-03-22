@@ -94,6 +94,8 @@ export const baseAttributesSchema = () => ({
 		endura: skillSchema("con"),
 	}),
 	resistances: schemaField({
+		soin: resistanceSchema(-1),
+		abso: resistanceSchema(-1),
 		tran: resistanceSchema(),
 		perf: resistanceSchema(),
 		cont: resistanceSchema(),
@@ -178,6 +180,7 @@ export const baseActorSchema = () => ({
 
 export const characterActorSchema = () => ({
 	...baseActorSchema(),
+	description: htmlField(""),
 	attributes: schemaField({
 		...baseAttributesSchema(),
 		level: numberField(1),

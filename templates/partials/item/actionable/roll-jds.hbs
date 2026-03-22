@@ -14,20 +14,34 @@
       data-dtype="Number"
     />
     <span class="attack-config__row-sep">-&gt;</span>
+    {{#if actionData.jdd.enabled}}
+      {{#if (eq actionData.jdd_saved.mode "half")}}
+        <span class="attack-config__saved-damage-note">
+          <span>JdD</span>
+          <span>/2</span>
+        </span>
+      {{else if (eq actionData.jdd_saved.mode "other")}}
+        <span class="attack-config__saved-damage-note">
+          <span>JdD</span>
+          <span>modifié</span>
+        </span>
+      {{/if}}
+    {{/if}}
     <input
-      class="attack-config__grow-input"
+      class="attack-config__grow-input attack-config__grow-input--jds-text"
       name="system.{{actionPath}}jds.text"
       type="text"
-      value="{{actionData.jds.text}}"
-      placeholder="Effet si réussite"
+      value="{{#if actionData.jds.fails_on_save}}Échoue{{else}}{{actionData.jds.text}}{{/if}}"
+      placeholder="{{#if actionData.jds.fails_on_save}}Aucun effet si la sauvegarde réussit{{else}}Effet si réussite{{/if}}"
+      {{#if actionData.jds.fails_on_save}}disabled{{/if}}
     />
     <label class="attack-config__toggle">
       <input
         type="checkbox"
-        name="system.{{actionPath}}jds.jdd_saved"
-        {{checked actionData.jds.jdd_saved}}
+	        name="system.{{actionPath}}jds.fails_on_save"
+	        {{checked actionData.jds.fails_on_save}}
       />
-      <span>JdD?</span>
+      <span>Échec?</span>
     </label>
   </div>
 </div>

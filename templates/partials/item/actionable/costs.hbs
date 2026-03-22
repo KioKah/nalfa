@@ -16,6 +16,7 @@
             isPrimary=true
             readonly=@root.readonly
             showRemoveButton=false
+            showConditionInput=(lookup @root.actionData.cost.actions.options 1)
           }}
         {{/with}}
 
@@ -58,6 +59,7 @@
               isPrimary=false
               readonly=@root.readonly
               showRemoveButton=true
+              showConditionInput=true
             }}
           {{/unless}}
         {{/each}}

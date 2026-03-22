@@ -349,14 +349,49 @@ nalfa.regeneration_damage_types = {
 	abso: "Absorption",
 };
 
+nalfa.damage_effect_prefixes = {
+	damage: "Dégâts",
+	healing: "Soin",
+	boost: "Boost",
+	piercing: "Perçant",
+};
+
 nalfa.fusion_damage_types = {
-	radc: "Feu + Radiant",
-	hema: "Saignement + Obscur",
-	obfl: "Obscur + Feu",
-	cryo: "Givre + Foudre",
-	gang: "Nécrotique + Givre",
-	diss: "Sonique + Psychique",
-	temp: "Air + Foudre",
+	volcani: "Volcanique",
+	givrefe: "Givrefeu",
+	gangfla: "Gangreflamme",
+	radianc: "Radiance",
+	ombrfla: "Ombreflamme",
+	abyssal: "Abyssal",
+	tempete: "Tempête",
+	cryoele: "Cryoélectrique",
+	dissona: "Dissonance",
+	gangivr: "Gangregivre",
+	ombrpha: "Ombrophage",
+	hemasom: "Hématique Sombre",
+	hemarad: "Hématique Radiant",
+	astral: "Astral",
+	vide: "Vide",
+	fibrvie: "Fibre-Vie",
+};
+
+nalfa.fusion_damage_type_components = {
+	volcani: ["feu", "terr"],
+	givrefe: ["feu", "givr"],
+	gangfla: ["feu", "necr"],
+	radianc: ["feu", "radt"],
+	ombrfla: ["feu", "obsc"],
+	abyssal: ["eau", "obsc"],
+	tempete: ["air", "foud"],
+	cryoele: ["givr", "foud"],
+	dissona: ["soni", "psyc"],
+	gangivr: ["necr", "givr"],
+	ombrpha: ["necr", "obsc"],
+	hemasom: ["sang", "obsc"],
+	hemarad: ["sang", "radt"],
+	astral: ["radt", "arca"],
+	vide: ["obsc", "chao"],
+	fibrvie: ["arca", "natu"],
 };
 
 nalfa.all_damage_types = {
@@ -376,6 +411,23 @@ nalfa.standard_damage_types = {
 	...nalfa.magical_damage_types,
 	...nalfa.regeneration_damage_types,
 	...nalfa.fusion_damage_types,
+};
+
+nalfa.base_damage_types = {
+	none: "",
+	arme: "Arme", // <- herite du type de degat de l'arme
+	...nalfa.physical_damage_types,
+	...nalfa.elementary_damage_types,
+	...nalfa.magical_damage_types,
+	...nalfa.regeneration_damage_types,
+};
+
+nalfa.base_standard_damage_types = {
+	none: "",
+	...nalfa.physical_damage_types,
+	...nalfa.elementary_damage_types,
+	...nalfa.magical_damage_types,
+	...nalfa.regeneration_damage_types,
 };
 
 // Other

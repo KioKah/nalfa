@@ -1,0 +1,87 @@
+<div class="bio-overview">
+  <div class="sheet-section bio-overview__section">
+    <div class="richtext-field richtext-field--description">
+      <div class="richtext-field__head">
+        <span class="field__label">Biographie</span>
+      </div>
+      {{>
+        "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+        title="Biographie"
+        namePath="system.description"
+        editTooltip="Modifier la biographie"
+        content=bioEnriched
+        hasContent=hasBioContent
+        placeholderHtml="<p>Histoire, personnalité, apparence, notes...</p>"
+        readonly=readonly
+        contentClass="richtext-field richtext-field--description richtext-field--overlay-action"
+      }}
+    </div>
+  </div>
+
+  <div class="sheet-section bio-overview__section">
+    <div class="bio-overview__heading">
+      <h2>Résistances / Vulnérabilités</h2>
+      <span class="field__meta">Coef. 0 = immunité, 0.5 = résistance, 2 = vulnérabilité</span>
+    </div>
+
+    <div class="bio-overview__resistances">
+      {{#each bioResistances}}
+        {{#if (eq ../sysData.ui.valueMode "values")}}
+          {{#unless isDefault}}
+            <div class="bio-overview__resistance-card">
+              <span class="bio-overview__resistance-label">{{label}}</span>
+              <div class="bio-overview__resistance-readout">
+                <span class="bio-overview__resistance-symbol">&times;</span>
+                <span class="bio-overview__resistance-number">{{compactNumber usedCoef 4}}</span>
+                <span class="bio-overview__resistance-symbol">-</span>
+                <span class="bio-overview__resistance-number">{{compactNumber usedValue 4}}</span>
+              </div>
+            </div>
+          {{/unless}}
+        {{else if (eq ../sysData.ui.valueMode "base")}}
+          <label class="bio-overview__resistance-card">
+            <span class="bio-overview__resistance-label">{{label}}</span>
+            <div class="bio-overview__resistance-inputs">
+              <span class="bio-overview__resistance-symbol">&times;</span>
+              <input
+                name="system.attributes.resistances.{{key}}.coef"
+                type="number"
+                value="{{coef}}"
+                step="0.1"
+                data-dtype="Number"
+              />
+              <span class="bio-overview__resistance-symbol">-</span>
+              <input
+                name="system.attributes.resistances.{{key}}.value"
+                type="number"
+                value="{{value}}"
+                data-dtype="Number"
+              />
+            </div>
+          </label>
+        {{else if (eq ../sysData.ui.valueMode "alt")}}
+          <label class="bio-overview__resistance-card">
+            <span class="bio-overview__resistance-label">{{label}}</span>
+            <div class="bio-overview__resistance-inputs">
+              <span class="bio-overview__resistance-symbol">&times;</span>
+              <input
+                name="system.attributes.resistances.{{key}}.alt_mult"
+                type="number"
+                value="{{alt_mult}}"
+                step="0.1"
+                data-dtype="Number"
+              />
+              <span class="bio-overview__resistance-symbol">-</span>
+              <input
+                name="system.attributes.resistances.{{key}}.alt"
+                type="number"
+                value="{{alt}}"
+                data-dtype="Number"
+              />
+            </div>
+          </label>
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+</div>

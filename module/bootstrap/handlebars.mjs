@@ -18,6 +18,12 @@ export const registerHandlebarsHelpers = (nalfaConfig) => {
 		return number >= 0 ? `+${number}` : `${number}`;
 	});
 
+	Handlebars.registerHelper("negate", function (value) {
+		const number = Number(value);
+		if (!Number.isFinite(number)) return 0;
+		return -number;
+	});
+
 	Handlebars.registerHelper("repeat", function (n, content) {
 		let result = "";
 		for (let i = 0; i < n; ++i) {
@@ -97,6 +103,7 @@ export const registerHandlebarsHelpers = (nalfaConfig) => {
 	});
 
 	Handlebars.registerHelper("pluralTargetLabel", function (label, count) {
+		if (String(count ?? "").trim().toLowerCase() === "aoe") return `${label}s`;
 		const amount = Number(count ?? 0);
 		return amount >= 2 ? `${label}s` : `${label}`;
 	});

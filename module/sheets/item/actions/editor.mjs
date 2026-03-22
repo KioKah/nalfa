@@ -7,6 +7,10 @@ import {
 	resolveEmbeddedActionShorthand,
 } from "../../../actions/embedded.mjs";
 import { buildDefaultArrayEntry } from "../arrays.mjs";
+import {
+	chooseSpecialDamageType,
+	getSpecialDamageTypeSentinel,
+} from "../dialogs/specialDamageTypeDialog.mjs";
 import { openRichTextEditorDialog } from "../dialogs/richTextDialog.mjs";
 import {
 	applyReadonlyItemSections,
@@ -17,6 +21,18 @@ import { getItemImage, htmlToPlainText } from "../utils.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
+
+const getDefaultDamageEffectForType = (damageType) => {
+	const normalizedType = String(damageType ?? "none").trim() || "none";
+	if (normalizedType === "soin") return "healing";
+	if (normalizedType === "abso") return "boost";
+	return "damage";
+};
+
+const getSiblingDamageEffectPath = (path) => {
+	if (!/damage_formulas\.\d+\.type$/.test(path)) return "";
+	return path.replace(/\.type$/, ".effect");
+};
 
 export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixin(ItemSheetV2) {
 	static DEFAULT_OPTIONS = {
@@ -47,6 +63,7 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 	constructor(options = {}) {
 		super(options);
 		this._draftAction = this.#getInitialDraftAction();
+		this._savedJdsText = null;
 	}
 
 	get title() {
@@ -136,6 +153,10 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			"input[name], select[name]",
 			this._onDraftFieldChange,
 		);
+		this._bindFieldChangeAction(
+			"[data-action='change-damage-type']",
+			this._onDraftDamageTypeChange,
+		);
 		this._bindClickAction("[data-action='add-array-entry']", this._onAddArrayEntryDraft);
 		this._bindClickAction(
 			"[data-action='remove-array-entry']",
@@ -163,12 +184,97 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		if (!this._draftAction) return;
 
 		const element = event.currentTarget;
+		if (
+			element instanceof HTMLSelectElement &&
+			element.value === getSpecialDamageTypeSentinel()
+		) {
+			return;
+		}
+
 		const path = this.#getDraftPathFromSystemPath(element.name);
 		if (!path) return;
 
-		foundry.utils.setProperty(this._draftAction, path, this.#readFieldValue(element));
+		const nextValue = this.#readFieldValue(element);
+		if (path.includes("damage_formulas") || path === "damage_type") {
+			console.info("[nalfa] draft damage field change", {
+				item: this.item?.name,
+				path,
+				nextValue,
+			});
+		}
+		foundry.utils.setProperty(this._draftAction, path, nextValue);
+
+		const damageEffectPath = getSiblingDamageEffectPath(path);
+		if (damageEffectPath) {
+			foundry.utils.setProperty(
+				this._draftAction,
+				damageEffectPath,
+				getDefaultDamageEffectForType(nextValue),
+			);
+		}
+
+		if (path === "jds.fails_on_save") {
+			this.#syncFailsOnSaveText(Boolean(nextValue));
+			this.#syncSavedDamageMode(Boolean(nextValue));
+		}
+
 		void this.#saveDraftAction();
 		if (this.#shouldRerenderAfterChange(path)) {
+			this.render({ force: true });
+		}
+	}
+
+	async _onDraftDamageTypeChange(event) {
+		if (!this._draftAction) return;
+
+		const select = event.currentTarget;
+		if (!(select instanceof HTMLSelectElement)) return;
+		if (select.value !== getSpecialDamageTypeSentinel()) return;
+
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		event.stopPropagation();
+
+		const path = this.#getDraftPathFromSystemPath(select.name);
+		if (!path) {
+			select.value = "none";
+			return;
+		}
+
+		try {
+			const currentValue =
+				String(foundry.utils.getProperty(this._draftAction, path) ?? "none").trim() ||
+				"none";
+			const nextType = await chooseSpecialDamageType(currentValue);
+			const safeType = CONFIG.nalfa?.fusion_damage_types?.[nextType] ? nextType : "none";
+			console.info("[nalfa] draft special damage type resolved", {
+				item: this.item?.name,
+				path,
+				currentValue,
+				nextType,
+				safeType,
+			});
+
+			foundry.utils.setProperty(this._draftAction, path, safeType);
+			const damageEffectPath = getSiblingDamageEffectPath(path);
+			if (damageEffectPath) {
+				foundry.utils.setProperty(
+					this._draftAction,
+					damageEffectPath,
+					getDefaultDamageEffectForType(safeType),
+				);
+			}
+			await this.#saveDraftAction();
+			this.render({ force: true });
+		} catch (error) {
+			console.error("[nalfa] draft damage type update failed", {
+				item: this.item?.name,
+				path,
+				selectedValue: select.value,
+				error,
+			});
+			foundry.utils.setProperty(this._draftAction, path, "none");
+			await this.#saveDraftAction();
 			this.render({ force: true });
 		}
 	}
@@ -260,6 +366,24 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		return foundry.utils.deepClone(embeddedActions[index]);
 	}
 
+	#syncFailsOnSaveText(isEnabled) {
+		if (!this._draftAction) return;
+
+		const currentText = String(this._draftAction?.jds?.text ?? "");
+		if (isEnabled) {
+			if (currentText !== "Échoue") {
+				this._savedJdsText = currentText;
+			}
+			foundry.utils.setProperty(this._draftAction, "jds.text", "Échoue");
+			return;
+		}
+
+		if (this._savedJdsText !== null) {
+			foundry.utils.setProperty(this._draftAction, "jds.text", this._savedJdsText);
+			this._savedJdsText = null;
+		}
+	}
+
 	#getDraftPathFromSystemPath(systemPath) {
 		if (!systemPath || !this._draftAction) return null;
 		const prefix = `system.actions.${this._getActionIndex()}.`;
@@ -275,6 +399,11 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 	}
 
 	#readFieldValue(element) {
+		if (element instanceof HTMLInputElement && element.type === "radio") {
+			if (!element.checked) return undefined;
+			return element.value;
+		}
+
 		if (element instanceof HTMLInputElement && element.type === "checkbox") {
 			return element.checked;
 		}
@@ -305,11 +434,17 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			"cost.ester.unit",
 			"cost.uses.unit",
 			"cost.cooldown.unit",
-			"jds.jdd_saved",
+			"jds.fails_on_save",
+			"jdd_saved.mode",
 		];
 
 		if (path.endsWith(".enabled")) return true;
 		return rerenderPaths.includes(path);
+	}
+
+	#syncSavedDamageMode(failsOnSave) {
+		if (!failsOnSave || !this._draftAction?.jdd?.enabled) return;
+		foundry.utils.setProperty(this._draftAction, "jdd_saved.mode", "same");
 	}
 
 	#syncDraftFromRenderedForm() {
@@ -318,7 +453,9 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		this.element?.querySelectorAll("input[name], select[name]").forEach((element) => {
 			const path = this.#getDraftPathFromSystemPath(element.name);
 			if (!path) return;
-			foundry.utils.setProperty(this._draftAction, path, this.#readFieldValue(element));
+			const value = this.#readFieldValue(element);
+			if (value === undefined) return;
+			foundry.utils.setProperty(this._draftAction, path, value);
 		});
 	}
 

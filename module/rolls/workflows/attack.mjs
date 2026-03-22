@@ -1,4 +1,5 @@
 import {
+	getCompareSymbol,
 	formatStatSuffix,
 	getAttackName,
 	getLabel,
@@ -61,8 +62,13 @@ export const rollAttackFromAction = async (actor, actionData = {}, options = {})
 	const titleLabel = "JdT";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const titleValue = roll.total;
+	const targetDefense = Number(options.targetDefense ?? NaN);
+	const hasTarget = Number.isFinite(targetDefense);
+	const isSuccess = hasTarget ? Number(roll.total ?? 0) >= targetDefense : null;
 	const attackSuffix = formatStatSuffix(statKey, statName, modifier, bonusValue);
-	const formulaText = `d20 [${dieResult ?? "-"}]${attackSuffix}`;
+	const formulaText = hasTarget
+		? `d20 [${dieResult ?? "-"}]${attackSuffix} ${getCompareSymbol(isSuccess)} Défense ${targetDefense}`
+		: `d20 [${dieResult ?? "-"}]${attackSuffix}`;
 
 	const rollData = {
 		type: "attack",
@@ -71,6 +77,10 @@ export const rollAttackFromAction = async (actor, actionData = {}, options = {})
 		titleName,
 		titleValue,
 		formulaText,
+		hasTarget,
+		isSuccess,
+		isCrit,
+		isFumble,
 	};
 
 	await postRollMessage(actor, "attack", {
@@ -80,6 +90,9 @@ export const rollAttackFromAction = async (actor, actionData = {}, options = {})
 		titleName,
 		titleValue,
 		formulaText,
+		hasTarget,
+		isSuccess,
+		versusName: String(options.versusName ?? "").trim(),
 		isCrit,
 		isFumble,
 	}, messageOptions);

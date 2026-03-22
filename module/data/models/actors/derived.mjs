@@ -1,4 +1,4 @@
-import { toFiniteNumber } from "../base.mjs";
+import { roundNumber, toFiniteNumber } from "../base.mjs";
 
 const ITEM_TYPES_WITH_MODIFIERS = new Set(["Class", "Trinket"]);
 
@@ -331,6 +331,17 @@ export const prepareActorDerivedData = (model) => {
 	const bonusesObj = sys.attributes?.bonuses ?? {};
 	for (const [key, bonusObj] of Object.entries(bonusesObj)) {
 		bonusObj.value = statBased({ path: `attributes.bonuses.${key}` });
+	}
+
+	for (const [key, resistanceObj] of Object.entries(sys.attributes?.resistances ?? {})) {
+		const usedCoef =
+			getNumberAtPath(`attributes.resistances.${key}.coef`, 1) *
+			getNumberAtPath(`attributes.resistances.${key}.alt_mult`, 1);
+		const usedValue =
+			getNumberAtPath(`attributes.resistances.${key}.value`, 0) +
+			getNumberAtPath(`attributes.resistances.${key}.alt`, 0);
+		resistanceObj.used_coef = roundNumber(usedCoef, 6);
+		resistanceObj.used_value = roundNumber(usedValue, 6);
 	}
 
 	const deathObj = sys.attributes?.death?.passing_throw ?? {};

@@ -64,6 +64,10 @@
 		width: 100%;
 	}
 
+	.nalfa-roll-details--stacked {
+		flex-direction: column;
+	}
+
 	.nalfa-roll-action {
 		display: flex;
 		justify-content: center;
@@ -71,6 +75,105 @@
 		> button {
 			border-width: 2px !important;
 			border-color: var(--color-border-light-primary, inherit) !important;
+		}
+	}
+
+	.nalfa-roll-summary {
+		font-size: 12px;
+		opacity: 0.8;
+		text-align: center;
+	}
+
+	.nalfa-roll-stack,
+	.nalfa-roll-list {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		width: 100%;
+	}
+
+	.nalfa-roll-stack__row,
+	.nalfa-roll-list__row {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4px;
+		width: 100%;
+	}
+
+	.nalfa-roll-stack__row + .nalfa-roll-stack__row,
+	.nalfa-roll-list__row + .nalfa-roll-list__row {
+		padding-top: 8px;
+		border-top: 1px solid var(--color-border-light-secondary);
+	}
+
+	.nalfa-roll-list__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 8px;
+		width: 100%;
+	}
+
+	.nalfa-roll-list__name,
+	.nalfa-roll-list__value {
+		font-weight: 600;
+	}
+
+	.nalfa-roll-list__value-number {
+		color: var(--color-text-primary);
+	}
+
+	.nalfa-roll-list__value-unit {
+		color: inherit;
+		opacity: 0.8;
+	}
+
+	.nalfa-roll-summary--damage {
+		display: flex;
+		justify-content: center;
+		align-items: baseline;
+		gap: 6px;
+		width: 100%;
+		opacity: 1;
+	}
+
+	.nalfa-roll-summary--damage .nalfa-roll-list__name {
+		opacity: 0.8;
+	}
+
+	.nalfa-roll-summary--damage .nalfa-roll-list__value {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.nalfa-roll-list__value-part {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 4px;
+	}
+
+	.nalfa-roll-summary--damage .nalfa-roll-list__value-unit {
+		font-size: 0.7em;
+		font-weight: 600;
+	}
+
+	.nalfa-roll-list__value-icon {
+		display: inline-flex;
+		align-items: center;
+		line-height: 1;
+		font-weight: 700;
+		color: #b71c1c;
+	}
+
+	.nalfa-roll-list__value-icon--danger {
+		color: #b71c1c !important;
+
+		* {
+			color: inherit !important;
 		}
 	}
 
@@ -83,7 +186,21 @@
 	.nalfa-roll-tags {
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
 		gap: var(--nalfa-gap-text);
+	}
+
+	.nalfa-roll-card--reverted {
+		opacity: 0.68;
+		border-style: dashed;
+
+		.nalfa-roll-name,
+		.nalfa-roll-total-value,
+		.nalfa-roll-formula,
+		.nalfa-roll-list__value-number {
+			text-decoration: line-through;
+		}
 	}
 
 	.nalfa-roll-tag {
@@ -93,6 +210,11 @@
 		padding: 2px 6px;
 		border-radius: 999px;
 		background: var(--color-border-light-secondary);
+	}
+
+	.nalfa-roll-tag-context {
+		font-size: 12px;
+		opacity: 0.8;
 	}
 
 	.nalfa-roll-tag--crit,

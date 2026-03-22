@@ -1,4 +1,12 @@
 <div class="attack-config__damage-row">
+  <div class="attack-config__damage-tail">
+    <select
+      class="attack-config__damage-effect"
+      name="system.{{actionPath}}{{damagePath}}.{{index}}.effect"
+    >
+      {{selectOptions config.damage_effect_prefixes selected=damage.effect}}
+    </select>
+  </div>
   <div class="attack-config__damage-main">
     <input
       class="attack-config__damage-formula"
@@ -26,8 +34,15 @@
     <select
       class="attack-config__damage-type"
       name="system.{{actionPath}}{{damagePath}}.{{index}}.type"
+      data-action="change-damage-type"
     >
-      {{selectOptions config.all_damage_types selected=damage.type}}
+      {{#if (lookup config.fusion_damage_types damage.type)}}
+        <option value="{{damage.type}}" data-special-damage-type="true" selected>
+          {{lookup config.fusion_damage_types damage.type}}
+        </option>
+      {{/if}}
+      {{selectOptions config.base_damage_types selected=damage.type}}
+      <option value="__special_damage_type__">Types spéciaux</option>
     </select>
   </div>
   {{#if showAddButton}}

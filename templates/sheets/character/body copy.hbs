@@ -337,19 +337,18 @@
           <label>
             <div>{{@key}}</div>
             <input
+              name="system.attributes.resistances.{{@key}}.coef"
+              type="number"
+              value="{{coef}}"
+              step="0.1"
+              data-dtype="Number"
+            />
+            <input
               name="system.attributes.resistances.{{@key}}.value"
               type="number"
               value="{{value}}"
               data-dtype="Number"
             />
-          </label>
-          <label class="checkbox" style="display:flex;align-items:center;gap:0.25rem;">
-            <input
-              type="checkbox"
-              name="system.attributes.resistances.{{@key}}.immune"
-              {{checked immune}}
-            />
-            <span>Immun.</span>
           </label>
         </label>
       {{/each}}

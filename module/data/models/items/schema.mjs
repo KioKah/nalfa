@@ -49,6 +49,7 @@ const damageFormulaSchema = (initial = createDefaultDamageFormula()) =>
 		formula: stringField(initial.formula ?? ""),
 		type: stringField(initial.type ?? "none"),
 		stat: stringField(initial.stat ?? "none"),
+		effect: stringField(initial.effect ?? "damage"),
 	});
 
 const damageFormulaArrayField = (initial = [createDefaultDamageFormula()]) => {
@@ -96,7 +97,7 @@ export const actionSchemaDefinition = () => {
 		}),
 		selection: schemaField({
 			target: schemaField({
-				amount: numberField(defaults.selection.target.amount),
+				amount: stringField(defaults.selection.target.amount),
 				unit: stringField(defaults.selection.target.unit),
 				visibility: stringField(defaults.selection.target.visibility),
 				include_self: booleanField(defaults.selection.target.include_self),
@@ -123,7 +124,7 @@ export const actionSchemaDefinition = () => {
 			dd: numberField(defaults.jds.dd),
 			stat: stringField(defaults.jds.stat),
 			text: stringField(defaults.jds.text),
-			jdd_saved: booleanField(defaults.jds.jdd_saved),
+			fails_on_save: booleanField(defaults.jds.fails_on_save),
 		}),
 		jdd: schemaField({
 			enabled: booleanField(defaults.jdd.enabled),
@@ -131,6 +132,7 @@ export const actionSchemaDefinition = () => {
 		}),
 		jdd_saved: schemaField({
 			enabled: booleanField(defaults.jdd_saved.enabled),
+			mode: stringField(defaults.jdd_saved.mode),
 			damage_formulas: damageFormulaArrayField(defaults.jdd_saved.damage_formulas),
 		}),
 		concentration: schemaField({
