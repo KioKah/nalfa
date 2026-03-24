@@ -352,7 +352,7 @@ nalfa.regeneration_damage_types = {
 nalfa.damage_effect_prefixes = {
 	damage: "Dégâts",
 	healing: "Soin",
-	boost: "Boost",
+	abso: "Abso",
 	piercing: "Perçant",
 };
 

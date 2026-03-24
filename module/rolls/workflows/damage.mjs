@@ -21,7 +21,7 @@ const DICE_TOKEN_REGEX = /\d*d\d+(?:(?:min)\d+|m[\d\u2080-\u2089]*|[a-z!][a-z0-9
 const SUMMARY_BUCKET_LABELS = {
 	damage: "Dégâts",
 	healing: "Soin",
-	boost: "Boost",
+	abso: "Abso",
 	piercing: "Perçant",
 	ignored: "Ignoré",
 };
@@ -48,9 +48,11 @@ const SUMMARY_FRACTIONS = [
 }));
 
 const extractCritBonusFormula = (formula = "") => {
-	const diceTerms = Array.from(String(formula ?? "").matchAll(DICE_TOKEN_REGEX)).map((match) => {
-		return String(match?.[0] ?? "").trim();
-	}).filter(Boolean);
+	const diceTerms = Array.from(String(formula ?? "").matchAll(DICE_TOKEN_REGEX))
+		.map((match) => {
+			return String(match?.[0] ?? "").trim();
+		})
+		.filter(Boolean);
 	return diceTerms.join(" + ");
 };
 
@@ -72,7 +74,10 @@ const formatSummaryScalar = (value) => {
 	if (fraction) return `${sign}${fraction.glyph}`;
 	const rounded = Math.round(absoluteNumber * 100) / 100;
 	const formatted = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
-	return `${sign}${formatted.replace(/^0(?=\.)/, "").replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "")}`;
+	return `${sign}${formatted
+		.replace(/^0(?=\.)/, "")
+		.replace(/(\.\d*?)0+$/, "$1")
+		.replace(/\.$/, "")}`;
 };
 
 const getSummaryDamageTypeLabel = (damageTypeKey, damageTypeLabel) => {
@@ -85,14 +90,14 @@ const getSummaryDamageTypeLabel = (damageTypeKey, damageTypeLabel) => {
 const getDamageSourceKind = (damageTypeKey) => {
 	const normalizedKey = String(damageTypeKey ?? "none").trim() || "none";
 	if (normalizedKey === "soin") return "healing";
-	if (normalizedKey === "abso") return "boost";
+	if (normalizedKey === "abso") return "abso";
 	return "damage";
 };
 
 const getDefaultDamageEffect = (damageTypeKey) => {
 	const sourceKind = getDamageSourceKind(damageTypeKey);
 	if (sourceKind === "healing") return "healing";
-	if (sourceKind === "boost") return "boost";
+	if (sourceKind === "abso") return "abso";
 	return "damage";
 };
 
@@ -103,16 +108,22 @@ const getResolvedDamageEffect = (effect, damageTypeKey) => {
 
 const getDamageFormulaPrefix = (effect, damageTypeKey) => {
 	const normalizedEffect = getResolvedDamageEffect(effect, damageTypeKey);
-	return CONFIG.nalfa?.damage_effect_prefixes?.[normalizedEffect]
-		?? CONFIG.nalfa?.damage_effect_prefixes?.damage
-		?? "Dégâts";
+	return (
+		CONFIG.nalfa?.damage_effect_prefixes?.[normalizedEffect] ??
+		CONFIG.nalfa?.damage_effect_prefixes?.damage ??
+		"Dégâts"
+	);
 };
 
 const normalizeEffectCoefficient = (damageTypeKey, coefficient, resistanceValue) => {
 	const normalizedKey = String(damageTypeKey ?? "none").trim() || "none";
 	const numericCoefficient = Number.isFinite(Number(coefficient)) ? Number(coefficient) : 1;
 	const numericResistanceValue = Math.max(0, Number(resistanceValue ?? 0));
-	if ((normalizedKey === "soin" || normalizedKey === "abso") && numericCoefficient === -1 && numericResistanceValue === 0) {
+	if (
+		(normalizedKey === "soin" || normalizedKey === "abso") &&
+		numericCoefficient === -1 &&
+		numericResistanceValue === 0
+	) {
 		return 1;
 	}
 	return numericCoefficient;
@@ -121,7 +132,7 @@ const normalizeEffectCoefficient = (damageTypeKey, coefficient, resistanceValue)
 const getAppliedEffectKind = (sourceKind, coefficient) => {
 	if (sourceKind === "damage") return coefficient < 0 ? "healing" : "damage";
 	if (sourceKind === "healing") return coefficient < 0 ? "damage" : "healing";
-	if (sourceKind === "boost") return coefficient < 0 ? "damage" : "boost";
+	if (sourceKind === "abso") return coefficient < 0 ? "damage" : "abso";
 	if (sourceKind === "piercing") return coefficient < 0 ? "healing" : "piercing";
 	return "damage";
 };
@@ -131,7 +142,7 @@ const getSummaryBucketKey = (result) => {
 	const effectKind = String(result?.appliedEffectKind ?? "damage").trim() || "damage";
 	if (effectKind === "piercing") return "piercing";
 	if (effectKind === "healing") return "healing";
-	if (effectKind === "boost") return "boost";
+	if (effectKind === "abso") return "abso";
 	return "damage";
 };
 
@@ -167,26 +178,28 @@ const formatSummaryPart = (result) => {
 	const resistanceValue = Math.max(0, Number(result?.resistanceValue ?? 0));
 	let expression = formatSummaryAmount(Math.abs(Number(result?.baseAmount ?? 0)));
 	if (coefficient !== 1) expression = `${formatSummaryScalar(coefficient)}·${expression}`;
-	if (resistanceValue > 0) expression = `${expression}-${formatSummaryAmount(resistanceValue)}`;
+	if (resistanceValue > 0)
+		expression = `${expression}-${formatSummaryAmount(resistanceValue)}`;
 	return expression;
 };
 
 const getUsedResistanceValues = (resistance, defaultCoefficient = 1) => ({
 	coefficient: Number.isFinite(Number(resistance?.used_coef))
 		? Number(resistance.used_coef)
-		: (
-			Number.isFinite(Number(resistance?.coef)) ? Number(resistance.coef) : defaultCoefficient
-		) * (Number.isFinite(Number(resistance?.alt_mult)) ? Number(resistance.alt_mult) : 1),
+		: (Number.isFinite(Number(resistance?.coef))
+				? Number(resistance.coef)
+				: defaultCoefficient) *
+			(Number.isFinite(Number(resistance?.alt_mult)) ? Number(resistance.alt_mult) : 1),
 	value: Number.isFinite(Number(resistance?.used_value))
 		? Number(resistance.used_value)
-		: (
-			Number.isFinite(Number(resistance?.value)) ? Number(resistance.value) : 0
-		) + (Number.isFinite(Number(resistance?.alt)) ? Number(resistance.alt) : 0),
+		: (Number.isFinite(Number(resistance?.value)) ? Number(resistance.value) : 0) +
+			(Number.isFinite(Number(resistance?.alt)) ? Number(resistance.alt) : 0),
 });
 
 const getResistanceProfile = (actor, damageTypeKey) => {
 	const normalizedDamageTypeKey = String(damageTypeKey ?? "none").trim() || "none";
-	const fusionComponents = CONFIG.nalfa?.fusion_damage_type_components?.[normalizedDamageTypeKey];
+	const fusionComponents =
+		CONFIG.nalfa?.fusion_damage_type_components?.[normalizedDamageTypeKey];
 	const resistanceMap = actor?.system?.attributes?.resistances ?? {};
 
 	if (!Array.isArray(fusionComponents) || fusionComponents.length === 0) {
@@ -214,7 +227,8 @@ const getResistanceProfile = (actor, damageTypeKey) => {
 		resistanceEntries.reduce((sum, entry) => sum + entry.coefficient, 0) /
 		resistanceEntries.length;
 	const meanValue =
-		resistanceEntries.reduce((sum, entry) => sum + entry.value, 0) / resistanceEntries.length;
+		resistanceEntries.reduce((sum, entry) => sum + entry.value, 0) /
+		resistanceEntries.length;
 
 	return {
 		coefficient: meanCoefficient,
@@ -234,7 +248,9 @@ const evaluateDamageEntry = async (actor, config = {}) => {
 	const resolvedFormula = resolveDamageFormula(rawFormula, actor);
 	const normalizedFormula = normalizeDamageFormula(resolvedFormula);
 	const diceOnly = config.diceOnly === true;
-	const rollFormula = diceOnly ? extractCritBonusFormula(normalizedFormula) : normalizedFormula;
+	const rollFormula = diceOnly
+		? extractCritBonusFormula(normalizedFormula)
+		: normalizedFormula;
 	if (diceOnly) {
 		console.log("nalfa | Crit damage debug | extracted dice formula", {
 			rawFormula,
@@ -254,7 +270,9 @@ const evaluateDamageEntry = async (actor, config = {}) => {
 	const statValue =
 		statKey === "physical"
 			? Number(actor.system?.roll_stats?.physical?.value ?? 0)
-			: (statKey ? getStatTotal(actor, statKey) : 0);
+			: statKey
+				? getStatTotal(actor, statKey)
+				: 0;
 	const damageTypeKey = resolveDamageType(config.damageType, actor);
 	const damageTypeLabel = getLabel(
 		CONFIG.nalfa.all_damage_types,
@@ -265,16 +283,17 @@ const evaluateDamageEntry = async (actor, config = {}) => {
 	const formulaPrefix = getDamageFormulaPrefix(config.effect, damageTypeKey);
 	const roll = includeStat
 		? await evaluateRoll(`${rollFormula} + @stat`, {
-			stat: statValue,
-		})
+				stat: statValue,
+			})
 		: await evaluateRoll(rollFormula, {});
 	const maxRoll = includeStat
 		? await evaluateMaxRoll(`${rollFormula} + @stat`, {
-			stat: statValue,
-		})
+				stat: statValue,
+			})
 		: await evaluateMaxRoll(rollFormula, {});
 	const dieResult = getFirstDieResult(roll);
-	const damageSuffix = includeStat && hasStat(statKey) ? ` + ${statName} (${statValue})` : "";
+	const damageSuffix =
+		includeStat && hasStat(statKey) ? ` + ${statName} (${statValue})` : "";
 	const formulaText = `${formulaPrefix} : ${shortFormula} [${dieResult ?? "-"}]${damageSuffix}`;
 	const titleValue = Math.max(0, Number(roll.total ?? 0));
 	const maxTitleValue = Math.max(0, Number(maxRoll.total ?? 0));
@@ -303,15 +322,20 @@ export const rollDamage = async (actor, config = {}) => {
 	const result = await evaluateDamageEntry(actor, config);
 	if (!result) return null;
 
-	await postRollMessage(actor, "damage", {
+	await postRollMessage(
 		actor,
-		roll: result.roll,
-		titleLabel,
-		titleName,
-		titleValue: result.titleValue,
-		formulaText: result.formulaText,
-		damageTypeLabel: result.damageTypeLabel,
-	}, messageOptions);
+		"damage",
+		{
+			actor,
+			roll: result.roll,
+			titleLabel,
+			titleName,
+			titleValue: result.titleValue,
+			formulaText: result.formulaText,
+			damageTypeLabel: result.damageTypeLabel,
+		},
+		messageOptions,
+	);
 
 	return {
 		...result,
@@ -339,19 +363,28 @@ export const rollDamageEntries = async (actor, entries = [], options = {}) => {
 
 export const postDamageGroupMessage = async (
 	actor,
-	{ titleLabel = "JdD", titleName = "", results = [], messageOptions = {}, chatContext = null } = {},
+	{
+		titleLabel = "JdD",
+		titleName = "",
+		results = [],
+		messageOptions = {},
+		chatContext = null,
+	} = {},
 ) => {
 	if (!actor || !results.length) return null;
 
-	const content = await foundry.applications.handlebars.renderTemplate(DAMAGE_GROUP_TEMPLATE, {
-		titleLabel,
-		titleName,
-		rows: results.map((result) => ({
-			total: result.titleValue,
-			damageTypeLabel: result.damageTypeLabel,
-			formulaText: result.formulaText,
-		})),
-	});
+	const content = await foundry.applications.handlebars.renderTemplate(
+		DAMAGE_GROUP_TEMPLATE,
+		{
+			titleLabel,
+			titleName,
+			rows: results.map((result) => ({
+				total: result.titleValue,
+				damageTypeLabel: result.damageTypeLabel,
+				formulaText: result.formulaText,
+			})),
+		},
+	);
 
 	return ChatMessage.create({
 		user: game.user.id,
@@ -367,17 +400,19 @@ const applyDamageModifier = (actor, damageResult) => {
 	const baseAmount = Number(damageResult?.titleValue ?? 0);
 	const maxBaseAmount = Number(damageResult?.maxTitleValue ?? baseAmount);
 	const damageTypeKey = String(damageResult?.damageTypeKey ?? "none").trim() || "none";
-	const damageTypeLabel = String(damageResult?.damageTypeLabel ?? "").trim() || damageTypeKey;
+	const damageTypeLabel =
+		String(damageResult?.damageTypeLabel ?? "").trim() || damageTypeKey;
 	const sourceKind = getResolvedDamageEffect(damageResult?.effect, damageTypeKey);
 	const defaultAppliedEffectKind = getAppliedEffectKind(sourceKind, 1);
 
 	if (damageTypeKey === "none") {
-		const hpDelta = defaultAppliedEffectKind === "damage" || defaultAppliedEffectKind === "piercing"
-			? -baseAmount
-			: (defaultAppliedEffectKind === "healing" ? baseAmount : 0);
-		const tempHpDelta = defaultAppliedEffectKind === "boost"
-			? baseAmount
-			: 0;
+		const hpDelta =
+			defaultAppliedEffectKind === "damage" || defaultAppliedEffectKind === "piercing"
+				? -baseAmount
+				: defaultAppliedEffectKind === "healing"
+					? baseAmount
+					: 0;
+		const tempHpDelta = defaultAppliedEffectKind === "abso" ? baseAmount : 0;
 		return {
 			sourceKind,
 			appliedEffectKind: defaultAppliedEffectKind,
@@ -409,12 +444,13 @@ const applyDamageModifier = (actor, damageResult) => {
 	const finalAmount = Math.max(0, scaledAmount - resistanceValue);
 	const maxFinalAmount = Math.max(0, scaledMaxAmount - resistanceValue);
 	const appliedEffectKind = getAppliedEffectKind(sourceKind, effectiveCoefficient);
-	const hpDelta = appliedEffectKind === "damage" || appliedEffectKind === "piercing"
-		? -finalAmount
-		: (appliedEffectKind === "healing" ? finalAmount : 0);
-	const tempHpDelta = appliedEffectKind === "boost"
-		? finalAmount
-		: 0;
+	const hpDelta =
+		appliedEffectKind === "damage" || appliedEffectKind === "piercing"
+			? -finalAmount
+			: appliedEffectKind === "healing"
+				? finalAmount
+				: 0;
+	const tempHpDelta = appliedEffectKind === "abso" ? finalAmount : 0;
 
 	const notes = [];
 	if (effectiveCoefficient !== 1) notes.push(`Coef ${effectiveCoefficient}`);
@@ -443,10 +479,15 @@ export const summarizeAppliedDamageForToken = (
 	damageResults = [],
 	{ mode = "normal" } = {},
 ) => {
-	const appliedResults = damageResults.map((result) => applyDamageModifier(token?.actor, result));
+	const appliedResults = damageResults.map((result) =>
+		applyDamageModifier(token?.actor, result),
+	);
 	const currentHp = Number(token?.actor?.system?.attributes?.hp?.value ?? 0);
 	const maxHp = Number(token?.actor?.system?.attributes?.hp?.max ?? NaN);
-	const currentTempHp = Math.max(0, Number(token?.actor?.system?.attributes?.hp?.abso ?? 0));
+	const currentTempHp = Math.max(
+		0,
+		Number(token?.actor?.system?.attributes?.hp?.abso ?? 0),
+	);
 	let resultingHp = currentHp;
 	let finalTempHp = currentTempHp;
 	const detailSegments = [];
@@ -478,14 +519,16 @@ export const summarizeAppliedDamageForToken = (
 		}
 		segment.entries.get(typeKey).parts.push(formatSummaryPart(result));
 
-		const appliedAmount = mode === "half"
-			? Math.trunc(Number(result.finalAmount ?? 0) / 2)
-			: Number(result.finalAmount ?? 0);
-		const appliedMaxAmount = mode === "half"
-			? Math.trunc(Number(result.maxFinalAmount ?? 0) / 2)
-			: Number(result.maxFinalAmount ?? 0);
+		const appliedAmount =
+			mode === "half"
+				? Math.trunc(Number(result.finalAmount ?? 0) / 2)
+				: Number(result.finalAmount ?? 0);
+		const appliedMaxAmount =
+			mode === "half"
+				? Math.trunc(Number(result.maxFinalAmount ?? 0) / 2)
+				: Number(result.maxFinalAmount ?? 0);
 
-		if (bucketKey === "healing" || bucketKey === "boost") {
+		if (bucketKey === "healing" || bucketKey === "abso") {
 			segment.attemptedAmount += appliedAmount;
 		}
 
@@ -513,11 +556,12 @@ export const summarizeAppliedDamageForToken = (
 			continue;
 		}
 
-		if (result.appliedEffectKind === "boost") {
+		if (result.appliedEffectKind === "abso") {
 			if (appliedMaxAmount > 0) {
-				finalTempHp = finalTempHp >= appliedMaxAmount
-					? finalTempHp
-					: Math.max(0, Math.min(finalTempHp + appliedAmount, appliedMaxAmount));
+				finalTempHp =
+					finalTempHp >= appliedMaxAmount
+						? finalTempHp
+						: Math.max(0, Math.min(finalTempHp + appliedAmount, appliedMaxAmount));
 			} else {
 				finalTempHp = Math.max(0, finalTempHp + appliedAmount);
 			}
@@ -528,31 +572,35 @@ export const summarizeAppliedDamageForToken = (
 
 	const hpDelta = resultingHp - currentHp;
 	const tempHpDelta = finalTempHp - currentTempHp;
-	const detailLines = detailSegments.map((segment) => {
-		const entries = segment.order.map((typeKey) => segment.entries.get(typeKey)).filter(Boolean);
-		if (!entries.length) return "";
-		const prefix = `${SUMMARY_BUCKET_LABELS[segment.bucketKey]} : `;
-		const body = entries
-			.map((entry) => {
-				const amount = entry.parts.join("+");
-				return entry.label ? `${amount} ${entry.label}` : amount;
-			})
-			.join(" | ");
-		const halfSuffix = mode === "half" ? " => /2" : "";
-		let clampSuffix = "";
-		if (segment.bucketKey === "healing") {
-			const applied = Math.max(0, segment.endHp - segment.startHp);
-			if (applied < segment.attemptedAmount) {
-				clampSuffix = ` => ${formatSummaryAmount(applied)} (cap)`;
+	const detailLines = detailSegments
+		.map((segment) => {
+			const entries = segment.order
+				.map((typeKey) => segment.entries.get(typeKey))
+				.filter(Boolean);
+			if (!entries.length) return "";
+			const prefix = `${SUMMARY_BUCKET_LABELS[segment.bucketKey]} : `;
+			const body = entries
+				.map((entry) => {
+					const amount = entry.parts.join("+");
+					return entry.label ? `${amount} ${entry.label}` : amount;
+				})
+				.join(" | ");
+			const halfSuffix = mode === "half" ? " => /2" : "";
+			let clampSuffix = "";
+			if (segment.bucketKey === "healing") {
+				const applied = Math.max(0, segment.endHp - segment.startHp);
+				if (applied < segment.attemptedAmount) {
+					clampSuffix = ` => ${formatSummaryAmount(applied)} (cap)`;
+				}
+			} else if (segment.bucketKey === "abso") {
+				const applied = Math.max(0, segment.endTempHp - segment.startTempHp);
+				if (applied < segment.attemptedAmount) {
+					clampSuffix = ` => ${formatSummaryAmount(applied)} (cap)`;
+				}
 			}
-		} else if (segment.bucketKey === "boost") {
-			const applied = Math.max(0, segment.endTempHp - segment.startTempHp);
-			if (applied < segment.attemptedAmount) {
-				clampSuffix = ` => ${formatSummaryAmount(applied)} (cap)`;
-			}
-		}
-		return `${prefix}${body}${halfSuffix}${clampSuffix}`;
-	}).filter(Boolean);
+			return `${prefix}${body}${halfSuffix}${clampSuffix}`;
+		})
+		.filter(Boolean);
 	const summaryParts = [
 		buildSummaryPart(Math.max(0, hpDelta), "PV"),
 		buildSummaryPart(Math.min(0, tempHpDelta), "PVtemp"),
@@ -586,18 +634,25 @@ export const postDamageSummaryMessage = async (
 ) => {
 	if (!actor || !rows.length) return null;
 	const mergedMessageOptions = withActionSheetFlag(messageOptions, chatContext);
-	const damageSummaryRows = rows.map((row) => ({
-		targetActorUuid: String(row?.targetActorUuid ?? "").trim(),
-		previousHp: Number.isFinite(Number(row?.previousHp)) ? Number(row.previousHp) : 0,
-		nextHp: Number.isFinite(Number(row?.nextHp)) ? Number(row.nextHp) : 0,
-		previousTempHp: Number.isFinite(Number(row?.previousTempHp)) ? Number(row.previousTempHp) : 0,
-		nextTempHp: Number.isFinite(Number(row?.nextTempHp)) ? Number(row.nextTempHp) : 0,
-	})).filter((row) => row.targetActorUuid);
+	const damageSummaryRows = rows
+		.map((row) => ({
+			targetActorUuid: String(row?.targetActorUuid ?? "").trim(),
+			previousHp: Number.isFinite(Number(row?.previousHp)) ? Number(row.previousHp) : 0,
+			nextHp: Number.isFinite(Number(row?.nextHp)) ? Number(row.nextHp) : 0,
+			previousTempHp: Number.isFinite(Number(row?.previousTempHp))
+				? Number(row.previousTempHp)
+				: 0,
+			nextTempHp: Number.isFinite(Number(row?.nextTempHp)) ? Number(row.nextTempHp) : 0,
+		}))
+		.filter((row) => row.targetActorUuid);
 
-	const content = await foundry.applications.handlebars.renderTemplate(DAMAGE_SUMMARY_TEMPLATE, {
-		titleName,
-		rows,
-	});
+	const content = await foundry.applications.handlebars.renderTemplate(
+		DAMAGE_SUMMARY_TEMPLATE,
+		{
+			titleName,
+			rows,
+		},
+	);
 
 	const message = await ChatMessage.create({
 		...mergedMessageOptions,

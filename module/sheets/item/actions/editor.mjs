@@ -25,7 +25,7 @@ const { ItemSheetV2 } = foundry.applications.sheets;
 const getDefaultDamageEffectForType = (damageType) => {
 	const normalizedType = String(damageType ?? "none").trim() || "none";
 	if (normalizedType === "soin") return "healing";
-	if (normalizedType === "abso") return "boost";
+	if (normalizedType === "abso") return "abso";
 	return "damage";
 };
 
@@ -34,7 +34,9 @@ const getSiblingDamageEffectPath = (path) => {
 	return path.replace(/\.type$/, ".effect");
 };
 
-export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixin(ItemSheetV2) {
+export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixin(
+	ItemSheetV2,
+) {
 	static DEFAULT_OPTIONS = {
 		classes: ["nalfa", "sheet", "embedded-action-editor"],
 		position: {
@@ -149,10 +151,7 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			event.preventDefault();
 		});
 
-		this._bindFieldChangeAction(
-			"input[name], select[name]",
-			this._onDraftFieldChange,
-		);
+		this._bindFieldChangeAction("input[name], select[name]", this._onDraftFieldChange);
 		this._bindFieldChangeAction(
 			"[data-action='change-damage-type']",
 			this._onDraftDamageTypeChange,
