@@ -1,3 +1,5 @@
+import { maybeHandleActionUpgradePreCreate } from "../actions/upgrades.mjs";
+
 export default class NalfaItem extends Item {
 	static TYPE_ICON_MAP = Object.freeze({
 		Action: "Spell",
@@ -63,5 +65,11 @@ export default class NalfaItem extends Item {
 		chatData.roll = true; // your “hack” to mark it as a roll card
 
 		return ChatMessage.create(chatData);
+	}
+
+	async _preCreate(data, options, user) {
+		const allowed = await super._preCreate(data, options, user);
+		if (allowed === false) return false;
+		return maybeHandleActionUpgradePreCreate(this);
 	}
 }
