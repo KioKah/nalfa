@@ -171,6 +171,17 @@ export const itemDescriptionSchema = (textInitial = "", loretextInitial = "") =>
 	}),
 });
 
+const actionSyncSchema = () => ({
+		sync: schemaField({
+			id: stringField(""),
+			class_key: stringField(""),
+			level: numberValueField(null),
+			slot: numberValueField(null),
+			upgraded: numberField(0),
+			lineage: stringField(""),
+		}),
+	});
+
 const itemRaritySchema = () => ({
 	rarity: stringField("unknown"),
 });
@@ -327,6 +338,7 @@ export const bookItemSchema = (baseSchema) => ({
 
 export const actionItemSchema = (baseSchema) => ({
 	...baseSchema,
+	...actionSyncSchema(),
 	shorthand: stringField(""),
 	...itemDescriptionSchema(
 		DEFAULT_ACTION_DESCRIPTION_TEXT,
