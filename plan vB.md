@@ -19,6 +19,9 @@ metier encore absents ou seulement amorces.
 - Les classes, resistances et etats ne sont plus de simples structures dormantes.
 - La sheet actor devient un vrai point d'entree de jeu pour l'inventaire / l'equipement.
 
+Audit statique 2026-05-22 : les cases `[.]` indiquent un point partiellement couvert par
+le code actuel, mais incomplet par rapport a la formulation du plan ou non valide en Foundry.
+
 ---
 
 ## vB.1 - Classes sur acteur
@@ -40,17 +43,17 @@ QA manuel
 
 ## vB.2 - Resistances vraiment jouables
 
-- [ ] Exposer `system.attributes.resistances.*` dans l'UI actor.
-- [ ] Permettre l'edition de `value` et `immune`.
-- [ ] Garder les valeurs negatives si c'est bien la regle retenue.
-- [ ] Dans les chat cards de degats, afficher au minimum `brut -> apres resistance`
+- [x] Exposer `system.attributes.resistances.*` dans l'UI actor.
+- [.] Permettre l'edition de `value` et `immune`.
+- [.] Garder les valeurs negatives si c'est bien la regle retenue.
+- [x] Dans les chat cards de degats, afficher au minimum `brut -> apres resistance`
       sans imposer tout de suite une auto-application aux PV.
-- [ ] Verrouiller la convention de calcul avant toute automatisation plus loin.
+- [.] Verrouiller la convention de calcul avant toute automatisation plus loin.
 
 QA manuel
 
-- [ ] Resistance positive, negative et immune : affichage coherent.
-- [ ] Les cartes de degats restent lisibles.
+- [.] Resistance positive, negative et immune : affichage coherent.
+- [.] Les cartes de degats restent lisibles.
 
 ---
 

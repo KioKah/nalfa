@@ -17,6 +17,10 @@ Il ne revient pas sur les chantiers de stabilisation ni sur les systemes de base
 - Les premiers packs de contenu peuvent etre prepares sans refaire les schemas.
 - Le systeme commence a ressembler a une vraie distribution utilisable.
 
+Audit statique 2026-05-22 : aucune case vC n'a ete cochee. Le repo contient deja quelques
+briques utiles, comme les jets de concentration manuels et l'application de degats, mais pas
+les automatisations vC decrites ici.
+
 ---
 
 ## vC.1 - Automatisation de la concentration

@@ -73,14 +73,17 @@ QA manuel
 
 ## vA.2 - Fermer les points partiellement termines
 
+Audit statique 2026-05-22 : les cases ci-dessous refletent le code actuel. Les cases `[.]`
+restent a valider en Foundry ou demandent encore une recette officielle.
+
 ### vA.2.1 - Critiques et degats
 
-- [ ] Completer la regle de critique sur JdT : doubler uniquement les des de degats, pas les bonus de stat.
-- [ ] Verifier l'affichage chat en cas de critique pour que le comportement soit lisible.
+- [x] Completer la regle de critique sur JdT : doubler uniquement les des de degats, pas les bonus de stat.
+- [x] Verifier l'affichage chat en cas de critique pour que le comportement soit lisible.
 
 QA manuel
 
-- [ ] Cas normal vs crit : seule la partie des change.
+- [x] Cas normal vs crit : seule la partie des change.
 
 ### vA.2.2 - Sauvegardes standardisees
 
@@ -104,7 +107,7 @@ QA manuel
 
 QA manuel
 
-- [ ] Le systeme charge sans crash avec et sans Dice So Nice.
+- [.] Le systeme charge sans crash avec et sans Dice So Nice.
 
 ### vA.2.4 - Clarifier l'UI existante
 
