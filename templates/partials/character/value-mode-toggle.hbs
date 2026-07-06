@@ -1,6 +1,29 @@
 <div class="value-mode-toggle">
-  <label class="value-mode-toggle__label" for="value-mode-select">Mode d'affichage</label>
-  <select class="fixed" id="value-mode-select" name="system.ui.valueMode">
-    {{selectOptions config.valueMode selected=sysData.ui.valueMode}}
-  </select>
+  <label class="value-mode-toggle__button" data-tooltip="Lecture">
+    <input
+      type="radio"
+      name="system.ui.valueMode"
+      value="values"
+      {{#if (eq sysData.ui.valueMode "values")}}checked{{/if}}
+    />
+    <i class="fa-light fa-eye"></i>
+  </label>
+  <label class="value-mode-toggle__button" data-tooltip="Modification">
+    <input
+      type="radio"
+      name="system.ui.valueMode"
+      value="base"
+      {{#if (eq sysData.ui.valueMode "base")}}checked{{/if}}
+    />
+    <i class="fa-light fa-pen-to-square"></i>
+  </label>
+  <label class="value-mode-toggle__button" data-tooltip="Altération">
+    <input
+      type="radio"
+      name="system.ui.valueMode"
+      value="alt"
+      {{#if (eq sysData.ui.valueMode "alt")}}checked{{/if}}
+    />
+    <i class="fa-light fa-wave-pulse"></i>
+  </label>
 </div>

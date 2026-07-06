@@ -41,6 +41,74 @@ const ACTION_RESOURCE_TOKEN_META = Object.freeze({
 	},
 });
 
+const DAMAGE_EFFECT_LABELS = Object.freeze({
+	damage: "dégâts",
+	healing: "soin",
+	abso: "absorption",
+	piercing: "perçant",
+});
+
+const DAMAGE_EFFECT_ABBR = Object.freeze({
+	damage: "dgt",
+	healing: "soin",
+	abso: "abso",
+	piercing: "perç",
+});
+
+const escapeHtml = (value) => foundry.utils.escapeHTML(String(value ?? ""));
+
+const toDamageTypeClass = (type) => {
+	const key = String(type ?? "none").trim() || "none";
+	return key.replace(/[^a-z0-9_-]/gi, "");
+};
+
+const formatTooltipHtml = (tooltip = "") => {
+	const text = String(tooltip ?? "").trim();
+	if (!text) return "";
+	const lines = text.split("\n");
+	const firstLine = lines[0] ?? "";
+	const firstLineHtml = firstLine.endsWith(":")
+		? `<strong>${escapeHtml(firstLine)}</strong>`
+		: escapeHtml(firstLine);
+	return [firstLineHtml, ...lines.slice(1).map((line) => escapeHtml(line))].join("<br>");
+};
+
+const makeSummaryRow = (text = "", tooltip = "") => ({
+	text,
+	tooltip: tooltip || text,
+	tooltipHtml: formatTooltipHtml(tooltip || text),
+});
+
+const tooltipAttrs = (tooltip = "") => {
+	const tooltipHtml = formatTooltipHtml(tooltip);
+	if (!tooltipHtml) return "";
+	return ` data-tooltip="${tooltipHtml}" data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"`;
+};
+
+const tooltipSpan = ({ text = "", tooltip = "", className = "" } = {}) => {
+	const classAttr = className ? ` class="${escapeHtml(className)}"` : "";
+	return `<span${classAttr}${tooltipAttrs(tooltip)}>${escapeHtml(text)}</span>`;
+};
+
+const tooltipHtmlSpan = ({ html = "", tooltip = "", className = "" } = {}) => {
+	const classAttr = className ? ` class="${escapeHtml(className)}"` : "";
+	return `<span${classAttr}${tooltipAttrs(tooltip)}>${html}</span>`;
+};
+
+const htmlToTooltipText = (html = "") => htmlToPlainText(html, { preserveLineBreaks: true });
+
+const getActionStatLabel = (config, statKey) => {
+	const key = String(statKey ?? "none");
+	return (
+		String(
+			config.stats_optional_physical?.[key] ??
+				config.stats_optional_incant?.[key] ??
+				config.stats_optional?.[key] ??
+				key,
+		).trim() || "?"
+	);
+};
+
 const makeActionResourceToken = ({
 	type,
 	amountLabel = "",
@@ -156,12 +224,13 @@ const buildActionResourceSummary = ({ actionData, config }) => {
 };
 
 const buildActionCoreSummary = (item, actionData, config) => {
-	const mode = String(actionData?.mode ?? "physical");
-	const modeLabel = config.attack_mode?.[mode] ?? mode;
+	const mode = String(actionData?.mode ?? "none");
+	const modeLabel = String(config.attack_mode?.[mode] ?? mode).trim();
 	const esterUnit = String(actionData?.cost?.ester?.unit ?? "none");
 	const esterLabel = String(config.ester_levels_short?.[esterUnit] ?? "").trim();
-	const modeWithTier = esterLabel ? `${modeLabel} ${esterLabel}` : modeLabel;
+	const modeWithTier = [modeLabel, esterLabel].filter(Boolean).join(" ");
 	const jdParts = [];
+	const jdHtmlParts = [];
 	const getSavedDamageInlineHint = () => {
 		if (!actionData?.jdd?.enabled) return "";
 
@@ -176,13 +245,22 @@ const buildActionCoreSummary = (item, actionData, config) => {
 		const statValue = getActorStatValue(item, statKey);
 		const bonus = toFiniteNumber(actionData?.jdt?.bonus, 0);
 		const total = statValue + bonus;
-		jdParts.push(`JdT ${formatSignedNumber(total)}`);
+		const statLabel = getActionStatLabel(config, statKey);
+		const summary = `JdT ${formatSignedNumber(total)}`;
+		const tooltip = [
+			"JdT :",
+			`Stat : ${statLabel}`,
+			`Bonus : ${formatSignedNumber(bonus)}`,
+			`Total : ${formatSignedNumber(total)}`,
+		].join("\n");
+		jdParts.push(summary);
+		jdHtmlParts.push(tooltipSpan({ text: summary, tooltip }));
 	}
 
 	if (actionData?.jds?.enabled) {
 		const dd = toFiniteNumber(actionData?.jds?.dd, 0);
 		const stat = String(actionData?.jds?.stat ?? "none");
-		const statLabel = (config.stats_optional?.[stat] ?? stat) || "?";
+		const statLabel = getActionStatLabel(config, stat);
 		const outcomeText = actionData?.jds?.fails_on_save
 			? "Échoue"
 			: String(actionData?.jds?.text ?? "").trim();
@@ -194,11 +272,24 @@ const buildActionCoreSummary = (item, actionData, config) => {
 		const saveSummary = outcomeSummary
 			? `JdS ${dd} ${statLabel} -> ${outcomeSummary}`
 			: `JdS ${dd} ${statLabel}`;
+		const saveTooltipParts = ["JdS :", `DD : ${dd}`, `Stat : ${statLabel}`];
+		if (outcomeSummary) saveTooltipParts.push(`Réussite : ${outcomeSummary}`);
 		jdParts.push(saveSummary);
+		jdHtmlParts.push(tooltipSpan({ text: saveSummary, tooltip: saveTooltipParts.join("\n") }));
 	}
 
-	if (jdParts.length === 0) return modeWithTier;
-	return `${modeWithTier} : ${jdParts.join(" & ")}`;
+	const jdSummary = jdParts.join(" & ");
+	const jdHtml = jdHtmlParts.join(" & ");
+	const modeHtml = modeWithTier
+		? tooltipSpan({ text: modeWithTier, tooltip: `Mode :\n${modeWithTier}` })
+		: "";
+
+	if (!jdSummary) return { text: modeWithTier, html: modeHtml };
+	if (!modeWithTier) return { text: jdSummary, html: jdHtml };
+	return {
+		text: `${modeWithTier} : ${jdSummary}`,
+		html: `${modeHtml} : ${jdHtml}`,
+	};
 };
 
 const buildActionRequirementSummary = (actionData) => {
@@ -257,89 +348,206 @@ const buildActionUsesSummary = (actionData) => {
 };
 
 const buildActionConcentrationSummary = (actionData, config) => {
-	if (!actionData?.concentration?.enabled) return "";
+	if (!actionData?.concentration?.enabled) return null;
 
 	const concentration = actionData?.concentration ?? {};
 	const statKey = String(concentration.stat ?? "none");
-	const statLabel = String(config.stats_optional?.[statKey] ?? statKey).trim() || "?";
+	const statLabel = getActionStatLabel(config, statKey);
 	const dd = toFiniteNumber(concentration.dd, 0);
-	return `JdF ${dd} ${statLabel}`;
+	const text = `JdF ${dd} ${statLabel}`;
+	return {
+		text,
+		html: tooltipSpan({ text, tooltip: ["JdF :", `DD : ${dd}`, `Stat : ${statLabel}`].join("\n") }),
+	};
 };
 
 const buildRangeDetailSummary = (actionData, config) => {
 	const rangeType = String(actionData?.range_type ?? "ranged");
-	if (rangeType === "melee") return "Allonge";
+	if (rangeType === "melee") {
+		return {
+			text: "Allonge",
+			html: tooltipSpan({ text: "Allonge", tooltip: "Portée :\nAu CàC : Allonge" }),
+			tooltip: "Au CàC : Allonge",
+		};
+	}
 
 	const zone = actionData?.selection?.zone ?? {};
 	const shape = String(zone.shape ?? "circle");
+	const rangeTypeLabel = config.range_types?.[rangeType] ?? rangeType;
 	const rangeParts = [];
+	const tooltipParts = [];
 	const reachDisadvantageIcon =
-		'<span class="embedded-actions__reach-disadvantage" data-tooltip="Désavantage en portée d\'Allonge">' +
+		'<span class="embedded-actions__reach-disadvantage">' +
 		'<i class="fa-light fa-arrows-left-right embedded-actions__reach-disadvantage-base"></i>' +
 		'<i class="fa-light fa-triangle-exclamation embedded-actions__reach-disadvantage-alert"></i>' +
 		"</span>";
 
 	if (rangeType === "pure_ranged") {
-		rangeParts.push(`${toFiniteNumber(zone.min_range, 0)} m`, "↔");
+		const minRange = `${toFiniteNumber(zone.min_range, 0)} m`;
+		rangeParts.push(minRange, "↔");
+		tooltipParts.push(`Min : ${minRange}`);
 	}
 
 	if (rangeType === "ranged") {
 		rangeParts.push(reachDisadvantageIcon);
+		tooltipParts.push("Désavantage en portée d'Allonge");
 	}
 
-	rangeParts.push(`${toFiniteNumber(zone.range, 0)} m`);
+	const rangeLabel = `${toFiniteNumber(zone.range, 0)} m`;
+	rangeParts.push(rangeLabel);
+	tooltipParts.push(`Portée : ${rangeLabel}`);
 
 	if (zone.has_long_range) {
-		rangeParts.push(`~ ${toFiniteNumber(zone.long_range, 0)} m (Longue)`);
+		const longRange = `${toFiniteNumber(zone.long_range, 0)} m`;
+		rangeParts.push(`~ ${longRange} (Longue)`);
+		tooltipParts.push(`Longue : ${longRange}`);
 	}
 
 	const rangeText = rangeParts.join(" ");
-	if (shape === "circle") return rangeText;
+	if (shape === "circle") {
+		const tooltip = [`Portée :`, `${rangeTypeLabel} : ${tooltipParts.join(", ")}`].join("\n");
+		return {
+			text: htmlToTooltipText(rangeText),
+			html: tooltipHtmlSpan({ html: rangeText, tooltip }),
+			tooltip: `${rangeTypeLabel} : ${tooltipParts.join(", ")}`,
+		};
+	}
 
 	const shapeLabel = config.area_shapes?.[shape] ?? shape;
 	const secondary = toFiniteNumber(zone.range_secondary, 0);
 	const secondaryLabel = shape === "line" ? `${secondary}m de large` : `${secondary}°`;
-	return `${rangeText} &lt;${shapeLabel} ${secondaryLabel}&gt;`;
+	const text = `${htmlToTooltipText(rangeText)} <${shapeLabel} ${secondaryLabel}>`;
+	const html = `${rangeText} &lt;${escapeHtml(shapeLabel)} ${escapeHtml(secondaryLabel)}&gt;`;
+	const tooltip = [
+		"Portée :",
+		`${rangeTypeLabel} : ${tooltipParts.join(", ")}`,
+		`Zone : ${shapeLabel} ${secondaryLabel}`,
+	].join("\n");
+	return {
+		text,
+		html: tooltipHtmlSpan({ html, tooltip }),
+		tooltip: `${rangeTypeLabel} : ${tooltipParts.join(", ")}\nZone : ${shapeLabel} ${secondaryLabel}`,
+	};
 };
 
 const buildActionRangeSummary = (actionData, config) => {
 	const rangeType = String(actionData?.range_type ?? "ranged");
 	const rangeTypeLabel = config.range_types?.[rangeType] ?? rangeType;
 	const rangeSummary = buildRangeDetailSummary(actionData, config);
+	const typeHtml = tooltipSpan({
+		text: rangeTypeLabel,
+		tooltip: `Type de portée :\n${rangeTypeLabel}`,
+	});
 
-	if (!rangeSummary) return rangeTypeLabel;
-	return `${rangeTypeLabel} : ${rangeSummary}`;
+	if (!rangeSummary) return { text: rangeTypeLabel, html: typeHtml };
+	return {
+		text: `${rangeTypeLabel} : ${rangeSummary.text}`,
+		html: `${typeHtml} : ${rangeSummary.html}`,
+		tooltip: `${rangeTypeLabel} : ${rangeSummary.tooltip}`,
+	};
 };
 
-const buildDamageFormulaSummary = (item, formulas) => {
-	const damageParts = formulas
-		.map((formulaData) => {
-			const formulaText = String(formulaData?.formula ?? "").trim();
-			const statKey = String(formulaData?.stat ?? "none");
-			if (!formulaText && statKey === "none") return "";
+const buildDamageFormulaEntry = (item, formulaData, config) => {
+	const formulaText = String(formulaData?.formula ?? "").trim();
+	const statKey = String(formulaData?.stat ?? "none");
+	if (!formulaText && statKey === "none") return null;
 
-			if (statKey === "none") return formulaText;
+	const effect = String(formulaData?.effect ?? "damage").trim() || "damage";
+	const type = String(formulaData?.type ?? "none").trim() || "none";
+	const statLabel = getActionStatLabel(config, statKey);
+	const typeLabel = String(config.all_damage_types?.[type] ?? type).trim() || "?";
+	const effectLabel = DAMAGE_EFFECT_LABELS[effect] ?? effect;
+	let text = formulaText;
+	let detailFormula = formulaText;
 
-			const statBonus = getActorStatValue(item, statKey);
-			const statText = formatSignedNumber(statBonus);
-			if (!formulaText) return statText;
-			return `${formulaText}${statText}`;
-		})
+	if (statKey !== "none") {
+		const statBonus = getActorStatValue(item, statKey);
+		const statText = formatSignedNumber(statBonus);
+		text = formulaText ? `${formulaText}${statText}` : statText;
+		detailFormula = formulaText ? `${formulaText} + ${statLabel}` : statLabel;
+	}
+
+	const detailLine = [detailFormula, effectLabel, type === "none" ? "" : typeLabel.toLowerCase()]
 		.filter(Boolean)
-		.join(" + ");
+		.join(" ");
 
-	return damageParts;
+	return {
+		text,
+		detailLine,
+		effect,
+		effectLabel,
+		type,
+		typeLabel,
+		typeClass: toDamageTypeClass(type),
+	};
 };
 
-const buildActionDamageSummary = (item, actionData) => {
+const buildDamageFormulaEffectSuffixes = (entries) => {
+	const effects = [...new Set(entries.map((entry) => entry.effect))];
+	const hasMultipleEffects = effects.length > 1;
+	if (!hasMultipleEffects) {
+		return new Map([[entries.length - 1, DAMAGE_EFFECT_LABELS[effects[0]] ?? effects[0]]]);
+	}
+
+	const suffixes = new Map();
+	for (let index = 0; index < entries.length; index += 1) {
+		const currentEffect = entries[index]?.effect;
+		const nextEffect = entries[index + 1]?.effect;
+		if (currentEffect === nextEffect) continue;
+		suffixes.set(index, DAMAGE_EFFECT_ABBR[currentEffect] ?? currentEffect);
+	}
+
+	return suffixes;
+};
+
+const buildDamageFormulaSummary = (item, formulas, config) => {
+	const entries = formulas
+		.map((formulaData) => buildDamageFormulaEntry(item, formulaData, config))
+		.filter(Boolean);
+
+	if (!entries.length) {
+		return {
+			html: "",
+			tooltip: "",
+		};
+	}
+
+	const effectSuffixes = buildDamageFormulaEffectSuffixes(entries);
+	const html = entries
+		.map((entry, index) => {
+			const suffix = effectSuffixes.get(index);
+			const suffixHtml = suffix
+				? ` <span class="embedded-actions__damage-effect">${escapeHtml(suffix)}</span>`
+				: "";
+			const tooltip = entry.detailLine;
+			return [
+				`<span class="embedded-actions__damage-formula color-${entry.typeClass}"${tooltipAttrs(tooltip)}>`,
+				escapeHtml(entry.text),
+				"</span>",
+				suffixHtml,
+			].join("");
+		})
+		.join(" + ");
+	const tooltip = entries.map((entry) => entry.detailLine).join("\n");
+
+	return { html, tooltip };
+};
+
+const buildActionDamageSummary = (item, actionData, config) => {
 	if (!actionData?.jdd?.enabled) return "";
 
 	const formulas = Array.isArray(actionData?.jdd?.damage_formulas)
 		? actionData.jdd.damage_formulas
 		: [];
-	const damageParts = buildDamageFormulaSummary(item, formulas);
+	const damageParts = buildDamageFormulaSummary(item, formulas, config);
 
-	return damageParts ? `JdD ${damageParts}` : "JdD";
+	return {
+		html: damageParts.html
+			? `${tooltipSpan({ text: "JdD", tooltip: `JdD :\n${damageParts.tooltip}` })} ${damageParts.html}`
+			: tooltipSpan({ text: "JdD", tooltip: "JdD :" }),
+		text: damageParts.html ? `JdD ${htmlToTooltipText(damageParts.html)}` : "JdD",
+		tooltip: damageParts.tooltip ? `JdD :\n${damageParts.tooltip}` : "JdD :",
+	};
 };
 
 const buildSavedDamageSummary = (item, actionData) => {
@@ -351,12 +559,12 @@ const buildSavedDamageSummary = (item, actionData) => {
 const buildActionRightSummaryRows = (actionData) => {
 	const rows = [];
 	const requirementSummary = buildActionRequirementSummary(actionData);
-	if (requirementSummary) rows.push(requirementSummary);
+	if (requirementSummary) rows.push(makeSummaryRow(requirementSummary, `Prérequis :\n${requirementSummary}`));
 
 	const cooldownSummary = buildActionCdSummary(actionData);
 	const usesSummary = buildActionUsesSummary(actionData);
 	const costRow = [cooldownSummary, usesSummary].filter(Boolean).join(", ");
-	if (costRow) rows.push(costRow);
+	if (costRow) rows.push(makeSummaryRow(costRow));
 
 	return rows;
 };
@@ -364,16 +572,33 @@ const buildActionRightSummaryRows = (actionData) => {
 const buildEmbeddedActionDetailRows = (item, actionData, config) => {
 	const coreSummary = buildActionCoreSummary(item, actionData, config);
 	const concentrationSummary = buildActionConcentrationSummary(actionData, config);
-	const detailRow1 = [coreSummary, concentrationSummary].filter(Boolean).join(" | ");
+	const detailRow1Parts = [coreSummary?.text, concentrationSummary?.text].filter(Boolean);
+	const detailRow1HtmlParts = [coreSummary?.html, concentrationSummary?.html].filter(Boolean);
+	const detailRow1 = detailRow1Parts.join(" | ");
+	const detailRow1Html = detailRow1HtmlParts.join(" | ");
 
+	const rangeSummary = buildActionRangeSummary(actionData, config);
+	const damageSummary = buildActionDamageSummary(item, actionData, config);
+	const savedDamageSummary = buildSavedDamageSummary(item, actionData);
 	const detailRow2Parts = [
-		buildActionRangeSummary(actionData, config),
-		buildActionDamageSummary(item, actionData),
-		buildSavedDamageSummary(item, actionData),
+		rangeSummary?.text,
+		damageSummary?.text,
+		savedDamageSummary ? htmlToTooltipText(savedDamageSummary) : "",
+	].filter(Boolean);
+	const detailRow2HtmlParts = [
+		rangeSummary?.html,
+		damageSummary?.html,
+		savedDamageSummary,
 	].filter(Boolean);
 
 	const detailRow2 = detailRow2Parts.join(" | ");
-	return { detailRow1, detailRow2 };
+	const detailRow2Html = detailRow2HtmlParts.join(" | ");
+	return {
+		detailRow1,
+		detailRow1Html,
+		detailRow2,
+		detailRow2Html,
+	};
 };
 
 export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
@@ -391,11 +616,12 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 	});
 	const defaultShorthand = getDefaultEmbeddedActionShorthand(actionName);
 	const summaryRows = buildActionRightSummaryRows(actionData);
-	const { detailRow1, detailRow2 } = buildEmbeddedActionDetailRows(
-		item,
-		actionData,
-		config,
-	);
+	const { detailRow1, detailRow1Html, detailRow2, detailRow2Html } =
+		buildEmbeddedActionDetailRows(item, actionData, config);
+	const effectText = htmlToPlainText(actionData?.effect?.text ?? "", {
+		preserveLineBreaks: true,
+	});
+	const effectTooltipHtml = formatTooltipHtml(`Effet :\n${effectText}`);
 
 	const hasPrimaryRolls =
 		actionData?.jdt?.enabled === true ||
@@ -408,6 +634,10 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 		defaultName,
 		defaultShorthand,
 		displayName: trimmedName || defaultName,
+		displayNameTooltip: trimmedName || defaultName,
+		effectText,
+		effectTooltipHtml,
+		hasEffectText: effectText.length > 0,
 		displayShorthand: formatEmbeddedActionShorthand(resolvedShorthand),
 		displayShorthandHtml: renderEmbeddedActionShorthand(resolvedShorthand),
 		hasSource,
@@ -420,7 +650,9 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 		hasAnyRolls: hasPrimaryRolls || hasConcentrationRoll,
 		summaryRows,
 		detailRow1,
+		detailRow1Html,
 		detailRow2,
+		detailRow2Html,
 	};
 };
 

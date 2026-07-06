@@ -6,6 +6,7 @@ import { bindItemSheetInteractions, restoreItemSheetTabs } from "./item/bindings
 import { PRIMARY_TAB_GROUP } from "./item/constants.mjs";
 import { buildItemSheetContext } from "./item/context/index.mjs";
 import { applyReadonlyItemSections, canManageItemSheetRules } from "./item/permissions.mjs";
+import { bindImageEditContextMenu } from "./imageEdit.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
@@ -83,6 +84,7 @@ export default class NalfaItemSheet extends HandlebarsApplicationMixin(ItemSheet
 		}
 
 		bindItemSheetInteractions(this);
+		bindImageEditContextMenu(this);
 	}
 
 	async _onDrop(event, data) {

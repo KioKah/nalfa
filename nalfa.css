@@ -472,20 +472,24 @@
   background-color: var(--background);
   background-blend-mode: multiply;
   --nalfa-scrollbar-comp: 12px;
+  position: relative;
   display: flex;
   flex-direction: column;
   max-height: 850px;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   scrollbar-gutter: stable;
   padding-inline-start: var(--nalfa-padding);
   padding-inline-end: max(0px, calc(var(--nalfa-padding) - var(--nalfa-scrollbar-comp)));
 }
 .nalfa.sheet.actor-sheet .sheet-body {
-  position: relative;
+  position: static;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   gap: var(--nalfa-padding);
+  min-height: 0;
+  overflow: hidden;
 }
 .nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--edit,
 .nalfa.sheet.actor-sheet .sheet-body[data-value-mode="values"] .value-mode--base,
@@ -502,6 +506,36 @@
 }
 .nalfa.sheet.actor-sheet .sheet-section {
   margin-bottom: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .tab {
+  display: none;
+  min-height: 0;
+}
+.nalfa.sheet.actor-sheet .tab.active {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.nalfa.sheet.actor-sheet .tab[data-tab="actions"].active,
+.nalfa.sheet.actor-sheet .tab[data-tab="inventory"].active {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: hidden;
+}
+.nalfa.sheet.actor-sheet .array-action-btn {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  padding: 0;
+  line-height: calc(16px - 2px);
+  border-style: none;
+}
+.nalfa.sheet.actor-sheet .array-action-btn i {
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
 }
 .nalfa.sheet.actor-sheet .field,
 .nalfa.sheet.actor-sheet .field--inline {
@@ -1161,16 +1195,676 @@
   text-align: center;
   border: 1px solid color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 75%);
 }
-.nalfa.sheet.actor-sheet .value-mode-toggle {
-  position: sticky;
-  bottom: 0;
+.nalfa.sheet.actor-sheet .actor-actions {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  min-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-none {
+  color: var(--nalfa-color-text-dark-0);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-tran {
+  color: var(--nalfa-color-type-phys-tran);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-perf {
+  color: var(--nalfa-color-type-phys-perf);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-cont {
+  color: var(--nalfa-color-type-phys-cont);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-soni {
+  color: var(--nalfa-color-type-phys-soni);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-sang {
+  color: var(--nalfa-color-type-phys-sang);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-feu {
+  color: var(--nalfa-color-type-elem-feu);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-eau {
+  color: var(--nalfa-color-type-elem-eau);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-terr {
+  color: var(--nalfa-color-type-elem-terr);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-air {
+  color: var(--nalfa-color-type-elem-air);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-natu {
+  color: var(--nalfa-color-type-elem-natu);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-givr {
+  color: var(--nalfa-color-type-elem-givr);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-foud {
+  color: var(--nalfa-color-type-elem-foud);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-radt {
+  color: var(--nalfa-color-type-magi-radt);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-obsc {
+  color: var(--nalfa-color-type-magi-obsc);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-arca {
+  color: var(--nalfa-color-type-magi-arca);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-chao {
+  color: var(--nalfa-color-type-magi-chao);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-necr {
+  color: var(--nalfa-color-type-magi-necr);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-psyc {
+  color: var(--nalfa-color-type-magi-psyc);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-arme {
+  color: var(--nalfa-color-type-spec-arme);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-soin {
+  color: var(--nalfa-color-type-spec-soin);
+}
+.nalfa.sheet.actor-sheet .actor-actions .color-abso {
+  color: var(--nalfa-color-type-spec-abso);
+}
+.nalfa.sheet.actor-sheet .actor-inventory {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  min-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__equipment {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--nalfa-gap-text);
+  flex: 0 0 auto;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 6px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--background), transparent 55%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot--conflict {
+  border-color: #b71c1c;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #b71c1c, transparent 45%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot-label {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.78;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot-items {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 12px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot-items span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot-lost {
+  font-weight: 700;
+  color: #b71c1c;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__slot-items--empty {
+  opacity: 0.58;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  align-items: end;
+  gap: var(--nalfa-gap-text);
+  padding-bottom: var(--nalfa-gap-text);
+  flex: 0 0 auto;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__search-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__search,
+.nalfa.sheet.actor-sheet .actor-inventory__select {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 2px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__search input,
+.nalfa.sheet.actor-sheet .actor-inventory__select select {
+  min-height: 26px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__count {
+  font-size: 12px;
+  opacity: 0.78;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__results {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  gap: var(--nalfa-gap-text);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__group + .actor-inventory__group {
+  margin-top: calc(var(--nalfa-padding) / 2);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__group-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nalfa-padding);
+  padding-inline: 2px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__group-title {
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__group-count {
+  font-size: 12px;
+  opacity: 0.72;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__group hr {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 2px solid color-mix(in srgb, var(--color-text-primary), transparent 45%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__row {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  padding: var(--nalfa-padding);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 50%);
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 170px;
+  align-items: center;
+  gap: var(--nalfa-gap-text);
+  margin-bottom: 0;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__row--equipped {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--color-text-primary), transparent 35%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__row--conflict {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, #b71c1c, transparent 20%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__row--equipped.actor-inventory__row--conflict {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--color-text-primary), transparent 35%), inset 6px 0 0 color-mix(in srgb, #b71c1c, transparent 20%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__icon {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--background), transparent 25%);
+  overflow: hidden;
+  cursor: pointer;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__main {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__line {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: calc(var(--nalfa-padding) / 2);
+  gap: var(--nalfa-padding);
+  min-width: 0;
 }
-.nalfa.sheet.actor-sheet .value-mode-toggle__label {
+.nalfa.sheet.actor-sheet .actor-inventory__line--title {
+  justify-content: space-between;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__line--meta {
+  font-size: 12px;
+  opacity: 0.78;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__name {
+  min-width: 0;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__type {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.74;
+  text-transform: uppercase;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__lock {
+  font-weight: 700;
+  color: #b71c1c;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__equip {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__equip-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__equip-label,
+.nalfa.sheet.actor-sheet .actor-inventory__not-equipable {
+  font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__equip select {
+  height: calc(18px + 9px);
+  width: calc((1px * 15 + 8px) * (18 / 2));
+  border-radius: 3px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+  max-width: 150px;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__not-equipable {
+  opacity: 0.58;
+}
+.nalfa.sheet.actor-sheet .actor-inventory__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nalfa-padding);
+  flex: 0 0 auto;
+  padding: 3px 5px 0;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.78;
+  border-top: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 78%);
+}
+.nalfa.sheet.actor-sheet .actor-inventory__footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .actor-actions__controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto auto;
+  align-items: end;
+  gap: var(--nalfa-gap-text);
+  padding-bottom: var(--nalfa-gap-text);
+  flex: 0 0 auto;
+}
+.nalfa.sheet.actor-sheet .actor-actions__search-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .actor-actions__search,
+.nalfa.sheet.actor-sheet .actor-actions__select {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 2px;
+}
+.nalfa.sheet.actor-sheet .actor-actions__search input,
+.nalfa.sheet.actor-sheet .actor-actions__select select {
+  min-height: 26px;
+}
+.nalfa.sheet.actor-sheet .actor-actions__count {
+  font-size: 12px;
+  opacity: 0.78;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .actor-actions__results {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  gap: var(--nalfa-gap-text);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+.nalfa.sheet.actor-sheet .actor-actions__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .actor-actions__group + .actor-actions__group {
+  margin-top: calc(var(--nalfa-padding) / 2);
+}
+.nalfa.sheet.actor-sheet .actor-actions__group-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nalfa-padding);
+  padding-inline: 2px;
+}
+.nalfa.sheet.actor-sheet .actor-actions__group-title {
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .actor-actions__group-count {
+  font-size: 12px;
+  opacity: 0.72;
+}
+.nalfa.sheet.actor-sheet .actor-actions__group hr {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 2px solid color-mix(in srgb, var(--color-text-primary), transparent 45%);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-gap-text);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__row {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  padding: var(--nalfa-padding);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 50%);
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--nalfa-gap-text);
+  margin-bottom: 0;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__icon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--background), transparent 25%);
+  overflow: hidden;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__shorthand {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  display: block;
+  max-width: calc(100% - 8px);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 0.88;
+  max-height: calc(2 * 0.88em);
+  color: #fff;
+  text-align: left;
+  white-space: pre;
+  overflow: hidden;
+  text-shadow: 0 0 2px #000000, 0 0 7px rgba(0, 0, 0, 0.98), 0 0 11px rgba(0, 0, 0, 0.9), 1px 1px 0 rgba(0, 0, 0, 0.95), -1px 1px 0 rgba(0, 0, 0, 0.95), 1px -1px 0 rgba(0, 0, 0, 0.95), -1px -1px 0 rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__line {
+  display: flex;
+  align-items: center;
+  gap: var(--nalfa-padding);
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__line--title {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__line--meta {
+  padding-top: 2px;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__title-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__name-label {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-summary,
+.nalfa.sheet.actor-sheet .embedded-actions__cost-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__effect-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0.82;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__damage-formula {
+  font-weight: 600;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__damage-effect {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.86;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-option-sep,
+.nalfa.sheet.actor-sheet .embedded-actions__cost-condition-mark {
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.85;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  line-height: 1;
+  min-width: 16px;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token i {
+  font-size: 16px;
+  line-height: 1;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--main {
+  color: var(--nalfa-color-action-main);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--bonus {
+  color: var(--nalfa-color-action-bonus);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--reaction {
+  color: var(--nalfa-color-action-reaction);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--concentration {
+  color: var(--nalfa-color-action-concentration);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--movement {
+  color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token-amount,
+.nalfa.sheet.actor-sheet .embedded-actions__summary {
+  font-size: 11px;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-note {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__summary-stack {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__summary,
+.nalfa.sheet.actor-sheet .embedded-actions__secondary {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__summary {
+  opacity: 0.8;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__secondary {
+  font-size: 12px;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__secondary--top {
+  opacity: 0.85;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__secondary--bottom {
+  opacity: 0.92;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__reach-disadvantage {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 12px;
+  font-size: 11px;
+  line-height: 1;
+  vertical-align: middle;
+}
+.nalfa.sheet.actor-sheet .embedded-actions__reach-disadvantage-base {
+  font-size: 11px;
+  line-height: 1;
+  transform: translateY(1px);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__reach-disadvantage-alert {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  line-height: 1;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__buttons {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+@media (max-width: 680px) {
+  .nalfa.sheet.actor-sheet .actor-inventory__controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .nalfa.sheet.actor-sheet .actor-inventory__search {
+    grid-column: 1 / -1;
+  }
+  .nalfa.sheet.actor-sheet .actor-inventory__row {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .nalfa.sheet.actor-sheet .actor-inventory__equip {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+  .nalfa.sheet.actor-sheet .actor-actions__controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .nalfa.sheet.actor-sheet .actor-actions__search {
+    grid-column: 1 / -1;
+  }
+  .nalfa.sheet.actor-sheet .embedded-actions__row {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+  }
+  .nalfa.sheet.actor-sheet .embedded-actions__icon {
+    width: 52px;
+    height: 52px;
+  }
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle {
+  position: absolute;
+  top: 164px;
+  right: -6px;
+  z-index: 1000;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--background), transparent 18%);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  margin: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0.68;
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle__button input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle__button i {
+  font-size: 11px;
+  line-height: 1;
+}
+.nalfa.sheet.actor-sheet .value-mode-toggle__button:hover,
+.nalfa.sheet.actor-sheet .value-mode-toggle__button:has(input:checked) {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-text-primary), transparent 86%);
 }
 .nalfa.sheet.item-sheet,
 .nalfa.sheet.item,
@@ -2041,6 +2735,138 @@
   flex-direction: column;
   gap: calc(var(--nalfa-padding) / 2);
 }
+.nalfa.sheet.item-sheet .embedded-actions .color-none,
+.nalfa.sheet.item .embedded-actions .color-none,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-none,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-none {
+  color: var(--nalfa-color-text-dark-0);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-tran,
+.nalfa.sheet.item .embedded-actions .color-tran,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-tran,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-tran {
+  color: var(--nalfa-color-type-phys-tran);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-perf,
+.nalfa.sheet.item .embedded-actions .color-perf,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-perf,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-perf {
+  color: var(--nalfa-color-type-phys-perf);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-cont,
+.nalfa.sheet.item .embedded-actions .color-cont,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-cont,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-cont {
+  color: var(--nalfa-color-type-phys-cont);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-soni,
+.nalfa.sheet.item .embedded-actions .color-soni,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-soni,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-soni {
+  color: var(--nalfa-color-type-phys-soni);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-sang,
+.nalfa.sheet.item .embedded-actions .color-sang,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-sang,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-sang {
+  color: var(--nalfa-color-type-phys-sang);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-feu,
+.nalfa.sheet.item .embedded-actions .color-feu,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-feu,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-feu {
+  color: var(--nalfa-color-type-elem-feu);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-eau,
+.nalfa.sheet.item .embedded-actions .color-eau,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-eau,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-eau {
+  color: var(--nalfa-color-type-elem-eau);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-terr,
+.nalfa.sheet.item .embedded-actions .color-terr,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-terr,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-terr {
+  color: var(--nalfa-color-type-elem-terr);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-air,
+.nalfa.sheet.item .embedded-actions .color-air,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-air,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-air {
+  color: var(--nalfa-color-type-elem-air);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-natu,
+.nalfa.sheet.item .embedded-actions .color-natu,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-natu,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-natu {
+  color: var(--nalfa-color-type-elem-natu);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-givr,
+.nalfa.sheet.item .embedded-actions .color-givr,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-givr,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-givr {
+  color: var(--nalfa-color-type-elem-givr);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-foud,
+.nalfa.sheet.item .embedded-actions .color-foud,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-foud,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-foud {
+  color: var(--nalfa-color-type-elem-foud);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-radt,
+.nalfa.sheet.item .embedded-actions .color-radt,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-radt,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-radt {
+  color: var(--nalfa-color-type-magi-radt);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-obsc,
+.nalfa.sheet.item .embedded-actions .color-obsc,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-obsc,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-obsc {
+  color: var(--nalfa-color-type-magi-obsc);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-arca,
+.nalfa.sheet.item .embedded-actions .color-arca,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-arca,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-arca {
+  color: var(--nalfa-color-type-magi-arca);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-chao,
+.nalfa.sheet.item .embedded-actions .color-chao,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-chao,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-chao {
+  color: var(--nalfa-color-type-magi-chao);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-necr,
+.nalfa.sheet.item .embedded-actions .color-necr,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-necr,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-necr {
+  color: var(--nalfa-color-type-magi-necr);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-psyc,
+.nalfa.sheet.item .embedded-actions .color-psyc,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-psyc,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-psyc {
+  color: var(--nalfa-color-type-magi-psyc);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-arme,
+.nalfa.sheet.item .embedded-actions .color-arme,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-arme,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-arme {
+  color: var(--nalfa-color-type-spec-arme);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-soin,
+.nalfa.sheet.item .embedded-actions .color-soin,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-soin,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-soin {
+  color: var(--nalfa-color-type-spec-soin);
+}
+.nalfa.sheet.item-sheet .embedded-actions .color-abso,
+.nalfa.sheet.item .embedded-actions .color-abso,
+.nalfa.sheet.embedded-action-editor .embedded-actions .color-abso,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions .color-abso {
+  color: var(--nalfa-color-type-spec-abso);
+}
 .nalfa.sheet.item-sheet .embedded-actions__head,
 .nalfa.sheet.item .embedded-actions__head,
 .nalfa.sheet.embedded-action-editor .embedded-actions__head,
@@ -2162,7 +2988,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
 }
 .nalfa.sheet.item-sheet .embedded-actions__title-main,
@@ -2184,6 +3010,32 @@
   gap: 4px;
   flex: 0 0 auto;
   white-space: nowrap;
+}
+.nalfa.sheet.item-sheet .embedded-actions__effect-indicator,
+.nalfa.sheet.item .embedded-actions__effect-indicator,
+.nalfa.sheet.embedded-action-editor .embedded-actions__effect-indicator,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__effect-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0.82;
+}
+.nalfa.sheet.item-sheet .embedded-actions__damage-formula,
+.nalfa.sheet.item .embedded-actions__damage-formula,
+.nalfa.sheet.embedded-action-editor .embedded-actions__damage-formula,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__damage-formula {
+  font-weight: 600;
+}
+.nalfa.sheet.item-sheet .embedded-actions__damage-effect,
+.nalfa.sheet.item .embedded-actions__damage-effect,
+.nalfa.sheet.embedded-action-editor .embedded-actions__damage-effect,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__damage-effect {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.86;
 }
 .nalfa.sheet.item-sheet .embedded-actions__cost-option,
 .nalfa.sheet.item .embedded-actions__cost-option,

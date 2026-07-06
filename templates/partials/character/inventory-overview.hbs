@@ -1,0 +1,136 @@
+<section class="actor-inventory sheet-section">
+  <div class="actor-inventory__equipment">
+    {{#each inventoryBrowser.equipmentSlots as |slot|}}
+      <article class="actor-inventory__slot {{slot.cssClass}}">
+        <span class="actor-inventory__slot-label">{{slot.label}}</span>
+        {{#if slot.hasOccupants}}
+          <span class="actor-inventory__slot-items">
+            {{#if slot.hasWinners}}
+              <span>{{slot.winnerNames}}</span>
+            {{/if}}
+            {{#if slot.hasLosers}}
+              <span class="actor-inventory__slot-lost">{{slot.loserNames}}</span>
+            {{/if}}
+          </span>
+        {{else}}
+          <span class="actor-inventory__slot-items actor-inventory__slot-items--empty">Libre</span>
+        {{/if}}
+      </article>
+    {{/each}}
+  </div>
+
+  <div class="actor-inventory__controls">
+    <label class="actor-inventory__search field">
+      <span class="actor-inventory__search-head">
+        <span class="field__label">Recherche</span>
+        <span class="actor-inventory__count">{{inventoryBrowser.countLabel}}</span>
+      </span>
+      <input
+        type="search"
+        value="{{inventoryBrowser.query}}"
+        placeholder="Nom, type, équipement..."
+        autocomplete="off"
+        data-inventory-browser-control
+        data-inventory-browser-field="query"
+      />
+    </label>
+    <label class="actor-inventory__select field">
+      <span class="field__label">Trier</span>
+      <select data-inventory-browser-control data-inventory-browser-field="sort">
+        {{#each inventoryBrowser.sortOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>
+            {{option.label}}
+          </option>
+        {{/each}}
+      </select>
+    </label>
+    <label class="actor-inventory__select field">
+      <span class="field__label">Grouper</span>
+      <select data-inventory-browser-control data-inventory-browser-field="group">
+        {{#each inventoryBrowser.groupOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>
+            {{option.label}}
+          </option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+
+  <div class="actor-inventory__results">
+    {{#if inventoryBrowser.hasVisibleItems}}
+      {{#each inventoryBrowser.groups as |group|}}
+        <section class="actor-inventory__group">
+          {{#if @root.inventoryBrowser.isGrouped}}
+            <header class="actor-inventory__group-header">
+              <span class="actor-inventory__group-title">{{group.label}}</span>
+              <span class="actor-inventory__group-count">{{group.count}}</span>
+            </header>
+            <hr />
+          {{/if}}
+          <div class="actor-inventory__list">
+            {{#each group.rows as |row|}}
+              <article class="actor-inventory__row {{row.cssClass}}">
+                <button
+                  class="actor-inventory__icon"
+                  type="button"
+                  data-action="open-inventory-item"
+                  data-item-uuid="{{row.itemUuid}}"
+                  data-tooltip="Ouvrir la fiche d'objet"
+                >
+                  <img src="{{row.itemImage}}" alt="{{row.name}}" />
+                </button>
+
+                <div class="actor-inventory__main">
+                  <div class="actor-inventory__line actor-inventory__line--title">
+                    <span class="actor-inventory__name">{{row.name}}</span>
+                    <span class="actor-inventory__type">{{row.typeLabel}}</span>
+                  </div>
+                  <div class="actor-inventory__line actor-inventory__line--meta">
+                    <span>Qté. {{row.quantity}}</span>
+                    <span>Poids {{compactNumber row.totalWeight 5}} {{{weightIcon}}}</span>
+                    {{#if row.isEquipLocked}}
+                      <span class="actor-inventory__lock">Maudit</span>
+                    {{/if}}
+                  </div>
+                </div>
+
+                <div class="actor-inventory__equip">
+                  {{#if row.canEquip}}
+                    <label class="actor-inventory__equip-field">
+                      <span class="actor-inventory__equip-label">Équipé</span>
+                      <select
+                        data-action="change-inventory-equipped-slot"
+                        data-item-uuid="{{row.itemUuid}}"
+                        {{#unless row.canChangeEquippedSlot}}disabled{{/unless}}
+                      >
+                        {{#each row.equippedOptions as |slot|}}
+                          <option
+                            value="{{slot.key}}"
+                            {{#if (eq slot.key ../equippedSlot)}}selected{{/if}}
+                          >
+                            {{slot.label}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </label>
+                  {{else}}
+                    <span class="actor-inventory__not-equipable">Non équipable</span>
+                  {{/if}}
+                </div>
+              </article>
+            {{/each}}
+          </div>
+        </section>
+      {{/each}}
+    {{else if inventoryBrowser.hasItems}}
+      <p class="hint actor-inventory__empty">Aucun objet ne correspond à la recherche.</p>
+    {{else}}
+      <p class="hint actor-inventory__empty">Aucun objet physique.</p>
+    {{/if}}
+  </div>
+
+  <footer class="actor-inventory__footer">
+    <span>{{inventoryBrowser.equippedCount}} équipés</span>
+    <span>Poids total {{compactNumber inventoryBrowser.totalWeight 5}} {{{weightIcon}}}</span>
+  </footer>
+</section>

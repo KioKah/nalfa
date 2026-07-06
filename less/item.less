@@ -566,6 +566,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: calc(var(--nalfa-padding) / 2);
+		.types-set-color-property(color);
 
 		&__head {
 			display: inline-flex;
@@ -669,7 +670,7 @@
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			flex: 1 1 auto;
+			flex: 0 1 auto;
 			min-width: 0;
 		}
 
@@ -687,6 +688,26 @@
 			gap: 4px;
 			flex: 0 0 auto;
 			white-space: nowrap;
+		}
+
+		&__effect-indicator {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: 0 0 auto;
+			font-size: 13px;
+			line-height: 1;
+			opacity: 0.82;
+		}
+
+		&__damage-formula {
+			font-weight: 600;
+		}
+
+		&__damage-effect {
+			font-size: 11px;
+			font-weight: 600;
+			opacity: 0.86;
 		}
 
 		&__cost-option {

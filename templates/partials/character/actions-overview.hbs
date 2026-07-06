@@ -1,0 +1,74 @@
+<section class="actor-actions sheet-section embedded-actions">
+  <div class="actor-actions__controls">
+    <label class="actor-actions__search field">
+      <span class="actor-actions__search-head">
+        <span class="field__label">Recherche</span>
+        <span class="actor-actions__count">{{actionBrowser.countLabel}}</span>
+      </span>
+      <input
+        type="search"
+        value="{{actionBrowser.query}}"
+        placeholder="Nom, source, coût..."
+        autocomplete="off"
+        data-action-browser-control
+        data-action-browser-field="query"
+      />
+    </label>
+    <label class="actor-actions__select field">
+      <span class="field__label">Trier</span>
+      <select data-action-browser-control data-action-browser-field="sort">
+        {{#each actionBrowser.sortOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>
+            {{option.label}}
+          </option>
+        {{/each}}
+      </select>
+    </label>
+    <label class="actor-actions__select field">
+      <span class="field__label">Grouper</span>
+      <select data-action-browser-control data-action-browser-field="group">
+        {{#each actionBrowser.groupOptions as |option|}}
+          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>
+            {{option.label}}
+          </option>
+        {{/each}}
+      </select>
+    </label>
+  </div>
+
+  <div class="actor-actions__results">
+    {{#if actionBrowser.hasVisibleActions}}
+      {{#each actionBrowser.groups as |group|}}
+        <section class="actor-actions__group">
+          {{#if @root.actionBrowser.isGrouped}}
+            <header class="actor-actions__group-header">
+              <span class="actor-actions__group-title">{{group.label}}</span>
+              <span class="actor-actions__group-count">{{group.count}}</span>
+            </header>
+            <hr />
+          {{/if}}
+          <div class="embedded-actions__list actor-actions__list">
+            {{#each group.actions as |actorAction|}}
+              {{>
+                "systems/nalfa/templates/partials/item/integrated-action.hbs"
+                embeddedAction=actorAction.embeddedAction
+                item=actorAction.item
+                itemImage=actorAction.itemImage
+                showIcon=true
+                enableDrag=false
+                readonly=true
+                rollable=@root.rollable
+                isEditable=@root.isEditable
+                showSourceItemControl=true
+              }}
+            {{/each}}
+          </div>
+        </section>
+      {{/each}}
+    {{else if actionBrowser.hasActions}}
+      <p class="hint embedded-actions__empty">Aucune action ne correspond à la recherche.</p>
+    {{else}}
+      <p class="hint embedded-actions__empty">Aucune action.</p>
+    {{/if}}
+  </div>
+</section>

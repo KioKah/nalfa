@@ -146,10 +146,7 @@ const getSummaryBucketKey = (result) => {
 	return "damage";
 };
 
-const getDefaultResistanceCoefficient = (damageTypeKey) => {
-	const normalizedKey = String(damageTypeKey ?? "none").trim() || "none";
-	return normalizedKey === "soin" || normalizedKey === "abso" ? -1 : 1;
-};
+const getDefaultResistanceCoefficient = () => 1;
 
 const formatSignedSummaryAmount = (value, unit) => {
 	const number = Number(value ?? 0);

@@ -1,4 +1,22 @@
 <section class="sheet-body" data-value-mode="{{sysData.ui.valueMode}}">
+  <div class="tab {{tabs.actions.cssClass}}" data-group="primary" data-tab="actions">
+    {{>
+      "systems/nalfa/templates/partials/character/actions-overview.hbs"
+      actorActions=actorActions
+      rollable=rollable
+      isEditable=isEditable
+    }}
+  </div>
+
+  <div class="tab {{tabs.inventory.cssClass}}" data-group="primary" data-tab="inventory">
+    {{>
+      "systems/nalfa/templates/partials/character/inventory-overview.hbs"
+      inventoryRows=inventoryRows
+      inventoryBrowser=inventoryBrowser
+      isEditable=isEditable
+    }}
+  </div>
+
   <div class="tab {{tabs.bio.cssClass}}" data-group="primary" data-tab="bio">
     {{>
       "systems/nalfa/templates/partials/character/bio-overview.hbs"

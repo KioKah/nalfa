@@ -64,13 +64,28 @@
 						(<i class="fa-light fa-note-sticky"></i>)
 					</span>
 				{{/if}}
-				<span class="embedded-actions__name-label">{{embeddedAction.displayName}}</span>
+				<span class="embedded-actions__name-label" data-tooltip="{{embeddedAction.displayNameTooltip}}">
+					{{embeddedAction.displayName}}
+				</span>
+				{{#if embeddedAction.hasEffectText}}
+					<span
+						class="embedded-actions__effect-indicator"
+						data-tooltip="{{{embeddedAction.effectTooltipHtml}}}"
+						data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+					>
+						<i class="fa-light fa-sparkles"></i>
+					</span>
+				{{/if}}
 			</div>
 			{{#if embeddedAction.summaryRows.length}}
 				<div class="embedded-actions__summary-stack">
 					{{#each embeddedAction.summaryRows as |summaryRow|}}
-						<span class="embedded-actions__summary">
-							{{summaryRow}}
+						<span
+							class="embedded-actions__summary"
+							data-tooltip="{{{summaryRow.tooltipHtml}}}"
+							data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+						>
+							{{summaryRow.text}}
 						</span>
 					{{/each}}
 				</div>
@@ -79,14 +94,14 @@
 		{{#if embeddedAction.detailRow1}}
 			<div class="embedded-actions__line embedded-actions__line--meta">
 				<span class="embedded-actions__secondary embedded-actions__secondary--top">
-					{{embeddedAction.detailRow1}}
+					{{{embeddedAction.detailRow1Html}}}
 				</span>
 			</div>
 		{{/if}}
 		{{#if embeddedAction.detailRow2}}
 			<div class="embedded-actions__line embedded-actions__line--meta">
 				<span class="embedded-actions__secondary embedded-actions__secondary--bottom">
-					{{{embeddedAction.detailRow2}}}
+					{{{embeddedAction.detailRow2Html}}}
 				</span>
 			</div>
 		{{/if}}
@@ -192,31 +207,80 @@
 		{{/unless}}
 		{{#if readonly}}
 			{{#if rollable}}
-				{{#if embeddedAction.hasAnyRolls}}
-				<div class="embedded-actions__buttons">
-					{{#if embeddedAction.hasConcentrationRoll}}
+				{{#if showSourceItemControl}}
+					<div class="embedded-actions__buttons">
 						<button
 							type="button"
 							class="array-action-btn"
-							data-action="use-embedded-action-concentration"
+							data-action="open-embedded-action-source"
 							data-index="{{embeddedAction.index}}"
-							data-tooltip="Lancer le JdF"
+							data-action-index="{{embeddedAction.actionIndex}}"
+							data-item-uuid="{{embeddedAction.itemUuid}}"
+							data-ref-type="{{embeddedAction.refType}}"
+							data-tooltip="Ouvrir l'objet"
 						>
-							<i class="fa-light fa-bullseye"></i>
+							<i class="fa-light fa-arrow-up-right-from-square"></i>
 						</button>
-					{{/if}}
-					{{#if embeddedAction.hasPrimaryRolls}}
-						<button
-							type="button"
-							class="array-action-btn"
-							data-action="use-embedded-action"
-							data-index="{{embeddedAction.index}}"
-							data-tooltip="Utiliser l'action"
-						>
-							<i class="fa-light fa-dice-d20"></i>
-						</button>
-					{{/if}}
-				</div>
+						{{#if embeddedAction.hasConcentrationRoll}}
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="use-embedded-action-concentration"
+								data-index="{{embeddedAction.index}}"
+								data-action-index="{{embeddedAction.actionIndex}}"
+								data-item-uuid="{{embeddedAction.itemUuid}}"
+								data-ref-type="{{embeddedAction.refType}}"
+								data-tooltip="Lancer le JdF"
+							>
+								<i class="fa-light fa-bullseye"></i>
+							</button>
+						{{/if}}
+						{{#if embeddedAction.hasPrimaryRolls}}
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="use-embedded-action"
+								data-index="{{embeddedAction.index}}"
+								data-action-index="{{embeddedAction.actionIndex}}"
+								data-item-uuid="{{embeddedAction.itemUuid}}"
+								data-ref-type="{{embeddedAction.refType}}"
+								data-tooltip="Utiliser l'action"
+							>
+								<i class="fa-light fa-dice-d20"></i>
+							</button>
+						{{/if}}
+					</div>
+				{{else if embeddedAction.hasAnyRolls}}
+					<div class="embedded-actions__buttons">
+						{{#if embeddedAction.hasConcentrationRoll}}
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="use-embedded-action-concentration"
+								data-index="{{embeddedAction.index}}"
+								data-action-index="{{embeddedAction.actionIndex}}"
+								data-item-uuid="{{embeddedAction.itemUuid}}"
+								data-ref-type="{{embeddedAction.refType}}"
+								data-tooltip="Lancer le JdF"
+							>
+								<i class="fa-light fa-bullseye"></i>
+							</button>
+						{{/if}}
+						{{#if embeddedAction.hasPrimaryRolls}}
+							<button
+								type="button"
+								class="array-action-btn"
+								data-action="use-embedded-action"
+								data-index="{{embeddedAction.index}}"
+								data-action-index="{{embeddedAction.actionIndex}}"
+								data-item-uuid="{{embeddedAction.itemUuid}}"
+								data-ref-type="{{embeddedAction.refType}}"
+								data-tooltip="Utiliser l'action"
+							>
+								<i class="fa-light fa-dice-d20"></i>
+							</button>
+						{{/if}}
+					</div>
 				{{/if}}
 			{{/if}}
 		{{/if}}
@@ -229,6 +293,9 @@
 						class="array-action-btn"
 						data-action="use-embedded-action-concentration"
 						data-index="{{embeddedAction.index}}"
+						data-action-index="{{embeddedAction.actionIndex}}"
+						data-item-uuid="{{embeddedAction.itemUuid}}"
+						data-ref-type="{{embeddedAction.refType}}"
 						data-tooltip="Lancer le JdF"
 					>
 						<i class="fa-light fa-bullseye"></i>
@@ -240,6 +307,9 @@
 						class="array-action-btn"
 						data-action="use-embedded-action"
 						data-index="{{embeddedAction.index}}"
+						data-action-index="{{embeddedAction.actionIndex}}"
+						data-item-uuid="{{embeddedAction.itemUuid}}"
+						data-ref-type="{{embeddedAction.refType}}"
 						data-tooltip="Utiliser l'action"
 					>
 						<i class="fa-light fa-dice-d20"></i>

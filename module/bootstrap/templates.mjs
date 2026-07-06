@@ -7,6 +7,8 @@ const TEMPLATE_PATHS = [
 	"systems/nalfa/templates/partials/character/combat-health-card.hbs",
 	"systems/nalfa/templates/partials/character/combat-defense-card.hbs",
 	"systems/nalfa/templates/partials/character/combat-initiative-card.hbs",
+	"systems/nalfa/templates/partials/character/actions-overview.hbs",
+	"systems/nalfa/templates/partials/character/inventory-overview.hbs",
 	"systems/nalfa/templates/partials/character/skill-row.hbs",
 	"systems/nalfa/templates/partials/character/stat-card.hbs",
 	"systems/nalfa/templates/partials/character/stats-skills.hbs",

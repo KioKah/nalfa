@@ -1,10 +1,10 @@
 # Nalfa: A Foundry VTT System
 
-This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
+This repository is a V14 Foundry Virtual Tabletop game system named `nalfa`.
 
 ## Scope
 
-- Prefer current APIs (V13) and schemas in runtime code.
+- Prefer current APIs (V14) and schemas in runtime code.
 - Development/testing project (no production compatibility requirements).
 - Do not add backward-compatibility migrations unless explicitly requested.
 - If Foundry behavior is uncertain, ask to verify against `https://foundryvtt.com/api/`.
@@ -42,6 +42,11 @@ This repository is a V13 Foundry Virtual Tabletop game system named `nalfa`.
 - `module/rolls/actions/*`: action execution prompt and hotbar/macro handling.
 - `templates/`: sheet parts and chat templates.
 - `lang/en.json`, `lang/fr.json`: localization files.
+
+## Glossary
+
+- `e-action` is discussion shorthand only for `embedded action` / action intégrée.
+- Use explicit names like `embeddedAction` in code, templates, and persisted data.
 
 ## Styling
 

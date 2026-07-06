@@ -51,7 +51,7 @@ nalfa.skills = {
 	cultur: "Culture",
 	magie: "Magie",
 	nature: "Nature",
-	medeci: "Médecine",
+	invest: "Investigation",
 	percep: "Perception",
 	sereni: "Sérénité",
 	intuit: "Intuition",
@@ -109,6 +109,22 @@ nalfa.cooldown_units = {
 };
 
 // Item data
+nalfa.item_types = {
+	Weapon: "Arme",
+	Trinket: "Bibelot",
+	Tool: "Outil",
+	Backpack: "Sac",
+	Consumable: "Consommable",
+	Loot: "Butin",
+	Book: "Livre",
+	Currency: "Monnaie",
+	Action: "Action",
+	Race: "Race",
+	Class: "Classe",
+	Job: "Métier",
+	WeaponAttribute: "Attribut d'arme",
+};
+
 nalfa.rarity = {
 	unknown: "Inconnu",
 	common: "Commun",
@@ -208,7 +224,7 @@ nalfa.modifier_base_paths_by_category = {
 		"attributes.skills.cultur.base": "Culture",
 		"attributes.skills.magie.base": "Magie",
 		"attributes.skills.nature.base": "Nature",
-		"attributes.skills.medeci.base": "Médecine",
+		"attributes.skills.invest.base": "Investigation",
 		"attributes.skills.percep.base": "Perception",
 		"attributes.skills.sereni.base": "Sérénité",
 		"attributes.skills.intuit.base": "Intuition",
@@ -242,10 +258,9 @@ nalfa.modifier_base_paths_by_category = {
 	},
 };
 
-nalfa.modifier_base_paths = Object.values(nalfa.modifier_base_paths_by_category).reduce(
-	(allPaths, groupPaths) => ({ ...allPaths, ...groupPaths }),
-	{},
-);
+nalfa.modifier_base_paths = Object.values(
+	nalfa.modifier_base_paths_by_category,
+).reduce((allPaths, groupPaths) => ({ ...allPaths, ...groupPaths }), {});
 
 nalfa.range_types = {
 	melee: "Au CàC",
@@ -352,7 +367,7 @@ nalfa.regeneration_damage_types = {
 nalfa.damage_effect_prefixes = {
 	damage: "Dégâts",
 	healing: "Soin",
-	abso: "Abso",
+	abso: "Absorption",
 	piercing: "Perçant",
 };
 
