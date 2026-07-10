@@ -26,9 +26,14 @@ export const createDefaultActionData = () => ({
 			amount: 1,
 			variable: "X",
 		},
-		ester: {
+		nalfa: {
 			amount: 0,
-			unit: "none",
+			category: "minor",
+			overload: {
+				enabled: false,
+				amount: 0,
+				effect: "",
+			},
 		},
 		uses: {
 			value: null,

@@ -12,7 +12,7 @@ const TEMPLATE_PATHS = [
 	"systems/nalfa/templates/partials/character/skill-row.hbs",
 	"systems/nalfa/templates/partials/character/stat-card.hbs",
 	"systems/nalfa/templates/partials/character/stats-skills.hbs",
-	"systems/nalfa/templates/partials/character/spell-charges.hbs",
+	"systems/nalfa/templates/partials/character/nalfa-resource.hbs",
 	"systems/nalfa/templates/partials/character/action-pools.hbs",
 	"systems/nalfa/templates/partials/character/roll-stats-base.hbs",
 	"systems/nalfa/templates/partials/character/roll-stats-alt.hbs",

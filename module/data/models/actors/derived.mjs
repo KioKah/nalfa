@@ -361,16 +361,6 @@ export const prepareActorDerivedData = (model) => {
 	healthObj.profile = profileHealth;
 	healthObj.max = profileHealth + withBaseAlt("attributes.hp.base", "attributes.hp.alt");
 
-	const maxChargeTable = {
-		lvl1: [0, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
-		lvl2: [0, 0, 0, 0, 1, 2, 2, 2, 2, 3, 3, 3, 3],
-		lvl3: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2],
-		special: [0, 0, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4],
-	};
-	for (const [key, slot] of Object.entries(sys.spell_charges ?? {})) {
-		slot.max = maxChargeTable[key]?.[charLevel] ?? 0;
-	}
-
 	for (const [key, actionObj] of Object.entries(sys.actions ?? {})) {
 		if (key === "movement") {
 			actionObj.max = withBaseAltMult(

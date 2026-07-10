@@ -56,13 +56,13 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 
 ### + :
 
-- [ ] `Nalfa` devient une ressource de personnage/acteur.
-- [ ] Le Nalfa est utilisé pour lancer des sorts.
-- [ ] Certains sorts peuvent être surchargés en Nalfa.
-- [ ] La surcharge en Nalfa peut augmenter les effets d'un sort ou ajouter des effets.
+- [x] `Nalfa` devient une ressource de personnage/acteur.
+- [x] Le Nalfa est utilisé pour lancer des sorts.
+- [x] Certains sorts peuvent être surchargés en Nalfa.
+- [x] La surcharge en Nalfa peut augmenter les effets d'un sort ou ajouter des effets.
 - [~] Lorsqu'un personnage inconscient remonte au-dessus de `0 Pv`, il reprend conscience et gagne un niveau de Fatigue.
 - [~] La perte de PV en inconscience est exprimée en `10% des Pv max` chaque `tour/round`.
-- [ ] /!\ Le système utilise encore `ester` et `spell_charges`, pas une ressource `Nalfa`.
+- [x] /!\ Le système utilise `cost.nalfa` et `system.nalfa`, plus `ester` ni `spell_charges`.
 
 ### - :
 
@@ -77,7 +77,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 - [x] Le tableau d'évolution des Charges de Sorts et Charges de Sorts Spéciaux par niveau n'est plus présent.
 - [~] `Charge d'utilisations` pour certains sorts n'est plus listée comme règle générale.
 - [x] /!\ Les résistances/vulnérabilités/immunités sont encore pleinement fonctionnelles dans le calcul de dégâts.
-- [x] /!\ L'ancien modèle `spell_charges.lvl1/lvl2/lvl3/special` est encore central dans le modèle acteur et l'UI.
+- [x] /!\ L'ancien modèle `spell_charges.lvl1/lvl2/lvl3/special` a été retiré du modèle acteur et de l'UI.
 
 ### ~ :
 

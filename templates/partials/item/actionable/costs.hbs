@@ -94,22 +94,47 @@
     </div>
 
     <div class="attack-config__cost-entry">
-      <span class="attack-config__cost-label">Sort</span>
-      {{#unless (eq actionData.cost.ester.unit "none")}}
+      <span class="attack-config__cost-label">Nalfa</span>
+      <input
+        class="attack-config__cost-input"
+        name="system.{{actionPath}}cost.nalfa.amount"
+        type="number"
+        value="{{actionData.cost.nalfa.amount}}"
+        data-dtype="Number"
+      />
+      <select
+        class="attack-config__cost-select attack-config__cost-select--nalfa"
+        name="system.{{actionPath}}cost.nalfa.category"
+      >
+        {{selectOptions config.nalfa_cost_categories selected=actionData.cost.nalfa.category}}
+      </select>
+    </div>
+
+    <div class="attack-config__cost-entry">
+      <span class="attack-config__cost-label">Surcharge Nalfa</span>
+      <label class="field field--inline">
+        <input
+          name="system.{{actionPath}}cost.nalfa.overload.enabled"
+          type="checkbox"
+          {{checked actionData.cost.nalfa.overload.enabled}}
+        />
+        <span>Compatible</span>
+      </label>
+      {{#if actionData.cost.nalfa.overload.enabled}}
         <input
           class="attack-config__cost-input"
-          name="system.{{actionPath}}cost.ester.amount"
+          name="system.{{actionPath}}cost.nalfa.overload.amount"
           type="number"
-          value="{{actionData.cost.ester.amount}}"
+          value="{{actionData.cost.nalfa.overload.amount}}"
           data-dtype="Number"
+          placeholder="Nalfa supp."
         />
-      {{/unless}}
-      <select
-        class="attack-config__cost-select attack-config__cost-select--ester"
-        name="system.{{actionPath}}cost.ester.unit"
-      >
-        {{selectOptions config.ester_levels selected=actionData.cost.ester.unit}}
-      </select>
+        <textarea
+          class="attack-config__cost-input"
+          name="system.{{actionPath}}cost.nalfa.overload.effect"
+          placeholder="Effet ajouté ou augmenté"
+        >{{actionData.cost.nalfa.overload.effect}}</textarea>
+      {{/if}}
     </div>
 
     <div class="attack-config__cost-entry">

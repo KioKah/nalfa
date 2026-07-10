@@ -79,20 +79,18 @@ nalfa.actions = {
 	movement: "Déplacement",
 };
 
-nalfa.ester_levels = {
-	none: "Basique",
-	lvl1: "Niv. 1",
-	lvl2: "Niv. 2",
-	lvl3: "Niv. 3",
-	special: "Spécial",
+nalfa.nalfa_cost_categories = {
+	minor: "Mineur",
+	intermediate: "Intermédiaire",
+	advanced: "Avancé",
+	major: "Majeur",
 };
 
-nalfa.ester_levels_short = {
-	none: "",
-	lvl1: "I",
-	lvl2: "II",
-	lvl3: "III",
-	special: "Spé",
+nalfa.nalfa_cost_categories_short = {
+	minor: "Min.",
+	intermediate: "Inter.",
+	advanced: "Av.",
+	major: "Maj.",
 };
 
 nalfa.uses_units = {
@@ -158,6 +156,7 @@ nalfa.action_cost_hover_labels = {
 	reaction: "Action de Réaction",
 	concentration: "Action de Concentration",
 	movement: "Action de Déplacement",
+	nalfa: "Nalfa",
 };
 
 nalfa.action_movement_cost_modes = {

@@ -26,6 +26,83 @@ const renderConcentrationDialogContent = (defaultValue = 0) => {
 	return `<div class="field field--column"><label class="field__label" for="nalfa-concentration-malus">Malus</label><input id="nalfa-concentration-malus" name="enemy-attack-bonus" type="number" value="${Number(defaultValue ?? 0)}" data-dtype="Number" /></div>`;
 };
 
+const toCostAmount = (value) => {
+	const amount = Number(value ?? 0);
+	return Number.isFinite(amount) && amount > 0 ? amount : 0;
+};
+
+const hasNalfaOverload = (actionData) => {
+	const overload = actionData?.cost?.nalfa?.overload ?? {};
+	if (overload.enabled !== true) return false;
+	return toCostAmount(overload.amount) > 0 || String(overload.effect ?? "").trim().length > 0;
+};
+
+const getNalfaCost = (actionData, { useOverload = false } = {}) => {
+	const baseAmount = toCostAmount(actionData?.cost?.nalfa?.amount);
+	const overload = actionData?.cost?.nalfa?.overload ?? {};
+	const overloadAmount =
+		useOverload && overload.enabled === true ? toCostAmount(overload.amount) : 0;
+	return baseAmount + overloadAmount;
+};
+
+const consumeNalfaCost = async ({ actor, actionData, useOverload = false } = {}) => {
+	const requiredNalfa = getNalfaCost(actionData, { useOverload });
+	if (!(requiredNalfa > 0)) return true;
+
+	const availableNalfa = Number(actor?.system?.nalfa?.value ?? 0);
+	if (!Number.isFinite(availableNalfa) || availableNalfa < requiredNalfa) {
+		ui.notifications.warn(
+			`Nalfa insuffisant : ${Number.isFinite(availableNalfa) ? availableNalfa : 0}/${requiredNalfa}.`,
+		);
+		return false;
+	}
+
+	await actor.update({ "system.nalfa.value": availableNalfa - requiredNalfa });
+	return true;
+};
+
+const getUseOverloadValue = (dialog) => {
+	const input = dialog.element?.querySelector("[name='use-nalfa-overload']");
+	return input instanceof HTMLInputElement ? input.checked : false;
+};
+
+const renderNalfaOverloadContent = (actionData) => {
+	if (!hasNalfaOverload(actionData)) return "";
+
+	const overload = actionData?.cost?.nalfa?.overload ?? {};
+	const amount = toCostAmount(overload.amount);
+	const effect = String(overload.effect ?? "").trim();
+	const effectHtml = effect
+		? `<p class="hint">${foundry.utils.escapeHTML(effect)}</p>`
+		: "";
+	return [
+		'<section class="panel-section nalfa-action-dialog__nalfa-overload">',
+		'<label class="field field--inline">',
+		'<input type="checkbox" name="use-nalfa-overload" />',
+		`<span>Surcharge Nalfa${amount > 0 ? ` (+${amount})` : ""}</span>`,
+		"</label>",
+		effectHtml,
+		"</section>",
+	].join("");
+};
+
+const renderActionExecutionContent = async ({
+	actor,
+	actionData,
+	sourceItem,
+	rollContext,
+	titleName,
+}) => {
+	const actionHtml = await renderActionDialogContent({
+		actor,
+		actionData,
+		sourceItem,
+		rollContext,
+		titleName,
+	});
+	return `${actionHtml}${renderNalfaOverloadContent(actionData)}`;
+};
+
 const buildActionRollChoices = ({
 	actor,
 	actionData,
@@ -186,11 +263,14 @@ export const executeActionPrompt = async ({
 		return null;
 	}
 
-	if (choices.length === 1) {
+	const overloadAvailable = hasNalfaOverload(actionData);
+	if (choices.length === 1 && !overloadAvailable) {
+		const canPayNalfa = await consumeNalfaCost({ actor, actionData });
+		if (!canPayNalfa) return null;
 		return choices[0].run();
 	}
 
-	const content = await renderActionDialogContent({
+	const content = await renderActionExecutionContent({
 		actor,
 		actionData,
 		sourceItem,
@@ -206,7 +286,7 @@ export const executeActionPrompt = async ({
 		titleName: resolvedTitle,
 	});
 
-	const selectedChoice = await waitForActionDialog(
+	const selectedExecution = await waitForActionDialog(
 		{
 			window: {
 				title: `Action - ${resolvedTitle}`,
@@ -217,7 +297,14 @@ export const executeActionPrompt = async ({
 					action: choice.id,
 					label: choice.label,
 					default: index === 0,
-					callback: () => choice,
+					callback: (event, target, dialog) => {
+						void event;
+						void target;
+						return {
+							choice,
+							useOverload: getUseOverloadValue(dialog),
+						};
+					},
 				};
 			}),
 		},
@@ -228,6 +315,15 @@ export const executeActionPrompt = async ({
 		},
 	);
 
+	const selectedChoice = selectedExecution?.choice;
 	if (!selectedChoice) return null;
+
+	const canPayNalfa = await consumeNalfaCost({
+		actor,
+		actionData,
+		useOverload: selectedExecution.useOverload === true,
+	});
+	if (!canPayNalfa) return null;
+
 	return selectedChoice.run();
 };

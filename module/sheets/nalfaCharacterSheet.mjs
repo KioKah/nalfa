@@ -133,13 +133,14 @@ const getActionModeLabel = (actionData = {}) => {
 };
 
 const getActionSpellTypeLabel = (actionData = {}) => {
-	const esterUnit =
-		String(actionData?.cost?.ester?.unit ?? "none").trim() || "none";
+	const nalfaCategory =
+		String(actionData?.cost?.nalfa?.category ?? "minor").trim() || "minor";
+	const nalfaAmount = Number(actionData?.cost?.nalfa?.amount ?? 0);
 	const mode = String(actionData?.mode ?? "none").trim() || "none";
-	if (mode !== "incant" && esterUnit === "none") return "Non-sort";
+	if (mode !== "incant" && !(nalfaAmount > 0)) return "Non-sort";
 	return (
-		String(CONFIG.nalfa.ester_levels?.[esterUnit] ?? esterUnit).trim() ||
-		"Basique"
+		String(CONFIG.nalfa.nalfa_cost_categories?.[nalfaCategory] ?? nalfaCategory).trim() ||
+		"Mineur"
 	);
 };
 

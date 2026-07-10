@@ -27,10 +27,7 @@
 		overflow-x: hidden;
 		scrollbar-gutter: stable;
 		padding-inline-start: var(--nalfa-padding);
-		padding-inline-end: max(
-			0px,
-			calc(var(--nalfa-padding) - var(--nalfa-scrollbar-comp))
-		);
+		padding-inline-end: max(0px, calc(var(--nalfa-padding) - var(--nalfa-scrollbar-comp)));
 	}
 
 	.sheet-body {
@@ -119,6 +116,20 @@
 
 	.field__separator {
 		opacity: 0.7;
+	}
+
+	.nalfa-resource {
+		&__label {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			color: var(--nalfa-color-resource-nalfa);
+		}
+
+		&__icon {
+			transform: rotate(45deg);
+			transform-origin: center;
+		}
 	}
 
 	.ko-indicator {
@@ -282,8 +293,7 @@
 		gap: 6px;
 		padding: 8px;
 		border-radius: 6px;
-		border: 1px solid
-			color-mix(in srgb, var(--color-text-primary), transparent 75%);
+		border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
 		background: color-mix(in srgb, var(--color-cool-5-50), transparent 85%);
 	}
 
@@ -500,11 +510,7 @@
 		flex: 0 0 1px;
 		width: 1px;
 		align-self: stretch;
-		background: color-mix(
-			in srgb,
-			var(--color-text-primary, #f7f4f8),
-			transparent 75%
-		);
+		background: color-mix(in srgb, var(--color-text-primary, #f7f4f8), transparent 75%);
 	}
 
 	.roll-stats__item {
@@ -563,8 +569,7 @@
 		font-size: 12px;
 		font-weight: 600;
 		line-height: 1.25;
-		border: 1px solid
-			color-mix(in srgb, var(--color-text-primary), transparent 70%);
+		border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 70%);
 		background: color-mix(in srgb, var(--color-text-primary), transparent 92%);
 	}
 
@@ -793,8 +798,7 @@
 		flex-direction: column;
 		gap: 2px;
 		padding: 5px 6px;
-		border: 1px solid
-			color-mix(in srgb, var(--color-text-primary), transparent 75%);
+		border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
 		border-radius: 4px;
 		background: color-mix(in srgb, var(--background), transparent 55%);
 	}
@@ -910,8 +914,7 @@
 		width: 100%;
 		margin: 0;
 		border: 0;
-		border-top: 2px solid
-			color-mix(in srgb, var(--color-text-primary), transparent 45%);
+		border-top: 2px solid color-mix(in srgb, var(--color-text-primary), transparent 45%);
 	}
 
 	.actor-inventory__list {
@@ -930,8 +933,7 @@
 	}
 
 	.actor-inventory__row--equipped {
-		box-shadow: inset 3px 0 0
-			color-mix(in srgb, var(--color-text-primary), transparent 35%);
+		box-shadow: inset 3px 0 0 color-mix(in srgb, var(--color-text-primary), transparent 35%);
 	}
 
 	.actor-inventory__row--conflict {
@@ -940,8 +942,7 @@
 
 	.actor-inventory__row--equipped.actor-inventory__row--conflict {
 		box-shadow:
-			inset 3px 0 0
-				color-mix(in srgb, var(--color-text-primary), transparent 35%),
+			inset 3px 0 0 color-mix(in srgb, var(--color-text-primary), transparent 35%),
 			inset 6px 0 0 color-mix(in srgb, #b71c1c, transparent 20%);
 	}
 
@@ -1046,8 +1047,7 @@
 		font-size: 11px;
 		font-weight: 700;
 		opacity: 0.78;
-		border-top: 1px solid
-			color-mix(in srgb, var(--color-text-primary), transparent 78%);
+		border-top: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 78%);
 	}
 
 	.actor-inventory__footer span {
@@ -1133,8 +1133,7 @@
 		width: 100%;
 		margin: 0;
 		border: 0;
-		border-top: 2px solid
-			color-mix(in srgb, var(--color-text-primary), transparent 45%);
+		border-top: 2px solid color-mix(in srgb, var(--color-text-primary), transparent 45%);
 	}
 
 	.embedded-actions__list {
@@ -1303,6 +1302,15 @@
 		&--movement {
 			color: var(--nalfa-color-action-movement);
 		}
+
+		&--nalfa {
+			color: var(--nalfa-color-resource-nalfa);
+
+			i {
+				transform: rotate(45deg);
+				transform-origin: center;
+			}
+		}
 	}
 
 	.embedded-actions__cost-token-amount,
@@ -1462,11 +1470,7 @@
 		&:hover,
 		&:has(input:checked) {
 			opacity: 1;
-			background: color-mix(
-				in srgb,
-				var(--color-text-primary),
-				transparent 86%
-			);
+			background: color-mix(in srgb, var(--color-text-primary), transparent 86%);
 		}
 	}
 }

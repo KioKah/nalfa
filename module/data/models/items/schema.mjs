@@ -81,9 +81,14 @@ export const actionSchemaDefinition = () => {
 				amount: numberField(defaults.cost.movement.amount),
 				variable: stringField(defaults.cost.movement.variable),
 			}),
-			ester: schemaField({
-				amount: numberField(defaults.cost.ester.amount),
-				unit: stringField(defaults.cost.ester.unit),
+			nalfa: schemaField({
+				amount: numberField(defaults.cost.nalfa.amount),
+				category: stringField(defaults.cost.nalfa.category),
+				overload: schemaField({
+					enabled: booleanField(defaults.cost.nalfa.overload.enabled),
+					amount: numberField(defaults.cost.nalfa.overload.amount),
+					effect: htmlField(defaults.cost.nalfa.overload.effect),
+				}),
 			}),
 			uses: schemaField({
 				value: numberValueField(defaults.cost.uses.value),

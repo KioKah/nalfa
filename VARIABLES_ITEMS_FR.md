@@ -92,8 +92,11 @@ Coûts :
 - `cost.movement.mode`
 - `cost.movement.amount`
 - `cost.movement.variable`
-- `cost.ester.amount`
-- `cost.ester.unit`
+- `cost.nalfa.amount`
+- `cost.nalfa.category`
+- `cost.nalfa.overload.enabled`
+- `cost.nalfa.overload.amount`
+- `cost.nalfa.overload.effect`
 - `cost.uses.value`
 - `cost.uses.max`
 - `cost.uses.unit`

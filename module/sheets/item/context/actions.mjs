@@ -39,6 +39,11 @@ const ACTION_RESOURCE_TOKEN_META = Object.freeze({
 		colorClass: "movement",
 		label: "movement",
 	},
+	nalfa: {
+		iconClass: "fa-light fa-sparkle",
+		colorClass: "nalfa",
+		label: "nalfa",
+	},
 });
 
 const DAMAGE_EFFECT_LABELS = Object.freeze({
@@ -214,6 +219,17 @@ const buildActionResourceSummary = ({ actionData, config }) => {
 		if (movementToken) additions.push(movementToken);
 	}
 
+	const nalfaAmount = toFiniteNumber(actionData?.cost?.nalfa?.amount, 0);
+	if (nalfaAmount > 0) {
+		const nalfaToken = makeActionResourceToken({
+			type: "nalfa",
+			amountLabel: `${nalfaAmount}`,
+			showAmount: true,
+			config,
+		});
+		if (nalfaToken) additions.push(nalfaToken);
+	}
+
 	return {
 		options,
 		additions,
@@ -226,9 +242,13 @@ const buildActionResourceSummary = ({ actionData, config }) => {
 const buildActionCoreSummary = (item, actionData, config) => {
 	const mode = String(actionData?.mode ?? "none");
 	const modeLabel = String(config.attack_mode?.[mode] ?? mode).trim();
-	const esterUnit = String(actionData?.cost?.ester?.unit ?? "none");
-	const esterLabel = String(config.ester_levels_short?.[esterUnit] ?? "").trim();
-	const modeWithTier = [modeLabel, esterLabel].filter(Boolean).join(" ");
+	const nalfaAmount = toFiniteNumber(actionData?.cost?.nalfa?.amount, 0);
+	const nalfaCategory = String(actionData?.cost?.nalfa?.category ?? "minor");
+	const nalfaLabel =
+		nalfaAmount > 0 || mode === "incant"
+			? String(config.nalfa_cost_categories_short?.[nalfaCategory] ?? "").trim()
+			: "";
+	const modeWithTier = [modeLabel, nalfaLabel].filter(Boolean).join(" ");
 	const jdParts = [];
 	const jdHtmlParts = [];
 	const getSavedDamageInlineHint = () => {
@@ -359,6 +379,16 @@ const buildActionConcentrationSummary = (actionData, config) => {
 		text,
 		html: tooltipSpan({ text, tooltip: ["JdF :", `DD : ${dd}`, `Stat : ${statLabel}`].join("\n") }),
 	};
+};
+
+const buildNalfaOverloadSummary = (actionData) => {
+	const overload = actionData?.cost?.nalfa?.overload ?? {};
+	if (overload.enabled !== true) return "";
+
+	const amount = toFiniteNumber(overload.amount, 0);
+	const effect = htmlToPlainText(overload.effect ?? "", { preserveLineBreaks: true });
+	const amountLabel = amount > 0 ? `+${amount} Nalfa` : "Surcharge Nalfa";
+	return effect ? `${amountLabel}: ${effect}` : amountLabel;
 };
 
 const buildRangeDetailSummary = (actionData, config) => {
@@ -565,6 +595,9 @@ const buildActionRightSummaryRows = (actionData) => {
 	const usesSummary = buildActionUsesSummary(actionData);
 	const costRow = [cooldownSummary, usesSummary].filter(Boolean).join(", ");
 	if (costRow) rows.push(makeSummaryRow(costRow));
+
+	const overloadSummary = buildNalfaOverloadSummary(actionData);
+	if (overloadSummary) rows.push(makeSummaryRow(overloadSummary));
 
 	return rows;
 };

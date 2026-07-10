@@ -151,7 +151,10 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			event.preventDefault();
 		});
 
-		this._bindFieldChangeAction("input[name], select[name]", this._onDraftFieldChange);
+		this._bindFieldChangeAction(
+			"input[name], select[name], textarea[name]",
+			this._onDraftFieldChange,
+		);
 		this._bindFieldChangeAction(
 			"[data-action='change-damage-type']",
 			this._onDraftDamageTypeChange,
@@ -430,7 +433,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			"selection.zone.shape",
 			"selection.zone.has_long_range",
 			"cost.movement.mode",
-			"cost.ester.unit",
+			"cost.nalfa.category",
+			"cost.nalfa.overload.enabled",
 			"cost.uses.unit",
 			"cost.cooldown.unit",
 			"jds.fails_on_save",
@@ -449,13 +453,15 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 	#syncDraftFromRenderedForm() {
 		if (!this._draftAction) return;
 
-		this.element?.querySelectorAll("input[name], select[name]").forEach((element) => {
-			const path = this.#getDraftPathFromSystemPath(element.name);
-			if (!path) return;
-			const value = this.#readFieldValue(element);
-			if (value === undefined) return;
-			foundry.utils.setProperty(this._draftAction, path, value);
-		});
+		this.element
+			?.querySelectorAll("input[name], select[name], textarea[name]")
+			.forEach((element) => {
+				const path = this.#getDraftPathFromSystemPath(element.name);
+				if (!path) return;
+				const value = this.#readFieldValue(element);
+				if (value === undefined) return;
+				foundry.utils.setProperty(this._draftAction, path, value);
+			});
 	}
 
 	async #saveDraftAction() {

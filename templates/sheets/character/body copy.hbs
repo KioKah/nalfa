@@ -384,29 +384,27 @@
     </div>
   </div>
 
-  <div class="sheet-section">
-    <h2>Ressources</h2>
-    <div class="grid grid--three">
-      {{#each sysData.spell_charges}}
-        <div class="field field--inline">
-          <span class="field__label">{{@key}}</span>
-          <input
-            name="system.spell_charges.{{@key}}.value"
-            type="number"
-            value="{{value}}"
-            data-dtype="Number"
-          />
-          <span>/</span>
-          <input
-            name="system.spell_charges.{{@key}}.max"
-            type="number"
-            value="{{max}}"
-            data-dtype="Number"
-          />
-        </div>
-      {{/each}}
-    </div>
-  </div>
+	<div class="sheet-section">
+		<h2>Ressources</h2>
+		<div class="grid grid--three">
+			<div class="field field--inline">
+				<span class="field__label">Nalfa</span>
+				<input
+					name="system.nalfa.value"
+					type="number"
+					value="{{sysData.nalfa.value}}"
+					data-dtype="Number"
+				/>
+				<span>/</span>
+				<input
+					name="system.nalfa.max"
+					type="number"
+					value="{{sysData.nalfa.max}}"
+					data-dtype="Number"
+				/>
+			</div>
+		</div>
+	</div>
 
   <div class="sheet-section">
     <h2>Actions</h2>

@@ -153,23 +153,9 @@ export const baseActorSchema = () => ({
 		warning: stringField(""),
 	}),
 	attributes: schemaField(baseAttributesSchema()),
-	spell_charges: schemaField({
-		lvl1: schemaField({
-			value: numberField(0),
-			max: numberValueField(null),
-		}),
-		lvl2: schemaField({
-			value: numberField(0),
-			max: numberValueField(null),
-		}),
-		lvl3: schemaField({
-			value: numberField(0),
-			max: numberValueField(null),
-		}),
-		special: schemaField({
-			value: numberField(0),
-			max: numberValueField(null),
-		}),
+	nalfa: schemaField({
+		value: numberField(0),
+		max: numberField(0),
 	}),
 	actions: schemaField(baseActionsSchema()),
 	attack: actionSchema(),

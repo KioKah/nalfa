@@ -559,6 +559,16 @@
 .nalfa.sheet.actor-sheet .field__separator {
   opacity: 0.7;
 }
+.nalfa.sheet.actor-sheet .nalfa-resource__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--nalfa-color-resource-nalfa);
+}
+.nalfa.sheet.actor-sheet .nalfa-resource__icon {
+  transform: rotate(45deg);
+  transform-origin: center;
+}
 .nalfa.sheet.actor-sheet .ko-indicator {
   font-weight: 700;
   color: #b71c1c;
@@ -1729,6 +1739,13 @@
 }
 .nalfa.sheet.actor-sheet .embedded-actions__cost-token--movement {
   color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--nalfa {
+  color: var(--nalfa-color-resource-nalfa);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--nalfa i {
+  transform: rotate(45deg);
+  transform-origin: center;
 }
 .nalfa.sheet.actor-sheet .embedded-actions__cost-token-amount,
 .nalfa.sheet.actor-sheet .embedded-actions__summary {
@@ -3101,6 +3118,19 @@
 .nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--movement {
   color: var(--nalfa-color-action-movement);
 }
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--nalfa,
+.nalfa.sheet.item .embedded-actions__cost-token--nalfa,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--nalfa,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--nalfa {
+  color: var(--nalfa-color-resource-nalfa);
+}
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--nalfa i,
+.nalfa.sheet.item .embedded-actions__cost-token--nalfa i,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--nalfa i,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--nalfa i {
+  transform: rotate(45deg);
+  transform-origin: center;
+}
 .nalfa.sheet.item-sheet .embedded-actions__cost-token-amount,
 .nalfa.sheet.item .embedded-actions__cost-token-amount,
 .nalfa.sheet.embedded-action-editor .embedded-actions__cost-token-amount,
@@ -4302,6 +4332,7 @@
   --nalfa-color-attr-hp: #e06666;
   --nalfa-color-attr-init: #93c47d;
   --nalfa-color-attr-defence: #b7b7b7;
+  --nalfa-color-resource-nalfa: #3c78d8;
   --nalfa-color-rarity-common: #b7b7b7;
   --nalfa-color-rarity-rare: #34a853;
   --nalfa-color-rarity-epic: #6d9eeb;

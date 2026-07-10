@@ -15,25 +15,25 @@ But : remplacer les charges de sorts par une ressource unique `Nalfa`, proche de
 
 Tâches :
 
-- [ ] Ajouter une ressource acteur `Nalfa` avec `value` et `max`.
-- [ ] Afficher `Nalfa` sur la fiche personnage.
-- [ ] Remplacer les coûts d'action/sort basés sur `ester` ou charges par des coûts en `Nalfa`.
-- [ ] Consommer réellement le Nalfa lors de l'exécution d'une action/sort.
-- [ ] Empêcher ou signaler l'exécution si le Nalfa disponible est insuffisant.
-- [ ] Ajouter la surcharge en Nalfa sur les sorts/actions compatibles.
-- [ ] Permettre à la surcharge d'augmenter ou d'ajouter des effets, selon les données de l'action.
-- [ ] Remplacer les catégories de coût `none/lvl1/lvl2/lvl3/special` par `Mineur`, `Intermédiaire`, `Avancé`, `Majeur`.
-- [ ] Présenter ces catégories comme des alias des anciens niveaux de sort, mais avec paiement en Nalfa au lieu de charges par niveau.
-- [ ] Retirer `spell_charges.lvl1/lvl2/lvl3/special` du modèle acteur et de l'UI.
-- [ ] Retirer le tableau de maximum de charges par niveau.
-- [ ] Retirer les coûts par `Charge de Sort de Niveau 1/2/3` et `Charge de Sort Spéciale`.
-- [ ] Retirer les anciennes unités de coût `none/lvl1/lvl2/lvl3/special` une fois les nouvelles catégories en place.
+- [x] Ajouter une ressource acteur `Nalfa` avec `value` et `max`.
+- [x] Afficher `Nalfa` sur la fiche personnage.
+- [x] Remplacer les coûts d'action/sort basés sur `ester` ou charges par des coûts en `Nalfa`.
+- [x] Consommer réellement le Nalfa lors de l'exécution d'une action/sort.
+- [x] Empêcher ou signaler l'exécution si le Nalfa disponible est insuffisant.
+- [x] Ajouter la surcharge en Nalfa sur les sorts/actions compatibles.
+- [x] Permettre à la surcharge d'augmenter ou d'ajouter des effets, selon les données de l'action.
+- [x] Remplacer les catégories de coût `none/lvl1/lvl2/lvl3/special` par `Mineur`, `Intermédiaire`, `Avancé`, `Majeur`.
+- [x] Présenter ces catégories comme des alias des anciens niveaux de sort, mais avec paiement en Nalfa au lieu de charges par niveau.
+- [x] Retirer `spell_charges.lvl1/lvl2/lvl3/special` du modèle acteur et de l'UI.
+- [x] Retirer le tableau de maximum de charges par niveau.
+- [x] Retirer les coûts par `Charge de Sort de Niveau 1/2/3` et `Charge de Sort Spéciale`.
+- [x] Retirer les anciennes unités de coût `none/lvl1/lvl2/lvl3/special` une fois les nouvelles catégories en place.
 
-État actuel connu :
+État après implémentation :
 
-- Le système utilise encore `ester` dans les coûts d'action.
-- Le modèle acteur expose encore `spell_charges.lvl1/lvl2/lvl3/special`.
-- Les catégories `Mineur`, `Intermédiaire`, `Avancé`, `Majeur` ne sont pas encore présentes.
+- Les coûts d'action utilisent `cost.nalfa` avec montant, catégorie et surcharge optionnelle.
+- Le modèle acteur expose `system.nalfa.value` et `system.nalfa.max`.
+- Les catégories `Mineur`, `Intermédiaire`, `Avancé`, `Majeur` sont disponibles pour les coûts Nalfa.
 
 ## 2. Armes, mains, dégâts d'arme et attributs
 
@@ -41,11 +41,24 @@ But : stabiliser le modèle d'arme, car il impacte l'équipement, les formules d
 
 Tâches :
 
-- [ ] Garder `dA` comme dégâts génériques d'arme.
-- [ ] Ajouter `dAp` pour les dégâts de l'arme principale.
-- [ ] Ajouter `dAs` pour les dégâts de l'arme secondaire.
-- [ ] Permettre aux formules de dégâts d'utiliser `dA`, `dAp` et `dAs`.
-- [ ] Clarifier dans le modèle l'usage actif d'une arme : une main, deux mains, combat à deux armes.
+- [ ] Renommer le concept stocké sur les armes : ne plus parler de `dA` d'arme, mais d'`attaque` d'arme.
+- [ ] Stocker l'attaque d'arme selon l'usage : `main_hand` pour main principale, `secondary_hand` pour main secondaire, `two_hands` pour deux mains.
+- [ ] Utiliser les abréviations visibles `Mp`, `Ms`, `2M` si ces usages sont affichés aux utilisateurs.
+- [ ] Si `attaque` doit être abrégé dans une interface utilisateur, utiliser `ATK`.
+- [ ] Afficher l'attaque actuellement applicable directement dans la feuille d'objet de l'arme.
+- [ ] Garder `dA`, `dAp` et `dAs` comme variables de formule côté personnage/action, distinctes des attaques stockées sur les armes.
+- [ ] Calculer `dA` personnage comme la somme `attaque main_hand` de l'arme en main principale + `attaque secondary_hand` de l'arme en main secondaire, en cas de dual wield.
+- [ ] Calculer `dA` personnage comme `attaque two_hands` de l'arme équipée à deux mains, en cas d'arme à deux mains.
+- [ ] Définir `dAp` comme l'attaque de l'arme en main principale.
+- [ ] Définir `dAp` aussi pour une arme équipée à deux mains, car une arme à deux mains compte comme main principale.
+- [ ] Définir `dAs` comme l'attaque de l'arme en main secondaire.
+- [ ] Ne pas définir `dAs` pour une arme équipée à deux mains.
+- [ ] Considérer `dAp` comme non défini si aucune arme n'est en main principale.
+- [ ] Considérer `dAs` comme non défini si aucune arme n'est en main secondaire.
+- [ ] Permettre aux formules de dégâts et effets de sorts d'utiliser `dA`, `dAp` et `dAs`.
+- [ ] Ignorer entièrement une formule de dégâts qui référence `dAp` ou `dAs` si la variable correspondante n'est pas définie.
+- [ ] Quand une formule est ignorée pour `dAp`/`dAs` non défini, ignorer aussi ses bonus flat.
+- [ ] Clarifier dans le modèle l'usage actif d'une arme : main principale, main secondaire, deux mains.
 - [ ] Ajouter l'attribut d'arme `Lourde`.
 - [ ] Ajouter l'attribut d'arme `Lancer`.
 - [ ] Ajouter la règle de lancer d'arme : JdD divisé par 2 si l'arme n'a pas l'attribut `Lancer`.
