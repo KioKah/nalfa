@@ -1764,7 +1764,9 @@
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
-  gap: 1px;
+  justify-content: center;
+  max-height: 24px;
+  overflow: hidden;
 }
 .nalfa.sheet.actor-sheet .embedded-actions__summary,
 .nalfa.sheet.actor-sheet .embedded-actions__secondary {
@@ -1773,6 +1775,9 @@
   text-overflow: ellipsis;
 }
 .nalfa.sheet.actor-sheet .embedded-actions__summary {
+  display: block;
+  max-height: 12px;
+  line-height: 12px;
   opacity: 0.8;
 }
 .nalfa.sheet.actor-sheet .embedded-actions__secondary {
@@ -3598,6 +3603,61 @@
 .nalfa.sheet.nalfa-action-dialog .attack-config__cost-entry--actions {
   align-items: flex-start;
 }
+.nalfa.sheet.item-sheet .attack-config__cost-entry--nalfa .attack-config__cost-input,
+.nalfa.sheet.item .attack-config__cost-entry--nalfa .attack-config__cost-input,
+.nalfa.sheet.embedded-action-editor .attack-config__cost-entry--nalfa .attack-config__cost-input,
+.nalfa.sheet.nalfa-action-dialog .attack-config__cost-entry--nalfa .attack-config__cost-input {
+  width: calc((1px * 4 + 2px) * (18 / 2));
+  min-width: calc((1px * 4 + 2px) * (18 / 2));
+  max-width: calc((1px * 4 + 2px) * (18 / 2));
+  height: calc(18px + 8px);
+  line-height: calc(calc(18px + 8px) - 2px);
+  padding: initial;
+  text-align: center;
+  font-size: 18px;
+}
+.nalfa.sheet.item-sheet .attack-config__cost-entry--nalfa-overload,
+.nalfa.sheet.item .attack-config__cost-entry--nalfa-overload,
+.nalfa.sheet.embedded-action-editor .attack-config__cost-entry--nalfa-overload,
+.nalfa.sheet.nalfa-action-dialog .attack-config__cost-entry--nalfa-overload {
+  align-items: flex-start;
+}
+.nalfa.sheet.item-sheet .attack-config__nalfa-overload-fields,
+.nalfa.sheet.item .attack-config__nalfa-overload-fields,
+.nalfa.sheet.embedded-action-editor .attack-config__nalfa-overload-fields,
+.nalfa.sheet.nalfa-action-dialog .attack-config__nalfa-overload-fields {
+  display: grid;
+  grid-template-columns: auto auto minmax(180px, 1fr);
+  align-items: start;
+  gap: var(--nalfa-gap-text);
+  min-width: 0;
+  width: 100%;
+}
+.nalfa.sheet.item-sheet .attack-config__nalfa-overload-toggle,
+.nalfa.sheet.item .attack-config__nalfa-overload-toggle,
+.nalfa.sheet.embedded-action-editor .attack-config__nalfa-overload-toggle,
+.nalfa.sheet.nalfa-action-dialog .attack-config__nalfa-overload-toggle {
+  min-height: 24px;
+  white-space: nowrap;
+}
+.nalfa.sheet.item-sheet .attack-config__nalfa-overload-effect,
+.nalfa.sheet.item .attack-config__nalfa-overload-effect,
+.nalfa.sheet.embedded-action-editor .attack-config__nalfa-overload-effect,
+.nalfa.sheet.nalfa-action-dialog .attack-config__nalfa-overload-effect {
+  width: calc((1px * 28 + 2px) * (18 / 2));
+  min-width: calc((1px * 28 + 2px) * (18 / 2));
+  max-width: calc((1px * 28 + 2px) * (18 / 2));
+  height: calc(18px + 8px);
+  line-height: calc(calc(18px + 8px) - 2px);
+  padding: initial;
+  text-align: center;
+  font-size: 18px;
+  min-width: 180px;
+  width: 100%;
+  min-height: 42px;
+  resize: vertical;
+  line-height: 1.25;
+}
 .nalfa.sheet.item-sheet .attack-config__action-costs,
 .nalfa.sheet.item .attack-config__action-costs,
 .nalfa.sheet.embedded-action-editor .attack-config__action-costs,
@@ -3776,12 +3836,12 @@
   font-size: 18px;
   text-align: center;
 }
-.nalfa.sheet.item-sheet .attack-config__cost-select--ester,
-.nalfa.sheet.item .attack-config__cost-select--ester,
-.nalfa.sheet.embedded-action-editor .attack-config__cost-select--ester,
-.nalfa.sheet.nalfa-action-dialog .attack-config__cost-select--ester {
+.nalfa.sheet.item-sheet .attack-config__cost-select--nalfa,
+.nalfa.sheet.item .attack-config__cost-select--nalfa,
+.nalfa.sheet.embedded-action-editor .attack-config__cost-select--nalfa,
+.nalfa.sheet.nalfa-action-dialog .attack-config__cost-select--nalfa {
   height: calc(18px + 9px);
-  width: calc((1px * 8 + 8px) * (18 / 2));
+  width: calc((1px * 14 + 8px) * (18 / 2));
   border-radius: 3px;
   box-sizing: border-box;
   font-size: 18px;

@@ -16,6 +16,11 @@ nalfa.attack_mode = {
 	incant: "Incant.",
 };
 
+nalfa.weapon_usages = {
+	normal: "Arme normale",
+	thrown: "Arme lancée",
+};
+
 nalfa.stats_optional = {
 	none: "",
 	...nalfa.stats,
@@ -130,6 +135,19 @@ nalfa.rarity = {
 	epic: "Épique",
 	heroic: "Héroïque",
 	mythic: "Mythique",
+};
+
+nalfa.weapon_attack_usages = {
+	main_hand: "Mp",
+	secondary_hand: "Ms",
+	two_hands: "2M",
+};
+
+nalfa.weapon_attributes = {
+	"Légère": "Légère",
+	Finesse: "Finesse",
+	Lourde: "Lourde",
+	Lancer: "Lancer",
 };
 
 nalfa.roll_types = {

@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <div class="attack-config__cost-entry">
+    <div class="attack-config__cost-entry attack-config__cost-entry--nalfa">
       <span class="attack-config__cost-label">Action de Déplacement</span>
       <select
         class="attack-config__cost-select attack-config__cost-select--movement"
@@ -110,32 +110,69 @@
       </select>
     </div>
 
-    <div class="attack-config__cost-entry">
+    <div class="attack-config__cost-entry attack-config__cost-entry--nalfa-overload">
       <span class="attack-config__cost-label">Surcharge Nalfa</span>
-      <label class="field field--inline">
-        <input
-          name="system.{{actionPath}}cost.nalfa.overload.enabled"
-          type="checkbox"
-          {{checked actionData.cost.nalfa.overload.enabled}}
-        />
-        <span>Compatible</span>
-      </label>
-      {{#if actionData.cost.nalfa.overload.enabled}}
-        <input
-          class="attack-config__cost-input"
-          name="system.{{actionPath}}cost.nalfa.overload.amount"
-          type="number"
-          value="{{actionData.cost.nalfa.overload.amount}}"
-          data-dtype="Number"
-          placeholder="Nalfa supp."
-        />
-        <textarea
-          class="attack-config__cost-input"
-          name="system.{{actionPath}}cost.nalfa.overload.effect"
-          placeholder="Effet ajouté ou augmenté"
-        >{{actionData.cost.nalfa.overload.effect}}</textarea>
-      {{/if}}
+      <div class="attack-config__nalfa-overload-fields">
+        <label class="field field--inline attack-config__nalfa-overload-toggle">
+          <input
+            name="system.{{actionPath}}cost.nalfa.overload.enabled"
+            type="checkbox"
+            {{checked actionData.cost.nalfa.overload.enabled}}
+          />
+          <span>Compatible</span>
+        </label>
+        {{#if actionData.cost.nalfa.overload.enabled}}
+          <input
+            class="attack-config__cost-input"
+            name="system.{{actionPath}}cost.nalfa.overload.amount"
+            type="number"
+            value="{{actionData.cost.nalfa.overload.amount}}"
+            data-dtype="Number"
+            placeholder="Nalfa supp."
+          />
+          <textarea
+            class="attack-config__nalfa-overload-effect"
+            name="system.{{actionPath}}cost.nalfa.overload.effect"
+            placeholder="Effet ajouté ou augmenté"
+          >{{actionData.cost.nalfa.overload.effect}}</textarea>
+          <label class="field field--inline attack-config__nalfa-overload-toggle">
+            <input
+              name="system.{{actionPath}}cost.nalfa.overload.jdd.enabled"
+              type="checkbox"
+              {{checked actionData.cost.nalfa.overload.jdd.enabled}}
+            />
+            <span>JdD modifié</span>
+          </label>
+        {{/if}}
+      </div>
     </div>
+
+    {{#if actionData.cost.nalfa.overload.enabled}}
+      {{#if actionData.cost.nalfa.overload.jdd.enabled}}
+        <div class="attack-config__cost-entry attack-config__cost-entry--nalfa-overload-jdd">
+          <span class="attack-config__cost-label">JdD surcharge</span>
+          <div class="attack-config__fields">
+            {{#each actionData.cost.nalfa.overload.jdd.damage_formulas as |damage index|}}
+              {{>
+                "systems/nalfa/templates/partials/item/actionable/damage-formula-row.hbs"
+                actionPath=@root.actionPath
+                damagePath="cost.nalfa.overload.jdd.damage_formulas"
+                damage=damage
+                index=index
+                config=@root.config
+                isActionModeIncant=@root.isActionModeIncant
+                isActionModePhysical=@root.isActionModePhysical
+                readonly=@root.readonly
+                showAddButton=(eq index 0)
+                addTooltip="Ajouter une formule de dégâts de surcharge"
+                removeTooltip="Supprimer cette formule de dégâts de surcharge"
+                formulaPlaceholder="Ex : 2d6m+1"
+              }}
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+    {{/if}}
 
     <div class="attack-config__cost-entry">
       <span class="attack-config__cost-label">Utilisations</span>

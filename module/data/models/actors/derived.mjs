@@ -91,11 +91,11 @@ const collectActorItemModifiers = (actor, systemData) => {
 	return valueMap;
 };
 
-const getWeaponDaBySlot = (weaponSystem = {}, slot = "") => {
-	const da = weaponSystem.da ?? {};
-	if (slot === "main_hand") return String(da.main_hand ?? "").trim();
-	if (slot === "off_hand") return String(da.dual_wield ?? "").trim();
-	if (slot === "two_handed") return String(da.two_handed ?? "").trim();
+const getWeaponAttackByUsage = (weaponSystem = {}, usage = "") => {
+	const attack = weaponSystem.attack ?? {};
+	if (usage === "main_hand") return String(attack.main_hand ?? "").trim();
+	if (usage === "secondary_hand") return String(attack.secondary_hand ?? "").trim();
+	if (usage === "two_hands") return String(attack.two_hands ?? "").trim();
 	return "";
 };
 
@@ -104,7 +104,10 @@ const analyzeActorEquippedWeapons = (actor) => {
 		mainWeapon: null,
 		mainWeaponSlot: "",
 		canUseDex: false,
+		attributes: [],
 		daValue: "",
+		daPrimary: "",
+		daSecondary: "",
 		damageType: "none",
 		invalidConfiguration: false,
 		warning: "",
@@ -141,6 +144,17 @@ const analyzeActorEquippedWeapons = (actor) => {
 			warnings.push(
 				`L'arme "${item.name}" est equipee en ${slotLabel} sans y etre equipable.`,
 			);
+		}
+
+		const attributeList = system.weapon_attributes?.list ?? [];
+		if (attributeList.includes("Lourde") && attributeList.includes("Légère")) {
+			warnings.push(`L'arme "${item.name}" a les attributs Lourde et Légère.`);
+		}
+		if (attributeList.includes("Lourde") && attributeList.includes("Finesse")) {
+			warnings.push(`L'arme "${item.name}" a les attributs Lourde et Finesse.`);
+		}
+		if (attributeList.includes("Lancer") && !attributeList.includes("Légère")) {
+			warnings.push(`L'arme "${item.name}" a Lancer sans Légère.`);
 		}
 
 		equippedWeapons.push({
@@ -196,23 +210,42 @@ const analyzeActorEquippedWeapons = (actor) => {
 
 	const mainWeaponSlot = mainWeaponEntry
 		? mainWeaponEntry.isTwoHanded
-			? "two_handed"
+			? "two_hands"
 			: mainWeaponEntry.isMainHand
 				? "main_hand"
-				: "off_hand"
+				: "secondary_hand"
 		: "";
 	const mainWeapon = mainWeaponEntry?.item ?? null;
 	const mainWeaponSystem = mainWeaponEntry?.system ?? {};
 	const weaponAttributes = mainWeaponSystem.weapon_attributes ?? {};
-	const canUseDex = weaponAttributes.can_use_dex === true;
-	const daValue = getWeaponDaBySlot(mainWeaponSystem, mainWeaponSlot);
+	const attributes = Array.isArray(weaponAttributes.list) ? weaponAttributes.list : [];
+	const canUseDex = attributes.includes("Finesse");
+	const mainHandEntry = equippedWeapons.find((entry) => entry.isMainHand && !entry.isTwoHanded);
+	const secondaryHandEntry = equippedWeapons.find((entry) => entry.isOffHand && !entry.isTwoHanded);
+	const twoHandsEntry = equippedWeapons.find((entry) => entry.isTwoHanded);
+	const daPrimary = twoHandsEntry
+		? getWeaponAttackByUsage(twoHandsEntry.system, "two_hands")
+		: mainHandEntry
+			? getWeaponAttackByUsage(mainHandEntry.system, "main_hand")
+			: "";
+	const daSecondary = twoHandsEntry
+		? ""
+		: secondaryHandEntry
+			? getWeaponAttackByUsage(secondaryHandEntry.system, "secondary_hand")
+			: "";
+	const daValue = twoHandsEntry
+		? daPrimary
+		: [daPrimary, daSecondary].filter(Boolean).join("+");
 	const damageType = String(mainWeaponSystem.damage_type ?? "none").trim() || "none";
 
 	const uniqueWarnings = [...new Set(warnings)];
 	result.mainWeapon = mainWeapon;
 	result.mainWeaponSlot = mainWeaponSlot;
 	result.canUseDex = canUseDex;
+	result.attributes = attributes;
 	result.daValue = daValue;
+	result.daPrimary = daPrimary;
+	result.daSecondary = daSecondary;
 	result.damageType = damageType;
 	result.invalidConfiguration = uniqueWarnings.length > 0;
 	result.warning = uniqueWarnings.join(" ");
@@ -248,11 +281,14 @@ export const prepareActorDerivedData = (model) => {
 	weaponState.main_weapon_name = equippedWeapons.mainWeapon?.name ?? "";
 	weaponState.main_weapon_slot = equippedWeapons.mainWeaponSlot;
 	weaponState.main_weapon_can_use_dex = equippedWeapons.canUseDex;
+	weaponState.main_weapon_attributes = equippedWeapons.attributes;
 	weaponState.invalid_configuration = equippedWeapons.invalidConfiguration;
 	weaponState.warning = equippedWeapons.warning;
 
 	const actorDa = sys.da ?? {};
 	actorDa.value = equippedWeapons.daValue || "d2+1";
+	actorDa.primary = equippedWeapons.daPrimary;
+	actorDa.secondary = equippedWeapons.daSecondary;
 	sys.damage_type = equippedWeapons.damageType || "none";
 
 	const statBased = ({ path, stat = null, defaultStat = "none" } = {}) => {

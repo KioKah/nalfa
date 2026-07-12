@@ -1332,7 +1332,9 @@
 		flex: 1 1 auto;
 		min-width: 0;
 		flex-direction: column;
-		gap: 1px;
+		justify-content: center;
+		max-height: 24px;
+		overflow: hidden;
 	}
 
 	.embedded-actions__summary,
@@ -1343,6 +1345,9 @@
 	}
 
 	.embedded-actions__summary {
+		display: block;
+		max-height: 12px;
+		line-height: 12px;
 		opacity: 0.8;
 	}
 

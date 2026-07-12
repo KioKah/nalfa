@@ -7,6 +7,7 @@ export const createDefaultDamageFormula = () => ({
 
 export const createDefaultActionData = () => ({
 	mode: "physical",
+	weapon_usage: "normal",
 	range_type: "ranged",
 	requires: "",
 	cost: {
@@ -33,6 +34,10 @@ export const createDefaultActionData = () => ({
 				enabled: false,
 				amount: 0,
 				effect: "",
+				jdd: {
+					enabled: false,
+					damage_formulas: [createDefaultDamageFormula()],
+				},
 			},
 		},
 		uses: {

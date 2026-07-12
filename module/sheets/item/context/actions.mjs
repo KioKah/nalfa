@@ -95,6 +95,14 @@ const tooltipSpan = ({ text = "", tooltip = "", className = "" } = {}) => {
 	return `<span${classAttr}${tooltipAttrs(tooltip)}>${escapeHtml(text)}</span>`;
 };
 
+const tooltipSpanHtml = ({ text = "", tooltipHtml = "", className = "" } = {}) => {
+	const classAttr = className ? ` class="${escapeHtml(className)}"` : "";
+	const tooltipAttr = tooltipHtml
+		? ` data-tooltip="${tooltipHtml}" data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"`
+		: "";
+	return `<span${classAttr}${tooltipAttr}>${escapeHtml(text)}</span>`;
+};
+
 const tooltipHtmlSpan = ({ html = "", tooltip = "", className = "" } = {}) => {
 	const classAttr = className ? ` class="${escapeHtml(className)}"` : "";
 	return `<span${classAttr}${tooltipAttrs(tooltip)}>${html}</span>`;
@@ -239,16 +247,19 @@ const buildActionResourceSummary = ({ actionData, config }) => {
 	};
 };
 
-const buildActionCoreSummary = (item, actionData, config) => {
+function buildActionCoreSummary(item, actionData, config) {
 	const mode = String(actionData?.mode ?? "none");
 	const modeLabel = String(config.attack_mode?.[mode] ?? mode).trim();
+	const weaponUsage = String(actionData?.weapon_usage ?? "normal");
+	const weaponUsageLabel =
+		weaponUsage === "thrown" ? String(config.weapon_usages?.[weaponUsage] ?? "").trim() : "";
 	const nalfaAmount = toFiniteNumber(actionData?.cost?.nalfa?.amount, 0);
 	const nalfaCategory = String(actionData?.cost?.nalfa?.category ?? "minor");
 	const nalfaLabel =
 		nalfaAmount > 0 || mode === "incant"
 			? String(config.nalfa_cost_categories_short?.[nalfaCategory] ?? "").trim()
 			: "";
-	const modeWithTier = [modeLabel, nalfaLabel].filter(Boolean).join(" ");
+	const modeWithTier = [modeLabel, weaponUsageLabel, nalfaLabel].filter(Boolean).join(" ");
 	const jdParts = [];
 	const jdHtmlParts = [];
 	const getSavedDamageInlineHint = () => {
@@ -292,10 +303,14 @@ const buildActionCoreSummary = (item, actionData, config) => {
 		const saveSummary = outcomeSummary
 			? `JdS ${dd} ${statLabel} -> ${outcomeSummary}`
 			: `JdS ${dd} ${statLabel}`;
-		const saveTooltipParts = ["JdS :", `DD : ${dd}`, `Stat : ${statLabel}`];
+		const saveTooltipParts = ["<strong>JdS :</strong>", `DD : ${dd}`, `Stat : ${statLabel}`];
 		if (outcomeSummary) saveTooltipParts.push(`Réussite : ${outcomeSummary}`);
+		const savedDamageTooltip = buildSavedDamageTooltip(item, actionData, config);
+		if (savedDamageTooltip) saveTooltipParts.push(savedDamageTooltip);
 		jdParts.push(saveSummary);
-		jdHtmlParts.push(tooltipSpan({ text: saveSummary, tooltip: saveTooltipParts.join("\n") }));
+		jdHtmlParts.push(
+			tooltipSpanHtml({ text: saveSummary, tooltipHtml: saveTooltipParts.join("<br>") }),
+		);
 	}
 
 	const jdSummary = jdParts.join(" & ");
@@ -310,7 +325,7 @@ const buildActionCoreSummary = (item, actionData, config) => {
 		text: `${modeWithTier} : ${jdSummary}`,
 		html: `${modeHtml} : ${jdHtml}`,
 	};
-};
+}
 
 const buildActionRequirementSummary = (actionData) => {
 	return htmlToPlainText(actionData?.requires ?? "");
@@ -390,6 +405,29 @@ const buildNalfaOverloadSummary = (actionData) => {
 	const amountLabel = amount > 0 ? `+${amount} Nalfa` : "Surcharge Nalfa";
 	return effect ? `${amountLabel}: ${effect}` : amountLabel;
 };
+
+function buildNalfaOverloadTooltip(item, actionData, config) {
+	const overload = actionData?.cost?.nalfa?.overload ?? {};
+	if (overload.enabled !== true) return "";
+
+	const parts = [];
+	const amount = toFiniteNumber(overload.amount, 0);
+	if (amount > 0) parts.push(`Coût : +${amount} Nalfa`);
+
+	const effect = htmlToPlainText(overload.effect ?? "", { preserveLineBreaks: true });
+	if (effect) parts.push(`Effet : ${effect}`);
+
+	if (overload.jdd?.enabled) {
+		const damageParts = buildDamageFormulaSummary(
+			item,
+			Array.isArray(overload.jdd?.damage_formulas) ? overload.jdd.damage_formulas : [],
+			config,
+		);
+		if (damageParts.tooltip) parts.push(`JdD modifié :\n${damageParts.tooltip}`);
+	}
+
+	return parts.length ? `Surcharge Nalfa :\n${parts.join("\n")}` : "";
+}
 
 const buildRangeDetailSummary = (actionData, config) => {
 	const rangeType = String(actionData?.range_type ?? "ranged");
@@ -530,7 +568,7 @@ const buildDamageFormulaEffectSuffixes = (entries) => {
 	return suffixes;
 };
 
-const buildDamageFormulaSummary = (item, formulas, config) => {
+function buildDamageFormulaSummary(item, formulas, config) {
 	const entries = formulas
 		.map((formulaData) => buildDamageFormulaEntry(item, formulaData, config))
 		.filter(Boolean);
@@ -561,7 +599,7 @@ const buildDamageFormulaSummary = (item, formulas, config) => {
 	const tooltip = entries.map((entry) => entry.detailLine).join("\n");
 
 	return { html, tooltip };
-};
+}
 
 const buildActionDamageSummary = (item, actionData, config) => {
 	if (!actionData?.jdd?.enabled) return "";
@@ -580,24 +618,51 @@ const buildActionDamageSummary = (item, actionData, config) => {
 	};
 };
 
-const buildSavedDamageSummary = (item, actionData) => {
+function buildSavedDamageTooltip(item, actionData, config) {
+	if (!actionData?.jdd?.enabled || !actionData?.jds?.enabled) return "";
+
+	const mode = String(actionData?.jdd_saved?.mode ?? "same");
+	if (mode === "same") return "";
+	if (mode === "half") return "<br><strong>JdD sauvegardé :</strong><br>JdD /2";
+	if (mode !== "other") return "";
+
+	const damageParts = buildDamageFormulaSummary(
+		item,
+		Array.isArray(actionData?.jdd_saved?.damage_formulas)
+			? actionData.jdd_saved.damage_formulas
+			: [],
+		config,
+	);
+	return damageParts.tooltip
+		? `<br><strong>JdD sauvegardé :</strong><br>${formatTooltipHtml(damageParts.tooltip)}`
+		: "";
+}
+
+const buildSavedDamageSummary = (item, actionData, config) => {
 	void item;
 	void actionData;
+	void config;
 	return "";
 };
 
-const buildActionRightSummaryRows = (actionData) => {
+const buildActionRightSummaryRows = (item, actionData, config) => {
 	const rows = [];
 	const requirementSummary = buildActionRequirementSummary(actionData);
 	if (requirementSummary) rows.push(makeSummaryRow(requirementSummary, `Prérequis :\n${requirementSummary}`));
 
 	const cooldownSummary = buildActionCdSummary(actionData);
 	const usesSummary = buildActionUsesSummary(actionData);
-	const costRow = [cooldownSummary, usesSummary].filter(Boolean).join(", ");
-	if (costRow) rows.push(makeSummaryRow(costRow));
-
 	const overloadSummary = buildNalfaOverloadSummary(actionData);
-	if (overloadSummary) rows.push(makeSummaryRow(overloadSummary));
+	const costRow = [cooldownSummary, usesSummary].filter(Boolean).join(", ");
+	if (costRow) {
+		const costTooltip = [costRow, overloadSummary ? `Surcharge : ${overloadSummary}` : ""]
+			.filter(Boolean)
+			.join("\n");
+		rows.push(makeSummaryRow(costRow, costTooltip));
+	}
+	if (overloadSummary) {
+		rows.push(makeSummaryRow(overloadSummary, buildNalfaOverloadTooltip(item, actionData, config)));
+	}
 
 	return rows;
 };
@@ -612,7 +677,7 @@ const buildEmbeddedActionDetailRows = (item, actionData, config) => {
 
 	const rangeSummary = buildActionRangeSummary(actionData, config);
 	const damageSummary = buildActionDamageSummary(item, actionData, config);
-	const savedDamageSummary = buildSavedDamageSummary(item, actionData);
+	const savedDamageSummary = buildSavedDamageSummary(item, actionData, config);
 	const detailRow2Parts = [
 		rangeSummary?.text,
 		damageSummary?.text,
@@ -648,7 +713,7 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 		preferGenerated: alwaysRefresh,
 	});
 	const defaultShorthand = getDefaultEmbeddedActionShorthand(actionName);
-	const summaryRows = buildActionRightSummaryRows(actionData);
+	const summaryRows = buildActionRightSummaryRows(item, actionData, config);
 	const { detailRow1, detailRow1Html, detailRow2, detailRow2Html } =
 		buildEmbeddedActionDetailRows(item, actionData, config);
 	const effectText = htmlToPlainText(actionData?.effect?.text ?? "", {

@@ -1,52 +1,48 @@
 <div class="panel-section">
 	<div class="field field--inline">
-		<span class="field__label">Dé arme</span>
-	</div>
-	<div class="field field--inline">
-		<span class="field__label">1 main</span>
-		{{#if sysData.equippable.main_hand}}
-			<input
-				class="fixed"
-				name="system.da.main_hand"
-				type="text"
-				value="{{sysData.da.main_hand}}"
-				placeholder="Ex : d6m"
-			/>
+		<span class="field__label">ATK Arme</span>
+		{{#if activeWeaponAttack}}
+			<span class="field__value">{{activeWeaponAttack.value}} ({{activeWeaponAttack.label}})</span>
 		{{else}}
-			<span class="field__value">Non équipable</span>
+			<span class="field__value">Non équipée</span>
 		{{/if}}
 	</div>
-	<div class="field field--inline">
-		<span class="field__label">2 mains</span>
-		{{#if sysData.equippable.two_handed}}
+	{{#if sysData.equippable.main_hand}}
+		<label class="field field--inline">
+			<span class="field__label">Mp</span>
 			<input
 				class="fixed"
-				name="system.da.two_handed"
-				type="text"
-				value="{{sysData.da.two_handed}}"
-				placeholder="Ex : d8m"
+				name="system.attack.main_hand"
+				type="number"
+				value="{{sysData.attack.main_hand}}"
 			/>
-		{{else}}
-			<span class="field__value">Non équipable</span>
-		{{/if}}
-	</div>
-	<div class="field field--inline">
-		<span class="field__label">2&times; 1 main</span>
-		{{#if sysData.equippable.off_hand}}
+		</label>
+	{{/if}}
+	{{#if sysData.equippable.off_hand}}
+		<label class="field field--inline">
+			<span class="field__label">Ms</span>
 			<input
 				class="fixed"
-				name="system.da.dual_wield"
-				type="text"
-				value="{{sysData.da.dual_wield}}"
-				placeholder="Ex : d8m"
+				name="system.attack.secondary_hand"
+				type="number"
+				value="{{sysData.attack.secondary_hand}}"
 			/>
-		{{else}}
-			<span class="field__value">Non équipable</span>
-		{{/if}}
-	</div>
+		</label>
+	{{/if}}
+	{{#if sysData.equippable.two_handed}}
+		<label class="field field--inline">
+			<span class="field__label">2M</span>
+			<input
+				class="fixed"
+				name="system.attack.two_hands"
+				type="number"
+				value="{{sysData.attack.two_hands}}"
+			/>
+		</label>
+	{{/if}}
 	<label class="field field--inline">
 		<span class="field__label">Type de dégâts</span>
-		<select name="system.damage_type" data-action="change-damage-type">
+		<select class="fixed" name="system.damage_type" data-action="change-damage-type">
 			{{#if (lookup config.fusion_damage_types sysData.damage_type)}}
 				<option value="{{sysData.damage_type}}" data-special-damage-type="true" selected>
 					{{lookup config.fusion_damage_types sysData.damage_type}}
@@ -55,17 +51,6 @@
 			{{selectOptions config.base_standard_damage_types selected=sysData.damage_type}}
 			<option value="__special_damage_type__">Types spéciaux</option>
 		</select>
-	</label>
-</div>
-
-<div class="panel-section">
-	<label class="field field--inline">
-		<span class="field__label">Peut utiliser DEX</span>
-		<input
-			type="checkbox"
-			name="system.weapon_attributes.can_use_dex"
-			{{checked sysData.weapon_attributes.can_use_dex}}
-		/>
 	</label>
 </div>
 
@@ -85,12 +70,9 @@
 	{{#if sysData.weapon_attributes.list.length}}
 		{{#each sysData.weapon_attributes.list as |attribute index|}}
 			<div class="field field--inline">
-				<input
-					class="fixed"
-					name="system.weapon_attributes.list.{{index}}"
-					type="text"
-					value="{{attribute}}"
-				/>
+				<select class="fixed" name="system.weapon_attributes.list.{{index}}">
+					{{selectOptions @root.config.weapon_attributes selected=attribute}}
+				</select>
 				<button
 					type="button"
 					class="array-action-btn"
@@ -105,5 +87,11 @@
 		{{/each}}
 	{{else}}
 		<p>Aucun attribut d'arme.</p>
+	{{/if}}
+	{{#if weaponWarnings.length}}
+		<div class="field field--inline">
+			<span class="field__label">Incompatibilités</span>
+			<span class="field__value">{{weaponWarningText}}</span>
+		</div>
 	{{/if}}
 </div>

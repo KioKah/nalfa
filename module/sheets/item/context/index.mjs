@@ -64,6 +64,43 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 	const equippedSlot = getEquippedSlotValue(equippedState, equippableState);
 	const equippedOptions = getEquippedOptions(equippableState);
 	const isEquipLocked = isEquippedSlotLocked(item.system);
+	const weaponAttack = item.system?.attack ?? {};
+	const weaponAttackRows = [
+		{
+			key: "main_hand",
+			label: "Mp",
+			value: String(weaponAttack.main_hand ?? "").trim(),
+			available: item.system?.equippable?.main_hand === true,
+			active: equippedSlot === "main_hand",
+		},
+		{
+			key: "secondary_hand",
+			label: "Ms",
+			value: String(weaponAttack.secondary_hand ?? "").trim(),
+			available: item.system?.equippable?.off_hand === true,
+			active: equippedSlot === "off_hand",
+		},
+		{
+			key: "two_hands",
+			label: "2M",
+			value: String(weaponAttack.two_hands ?? "").trim(),
+			available: item.system?.equippable?.two_handed === true,
+			active: equippedSlot === "two_handed",
+		},
+	].filter((row) => row.available);
+	const activeWeaponAttack = weaponAttackRows.find((row) => row.active) ?? null;
+	const weaponAttributeList = item.system?.weapon_attributes?.list ?? [];
+	const weaponWarnings = [];
+	if (weaponAttributeList.includes("Lourde") && weaponAttributeList.includes("Légère")) {
+		weaponWarnings.push("Lourde + Légère");
+	}
+	if (weaponAttributeList.includes("Lourde") && weaponAttributeList.includes("Finesse")) {
+		weaponWarnings.push("Lourde + Finesse");
+	}
+	if (weaponAttributeList.includes("Lancer") && !weaponAttributeList.includes("Légère")) {
+		weaponWarnings.push("Lancer sans Légère");
+	}
+	const weaponWarningText = weaponWarnings.join(", ");
 	const modifiers = Array.isArray(item.system?.modifiers) ? item.system.modifiers : [];
 	const modifierRows = buildModifierRows({ modifiers, config });
 	const [enrichedLoretext, enrichedEffectText, enrichedNote] = await Promise.all([
@@ -98,6 +135,10 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			equippedSlot,
 			equippedOptions,
 			isEquipLocked,
+			weaponAttackRows,
+			activeWeaponAttack,
+			weaponWarnings,
+			weaponWarningText,
 			descriptionValue,
 			loretextValue,
 			config,

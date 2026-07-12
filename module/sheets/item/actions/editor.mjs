@@ -435,6 +435,7 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			"cost.movement.mode",
 			"cost.nalfa.category",
 			"cost.nalfa.overload.enabled",
+			"cost.nalfa.overload.jdd.enabled",
 			"cost.uses.unit",
 			"cost.cooldown.unit",
 			"jds.fails_on_save",

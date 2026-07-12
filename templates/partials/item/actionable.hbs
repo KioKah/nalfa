@@ -46,6 +46,8 @@
       noteHasContent=noteHasContent
       enrichedHTML=enrichedHTML
       readonly=readonly
+      isActionModeIncant=isActionModeIncant
+      isActionModePhysical=isActionModePhysical
     }}
 
     <div class="attack-config__sections">
@@ -81,7 +83,7 @@
           isActionModePhysical=isActionModePhysical
           addTooltip="Ajouter une formule de dégâts"
           removeTooltip="Supprimer cette formule de dégâts"
-          formulaPlaceholder="Ex : 2d6m+1"
+			formulaPlaceholder="d..."
         }}
       {{/if}}
 
@@ -99,7 +101,7 @@
           isActionModePhysical=isActionModePhysical
           addTooltip="Ajouter une formule de dégâts sauvegardés"
           removeTooltip="Supprimer cette formule de dégâts sauvegardés"
-          formulaPlaceholder="Ex : 2d6m"
+			formulaPlaceholder="d..."
           savedDamageModePath="jdd_saved.mode"
           savedDamageMode=actionData.jdd_saved.mode
           showSavedDamageModeSelector=true

@@ -41,32 +41,32 @@ But : stabiliser le modèle d'arme, car il impacte l'équipement, les formules d
 
 Tâches :
 
-- [ ] Renommer le concept stocké sur les armes : ne plus parler de `dA` d'arme, mais d'`attaque` d'arme.
-- [ ] Stocker l'attaque d'arme selon l'usage : `main_hand` pour main principale, `secondary_hand` pour main secondaire, `two_hands` pour deux mains.
-- [ ] Utiliser les abréviations visibles `Mp`, `Ms`, `2M` si ces usages sont affichés aux utilisateurs.
-- [ ] Si `attaque` doit être abrégé dans une interface utilisateur, utiliser `ATK`.
-- [ ] Afficher l'attaque actuellement applicable directement dans la feuille d'objet de l'arme.
-- [ ] Garder `dA`, `dAp` et `dAs` comme variables de formule côté personnage/action, distinctes des attaques stockées sur les armes.
-- [ ] Calculer `dA` personnage comme la somme `attaque main_hand` de l'arme en main principale + `attaque secondary_hand` de l'arme en main secondaire, en cas de dual wield.
-- [ ] Calculer `dA` personnage comme `attaque two_hands` de l'arme équipée à deux mains, en cas d'arme à deux mains.
-- [ ] Définir `dAp` comme l'attaque de l'arme en main principale.
-- [ ] Définir `dAp` aussi pour une arme équipée à deux mains, car une arme à deux mains compte comme main principale.
-- [ ] Définir `dAs` comme l'attaque de l'arme en main secondaire.
-- [ ] Ne pas définir `dAs` pour une arme équipée à deux mains.
-- [ ] Considérer `dAp` comme non défini si aucune arme n'est en main principale.
-- [ ] Considérer `dAs` comme non défini si aucune arme n'est en main secondaire.
-- [ ] Permettre aux formules de dégâts et effets de sorts d'utiliser `dA`, `dAp` et `dAs`.
-- [ ] Ignorer entièrement une formule de dégâts qui référence `dAp` ou `dAs` si la variable correspondante n'est pas définie.
-- [ ] Quand une formule est ignorée pour `dAp`/`dAs` non défini, ignorer aussi ses bonus flat.
-- [ ] Clarifier dans le modèle l'usage actif d'une arme : main principale, main secondaire, deux mains.
-- [ ] Ajouter l'attribut d'arme `Lourde`.
-- [ ] Ajouter l'attribut d'arme `Lancer`.
-- [ ] Ajouter la règle de lancer d'arme : JdD divisé par 2 si l'arme n'a pas l'attribut `Lancer`.
-- [ ] Ajouter des warnings visibles, non bloquants, pour les combinaisons invalides ou suspectes.
-- [ ] Warning : `Lourde` + `Légère`.
-- [ ] Warning : `Lourde` + `Finesse`.
-- [ ] Warning : `Lancer` sans `Légère`.
-- [ ] Laisser le MJ sauvegarder malgré les warnings.
+- [x] Renommer le concept stocké sur les armes : ne plus parler de `dA` d'arme, mais d'`attaque` d'arme.
+- [x] Stocker l'attaque d'arme selon l'usage : `main_hand` pour main principale, `secondary_hand` pour main secondaire, `two_hands` pour deux mains.
+- [x] Utiliser les abréviations visibles `Mp`, `Ms`, `2M` si ces usages sont affichés aux utilisateurs.
+- [x] Si `attaque` doit être abrégé dans une interface utilisateur, utiliser `ATK`.
+- [x] Afficher l'attaque actuellement applicable directement dans la feuille d'objet de l'arme.
+- [x] Garder `dA`, `dAp` et `dAs` comme variables de formule côté personnage/action, distinctes des attaques stockées sur les armes.
+- [x] Calculer `dA` personnage comme la somme `attaque main_hand` de l'arme en main principale + `attaque secondary_hand` de l'arme en main secondaire, en cas de dual wield.
+- [x] Calculer `dA` personnage comme `attaque two_hands` de l'arme équipée à deux mains, en cas d'arme à deux mains.
+- [x] Définir `dAp` comme l'attaque de l'arme en main principale.
+- [x] Définir `dAp` aussi pour une arme équipée à deux mains, car une arme à deux mains compte comme main principale.
+- [x] Définir `dAs` comme l'attaque de l'arme en main secondaire.
+- [x] Ne pas définir `dAs` pour une arme équipée à deux mains.
+- [x] Considérer `dAp` comme non défini si aucune arme n'est en main principale.
+- [x] Considérer `dAs` comme non défini aussi si aucune arme n'est en main secondaire.
+- [x] Permettre aux formules de dégâts et effets de sorts d'utiliser `dA`, `dAp` et `dAs`.
+- [x] Ignorer entièrement une formule de dégâts qui référence `dAp` ou `dAs` si la variable correspondante n'est pas définie.
+- [x] Quand une formule est ignorée pour `dAp`/`dAs` non défini, ignorer aussi ses bonus flat (de stat par exemple).
+- [x] Clarifier dans le modèle l'usage actif d'une arme : main principale, main secondaire, deux mains.
+- [x] Ajouter l'attribut d'arme `Lourde`.
+- [x] Ajouter l'attribut d'arme `Lancer`.
+- [x] Ajouter la règle de lancer d'arme : JdD divisé par 2 si l'arme n'a pas l'attribut `Lancer`.
+- [x] Ajouter des warnings visibles, non bloquants, pour les combinaisons invalides ou suspectes.
+- [x] Warning : `Lourde` + `Légère`.
+- [x] Warning : `Lourde` + `Finesse`.
+- [x] Warning : `Lancer` sans `Légère`.
+- [x] Laisser le MJ sauvegarder malgré les warnings.
 
 État actuel connu :
 
@@ -81,17 +81,12 @@ But : fiabiliser les résultats automatiques des jets sans lancer tout de suite 
 
 Tâches prioritaires :
 
-- [ ] Corriger le comportement de `1 naturel` et `20 naturel` dans les workflows de jets.
+- [ ] Vérifier le comportement de `1 naturel` et `20 naturel` dans les workflows de jets.
 - [ ] Garantir qu'un `20 naturel` produit un succès effectif, pas seulement un affichage critique.
 - [ ] Garantir qu'un `1 naturel` produit un échec effectif, pas seulement un affichage fumble.
-- [ ] Harmoniser attaque, sauvegarde, concentration et compétence autour de cette règle.
-
-Tâches reportées :
-
-- [ ] Prévoir une structure capable d'agréger plusieurs sources d'avantage/désavantage.
-- [ ] Ne pas prioriser l'automatisation des sources de (dés)avantage tant que les règles ne listent pas de sources concrètes.
-- [ ] Ajouter plus tard le lancer effectif `2d20 garder meilleur/pire`.
-- [ ] Étape minimale possible : ajouter un sélecteur manuel `normal / avantage / désavantage` dans les prompts de jet quand ces prompts seront travaillés.
+- [ ] Harmoniser attaque, sauvegarde, concentration et compétence autour de cette règle si pas déjà fait.
+- [ ] Ajouter un sélecteur manuel `normal / avantage / désavantage` (d20 / 2d20kh / 2d20kl) dans les prompts de jet.
+- [ ] Ajouter un affichage stylisé des résultats d'avantage/désavantage similaire aux autres roll cards.
 
 État actuel connu :
 

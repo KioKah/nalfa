@@ -161,12 +161,16 @@ export const executeActionDamageRoll = async ({
 
 	try {
 		if (shouldRollBaseDamage) {
-			baseResults = await rollDamageEntries(actor, baseDamageEntries);
+			baseResults = await rollDamageEntries(actor, baseDamageEntries, {
+				weaponUsage: actionData?.weapon_usage,
+			});
 		}
 
 		if (hasSaveResults && savedDamageMode === "other" && savedTargets.length) {
 			const savedDamageEntries = getSavedDamageEntries(actionData);
-			savedResults = await rollDamageEntries(actor, savedDamageEntries);
+			savedResults = await rollDamageEntries(actor, savedDamageEntries, {
+				weaponUsage: actionData?.weapon_usage,
+			});
 		}
 
 		if (hasCritDamageTargets) {
@@ -176,6 +180,7 @@ export const executeActionDamageRoll = async ({
 			critResults = await rollDamageEntries(actor, baseDamageEntries, {
 				includeStat: false,
 				diceOnly: true,
+				weaponUsage: actionData?.weapon_usage,
 			});
 			console.log("nalfa | Crit damage debug | crit results", {
 				critResults: critResults.map((result) => ({

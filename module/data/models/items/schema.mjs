@@ -61,6 +61,7 @@ export const actionSchemaDefinition = () => {
 
 	return {
 		mode: stringField(defaults.mode),
+		weapon_usage: stringField(defaults.weapon_usage),
 		range_type: stringField(defaults.range_type),
 		requires: stringField(defaults.requires),
 		cost: schemaField({
@@ -88,6 +89,12 @@ export const actionSchemaDefinition = () => {
 					enabled: booleanField(defaults.cost.nalfa.overload.enabled),
 					amount: numberField(defaults.cost.nalfa.overload.amount),
 					effect: htmlField(defaults.cost.nalfa.overload.effect),
+					jdd: schemaField({
+						enabled: booleanField(defaults.cost.nalfa.overload.jdd.enabled),
+						damage_formulas: damageFormulaArrayField(
+							defaults.cost.nalfa.overload.jdd.damage_formulas,
+						),
+					}),
 				}),
 			}),
 			uses: schemaField({
@@ -268,16 +275,15 @@ const itemModifierSchema = () =>
 		value: numberField(0),
 	});
 
-const weaponDamageDieSchema = () =>
+const weaponAttackSchema = () =>
 	schemaField({
 		main_hand: stringField(""),
-		two_handed: stringField(""),
-		dual_wield: stringField(""),
+		secondary_hand: stringField(""),
+		two_hands: stringField(""),
 	});
 
 const weaponAttributesSchema = () =>
 	schemaField({
-		can_use_dex: booleanField(false),
 		list: arrayField(stringField(""), []),
 	});
 
@@ -287,7 +293,7 @@ export const weaponItemSchema = (baseSchema) => ({
 	...recommendedLevelSchema(),
 	...physicalSchema(),
 	...actionableSchema(),
-	da: weaponDamageDieSchema(),
+	attack: weaponAttackSchema(),
 	damage_type: stringField("none"),
 	weapon_attributes: weaponAttributesSchema(),
 });

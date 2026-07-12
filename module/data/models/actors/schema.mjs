@@ -1,4 +1,5 @@
 import {
+	arrayField,
 	booleanField,
 	htmlField,
 	numberField,
@@ -143,12 +144,15 @@ export const baseActorSchema = () => ({
 	}),
 	da: schemaField({
 		value: stringField("d2+1"),
+		primary: stringField(""),
+		secondary: stringField(""),
 	}),
 	damage_type: stringField("none"),
 	weapon_state: schemaField({
 		main_weapon_name: stringField(""),
 		main_weapon_slot: stringField(""),
 		main_weapon_can_use_dex: booleanField(false),
+		main_weapon_attributes: arrayField(stringField(""), []),
 		invalid_configuration: booleanField(false),
 		warning: stringField(""),
 	}),

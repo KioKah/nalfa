@@ -6,6 +6,9 @@
     <select class="attack-config__mode-select" name="system.{{actionPath}}mode">
       {{selectOptions config.attack_mode selected=actionData.mode}}
     </select>
+    <select class="attack-config__mode-select" name="system.{{actionPath}}weapon_usage">
+      {{selectOptions config.weapon_usages selected=actionData.weapon_usage}}
+    </select>
     <select
       class="attack-config__cost-select attack-config__cost-select--zone-type"
       name="system.{{actionPath}}range_type"

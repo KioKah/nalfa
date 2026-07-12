@@ -242,12 +242,22 @@ const evaluateDamageEntry = async (actor, config = {}) => {
 	const rawFormula = (config.formula ?? "").trim();
 	if (!rawFormula) return null;
 
-	const resolvedFormula = resolveDamageFormula(rawFormula, actor);
+	const resolvedDamageFormula = resolveDamageFormula(rawFormula, actor);
+	if (resolvedDamageFormula.missingVariable) return null;
+	const resolvedFormula = resolvedDamageFormula.formula;
 	const normalizedFormula = normalizeDamageFormula(resolvedFormula);
+	const usesWeaponDamage = /\bdA[pPsS]?\b/.test(rawFormula);
+	const weaponUsage = String(config.weaponUsage ?? "normal").trim();
+	const weaponAttributes = actor.system?.weapon_state?.main_weapon_attributes ?? [];
+	const isThrownWithoutThrowingAttribute =
+		usesWeaponDamage && weaponUsage === "thrown" && !weaponAttributes.includes("Lancer");
 	const diceOnly = config.diceOnly === true;
-	const rollFormula = diceOnly
+	const baseRollFormula = diceOnly
 		? extractCritBonusFormula(normalizedFormula)
 		: normalizedFormula;
+	const rollFormula = isThrownWithoutThrowingAttribute
+		? `floor((${baseRollFormula}) / 2)`
+		: baseRollFormula;
 	if (diceOnly) {
 		console.log("nalfa | Crit damage debug | extracted dice formula", {
 			rawFormula,
@@ -351,6 +361,7 @@ export const rollDamageEntries = async (actor, entries = [], options = {}) => {
 			effect: entry?.effect,
 			includeStat: options.includeStat,
 			diceOnly: options.diceOnly,
+			weaponUsage: options.weaponUsage,
 		});
 		if (result) results.push(result);
 	}

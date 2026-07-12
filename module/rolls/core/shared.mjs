@@ -26,6 +26,17 @@ const getActorDamageDie = (actor) => {
 	return actorDamageDie || DEFAULT_ACTOR_DAMAGE_DIE;
 };
 
+const getActorDamageDieVariable = (actor, variableName) => {
+	if (variableName.toLowerCase() === "da") return getActorDamageDie(actor);
+	if (variableName.toLowerCase() === "dap") {
+		return String(actor?.system?.da?.primary ?? "").trim();
+	}
+	if (variableName.toLowerCase() === "das") {
+		return String(actor?.system?.da?.secondary ?? "").trim();
+	}
+	return "";
+};
+
 const getActorDamageType = (actor) => {
 	const actorDamageType = String(actor?.system?.damage_type ?? "").trim();
 	return actorDamageType || DEFAULT_ACTOR_DAMAGE_TYPE;
@@ -111,8 +122,17 @@ export const promptEnemyAttackBonus = async (defaultValue = 0) => {
 };
 
 export const resolveDamageFormula = (formula = "", actor) => {
-	const damageDie = getActorDamageDie(actor);
-	return String(formula ?? "").replace(/\bdA\b/gi, `(${damageDie})`);
+	let missingVariable = "";
+	const formulaText = String(formula ?? "").replace(/\bdA[pPsS]?\b/g, (match) => {
+		const damageDie = getActorDamageDieVariable(actor, match);
+		if (!damageDie && match.toLowerCase() !== "da") missingVariable = match;
+		return damageDie ? `(${damageDie})` : match;
+	});
+
+	return {
+		formula: formulaText,
+		missingVariable,
+	};
 };
 
 export const resolveDamageType = (damageType, actor) => {

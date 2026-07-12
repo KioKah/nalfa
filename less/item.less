@@ -1094,6 +1094,39 @@
 			align-items: flex-start;
 		}
 
+		&__cost-entry--nalfa {
+			.attack-config__cost-input {
+				.chr-input-block(@chr: 4);
+			}
+		}
+
+		&__cost-entry--nalfa-overload {
+			align-items: flex-start;
+		}
+
+		&__nalfa-overload-fields {
+			display: grid;
+			grid-template-columns: auto auto minmax(180px, 1fr);
+			align-items: start;
+			gap: var(--nalfa-gap-text);
+			min-width: 0;
+			width: 100%;
+		}
+
+		&__nalfa-overload-toggle {
+			min-height: 24px;
+			white-space: nowrap;
+		}
+
+		&__nalfa-overload-effect {
+			.chr-input-block(@chr: 28);
+			min-width: 180px;
+			width: 100%;
+			min-height: 42px;
+			resize: vertical;
+			line-height: 1.25;
+		}
+
 		&__action-costs {
 			display: inline-flex;
 			align-items: center;
@@ -1211,8 +1244,8 @@
 			.chr-select-block(@chr: 8);
 		}
 
-		&__cost-select--ester {
-			.chr-select-block(@chr: 8);
+		&__cost-select--nalfa {
+			.chr-select-block(@chr: 14);
 		}
 
 		&__cost-select--uses {
