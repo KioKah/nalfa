@@ -1,4 +1,4 @@
-* text eol=crlf
+* text=auto eol=crlf
 
 *.docx binary
 *.zip binary
@@ -9,3 +9,5 @@
 *.webp binary
 *.ico binary
 *.pdf binary
+*.ldb binary
+packs/** binary

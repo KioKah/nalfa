@@ -15,7 +15,15 @@
 	},
 	"esmodules": ["nalfa.mjs"],
 	"styles": ["nalfa.css"],
-	"packs": [],
+	"packs": [
+		{
+			"name": "creatures",
+			"label": "Créatures",
+			"path": "packs/creatures",
+			"type": "Actor",
+			"system": "nalfa"
+		}
+	],
 	"languages": [
 		{
 			"lang": "en",

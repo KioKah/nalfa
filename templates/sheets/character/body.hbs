@@ -55,5 +55,7 @@
     {{> "systems/nalfa/templates/partials/character/roll-stats.hbs" sysData=sysData config=config}}
   </div>
 
-  {{> "systems/nalfa/templates/partials/character/value-mode-toggle.hbs" sysData=sysData config=config}}
+  {{#if isEditable}}
+    {{> "systems/nalfa/templates/partials/character/value-mode-toggle.hbs" sysData=sysData config=config}}
+  {{/if}}
 </section>

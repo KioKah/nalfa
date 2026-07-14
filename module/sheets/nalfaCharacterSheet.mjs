@@ -168,6 +168,34 @@ const pluralizeActionCount = (count) =>
 const pluralizeInventoryCount = (count) =>
 	`${count} objet${count > 1 ? "s" : ""}`;
 
+const formatFormulaNumber = (value) => {
+	const number = Number(value);
+	if (!Number.isFinite(number) || number === 0) return "";
+	return number >= 0 ? `+${number}` : String(number);
+};
+
+const formatProfileFormula = (sysData, valueObj = {}) => {
+	const profileValue = Number(valueObj.profile ?? 0);
+	const baseValue = Number(valueObj.base ?? 0);
+	const altValue = Number(valueObj.alt ?? 0);
+	const parts = [];
+	const profileLabel = String(CONFIG.nalfa.profiles?.[sysData.profile] ?? "Sans Profil");
+
+	if (Number.isFinite(profileValue) && profileValue !== 0) {
+		parts.push(profileLabel);
+	}
+
+	if (Number.isFinite(baseValue) && baseValue !== 0) {
+		parts.push(parts.length === 0 ? String(baseValue) : formatFormulaNumber(baseValue));
+	}
+
+	if (Number.isFinite(altValue) && altValue !== 0) {
+		parts.push(parts.length === 0 ? String(altValue) : formatFormulaNumber(altValue));
+	}
+
+	return parts.join("") || profileLabel;
+};
+
 const buildActionBrowserCountLabel = ({ query, visibleCount, totalCount }) => {
 	if (!String(query ?? "").trim()) return pluralizeActionCount(totalCount);
 
@@ -830,6 +858,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		});
 		const hpValue = Number(sysData.attributes?.hp?.value ?? 0);
 		const hpMax = Math.max(1, Number(sysData.attributes?.hp?.max ?? 0));
+		const hpFormula = formatProfileFormula(sysData, sysData.attributes?.hp);
+		const defenseFormula = formatProfileFormula(
+			sysData,
+			sysData.attributes?.defense,
+		);
 		const isKO = hpValue <= 0;
 		let deathTick = null;
 
@@ -901,6 +934,8 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			bioEnriched,
 			hasBioContent: bioValue.trim().length > 0,
 			bioResistances,
+			hpFormula,
+			defenseFormula,
 			isKO,
 			deathTick,
 		};

@@ -340,6 +340,7 @@ export const prepareActorDerivedData = (model) => {
 	const profile = sys.profile ?? "none";
 	const defenseObj = sys.attributes?.defense ?? {};
 	const defenseProfile = defenseTable[profile] ?? 0;
+	defenseObj.profile = defenseProfile;
 	defenseObj.value =
 		defenseProfile + withBaseAlt("attributes.defense.base", "attributes.defense.alt");
 
@@ -385,7 +386,7 @@ export const prepareActorDerivedData = (model) => {
 
 	const charLevel = Math.max(1, Math.trunc(getNumberAtPath("attributes.level", 1)));
 	const maxHealthTable = {
-		none: [1],
+		none: [0],
 		squishy: [0, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52],
 		soft: [0, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59],
 		sturdy: [0, 10, 16, 21, 26, 31, 36, 41, 46, 51, 56, 61, 66],
@@ -393,9 +394,12 @@ export const prepareActorDerivedData = (model) => {
 	};
 	const healthObj = sys.attributes?.hp ?? {};
 	const profileArray = maxHealthTable[profile] ?? maxHealthTable.none;
-	const profileHealth = profileArray[charLevel] ?? 1;
+	const profileHealth = profileArray[charLevel] ?? 0;
 	healthObj.profile = profileHealth;
-	healthObj.max = profileHealth + withBaseAlt("attributes.hp.base", "attributes.hp.alt");
+	healthObj.max = Math.max(
+		1,
+		profileHealth + withBaseAlt("attributes.hp.base", "attributes.hp.alt"),
+	);
 
 	for (const [key, actionObj] of Object.entries(sys.actions ?? {})) {
 		if (key === "movement") {

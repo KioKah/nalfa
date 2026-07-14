@@ -6,6 +6,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"createSymlinks": "node ./tools/create-symlinks.mjs",
 		"postinstall": "npm run createSymlinks",
+		"validate:lore": "node lore_extract/validate-lore-archive.mjs Nalfa.lore",
+		"import:lore": "node lore_extract/import-lore-archive.mjs && node lore_extract/extract-lore-page-attributes.mjs lore_extract/data.json lore_extract/output.json && node lore_extract/build-compendium-source.mjs lore_extract/output.json lore_extract/creature-mapping.json && fvtt package pack \"creatures\" --inputDirectory \"lore_extract/pack-src/creatures\" --outputDirectory \"packs\"",
 		"less:watch": "chokidar \"less/**/*.less\" -c \"lessc less/nalfa.less nalfa.css\""
 	},
 	"repository": {
@@ -25,7 +27,8 @@
 		"nalfa": "file:"
 	},
 	"devDependencies": {
-		"less": "^4.5.1",
-		"chokidar-cli": "^3.0.0"
+		"@foundryvtt/foundryvtt-cli": "^3.0.4",
+		"chokidar-cli": "^3.0.0",
+		"less": "^4.5.1"
 	}
 }

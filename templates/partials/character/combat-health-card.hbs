@@ -14,9 +14,9 @@
     <span class="field__separator">/</span>
     <span class="field__total">{{sysData.attributes.hp.max}}</span>
     {{#if (eq sysData.ui.valueMode "values")}}
-      {{#if (gt sysData.attributes.hp.value 0)}}
+      {{#if (gt sysData.attributes.hp.max 0)}}
         <span class="field__meta field__meta--formula">
-          ({{lookup config.profiles sysData.profile}}{{formulaSignedNumber sysData.attributes.hp.base}}{{formulaSignedNumber sysData.attributes.hp.alt}})
+          ({{hpFormula}})
         </span>
       {{/if}}
     {{/if}}

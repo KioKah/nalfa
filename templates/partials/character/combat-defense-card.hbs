@@ -7,7 +7,7 @@
       <span class="field__total combat-overview__value">{{sysData.attributes.defense.value}}</span>
       {{#if (eq sysData.ui.valueMode "values")}}
         <span class="field__meta field__meta--formula">
-          ({{lookup config.profiles sysData.profile}}{{formulaSignedNumber sysData.attributes.defense.base}}{{formulaSignedNumber sysData.attributes.defense.alt}})
+          ({{defenseFormula}})
         </span>
       {{/if}}
       <input

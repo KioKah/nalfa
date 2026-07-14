@@ -1,3 +1,12 @@
-foundry-config.yaml
 foundry
 node_modules
+
+# yaml only has: `installPath: "D:\\FoundryVTT\\Foundry Virtual Tabletop"`
+foundry-config.yaml
+
+# Amsel Lore import inputs and generated intermediates
+lore_extract/data.json
+lore_extract/output.json
+lore_extract/img/
+lore_extract/pack-src/
+lore_extract/.archive-tmp/

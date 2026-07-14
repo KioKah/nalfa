@@ -1,0 +1,43 @@
+{
+	"actorType": "NPC",
+	"creatureTemplate": "Créature",
+	"statLabels": {
+		"Force": "str",
+		"Dextérité": "dex",
+		"Intelligence": "int",
+		"Sagesse": "wis",
+		"Charisme": "cha",
+		"Constitution": "con"
+	},
+	"directAttributes": {
+		"Force": "system.stats.str.base",
+		"Dextérité": "system.stats.dex.base",
+		"Intelligence": "system.stats.int.base",
+		"Sagesse": "system.stats.wis.base",
+		"Charisme": "system.stats.cha.base",
+		"Constitution": "system.stats.con.base",
+		"Difficulté": "system.difficulty",
+		"Défense": "system.attributes.defense.base",
+		"Pv max": "system.attributes.hp.base",
+		"Déplacement/tour": "system.actions.movement.base"
+	},
+	"specialAttributes": {
+		"Statistique d'Attaque": "system.roll_stats.incant.stat"
+	},
+	"descriptionAttributes": [
+		"Actions",
+		"Ressources récoltables",
+		"Type",
+		"Habitat",
+		"Plan d'Origine",
+		"Mode de vie (ou nombre)",
+		"Hostilité",
+		"Taille",
+		"Poids",
+		"Archétype 1",
+		"Archétype 2"
+	],
+	"defaults": {
+		"system.profile": "none"
+	}
+}
