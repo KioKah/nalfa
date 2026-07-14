@@ -9,5 +9,6 @@
 *.webp binary
 *.ico binary
 *.pdf binary
+*.lore binary
 *.ldb binary
 packs/** binary
