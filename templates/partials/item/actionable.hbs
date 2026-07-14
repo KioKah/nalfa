@@ -13,6 +13,10 @@
       "systems/nalfa/templates/partials/item/actionable/requirements.hbs"
       actionPath=actionPath
       actionData=actionData
+      requirementsNamePath=requirementsNamePath
+      requirementsHasContent=requirementsHasContent
+      enrichedHTML=enrichedHTML
+      readonly=readonly
     }}
     {{>
       "systems/nalfa/templates/partials/item/actionable/targeting.hbs"
@@ -44,6 +48,8 @@
       config=config
       noteNamePath=noteNamePath
       noteHasContent=noteHasContent
+      nalfaOverloadEffectNamePath=nalfaOverloadEffectNamePath
+      nalfaOverloadEffectHasContent=nalfaOverloadEffectHasContent
       enrichedHTML=enrichedHTML
       readonly=readonly
       isActionModeIncant=isActionModeIncant
@@ -68,6 +74,10 @@
           actionPath=actionPath
           actionData=actionData
           config=config
+          jdsTextNamePath=jdsTextNamePath
+          jdsTextHasContent=jdsTextHasContent
+          enrichedHTML=enrichedHTML
+          readonly=readonly
         }}
       {{/if}}
 
@@ -109,6 +119,27 @@
         }}
         {{/unless}}
         {{/if}}
+      {{/if}}
+
+      {{#if actionData.cost.nalfa.overload.enabled}}
+        {{>
+          "systems/nalfa/templates/partials/item/actionable/roll-jdd.hbs"
+          label="JdD SurCh"
+          actionPath=actionPath
+          damagePath="cost.nalfa.overload.jdd.damage_formulas"
+          damageFormulas=actionData.cost.nalfa.overload.jdd.damage_formulas
+          config=config
+          isActionModeIncant=isActionModeIncant
+          isActionModePhysical=isActionModePhysical
+          addTooltip="Ajouter une formule de dégâts de surcharge"
+          removeTooltip="Supprimer cette formule de dégâts de surcharge"
+          formulaPlaceholder="d..."
+          savedDamageModePath="cost.nalfa.overload.jdd.mode"
+          savedDamageMode=actionData.cost.nalfa.overload.jdd.mode
+          showSavedDamageModeSelector=true
+          showOverloadDamageModeSelector=true
+          showDamageFormulas=(eq actionData.cost.nalfa.overload.jdd.mode "other")
+        }}
       {{/if}}
 
       {{#if actionData.concentration.enabled}}

@@ -62,6 +62,12 @@ const DAMAGE_EFFECT_ABBR = Object.freeze({
 
 const escapeHtml = (value) => foundry.utils.escapeHTML(String(value ?? ""));
 
+const htmlToTooltipHtml = (html = "") => {
+	const text = String(html ?? "").trim();
+	if (!text) return "";
+	return text.replace(/\r?\n/g, "");
+};
+
 const toDamageTypeClass = (type) => {
 	const key = String(type ?? "none").trim() || "none";
 	return key.replace(/[^a-z0-9_-]/gi, "");
@@ -78,10 +84,27 @@ const formatTooltipHtml = (tooltip = "") => {
 	return [firstLineHtml, ...lines.slice(1).map((line) => escapeHtml(line))].join("<br>");
 };
 
-const makeSummaryRow = (text = "", tooltip = "") => ({
+const formatTooltipLineHtml = (line = "") => {
+	const text = String(line ?? "").trim();
+	if (!text) return "";
+	return text.endsWith(":") ? `<strong>${escapeHtml(text)}</strong>` : escapeHtml(text);
+};
+
+const formatTooltipSectionHtml = (title = "", lines = []) => {
+	const titleText = String(title ?? "").trim();
+	const body = lines
+		.flatMap((line) => String(line ?? "").split(/\r?\n/))
+		.map(formatTooltipLineHtml)
+		.filter(Boolean);
+	if (!titleText && !body.length) return "";
+	const titleHtml = titleText ? `<strong>${escapeHtml(titleText)} :</strong>` : "";
+	return [titleHtml, ...body].filter(Boolean).join("<br>");
+};
+
+const makeSummaryRow = (text = "", tooltip = "", { tooltipHtml = "" } = {}) => ({
 	text,
 	tooltip: tooltip || text,
-	tooltipHtml: formatTooltipHtml(tooltip || text),
+	tooltipHtml: tooltipHtml || formatTooltipHtml(tooltip || text),
 });
 
 const tooltipAttrs = (tooltip = "") => {
@@ -110,6 +133,8 @@ const tooltipHtmlSpan = ({ html = "", tooltip = "", className = "" } = {}) => {
 
 const htmlToTooltipText = (html = "") => htmlToPlainText(html, { preserveLineBreaks: true });
 
+const htmlToInlineText = (html = "") => htmlToPlainText(htmlToPlainText(html));
+
 const getActionStatLabel = (config, statKey) => {
 	const key = String(statKey ?? "none");
 	return (
@@ -120,6 +145,13 @@ const getActionStatLabel = (config, statKey) => {
 				key,
 		).trim() || "?"
 	);
+};
+
+const getDamageTypeLabelHtml = (config, type) => {
+	const key = String(type ?? "none").trim() || "none";
+	const label = String(config.all_damage_types?.[key] ?? key).trim() || "?";
+	if (key === "none") return escapeHtml(label);
+	return `<span class="color-${toDamageTypeClass(key)}">${escapeHtml(label)}</span>`;
 };
 
 const makeActionResourceToken = ({
@@ -262,6 +294,7 @@ function buildActionCoreSummary(item, actionData, config) {
 	const modeWithTier = [modeLabel, weaponUsageLabel, nalfaLabel].filter(Boolean).join(" ");
 	const jdParts = [];
 	const jdHtmlParts = [];
+	const jdTooltipHtmlParts = [];
 	const getSavedDamageInlineHint = () => {
 		if (!actionData?.jdd?.enabled) return "";
 
@@ -286,6 +319,13 @@ function buildActionCoreSummary(item, actionData, config) {
 		].join("\n");
 		jdParts.push(summary);
 		jdHtmlParts.push(tooltipSpan({ text: summary, tooltip }));
+		jdTooltipHtmlParts.push(
+			formatTooltipSectionHtml("JdT", [
+				`Stat : ${statLabel}`,
+				`Bonus : ${formatSignedNumber(bonus)}`,
+				`Total : ${formatSignedNumber(total)}`,
+			]),
+		);
 	}
 
 	if (actionData?.jds?.enabled) {
@@ -294,7 +334,7 @@ function buildActionCoreSummary(item, actionData, config) {
 		const statLabel = getActionStatLabel(config, stat);
 		const outcomeText = actionData?.jds?.fails_on_save
 			? "Échoue"
-			: String(actionData?.jds?.text ?? "").trim();
+			: htmlToInlineText(actionData?.jds?.text ?? "");
 		const savedDamageHint = getSavedDamageInlineHint();
 		const formattedOutcomeText =
 			outcomeText && savedDamageHint ? `${outcomeText},` : outcomeText;
@@ -303,13 +343,29 @@ function buildActionCoreSummary(item, actionData, config) {
 		const saveSummary = outcomeSummary
 			? `JdS ${dd} ${statLabel} -> ${outcomeSummary}`
 			: `JdS ${dd} ${statLabel}`;
-		const saveTooltipParts = ["<strong>JdS :</strong>", `DD : ${dd}`, `Stat : ${statLabel}`];
-		if (outcomeSummary) saveTooltipParts.push(`Réussite : ${outcomeSummary}`);
+		const saveTooltipParts = [
+			"<strong>JdS :</strong>",
+			`DD : ${escapeHtml(dd)}`,
+			`Stat : ${escapeHtml(statLabel)}`,
+		];
+		if (outcomeSummary) saveTooltipParts.push(`Réussite : ${escapeHtml(outcomeSummary)}`);
 		const savedDamageTooltip = buildSavedDamageTooltip(item, actionData, config);
 		if (savedDamageTooltip) saveTooltipParts.push(savedDamageTooltip);
 		jdParts.push(saveSummary);
 		jdHtmlParts.push(
 			tooltipSpanHtml({ text: saveSummary, tooltipHtml: saveTooltipParts.join("<br>") }),
+		);
+		jdTooltipHtmlParts.push(
+			[
+				formatTooltipSectionHtml("JdS", [
+					`DD : ${dd}`,
+					`Stat : ${statLabel}`,
+					outcomeSummary ? `Réussite : ${outcomeSummary}` : "",
+				]),
+				savedDamageTooltip,
+			]
+				.filter(Boolean)
+				.join(""),
 		);
 	}
 
@@ -319,11 +375,19 @@ function buildActionCoreSummary(item, actionData, config) {
 		? tooltipSpan({ text: modeWithTier, tooltip: `Mode :\n${modeWithTier}` })
 		: "";
 
-	if (!jdSummary) return { text: modeWithTier, html: modeHtml };
-	if (!modeWithTier) return { text: jdSummary, html: jdHtml };
+	const modeTooltipHtml = modeWithTier
+		? formatTooltipSectionHtml("Mode", [modeWithTier])
+		: "";
+	const tooltipHtml = [modeTooltipHtml, ...jdTooltipHtmlParts]
+		.filter(Boolean)
+		.join("<br><br>");
+
+	if (!jdSummary) return { text: modeWithTier, html: modeHtml, tooltipHtml };
+	if (!modeWithTier) return { text: jdSummary, html: jdHtml, tooltipHtml };
 	return {
 		text: `${modeWithTier} : ${jdSummary}`,
 		html: `${modeHtml} : ${jdHtml}`,
+		tooltipHtml,
 	};
 }
 
@@ -393,6 +457,7 @@ const buildActionConcentrationSummary = (actionData, config) => {
 	return {
 		text,
 		html: tooltipSpan({ text, tooltip: ["JdF :", `DD : ${dd}`, `Stat : ${statLabel}`].join("\n") }),
+		tooltipHtml: formatTooltipSectionHtml("JdF", [`DD : ${dd}`, `Stat : ${statLabel}`]),
 	};
 };
 
@@ -414,19 +479,24 @@ function buildNalfaOverloadTooltip(item, actionData, config) {
 	const amount = toFiniteNumber(overload.amount, 0);
 	if (amount > 0) parts.push(`Coût : +${amount} Nalfa`);
 
-	const effect = htmlToPlainText(overload.effect ?? "", { preserveLineBreaks: true });
-	if (effect) parts.push(`Effet : ${effect}`);
+	const effectHtml = htmlToTooltipHtml(overload.effect ?? "");
+	if (effectHtml) parts.push(`<strong>Effet :</strong><br>${effectHtml}`);
 
-	if (overload.jdd?.enabled) {
+	const damageMode = String(overload.jdd?.mode ?? "same");
+	if (damageMode === "double") {
+		parts.push("<strong>JdD surcharge :</strong><br>JdD &times;2");
+	} else if (damageMode === "other") {
 		const damageParts = buildDamageFormulaSummary(
 			item,
 			Array.isArray(overload.jdd?.damage_formulas) ? overload.jdd.damage_formulas : [],
 			config,
 		);
-		if (damageParts.tooltip) parts.push(`JdD modifié :\n${damageParts.tooltip}`);
+		if (damageParts.tooltipHtml) {
+			parts.push(`<strong>JdD surcharge :</strong><br>${damageParts.tooltipHtml}`);
+		}
 	}
 
-	return parts.length ? `Surcharge Nalfa :\n${parts.join("\n")}` : "";
+	return parts.length ? `<strong>Surcharge Nalfa :</strong><br>${parts.join("<br>")}` : "";
 }
 
 const buildRangeDetailSummary = (actionData, config) => {
@@ -507,11 +577,23 @@ const buildActionRangeSummary = (actionData, config) => {
 		tooltip: `Type de portée :\n${rangeTypeLabel}`,
 	});
 
-	if (!rangeSummary) return { text: rangeTypeLabel, html: typeHtml };
+	if (!rangeSummary) {
+		return {
+			text: rangeTypeLabel,
+			html: typeHtml,
+			tooltipHtml: formatTooltipSectionHtml("Portée", [
+				`Type : ${rangeTypeLabel}`,
+			]),
+		};
+	}
 	return {
 		text: `${rangeTypeLabel} : ${rangeSummary.text}`,
 		html: `${typeHtml} : ${rangeSummary.html}`,
 		tooltip: `${rangeTypeLabel} : ${rangeSummary.tooltip}`,
+		tooltipHtml: formatTooltipSectionHtml("Portée", [
+			`Type : ${rangeTypeLabel}`,
+			rangeSummary.tooltip,
+		]),
 	};
 };
 
@@ -538,10 +620,18 @@ const buildDamageFormulaEntry = (item, formulaData, config) => {
 	const detailLine = [detailFormula, effectLabel, type === "none" ? "" : typeLabel.toLowerCase()]
 		.filter(Boolean)
 		.join(" ");
+	const detailHtml = [
+		escapeHtml(detailFormula),
+		escapeHtml(effectLabel),
+		type === "none" ? "" : getDamageTypeLabelHtml(config, type).toLowerCase(),
+	]
+		.filter(Boolean)
+		.join(" ");
 
 	return {
 		text,
 		detailLine,
+		detailHtml,
 		effect,
 		effectLabel,
 		type,
@@ -577,6 +667,7 @@ function buildDamageFormulaSummary(item, formulas, config) {
 		return {
 			html: "",
 			tooltip: "",
+			tooltipHtml: "",
 		};
 	}
 
@@ -597,8 +688,9 @@ function buildDamageFormulaSummary(item, formulas, config) {
 		})
 		.join(" + ");
 	const tooltip = entries.map((entry) => entry.detailLine).join("\n");
+	const tooltipHtml = entries.map((entry) => entry.detailHtml).join("<br>");
 
-	return { html, tooltip };
+	return { html, tooltip, tooltipHtml };
 }
 
 const buildActionDamageSummary = (item, actionData, config) => {
@@ -615,6 +707,9 @@ const buildActionDamageSummary = (item, actionData, config) => {
 			: tooltipSpan({ text: "JdD", tooltip: "JdD :" }),
 		text: damageParts.html ? `JdD ${htmlToTooltipText(damageParts.html)}` : "JdD",
 		tooltip: damageParts.tooltip ? `JdD :\n${damageParts.tooltip}` : "JdD :",
+		tooltipHtml: damageParts.tooltipHtml
+			? `<strong>JdD :</strong><br>${damageParts.tooltipHtml}`
+			: "<strong>JdD :</strong>",
 	};
 };
 
@@ -634,7 +729,7 @@ function buildSavedDamageTooltip(item, actionData, config) {
 		config,
 	);
 	return damageParts.tooltip
-		? `<br><strong>JdD sauvegardé :</strong><br>${formatTooltipHtml(damageParts.tooltip)}`
+		? `<br><strong>JdD sauvegardé :</strong><br>${damageParts.tooltipHtml}`
 		: "";
 }
 
@@ -661,7 +756,11 @@ const buildActionRightSummaryRows = (item, actionData, config) => {
 		rows.push(makeSummaryRow(costRow, costTooltip));
 	}
 	if (overloadSummary) {
-		rows.push(makeSummaryRow(overloadSummary, buildNalfaOverloadTooltip(item, actionData, config)));
+		rows.push(
+			makeSummaryRow(overloadSummary, overloadSummary, {
+				tooltipHtml: buildNalfaOverloadTooltip(item, actionData, config),
+			}),
+		);
 	}
 
 	return rows;
@@ -672,8 +771,13 @@ const buildEmbeddedActionDetailRows = (item, actionData, config) => {
 	const concentrationSummary = buildActionConcentrationSummary(actionData, config);
 	const detailRow1Parts = [coreSummary?.text, concentrationSummary?.text].filter(Boolean);
 	const detailRow1HtmlParts = [coreSummary?.html, concentrationSummary?.html].filter(Boolean);
+	const detailRow1TooltipHtmlParts = [
+		coreSummary?.tooltipHtml,
+		concentrationSummary?.tooltipHtml,
+	].filter(Boolean);
 	const detailRow1 = detailRow1Parts.join(" | ");
 	const detailRow1Html = detailRow1HtmlParts.join(" | ");
+	const detailRow1TooltipHtml = detailRow1TooltipHtmlParts.join("<br><br>");
 
 	const rangeSummary = buildActionRangeSummary(actionData, config);
 	const damageSummary = buildActionDamageSummary(item, actionData, config);
@@ -688,14 +792,22 @@ const buildEmbeddedActionDetailRows = (item, actionData, config) => {
 		damageSummary?.html,
 		savedDamageSummary,
 	].filter(Boolean);
+	const detailRow2TooltipHtmlParts = [
+		rangeSummary?.tooltipHtml,
+		damageSummary?.tooltipHtml,
+		savedDamageSummary,
+	].filter(Boolean);
 
 	const detailRow2 = detailRow2Parts.join(" | ");
 	const detailRow2Html = detailRow2HtmlParts.join(" | ");
+	const detailRow2TooltipHtml = detailRow2TooltipHtmlParts.join("<br><br>");
 	return {
 		detailRow1,
 		detailRow1Html,
+		detailRow1TooltipHtml,
 		detailRow2,
 		detailRow2Html,
+		detailRow2TooltipHtml,
 	};
 };
 
@@ -714,7 +826,14 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 	});
 	const defaultShorthand = getDefaultEmbeddedActionShorthand(actionName);
 	const summaryRows = buildActionRightSummaryRows(item, actionData, config);
-	const { detailRow1, detailRow1Html, detailRow2, detailRow2Html } =
+	const {
+		detailRow1,
+		detailRow1Html,
+		detailRow1TooltipHtml,
+		detailRow2,
+		detailRow2Html,
+		detailRow2TooltipHtml,
+	} =
 		buildEmbeddedActionDetailRows(item, actionData, config);
 	const effectText = htmlToPlainText(actionData?.effect?.text ?? "", {
 		preserveLineBreaks: true,
@@ -749,8 +868,10 @@ export const buildEmbeddedActionRow = ({ item, actionData, index, config }) => {
 		summaryRows,
 		detailRow1,
 		detailRow1Html,
+		detailRow1TooltipHtml,
 		detailRow2,
 		detailRow2Html,
+		detailRow2TooltipHtml,
 	};
 };
 
@@ -793,11 +914,21 @@ export const buildActionableContext = ({
 	const canAddEmbeddedAction = embeddedActionsCount < MAX_EMBEDDED_ACTIONS;
 	const embeddedActionsTabLabel = embeddedActionsCount >= 2 ? "Actions" : "Action";
 	const actionMode = actionData?.mode ?? "physical";
+	const requirementsTextSource = actionData?.requires ?? "";
 	const effectTextSource = actionData?.effect?.text ?? "";
 	const noteTextSource = actionData?.cost?.actions?.note ?? "";
+	const jdsTextSource = actionData?.jds?.text ?? "";
+	const nalfaOverloadEffectSource = actionData?.cost?.nalfa?.overload?.effect ?? "";
+	const requirementsHasContent = htmlToPlainText(requirementsTextSource).length > 0;
 	const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
+	const jdsTextHasContent = htmlToPlainText(jdsTextSource).length > 0;
+	const nalfaOverloadEffectHasContent =
+		htmlToPlainText(nalfaOverloadEffectSource).length > 0;
+	const requirementsNamePath = `system.${actionPath}requires`;
 	const effectNamePath = `system.${actionPath}effect.text`;
 	const noteNamePath = `system.${actionPath}cost.actions.note`;
+	const jdsTextNamePath = `system.${actionPath}jds.text`;
+	const nalfaOverloadEffectNamePath = `system.${actionPath}cost.nalfa.overload.effect`;
 
 	return {
 		isActionItem,
@@ -821,10 +952,19 @@ export const buildActionableContext = ({
 		embeddedActionsTabLabel,
 		isActionModeIncant: actionMode === "incant",
 		isActionModePhysical: actionMode === "physical",
+		requirementsTextSource,
 		effectTextSource,
 		noteTextSource,
+		jdsTextSource,
+		nalfaOverloadEffectSource,
+		requirementsHasContent,
 		noteHasContent,
+		jdsTextHasContent,
+		nalfaOverloadEffectHasContent,
+		requirementsNamePath,
 		effectNamePath,
 		noteNamePath,
+		jdsTextNamePath,
+		nalfaOverloadEffectNamePath,
 	};
 };

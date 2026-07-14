@@ -2,13 +2,17 @@
   <div class="attack-config__section-title">
     <span class="field__label">Préreq.</span>
   </div>
-  <div class="attack-config__fields attack-config__fields--row">
-    <input
-      class="attack-config__grow-input"
-      name="system.{{actionPath}}requires"
-      type="text"
-      value="{{actionData.requires}}"
-      placeholder="Si... (condition d'utilisation)"
-    />
+  <div class="attack-config__fields">
+    {{>
+      "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+      title="Prérequis"
+      namePath=requirementsNamePath
+      editTooltip="Modifier les prérequis"
+      content=enrichedHTML.requirements
+      hasContent=requirementsHasContent
+      placeholderHtml="<p>Si... (condition d'utilisation)</p>"
+      readonly=readonly
+      contentClass="richtext-field richtext-field--overlay-action attack-config__richtext-field"
+    }}
   </div>
 </div>

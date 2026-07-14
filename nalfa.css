@@ -3627,8 +3627,8 @@
 .nalfa.sheet.embedded-action-editor .attack-config__nalfa-overload-fields,
 .nalfa.sheet.nalfa-action-dialog .attack-config__nalfa-overload-fields {
   display: grid;
-  grid-template-columns: auto auto minmax(180px, 1fr);
-  align-items: start;
+  grid-template-columns: auto auto auto auto minmax(0, 1fr);
+  align-items: center;
   gap: var(--nalfa-gap-text);
   min-width: 0;
   width: 100%;
@@ -3644,19 +3644,39 @@
 .nalfa.sheet.item .attack-config__nalfa-overload-effect,
 .nalfa.sheet.embedded-action-editor .attack-config__nalfa-overload-effect,
 .nalfa.sheet.nalfa-action-dialog .attack-config__nalfa-overload-effect {
-  width: calc((1px * 28 + 2px) * (18 / 2));
-  min-width: calc((1px * 28 + 2px) * (18 / 2));
-  max-width: calc((1px * 28 + 2px) * (18 / 2));
-  height: calc(18px + 8px);
-  line-height: calc(calc(18px + 8px) - 2px);
-  padding: initial;
-  text-align: center;
-  font-size: 18px;
-  min-width: 180px;
+  grid-column: 1 / -1;
+  min-width: 220px;
   width: 100%;
-  min-height: 42px;
-  resize: vertical;
-  line-height: 1.25;
+}
+.nalfa.sheet.item-sheet .attack-config__nalfa-overload-effect .richtext-field__content,
+.nalfa.sheet.item .attack-config__nalfa-overload-effect .richtext-field__content,
+.nalfa.sheet.embedded-action-editor .attack-config__nalfa-overload-effect .richtext-field__content,
+.nalfa.sheet.nalfa-action-dialog .attack-config__nalfa-overload-effect .richtext-field__content {
+  min-height: calc(16px + (6px * 2));
+  max-height: calc((var(--font-size-14) * 1.4 * 3) + (6px * 2));
+  height: fit-content;
+}
+.nalfa.sheet.item-sheet .attack-config__richtext-field,
+.nalfa.sheet.item .attack-config__richtext-field,
+.nalfa.sheet.embedded-action-editor .attack-config__richtext-field,
+.nalfa.sheet.nalfa-action-dialog .attack-config__richtext-field,
+.nalfa.sheet.item-sheet .attack-config__jds-text-field,
+.nalfa.sheet.item .attack-config__jds-text-field,
+.nalfa.sheet.embedded-action-editor .attack-config__jds-text-field,
+.nalfa.sheet.nalfa-action-dialog .attack-config__jds-text-field {
+  width: 100%;
+}
+.nalfa.sheet.item-sheet .attack-config__richtext-field .richtext-field__content,
+.nalfa.sheet.item .attack-config__richtext-field .richtext-field__content,
+.nalfa.sheet.embedded-action-editor .attack-config__richtext-field .richtext-field__content,
+.nalfa.sheet.nalfa-action-dialog .attack-config__richtext-field .richtext-field__content,
+.nalfa.sheet.item-sheet .attack-config__jds-text-field .richtext-field__content,
+.nalfa.sheet.item .attack-config__jds-text-field .richtext-field__content,
+.nalfa.sheet.embedded-action-editor .attack-config__jds-text-field .richtext-field__content,
+.nalfa.sheet.nalfa-action-dialog .attack-config__jds-text-field .richtext-field__content {
+  min-height: calc(16px + (6px * 2));
+  max-height: calc((var(--font-size-14) * 1.4 * 3) + (6px * 2));
+  height: fit-content;
 }
 .nalfa.sheet.item-sheet .attack-config__action-costs,
 .nalfa.sheet.item .attack-config__action-costs,
@@ -4212,6 +4232,72 @@
 .nalfa-tooltip--multiline {
   white-space: pre-line;
   text-align: left;
+}
+.nalfa-tooltip--multiline .color-none {
+  color: var(--nalfa-color-text-dark-0);
+}
+.nalfa-tooltip--multiline .color-tran {
+  color: var(--nalfa-color-type-phys-tran);
+}
+.nalfa-tooltip--multiline .color-perf {
+  color: var(--nalfa-color-type-phys-perf);
+}
+.nalfa-tooltip--multiline .color-cont {
+  color: var(--nalfa-color-type-phys-cont);
+}
+.nalfa-tooltip--multiline .color-soni {
+  color: var(--nalfa-color-type-phys-soni);
+}
+.nalfa-tooltip--multiline .color-sang {
+  color: var(--nalfa-color-type-phys-sang);
+}
+.nalfa-tooltip--multiline .color-feu {
+  color: var(--nalfa-color-type-elem-feu);
+}
+.nalfa-tooltip--multiline .color-eau {
+  color: var(--nalfa-color-type-elem-eau);
+}
+.nalfa-tooltip--multiline .color-terr {
+  color: var(--nalfa-color-type-elem-terr);
+}
+.nalfa-tooltip--multiline .color-air {
+  color: var(--nalfa-color-type-elem-air);
+}
+.nalfa-tooltip--multiline .color-natu {
+  color: var(--nalfa-color-type-elem-natu);
+}
+.nalfa-tooltip--multiline .color-givr {
+  color: var(--nalfa-color-type-elem-givr);
+}
+.nalfa-tooltip--multiline .color-foud {
+  color: var(--nalfa-color-type-elem-foud);
+}
+.nalfa-tooltip--multiline .color-radt {
+  color: var(--nalfa-color-type-magi-radt);
+}
+.nalfa-tooltip--multiline .color-obsc {
+  color: var(--nalfa-color-type-magi-obsc);
+}
+.nalfa-tooltip--multiline .color-arca {
+  color: var(--nalfa-color-type-magi-arca);
+}
+.nalfa-tooltip--multiline .color-chao {
+  color: var(--nalfa-color-type-magi-chao);
+}
+.nalfa-tooltip--multiline .color-necr {
+  color: var(--nalfa-color-type-magi-necr);
+}
+.nalfa-tooltip--multiline .color-psyc {
+  color: var(--nalfa-color-type-magi-psyc);
+}
+.nalfa-tooltip--multiline .color-arme {
+  color: var(--nalfa-color-type-spec-arme);
+}
+.nalfa-tooltip--multiline .color-soin {
+  color: var(--nalfa-color-type-spec-soin);
+}
+.nalfa-tooltip--multiline .color-abso {
+  color: var(--nalfa-color-type-spec-abso);
 }
 .nalfa.sheet.item-richtext-dialog > section.window-content {
   overflow: hidden;

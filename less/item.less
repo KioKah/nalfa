@@ -1106,8 +1106,8 @@
 
 		&__nalfa-overload-fields {
 			display: grid;
-			grid-template-columns: auto auto minmax(180px, 1fr);
-			align-items: start;
+			grid-template-columns: auto auto auto auto minmax(0, 1fr);
+			align-items: center;
 			gap: var(--nalfa-gap-text);
 			min-width: 0;
 			width: 100%;
@@ -1119,12 +1119,22 @@
 		}
 
 		&__nalfa-overload-effect {
-			.chr-input-block(@chr: 28);
-			min-width: 180px;
+			grid-column: 1 / -1;
+			min-width: 220px;
 			width: 100%;
-			min-height: 42px;
-			resize: vertical;
-			line-height: 1.25;
+
+			.richtext-field__content {
+				.html-field-content-size(@max-lines: 3);
+			}
+		}
+
+		&__richtext-field,
+		&__jds-text-field {
+			width: 100%;
+
+			.richtext-field__content {
+				.html-field-content-size(@max-lines: 3);
+			}
 		}
 
 		&__action-costs {
@@ -1526,6 +1536,8 @@
 .nalfa-tooltip--multiline {
 	white-space: pre-line;
 	text-align: left;
+
+	.types-set-color-property(color);
 }
 
 .nalfa.sheet.item-richtext-dialog {

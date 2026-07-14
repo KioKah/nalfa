@@ -35,7 +35,7 @@ export const createDefaultActionData = () => ({
 				amount: 0,
 				effect: "",
 				jdd: {
-					enabled: false,
+					mode: "same",
 					damage_formulas: [createDefaultDamageFormula()],
 				},
 			},

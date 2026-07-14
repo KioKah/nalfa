@@ -111,7 +111,7 @@
     </div>
 
     <div class="attack-config__cost-entry attack-config__cost-entry--nalfa-overload">
-      <span class="attack-config__cost-label">Surcharge Nalfa</span>
+      <span class="attack-config__cost-label">Surcharge</span>
       <div class="attack-config__nalfa-overload-fields">
         <label class="field field--inline attack-config__nalfa-overload-toggle">
           <input
@@ -119,9 +119,9 @@
             type="checkbox"
             {{checked actionData.cost.nalfa.overload.enabled}}
           />
-          <span>Compatible</span>
         </label>
         {{#if actionData.cost.nalfa.overload.enabled}}
+          <span class="attack-config__row-sep">+</span>
           <input
             class="attack-config__cost-input"
             name="system.{{actionPath}}cost.nalfa.overload.amount"
@@ -130,49 +130,21 @@
             data-dtype="Number"
             placeholder="Nalfa supp."
           />
-          <textarea
-            class="attack-config__nalfa-overload-effect"
-            name="system.{{actionPath}}cost.nalfa.overload.effect"
-            placeholder="Effet ajouté ou augmenté"
-          >{{actionData.cost.nalfa.overload.effect}}</textarea>
-          <label class="field field--inline attack-config__nalfa-overload-toggle">
-            <input
-              name="system.{{actionPath}}cost.nalfa.overload.jdd.enabled"
-              type="checkbox"
-              {{checked actionData.cost.nalfa.overload.jdd.enabled}}
-            />
-            <span>JdD modifié</span>
-          </label>
+          <span class="attack-config__row-sep">Nalfa</span>
+          {{>
+            "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+            title="Effet de surcharge Nalfa"
+            namePath=nalfaOverloadEffectNamePath
+            editTooltip="Modifier l'effet de surcharge"
+            content=enrichedHTML.nalfaOverload.effect
+            hasContent=nalfaOverloadEffectHasContent
+            placeholderHtml="<p>Effet ajouté ou augmenté</p>"
+            readonly=readonly
+            contentClass="richtext-field richtext-field--overlay-action attack-config__nalfa-overload-effect"
+          }}
         {{/if}}
       </div>
     </div>
-
-    {{#if actionData.cost.nalfa.overload.enabled}}
-      {{#if actionData.cost.nalfa.overload.jdd.enabled}}
-        <div class="attack-config__cost-entry attack-config__cost-entry--nalfa-overload-jdd">
-          <span class="attack-config__cost-label">JdD surcharge</span>
-          <div class="attack-config__fields">
-            {{#each actionData.cost.nalfa.overload.jdd.damage_formulas as |damage index|}}
-              {{>
-                "systems/nalfa/templates/partials/item/actionable/damage-formula-row.hbs"
-                actionPath=@root.actionPath
-                damagePath="cost.nalfa.overload.jdd.damage_formulas"
-                damage=damage
-                index=index
-                config=@root.config
-                isActionModeIncant=@root.isActionModeIncant
-                isActionModePhysical=@root.isActionModePhysical
-                readonly=@root.readonly
-                showAddButton=(eq index 0)
-                addTooltip="Ajouter une formule de dégâts de surcharge"
-                removeTooltip="Supprimer cette formule de dégâts de surcharge"
-                formulaPlaceholder="Ex : 2d6m+1"
-              }}
-            {{/each}}
-          </div>
-        </div>
-      {{/if}}
-    {{/if}}
 
     <div class="attack-config__cost-entry">
       <span class="attack-config__cost-label">Utilisations</span>

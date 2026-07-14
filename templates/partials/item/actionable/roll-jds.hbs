@@ -27,14 +27,21 @@
         </span>
       {{/if}}
     {{/if}}
-    <input
-      class="attack-config__grow-input attack-config__grow-input--jds-text"
-      name="system.{{actionPath}}jds.text"
-      type="text"
-      value="{{#if actionData.jds.fails_on_save}}Échoue{{else}}{{actionData.jds.text}}{{/if}}"
-      placeholder="{{#if actionData.jds.fails_on_save}}Aucun effet si la sauvegarde réussit{{else}}Effet si réussite{{/if}}"
-      {{#if actionData.jds.fails_on_save}}disabled{{/if}}
-    />
+    {{#if actionData.jds.fails_on_save}}
+      <span class="attack-config__saved-damage-note">Échoue</span>
+    {{else}}
+      {{>
+        "systems/nalfa/templates/partials/shared/richtext-section.hbs"
+        title="Effet si réussite"
+        namePath=jdsTextNamePath
+        editTooltip="Modifier l'effet si réussite"
+        content=enrichedHTML.jds.text
+        hasContent=jdsTextHasContent
+        placeholderHtml="<p>Effet si réussite</p>"
+        readonly=readonly
+        contentClass="richtext-field richtext-field--overlay-action attack-config__jds-text-field"
+      }}
+    {{/if}}
     <label class="attack-config__toggle">
       <input
         type="checkbox"

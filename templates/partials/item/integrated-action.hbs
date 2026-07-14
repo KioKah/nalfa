@@ -93,15 +93,23 @@
 		</div>
 		{{#if embeddedAction.detailRow1}}
 			<div class="embedded-actions__line embedded-actions__line--meta">
-				<span class="embedded-actions__secondary embedded-actions__secondary--top">
-					{{{embeddedAction.detailRow1Html}}}
+				<span
+					class="embedded-actions__secondary embedded-actions__secondary--top"
+					data-tooltip="{{embeddedAction.detailRow1TooltipHtml}}"
+					data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+				>
+					{{embeddedAction.detailRow1}}
 				</span>
 			</div>
 		{{/if}}
 		{{#if embeddedAction.detailRow2}}
 			<div class="embedded-actions__line embedded-actions__line--meta">
-				<span class="embedded-actions__secondary embedded-actions__secondary--bottom">
-					{{{embeddedAction.detailRow2Html}}}
+				<span
+					class="embedded-actions__secondary embedded-actions__secondary--bottom"
+					data-tooltip="{{embeddedAction.detailRow2TooltipHtml}}"
+					data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+				>
+					{{embeddedAction.detailRow2}}
 				</span>
 			</div>
 		{{/if}}

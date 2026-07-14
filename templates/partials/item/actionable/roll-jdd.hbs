@@ -18,10 +18,15 @@
           <input
             type="radio"
             name="system.{{actionPath}}{{savedDamageModePath}}"
+            {{#if showOverloadDamageModeSelector}}
+            value="double"
+            {{checked (eq savedDamageMode "double")}}
+            {{else}}
             value="half"
             {{checked (eq savedDamageMode "half")}}
+            {{/if}}
           />
-          <span>= JdD /2</span>
+          <span>= JdD {{#if showOverloadDamageModeSelector}}&times;2{{else}}/2{{/if}}</span>
         </label>
         <label class="attack-config__toggle">
           <input

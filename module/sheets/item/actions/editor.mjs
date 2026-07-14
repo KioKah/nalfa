@@ -83,9 +83,16 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		const actionData = this._draftAction;
 		const hasActionable = actionData !== null;
 		const actionMode = actionData?.mode ?? "physical";
+		const requirementsTextSource = actionData?.requires ?? "";
 		const effectTextSource = actionData?.effect?.text ?? "";
 		const noteTextSource = actionData?.cost?.actions?.note ?? "";
+		const jdsTextSource = actionData?.jds?.text ?? "";
+		const nalfaOverloadEffectSource = actionData?.cost?.nalfa?.overload?.effect ?? "";
 		const noteHasContent = htmlToPlainText(noteTextSource).length > 0;
+		const requirementsHasContent = htmlToPlainText(requirementsTextSource).length > 0;
+		const jdsTextHasContent = htmlToPlainText(jdsTextSource).length > 0;
+		const nalfaOverloadEffectHasContent =
+			htmlToPlainText(nalfaOverloadEffectSource).length > 0;
 		const defaultActionName = getDefaultEmbeddedActionName(item.name, actionIndex);
 		const actionName = String(actionData?.name ?? "").trim() || defaultActionName;
 		const defaultActionShorthand = getDefaultEmbeddedActionShorthand(actionName);
@@ -126,11 +133,20 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			actionDisplayShorthandHtml,
 			isActionModeIncant: actionMode === "incant",
 			isActionModePhysical: actionMode === "physical",
+			requirementsNamePath: `system.actions.${actionIndex}.requires`,
 			effectNamePath: `system.actions.${actionIndex}.effect.text`,
 			noteNamePath: `system.actions.${actionIndex}.cost.actions.note`,
+			jdsTextNamePath: `system.actions.${actionIndex}.jds.text`,
+			nalfaOverloadEffectNamePath: `system.actions.${actionIndex}.cost.nalfa.overload.effect`,
 			config: CONFIG.nalfa,
 			noteHasContent,
+			requirementsHasContent,
+			jdsTextHasContent,
+			nalfaOverloadEffectHasContent,
 			enrichedHTML: {
+				requirements: await TextEditor.enrichHTML(requirementsTextSource, {
+					async: true,
+				}),
 				effect: {
 					text: await TextEditor.enrichHTML(effectTextSource, {
 						async: true,
@@ -139,6 +155,16 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 				note: await TextEditor.enrichHTML(noteTextSource, {
 					async: true,
 				}),
+				jds: {
+					text: await TextEditor.enrichHTML(jdsTextSource, {
+						async: true,
+					}),
+				},
+				nalfaOverload: {
+					effect: await TextEditor.enrichHTML(nalfaOverloadEffectSource, {
+						async: true,
+					}),
+				},
 			},
 		};
 	}
@@ -435,7 +461,7 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			"cost.movement.mode",
 			"cost.nalfa.category",
 			"cost.nalfa.overload.enabled",
-			"cost.nalfa.overload.jdd.enabled",
+			"cost.nalfa.overload.jdd.mode",
 			"cost.uses.unit",
 			"cost.cooldown.unit",
 			"jds.fails_on_save",

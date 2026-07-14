@@ -63,7 +63,7 @@ export const actionSchemaDefinition = () => {
 		mode: stringField(defaults.mode),
 		weapon_usage: stringField(defaults.weapon_usage),
 		range_type: stringField(defaults.range_type),
-		requires: stringField(defaults.requires),
+		requires: htmlField(defaults.requires),
 		cost: schemaField({
 			actions: schemaField({
 				note: htmlField(defaults.cost.actions.note),
@@ -90,7 +90,7 @@ export const actionSchemaDefinition = () => {
 					amount: numberField(defaults.cost.nalfa.overload.amount),
 					effect: htmlField(defaults.cost.nalfa.overload.effect),
 					jdd: schemaField({
-						enabled: booleanField(defaults.cost.nalfa.overload.jdd.enabled),
+						mode: stringField(defaults.cost.nalfa.overload.jdd.mode),
 						damage_formulas: damageFormulaArrayField(
 							defaults.cost.nalfa.overload.jdd.damage_formulas,
 						),
@@ -135,7 +135,7 @@ export const actionSchemaDefinition = () => {
 			enabled: booleanField(defaults.jds.enabled),
 			dd: numberField(defaults.jds.dd),
 			stat: stringField(defaults.jds.stat),
-			text: stringField(defaults.jds.text),
+			text: htmlField(defaults.jds.text),
 			fails_on_save: booleanField(defaults.jds.fails_on_save),
 		}),
 		jdd: schemaField({

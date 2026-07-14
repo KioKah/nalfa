@@ -103,10 +103,20 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 	const weaponWarningText = weaponWarnings.join(", ");
 	const modifiers = Array.isArray(item.system?.modifiers) ? item.system.modifiers : [];
 	const modifierRows = buildModifierRows({ modifiers, config });
-	const [enrichedLoretext, enrichedEffectText, enrichedNote] = await Promise.all([
+	const [
+		enrichedLoretext,
+		enrichedRequirements,
+		enrichedEffectText,
+		enrichedNote,
+		enrichedJdsText,
+		enrichedNalfaOverloadEffect,
+	] = await Promise.all([
 		textEditor.enrichHTML(loretextValue, { async: true }),
+		textEditor.enrichHTML(actionableContext.requirementsTextSource, { async: true }),
 		textEditor.enrichHTML(actionableContext.effectTextSource, { async: true }),
 		textEditor.enrichHTML(actionableContext.noteTextSource, { async: true }),
+		textEditor.enrichHTML(actionableContext.jdsTextSource, { async: true }),
+		textEditor.enrichHTML(actionableContext.nalfaOverloadEffectSource, { async: true }),
 	]);
 
 	return {
@@ -143,6 +153,7 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 			loretextValue,
 			config,
 			enrichedHTML: {
+				requirements: enrichedRequirements,
 				description: {
 					loretext: enrichedLoretext,
 				},
@@ -150,6 +161,12 @@ export const buildItemSheetContext = async ({ baseData, config, sheet, textEdito
 					text: enrichedEffectText,
 				},
 				note: enrichedNote,
+				jds: {
+					text: enrichedJdsText,
+				},
+				nalfaOverload: {
+					effect: enrichedNalfaOverloadEffect,
+				},
 			},
 		},
 	};
