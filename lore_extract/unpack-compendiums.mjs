@@ -4,6 +4,17 @@ import path from "node:path";
 
 const [, , destination = ".pack-before"] = process.argv;
 const manifest = JSON.parse(fs.readFileSync("system.json", "utf8"));
+const dataPath = path.resolve(".foundry-data");
+const packagePath = path.join(dataPath, "Data", "systems", manifest.id);
+
+fs.mkdirSync(path.dirname(packagePath), { recursive: true });
+if (!fs.existsSync(packagePath)) fs.symlinkSync(process.cwd(), packagePath, "dir");
+
+execFileSync(
+	"npx",
+	["--no-install", "fvtt", "configure", "set", "dataPath", dataPath],
+	{ stdio: "inherit" },
+);
 
 execFileSync(
 	"npx",
