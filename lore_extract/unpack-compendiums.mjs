@@ -5,6 +5,12 @@ import path from "node:path";
 const [, , destination = ".pack-before"] = process.argv;
 const manifest = JSON.parse(fs.readFileSync("system.json", "utf8"));
 
+execFileSync(
+	"npx",
+	["--no-install", "fvtt", "package", "workon", manifest.id, "--type", "System"],
+	{ stdio: "inherit" },
+);
+
 for (const pack of manifest.packs ?? []) {
 	const packDirectory = path.resolve(pack.path);
 	if (!fs.existsSync(packDirectory)) continue;
