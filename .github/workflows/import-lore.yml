@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   import-lore:
+    if: github.event.head_commit.message == 'Add files via upload'
     runs-on: ubuntu-latest
 
     steps:
@@ -23,11 +24,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Unpack current compendiums
+        run: node lore_extract/unpack-compendiums.mjs .pack-before
+
       - name: Validate lore file
         run: npm run validate:lore
 
       - name: Build compendium
         run: npm run import:lore
+
+      - name: Unpack generated compendiums
+        run: node lore_extract/unpack-compendiums.mjs .pack-after
+
+      - name: Write compendium changes
+        run: node lore_extract/write-compendium-changes.mjs .pack-before .pack-after
 
       - name: Check generated files
         run: git diff --check
@@ -36,10 +46,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm Nalfa.lore
           git add packs
-          if git diff --cached --quiet; then
-            echo "Compendium is unchanged."
-          else
-            git commit -m "chore: update creatures compendium"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
+          summary="$(tr -d '\r\n' < packs/CHANGES.txt)"
+          git commit -m "Updated Compendium: ${summary}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
