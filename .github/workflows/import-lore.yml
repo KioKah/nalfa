@@ -1,13 +1,9 @@
 name: Import Lore
 
 on:
-  pull_request:
+  push:
     paths:
       - "Nalfa.lore"
-      - "lore_extract/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/import-lore.yml"
 
 jobs:
   import-lore:
