@@ -12,13 +12,13 @@ if (!fs.existsSync(packagePath)) fs.symlinkSync(process.cwd(), packagePath, "dir
 
 execFileSync(
 	"npx",
-	["--no-install", "fvtt", "configure", "set", "dataPath", dataPath],
+	["--no-install", "fvtt", "package", "workon", manifest.id, "--type", "System"],
 	{ stdio: "inherit" },
 );
 
 execFileSync(
 	"npx",
-	["--no-install", "fvtt", "package", "workon", manifest.id, "--type", "System"],
+	["--no-install", "fvtt", "configure", "set", "dataPath", dataPath],
 	{ stdio: "inherit" },
 );
 
