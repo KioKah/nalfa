@@ -43,11 +43,20 @@ jobs:
         run: git diff --check
 
       - name: Commit generated compendium
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm Nalfa.lore
+          git rm --ignore-unmatch Nalfa.lore
           git add packs
-          summary="$(tr -d '\r\n' < packs/CHANGES.txt)"
-          git commit -m "Updated Compendium: ${summary}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+          else
+            if [ -f packs/CHANGES.txt ]; then
+              summary="$(tr -d '\r\n' < packs/CHANGES.txt)"
+            else
+              summary="Failed to Update Compendium"
+            fi
+            git commit -m "Updated Compendium: ${summary} [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
