@@ -10,3 +10,8 @@ lore_extract/output.json
 lore_extract/img/
 lore_extract/pack-src/
 lore_extract/.archive-tmp/
+
+# Foundry LevelDB runtime files
+packs/**/LOCK
+packs/**/LOG
+packs/**/LOG.old
