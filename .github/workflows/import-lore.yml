@@ -50,7 +50,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git reset --soft HEAD^
-          git rm --ignore-unmatch Nalfa.lore
+          git rm -f --ignore-unmatch Nalfa.lore
           git add packs
           if [ -f packs/CHANGES.txt ]; then
             summary="$(tr -d '\r\n' < packs/CHANGES.txt)"
