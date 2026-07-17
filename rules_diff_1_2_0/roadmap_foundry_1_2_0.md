@@ -75,25 +75,30 @@ Tâches :
 - `dAp` et `dAs` n'existent pas encore.
 - Les attributs d'armes sont actuellement du texte libre, sans validation ni warning.
 
-## 3. Jets : 1/20 naturels et avantage/désavantage
+## 3. JdT critiques et JdD associés
 
-But : fiabiliser les résultats automatiques des jets sans lancer tout de suite un système complet de sources d'avantage/désavantage.
+But : fiabiliser les résultats critiques des jets de touche et appliquer leurs effets aux
+jets de dégâts ou de soins associés.
 
 Tâches prioritaires :
 
-- [ ] Vérifier le comportement de `1 naturel` et `20 naturel` dans les workflows de jets.
-- [ ] Garantir qu'un `20 naturel` produit un succès effectif, pas seulement un affichage critique.
-- [ ] Garantir qu'un `1 naturel` produit un échec effectif, pas seulement un affichage fumble.
-- [ ] Harmoniser attaque, sauvegarde, concentration et compétence autour de cette règle si pas déjà fait.
-- [ ] Ajouter un sélecteur manuel `normal / avantage / désavantage` (d20 / 2d20kh / 2d20kl) dans les prompts de jet.
-- [ ] Ajouter un affichage stylisé des résultats d'avantage/désavantage similaire aux autres roll cards.
+- [x] Garantir qu'un `20 naturel` sur un JdT produit une réussite critique effective.
+- [x] Garantir qu'un `1 naturel` sur un JdT produit un échec critique effectif.
+- [x] Utiliser le résultat effectif du JdT pour déterminer les cibles touchées ou manquées.
+- [x] Déclencher les JdD critiques associés à une réussite critique du JdT.
+- [x] Appliquer aux dégâts critiques la relance des dés sans doubler la statistique.
+- [x] Appliquer aux soins critiques la relance des dés sans doubler la statistique.
+- [x] Conserver les autres workflows de jet inchangés.
+- [x] Traiter l'avantage et le désavantage dans un chantier séparé.
 
 État actuel connu :
 
 - `module/rolls/core/shared.mjs` détecte déjà `isCrit` et `isFumble`.
-- `module/rolls/workflows/attack.mjs` calcule encore `isSuccess` avec `roll.total >= targetDefense`.
-- `module/rolls/workflows/save.mjs` et `module/rolls/workflows/concentration.mjs` comparent aussi le total à une difficulté.
-- Le JdT tracke bien critique/fumble, mais l'auto-succès/auto-échec n'est pas garanti dans la logique de succès.
+- `module/rolls/workflows/attack.mjs` force `isSuccess` pour les `20` et `1` naturels.
+- Le JdT utilise `isCrit` et `isFumble` pour forcer la réussite ou l'échec effectif.
+- `module/rolls/actions/damage/resolution.mjs` relance déjà les dés des dégâts critiques via
+  `rollDamageEntries(..., { includeStat: false, diceOnly: true })`.
+- Les soins critiques passent par le même chemin de relance des dés que les dégâts.
 
 ## 4. Exécution des actions : coûts, bonus et contraintes
 

@@ -337,10 +337,15 @@ export const executeActionAttackRoll = async ({
 	titleName,
 	chatContext,
 	rollContext,
+	promptAdjustments = false,
 }) => {
 	const targets = getCurrentTargetTokens();
 	if (!targets.length) {
-		return rollAttackFromAction(actor, actionData, { titleName, chatContext });
+		return rollAttackFromAction(actor, actionData, {
+			titleName,
+			chatContext,
+			promptAdjustments,
+		});
 	}
 
 	const sourceToken = getSourceToken(actor);
@@ -361,6 +366,7 @@ export const executeActionAttackRoll = async ({
 			chatContext,
 			targetDefense: defense,
 			versusName: getTokenDisplayName(targetToken),
+			promptAdjustments,
 		});
 		if (!result) continue;
 
@@ -401,6 +407,7 @@ export const executeActionSavePromptRoll = async ({
 	titleName,
 	chatContext,
 	rollContext,
+	promptAdjustments = false,
 }) => {
 	const currentTargets = getCurrentTargetTokens();
 	const sourceToken = getSourceToken(actor);
@@ -438,7 +445,12 @@ export const executeActionSavePromptRoll = async ({
 		applicableTargets,
 	});
 	if (!currentTargets.length && !applicableTargets.length) {
-		return rollSavePromptFromAction(actor, actionData, { titleName, chatContext });
+		return rollSavePromptFromAction(actor, actionData, {
+			titleName,
+			chatContext,
+			promptAdjustments,
+			autoNatural: true,
+		});
 	}
 	if (!applicableTargets.length) {
 		ui.notifications.warn("Aucune cible valide pour le JdS.");
@@ -456,6 +468,8 @@ export const executeActionSavePromptRoll = async ({
 	return sendPrivateSavePromptsFromAction(actor, actionData, {
 		titleName,
 		chatContext,
+		promptAdjustments,
+		autoNatural: true,
 		targets: applicableTargets,
 		sourceTokenUuid: String(sourceToken?.document?.uuid ?? sourceToken?.uuid ?? "").trim(),
 		sourceTokenName: String(sourceToken?.name ?? actor.name ?? "").trim(),

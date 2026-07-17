@@ -1099,7 +1099,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 
 	async _onRollBasicAttack(event) {
 		event.preventDefault();
-		return rollAttack(this.actor, "physical");
+		return rollAttack(this.actor, "physical", { promptAdjustments: event.altKey });
 	}
 
 	_onActionBrowserControl(event) {
@@ -1286,6 +1286,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		return executeActionPrompt({
 			actor: this.actor,
 			...action,
+			forcePrompt: event.altKey,
 		});
 	}
 
@@ -1335,26 +1336,28 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 	}
 	async _onRollBasicSave(event) {
 		event.preventDefault();
-		return rollSavePrompt(this.actor);
+		return rollSavePrompt(this.actor, { promptAdjustments: event.altKey });
 	}
 
 	async _onRollConcentration(event) {
 		event.preventDefault();
-		return rollConcentration(this.actor);
+		return rollConcentration(this.actor, null, null, {
+			promptAdjustments: event.altKey,
+		});
 	}
 
 	async _onRollStatSave(event) {
 		event.preventDefault();
 		const statKey = event.currentTarget?.dataset?.stat;
 		if (!statKey) return null;
-		return rollStatSave(this.actor, statKey);
+		return rollStatSave(this.actor, statKey, { promptAdjustments: event.altKey });
 	}
 
 	async _onRollSkill(event) {
 		event.preventDefault();
 		const skillKey = event.currentTarget?.dataset?.skill;
 		if (!skillKey) return null;
-		return rollSkill(this.actor, skillKey);
+		return rollSkill(this.actor, skillKey, { promptAdjustments: event.altKey });
 	}
 
 	// activateListeners(html) {

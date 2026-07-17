@@ -184,9 +184,157 @@ export const withActionSheetFlag = (messageOptions = {}, chatContext = null) => 
 	};
 };
 
-export const rollD20WithModifier = async (modifier) => {
-	const roll = await evaluateRoll("1d20 + @modifier", { modifier });
+const ROLL_MODE_LABELS = {
+	normal: "Normal",
+	advantage: "Avantage",
+	disadvantage: "Désavantage",
+};
+
+export const getD20RollDetail = (
+	roll,
+	suffix = "",
+	{ isCrit = false, isFumble = false, modifier = 0, comparison = "" } = {},
+) => {
+	const die = roll?.dice?.find((item) => item.faces === 20) ?? roll?.dice?.[0];
+	const modifiers = die?.modifiers ?? [];
+	const isAdvantage = modifiers.some((modifier) => modifier.startsWith("kh"));
+	const isDisadvantage = modifiers.some((modifier) => modifier.startsWith("kl"));
+	const automaticOutcome = isCrit
+		? "Réussite automatique"
+		: (isFumble ? "Échec automatique" : "");
+	if (!automaticOutcome && !isAdvantage && !isDisadvantage) return null;
+	const results = die?.results ?? [];
+	const discardedResult = results.find((result) => result.active === false);
+	const normalizedModifier = Number(modifier) || 0;
+	const orderedResults = [...results].sort((left, right) => {
+		const leftDiscarded = left === discardedResult || left.active === false;
+		const rightDiscarded = right === discardedResult || right.active === false;
+		if (leftDiscarded === rightDiscarded) return 0;
+		return isAdvantage
+			? (leftDiscarded ? 1 : -1)
+			: (leftDiscarded ? -1 : 1);
+	});
+
+	return {
+		label: isAdvantage ? "d20Av" : (isDisadvantage ? "d20Dav" : "d20"),
+		results: orderedResults.map((result) => ({
+			value: result.result,
+			isDiscarded: result === discardedResult || result.active === false,
+		})),
+		keptValue: results.find((result) => result.active !== false)?.result ?? null,
+		discardedValue:
+			discardedResult === undefined ? null : discardedResult.result + normalizedModifier,
+		showDiscardedInTotal: Boolean(discardedResult) && !automaticOutcome,
+		prefix: suffix,
+		comparison: automaticOutcome ? "" : comparison,
+		suffix: automaticOutcome || suffix,
+		separator: Boolean(automaticOutcome),
+	};
+};
+
+export const formatRollAdjustment = (value) => {
+	const adjustment = Number(value ?? 0);
+	if (!Number.isFinite(adjustment) || adjustment === 0) return "";
+	if (adjustment > 0) return ` + Bonus (${adjustment})`;
+	return ` - Malus (${Math.abs(adjustment)})`;
+};
+
+const getD20RollFormula = (mode) => {
+	if (mode === "advantage") return "2d20kh + @modifier";
+	if (mode === "disadvantage") return "2d20kl + @modifier";
+	return "1d20 + @modifier";
+};
+
+export const promptD20RollOptions = async ({ typeLabel, baseModifier = 0 } = {}) => {
+	const { DialogV2 } = foundry.applications.api;
+	const inputId = foundry.utils.randomID();
+	const modeId = foundry.utils.randomID();
+	const normalizedBaseModifier = Number(baseModifier) || 0;
+
+	return new Promise((resolve) => {
+		let settled = false;
+		const settle = (value) => {
+			if (settled) return;
+			settled = true;
+			resolve(value);
+		};
+		const dialog = new DialogV2({
+			classes: ["nalfa", "sheet", "nalfa-action-dialog"],
+			window: { title: `${typeLabel} - Ajustements du jet` },
+			content: `
+				<section class="panel-section nalfa-action-dialog__roll-adjustments">
+					<p class="hint">${foundry.utils.escapeHTML(typeLabel)} · Modificateur de base : ${normalizedBaseModifier}</p>
+					<label class="field field--inline">
+						<span class="field__label">Bonus / malus</span>
+						<input id="${inputId}" name="roll-bonus" type="number" value="0" data-dtype="Number" />
+					</label>
+					<label class="field field--inline">
+						<span class="field__label">Avantage</span>
+						<select id="${modeId}" name="roll-mode">
+							<option value="normal">${ROLL_MODE_LABELS.normal}</option>
+							<option value="advantage">${ROLL_MODE_LABELS.advantage}</option>
+							<option value="disadvantage">${ROLL_MODE_LABELS.disadvantage}</option>
+						</select>
+					</label>
+				</section>
+			`,
+			buttons: [
+				{
+					action: "cancel",
+					label: "Annuler",
+					callback: () => settle(null),
+				},
+				{
+					action: "roll",
+					label: "Lancer",
+					default: true,
+					callback: (_event, _target, currentDialog) => {
+						const bonus = Number(
+							currentDialog.element?.querySelector(`[name='roll-bonus']`)?.value ?? 0,
+						);
+						const mode = currentDialog.element?.querySelector(`[name='roll-mode']`)?.value;
+						settle({
+							bonus: Number.isFinite(bonus) ? bonus : 0,
+							mode: mode in ROLL_MODE_LABELS ? mode : "normal",
+						});
+					},
+				},
+			],
+		});
+		dialog.addEventListener("close", () => settle(null));
+		dialog.render({ force: true });
+	});
+};
+
+export const rollD20WithModifier = async (modifier, options = {}) => {
+	let rollOptions = {
+		bonus: 0,
+		mode: "normal",
+	};
+	if (options.adjustments) {
+		rollOptions = options.adjustments;
+	} else if (options.promptAdjustments) {
+		rollOptions = await promptD20RollOptions({
+			typeLabel: options.typeLabel ?? "Jet",
+			baseModifier: modifier,
+		});
+		if (!rollOptions) return null;
+	}
+	if (!ROLL_MODE_LABELS[rollOptions.mode]) rollOptions.mode = "normal";
+	const customBonus = Number(rollOptions.bonus ?? 0);
+	const totalModifier = Number(modifier ?? 0) + customBonus;
+	const roll = await evaluateRoll(getD20RollFormula(rollOptions.mode), {
+		modifier: totalModifier,
+	});
 	const dieResult = getD20Result(roll);
 	const { isCrit, isFumble } = getCritState(dieResult);
-	return { roll, dieResult, isCrit, isFumble };
+	return {
+		roll,
+		dieResult,
+		isCrit,
+		isFumble,
+		modifier: totalModifier,
+		customBonus,
+		rollMode: rollOptions.mode,
+	};
 };

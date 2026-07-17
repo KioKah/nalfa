@@ -148,6 +148,9 @@ export const registerChatHooks = () => {
 				const sourceItemUuid = String(target?.dataset?.sourceItemUuid ?? "").trim();
 				const actionIndex = Number(target?.dataset?.actionIndex ?? -1);
 				const actionName = String(target?.dataset?.actionName ?? titleName).trim();
+				const rollBonus = Number(target?.dataset?.rollBonus ?? 0);
+				const rollMode = String(target?.dataset?.rollMode ?? "normal").trim();
+				const autoNatural = target?.dataset?.autoNatural === "true";
 				const resolvedTarget = targetTokenUuid
 					? await fromUuid(targetTokenUuid)
 					: (targetActorUuid ? await fromUuid(targetActorUuid) : null);
@@ -176,6 +179,14 @@ export const registerChatHooks = () => {
 						actionIndex: Number.isInteger(actionIndex) ? actionIndex : -1,
 						actionName,
 					},
+					promptAdjustments: event.altKey,
+					adjustments: event.altKey
+						? null
+						: {
+							bonus: Number.isFinite(rollBonus) ? rollBonus : 0,
+							mode: rollMode,
+						},
+					autoNatural,
 				});
 				if (result) {
 					await dismissChatMessage(message, target, root);

@@ -18,8 +18,28 @@
 	</header>
 	<div class="nalfa-roll-total">
 		<span class="nalfa-roll-total-value">{{titleValue}}</span>
+		{{#if rollDetail.showDiscardedInTotal}}
+			<span class="nalfa-roll-total-discarded">{{rollDetail.discardedValue}}</span>
+		{{/if}}
 	</div>
 	<div class="nalfa-roll-details">
-		<span class="nalfa-roll-formula">{{formulaText}}</span>
+		{{#if rollDetail}}
+			<span class="nalfa-roll-formula">
+				{{rollDetail.label}}
+				{{#each rollDetail.results}}
+					{{#if isDiscarded}}<s>[{{value}}]</s>{{else}}[{{value}}]{{/if}}
+				{{/each}}
+				{{#if rollDetail.separator}}
+					· {{rollDetail.suffix}}
+				{{else}}
+					{{rollDetail.prefix}}
+					{{#if rollDetail.comparison}}
+						<span class="nalfa-roll-formula__comparison">{{rollDetail.comparison}}</span>
+					{{/if}}
+				{{/if}}
+			</span>
+		{{else}}
+			<span class="nalfa-roll-formula">{{formulaText}}</span>
+		{{/if}}
 	</div>
 </div>

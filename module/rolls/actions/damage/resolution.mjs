@@ -11,7 +11,6 @@ import {
 } from "../context.mjs";
 import { applyDamageSummaryRowsToTargets } from "./application.mjs";
 import {
-	actionHasHealingDamage,
 	buildDamageSummaryRows,
 	combineDamageResults,
 	getActionDamageEntries,
@@ -22,7 +21,6 @@ import {
 	getCurrentTargetTokens,
 	getDebugTokenSummary,
 	getSourceToken,
-	sendGMReminder,
 } from "../internal/shared.mjs";
 import {
 	getApplicableDamageTargets,
@@ -309,10 +307,6 @@ export const executeActionDamageRoll = async ({
 				rows: summaryRows,
 				chatContext,
 			});
-		}
-
-		if (actionHasHealingDamage(actionData)) {
-			await sendGMReminder("<p>Soin : Faire lancer pour potentiel Soin Critique.</p>");
 		}
 
 		if (!baseResults.length && !savedResults.length) {

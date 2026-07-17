@@ -116,13 +116,14 @@ const buildActionRollChoices = ({
 		choices.push({
 			id: "attack",
 			label: "JdT",
-			run: () =>
+			run: ({ promptAdjustments: runPromptAdjustments = false } = {}) =>
 				executeActionAttackRoll({
 					actor,
 					actionData,
 					titleName,
 					chatContext,
 					rollContext,
+					promptAdjustments: runPromptAdjustments,
 				}),
 		});
 	}
@@ -131,13 +132,14 @@ const buildActionRollChoices = ({
 		choices.push({
 			id: "save",
 			label: "JdS",
-			run: () =>
+			run: ({ promptAdjustments: runPromptAdjustments = false } = {}) =>
 				executeActionSavePromptRoll({
 					actor,
 					actionData,
 					titleName,
 					chatContext,
 					rollContext,
+					promptAdjustments: runPromptAdjustments,
 				}),
 		});
 	}
@@ -196,9 +198,11 @@ export const executeActionConcentrationPrompt = async ({
 					label: "JdF",
 					default: true,
 					callback: (event, target, dialog) => {
-						void event;
 						void target;
-						return getConcentrationInputValue(dialog, defaultMalus);
+						return {
+							malus: getConcentrationInputValue(dialog, defaultMalus),
+							promptAdjustments: event.altKey,
+						};
 					},
 				},
 				{
@@ -217,11 +221,12 @@ export const executeActionConcentrationPrompt = async ({
 		},
 	);
 
-	if (malus === null) return null;
+	if (!malus) return null;
 	return rollConcentrationFromAction(actor, actionData, {
 		titleName: resolvedTitle,
 		chatContext,
-		enemyAttackBonus: malus,
+		enemyAttackBonus: malus.malus,
+		promptAdjustments: malus.promptAdjustments,
 	});
 };
 
@@ -231,6 +236,7 @@ export const executeActionPrompt = async ({
 	sourceItem = null,
 	titleName = "",
 	actionIndex = -1,
+	forcePrompt = false,
 } = {}) => {
 	if (!actor) {
 		ui.notifications.warn("Aucun acteur sélectionné.");
@@ -264,7 +270,7 @@ export const executeActionPrompt = async ({
 	}
 
 	const overloadAvailable = hasNalfaOverload(actionData);
-	if (choices.length === 1 && !overloadAvailable) {
+	if (choices.length === 1 && !overloadAvailable && !forcePrompt) {
 		const canPayNalfa = await consumeNalfaCost({ actor, actionData });
 		if (!canPayNalfa) return null;
 		return choices[0].run();
@@ -298,11 +304,11 @@ export const executeActionPrompt = async ({
 					label: choice.label,
 					default: index === 0,
 					callback: (event, target, dialog) => {
-						void event;
 						void target;
 						return {
 							choice,
 							useOverload: getUseOverloadValue(dialog),
+							promptAdjustments: event.altKey,
 						};
 					},
 				};
@@ -325,5 +331,7 @@ export const executeActionPrompt = async ({
 	});
 	if (!canPayNalfa) return null;
 
-	return selectedChoice.run();
+	return selectedChoice.run({
+		promptAdjustments: selectedExecution.promptAdjustments,
+	});
 };

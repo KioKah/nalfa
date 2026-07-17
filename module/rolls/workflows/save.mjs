@@ -2,10 +2,13 @@ import {
 	formatStatSuffix,
 	getAttackName,
 	getCompareSymbol,
+	getD20RollDetail,
+	formatRollAdjustment,
 	getLabel,
 	getStatBasedValue,
 	getStatTotal,
 	postRollMessage,
+	promptD20RollOptions,
 	rollD20WithModifier,
 	withActionSheetFlag,
 } from "../core/shared.mjs";
@@ -35,6 +38,10 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, "");
 	const statLabel = statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
 	const dc = Number(options.dc ?? jds.dd ?? 0);
+	const adjustments = options.promptAdjustments
+		? await promptD20RollOptions({ typeLabel: "JdS", baseModifier: 0 })
+		: options.adjustments ?? null;
+	if (options.promptAdjustments && !adjustments) return null;
 	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const content = await foundry.applications.handlebars.renderTemplate(
@@ -43,8 +50,11 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 			titleName,
 			statKey,
 			statLabel,
-			dc,
-		},
+				dc,
+				rollBonus: adjustments?.bonus ?? 0,
+				rollMode: adjustments?.mode ?? "normal",
+				autoNatural: options.autoNatural === true,
+			},
 	);
 
 	return ChatMessage.create({
@@ -61,10 +71,18 @@ export const sendPrivateSavePromptsFromAction = async (
 	options = {},
 ) => {
 	if (!actor) return [];
+	const adjustments = options.promptAdjustments
+		? await promptD20RollOptions({ typeLabel: "JdS", baseModifier: 0 })
+		: options.adjustments ?? null;
+	if (options.promptAdjustments && !adjustments) return [];
 
 	const targets = Array.isArray(options.targets) ? options.targets.filter(Boolean) : [];
 	if (!targets.length) {
-		const message = await rollSavePromptFromAction(actor, actionData, options);
+		const message = await rollSavePromptFromAction(actor, actionData, {
+			...options,
+			promptAdjustments: false,
+			adjustments,
+		});
 		return message ? [message] : [];
 	}
 
@@ -90,7 +108,10 @@ export const sendPrivateSavePromptsFromAction = async (
 				titleName,
 				statKey,
 				statLabel,
-				dc,
+					dc,
+					rollBonus: adjustments?.bonus ?? 0,
+					rollMode: adjustments?.mode ?? "normal",
+					autoNatural: options.autoNatural === true,
 				targetName,
 				sourceTokenName,
 				targetTokenUuid: String(targetToken.document?.uuid ?? targetToken.uuid ?? "").trim(),
@@ -120,12 +141,12 @@ export const sendPrivateSavePromptsFromAction = async (
 	return messages;
 };
 
-export const rollSavePrompt = async (actor) => {
+export const rollSavePrompt = async (actor, options = {}) => {
 	if (!actor) return null;
 
 	const attack = actor.system?.attack ?? {};
 	const titleName = getAttackName(attack);
-	return rollSavePromptFromAction(actor, attack, { titleName });
+	return rollSavePromptFromAction(actor, attack, { titleName, ...options });
 };
 
 export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}) => {
@@ -136,11 +157,41 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 		? explicitStatValue
 		: (statKey ? getStatTotal(actor, statKey) : 0);
 	const targetDc = Number(dc ?? 0);
-	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(statValue);
-	const isSuccess = Number(roll.total ?? 0) >= targetDc;
+	const rollResult = await rollD20WithModifier(statValue, {
+		promptAdjustments: options.promptAdjustments,
+		adjustments: options.adjustments,
+		typeLabel: "JdS",
+	});
+	if (!rollResult) return null;
+	const { roll, dieResult, isCrit, isFumble } = rollResult;
+	const autoNatural = options.autoNatural === true;
+	const isSuccess = autoNatural
+		? (isCrit || (!isFumble && Number(roll.total ?? 0) >= targetDc))
+		: Number(roll.total ?? 0) >= targetDc;
 	const saveSuffix = formatStatSuffix(statKey, statName, statValue, statValue);
+	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const compareSymbol = getCompareSymbol(isSuccess);
-	const formulaText = `d20 [${dieResult ?? "-"}]${saveSuffix} ${compareSymbol} DD ${targetDc}`;
+	const formulaText =
+		`d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix} ` +
+		`${compareSymbol} DD ${targetDc}`;
+	const rollDetail = getD20RollDetail(
+		roll,
+		`${saveSuffix}${adjustmentSuffix}`,
+		autoNatural
+			? {
+				isCrit,
+				isFumble,
+				modifier: rollResult.modifier,
+				comparison: `${compareSymbol} DD ${targetDc}`,
+			}
+			: { modifier: rollResult.modifier, comparison: `${compareSymbol} DD ${targetDc}` },
+	);
+	const naturalTitle = isCrit
+		? (rollResult.rollMode === "disadvantage" ? "20 Naturel !!" : "20 Naturel !")
+		: (rollResult.rollMode === "advantage" ? "1 Naturel ?!" : "1 Naturel...");
+	const titleValue = autoNatural && (isCrit || isFumble)
+		? naturalTitle
+		: roll.total;
 	const messageOptions = withActionSheetFlag(
 		options.messageOptions ?? {},
 		options.chatContext,
@@ -161,8 +212,9 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 		roll,
 		titleLabel: "JdS",
 		titleName: titleName ?? "",
-		titleValue: roll.total,
+		titleValue,
 		formulaText,
+		rollDetail,
 		hasTarget: true,
 		isSuccess,
 		versusName: String(options.versusName ?? "").trim(),
@@ -178,17 +230,27 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 	};
 };
 
-export const rollStatSave = async (actor, statKey) => {
+export const rollStatSave = async (actor, statKey, options = {}) => {
 	if (!actor) return null;
 	const statObj = actor.system?.stats?.[statKey] ?? {};
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const modifier = getStatBasedValue(actor, statObj.save ?? {}, statKey);
-	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(modifier);
+	const rollResult = await rollD20WithModifier(modifier, {
+		promptAdjustments: options.promptAdjustments,
+		adjustments: options.adjustments,
+		typeLabel: "JdS",
+	});
+	if (!rollResult) return null;
+	const { roll, dieResult, isCrit, isFumble } = rollResult;
 	const titleLabel = "JdS";
 	const titleName = statName;
 	const titleValue = roll.total;
 	const saveSuffix = formatStatSuffix(statKey, statName, modifier, modifier);
-	const formulaText = `d20 [${dieResult ?? "-"}]${saveSuffix}`;
+	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
+	const formulaText = `d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix}`;
+	const rollDetail = getD20RollDetail(roll, `${saveSuffix}${adjustmentSuffix}`, {
+		modifier: rollResult.modifier,
+	});
 
 	await postRollMessage(actor, "save", {
 		actor,
@@ -197,6 +259,7 @@ export const rollStatSave = async (actor, statKey) => {
 		titleName,
 		titleValue,
 		formulaText,
+		rollDetail,
 		hasTarget: false,
 		isCrit,
 		isFumble,

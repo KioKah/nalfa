@@ -1,6 +1,8 @@
 import {
 	getAttackName,
 	getCompareSymbol,
+	getD20RollDetail,
+	formatRollAdjustment,
 	getLabel,
 	getStatTotal,
 	postRollMessage,
@@ -30,19 +32,40 @@ export const rollConcentrationFromAction = async (
 
 	const actorStatValue = resolvedStatKey ? getStatTotal(actor, resolvedStatKey) : 0;
 	const modifier = actorStatValue - Number(attackerStatValue ?? 0);
-	const { roll, dieResult, isCrit, isFumble } = await rollD20WithModifier(modifier);
+	const rollResult = await rollD20WithModifier(modifier, {
+		promptAdjustments: options.promptAdjustments,
+		typeLabel: "JdF",
+	});
+	if (!rollResult) return null;
+	const { roll, dieResult, isCrit, isFumble } = rollResult;
 	const targetDc = Number(options.dc ?? concentration.dd ?? 0);
-	const isSuccess = Number(roll.total ?? 0) >= targetDc;
+	const isSuccess = isCrit
+		? true
+		: (isFumble ? false : Number(roll.total ?? 0) >= targetDc);
 	const titleLabel = "JdF";
 	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
-	const titleValue = roll.total;
+	const naturalTitle = isCrit
+		? (rollResult.rollMode === "disadvantage" ? "20 Naturel !!" : "20 Naturel !")
+		: (rollResult.rollMode === "advantage" ? "1 Naturel ?!" : "1 Naturel...");
+	const titleValue = isCrit || isFumble ? naturalTitle : roll.total;
 	const compareSymbol = getCompareSymbol(isSuccess);
 	const attackerStatNumber = Math.max(0, Number(attackerStatValue ?? 0));
 	const statPart = resolvedStatKey ? `${statName} (${actorStatValue})` : "Stat (?)";
+	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const formulaText =
-		`d20 [${dieResult ?? "-"}] - ${attackerStatNumber} + ${statPart} ` +
+		`d20 [${dieResult ?? "-"}] - ${attackerStatNumber} + ${statPart}${adjustmentSuffix} ` +
 		`${compareSymbol} DD ${targetDc}`;
+	const rollDetail = getD20RollDetail(
+		roll,
+		`- ${attackerStatNumber} + ${statPart}${adjustmentSuffix}`,
+		{
+			isCrit,
+			isFumble,
+			modifier: rollResult.modifier,
+			comparison: `${compareSymbol} DD ${targetDc}`,
+		},
+	);
 
 	const rollData = {
 		type: "concentration",
@@ -51,6 +74,7 @@ export const rollConcentrationFromAction = async (
 		titleName,
 		titleValue,
 		formulaText,
+		rollDetail,
 	};
 
 	await postRollMessage(actor, "save", {
@@ -60,6 +84,7 @@ export const rollConcentrationFromAction = async (
 		titleName,
 		titleValue,
 		formulaText,
+		rollDetail,
 		hasTarget: true,
 		isSuccess,
 		isCrit,
@@ -69,7 +94,7 @@ export const rollConcentrationFromAction = async (
 	return rollData;
 };
 
-export const rollConcentration = async (actor, statKey, dc) => {
+export const rollConcentration = async (actor, statKey, dc, options = {}) => {
 	if (!actor) return null;
 
 	const attack = actor.system?.attack ?? {};
@@ -78,5 +103,6 @@ export const rollConcentration = async (actor, statKey, dc) => {
 		statKey,
 		dc,
 		titleName,
+		promptAdjustments: options.promptAdjustments,
 	});
 };
