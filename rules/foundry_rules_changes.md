@@ -1,4 +1,4 @@
-# Changements de règles Foundry - Nalfa 1.2.0 vs 1.1.0
+# Changements de règles Foundry - Nalfa 0.2.0 vs 0.1.0
 
 Ce document ne garde que les changements ayant un impact de règle potentiellement implémentable dans le système Foundry.
 
