@@ -4,7 +4,6 @@ import {
 	createEmbeddedActionFromSourceItem,
 	createDefaultEmbeddedAction,
 	getDefaultEmbeddedActionName,
-	getDefaultEmbeddedActionShorthand,
 	hasEmbeddedActionSource,
 	isEmbeddedActionSourceChanged,
 	resolveEmbeddedActionShorthand,
@@ -286,10 +285,7 @@ export const handleAddEmbeddedAction = async (sheet, event) => {
 
 	const actionIndex = embeddedActions.length;
 	const actionName = getDefaultEmbeddedActionName(sheet.item.name, actionIndex);
-	const actionShorthand = getDefaultEmbeddedActionShorthand(actionIndex);
-	embeddedActions.push(
-		createDefaultEmbeddedAction({ name: actionName, shorthand: actionShorthand }),
-	);
+	embeddedActions.push(createDefaultEmbeddedAction({ name: actionName }));
 	await sheet.item.update({ "system.actions": embeddedActions });
 };
 

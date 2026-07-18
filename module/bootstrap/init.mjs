@@ -88,14 +88,52 @@ const registerGameApi = () => {
 };
 
 const registerHotbarHook = () => {
-	Hooks.on("hotbarDrop", async (hotbar, data, slot) => {
+	const refreshHotbar = () => {
+		if (ui.hotbar?.rendered) void ui.hotbar.render();
+	};
+
+	Hooks.on("hotbarDrop", (hotbar, data, slot) => {
 		void hotbar;
-		if (!game.nalfa?.macros?.createHotbarMacro) return true;
-		return game.nalfa.macros.createHotbarMacro(data, slot);
+		const macros = game.nalfa?.macros;
+		if (!macros?.createHotbarMacro || !macros.isNalfaHotbarDrop?.(data)) return true;
+
+		void macros.createHotbarMacro(data, slot);
+		return false;
 	});
 
 	Hooks.on("renderHotbar", (hotbar, html) => {
 		game.nalfa?.macros?.renderHotbarActionShorthand?.(hotbar, html);
+	});
+
+	Hooks.on("getMacroContextOptions", (hotbar, menuItems) => {
+		game.nalfa?.macros?.configureActionMacroContextMenu?.(hotbar, menuItems);
+	});
+
+	Hooks.on("controlToken", refreshHotbar);
+	Hooks.on("updateActor", (actor) => {
+		const activeActor =
+			game.user?.character ?? canvas?.tokens?.controlled?.[0]?.actor ?? null;
+		if (actor === activeActor) refreshHotbar();
+	});
+	Hooks.on("updateItem", (item) => {
+		const activeActor =
+			game.user?.character ?? canvas?.tokens?.controlled?.[0]?.actor ?? null;
+		if (item.parent === activeActor) refreshHotbar();
+	});
+	Hooks.on("createItem", (item) => {
+		const activeActor =
+			game.user?.character ?? canvas?.tokens?.controlled?.[0]?.actor ?? null;
+		if (item.parent === activeActor) refreshHotbar();
+	});
+	Hooks.on("deleteItem", (item) => {
+		const activeActor =
+			game.user?.character ?? canvas?.tokens?.controlled?.[0]?.actor ?? null;
+		if (item.parent === activeActor) refreshHotbar();
+	});
+	Hooks.on("updateUser", (user, changes) => {
+		if (user === game.user && Object.hasOwn(changes ?? {}, "character")) {
+			refreshHotbar();
+		}
 	});
 };
 

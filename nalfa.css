@@ -445,6 +445,10 @@
   position: relative;
   overflow: hidden;
 }
+#hotbar .slot.nalfa-hotbar-action--unavailable {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+}
 #hotbar .nalfa-hotbar__shorthand {
   position: absolute;
   left: 4px;
@@ -4128,6 +4132,11 @@
   .nalfa.sheet.nalfa-action-dialog .currency-config__remove {
     justify-self: start;
   }
+}
+.nalfa.sheet.nalfa-action-dialog .nalfa-action-dialog__availability-warning {
+  margin: 0 0 var(--nalfa-gap-text);
+  color: var(--color-level-warning, #d29922);
+  font-weight: 600;
 }
 .nalfa.sheet.nalfa-action-dialog .nalfa-action-dialog__targets {
   margin-top: var(--nalfa-gap-text);

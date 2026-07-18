@@ -6,7 +6,10 @@ import {
 	rollSkill,
 	rollStatSave,
 } from "../rolls/index.mjs";
-import { ACTION_REF_TYPES } from "../actions/refs.mjs";
+import {
+	ACTION_REF_TYPES,
+	HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
+} from "../actions/refs.mjs";
 import { getDefaultEmbeddedActionName } from "../actions/embedded.mjs";
 import {
 	executeActionConcentrationPrompt,
@@ -31,6 +34,7 @@ import { openRichTextEditorDialog } from "./item/dialogs/richTextDialog.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
+const { DialogV2 } = foundry.applications.api;
 
 const ACTION_BROWSER_DEFAULTS = Object.freeze({
 	query: "",
@@ -629,6 +633,7 @@ const buildActorActionBanner = ({
 			refType,
 			itemUuid: item.uuid,
 			actionIndex: Number.isInteger(actionIndex) ? actionIndex : -1,
+			actionShorthand: String(actionData?.shorthand ?? "").trim(),
 		},
 	};
 };
@@ -774,6 +779,55 @@ const getEventActionIndex = (event) => {
 	const fallback = event.currentTarget?.dataset?.index;
 	const index = Number(value ?? fallback ?? -1);
 	return Number.isInteger(index) ? index : -1;
+};
+
+const waitForCharacterConfirmation = ({ title, content, confirmLabel }) => {
+	return new Promise((resolve) => {
+		let settled = false;
+		const settle = (value) => {
+			if (settled) return;
+			settled = true;
+			resolve(value);
+		};
+
+		const dialog = new DialogV2({
+			classes: ["nalfa", "sheet", "nalfa-action-dialog"],
+			window: { title },
+			content,
+			buttons: [
+				{
+					action: "cancel",
+					label: "Annuler",
+					callback: () => false,
+				},
+				{
+					action: "confirm",
+					label: confirmLabel,
+					default: true,
+					callback: () => true,
+				},
+			],
+			submit: (result) => settle(result),
+		});
+
+		dialog.addEventListener("close", () => settle(false));
+		dialog.render({ force: true });
+	});
+};
+
+const buildUnequippedItemData = (item, { keepId = true } = {}) => {
+	const itemData = item.inCompendium
+		? game.items.fromCompendium(item, { clearFolder: true, keepId })
+		: item.toObject();
+	const equippedState = itemData.system?.equipped;
+
+	if (equippedState) {
+		itemData.system.equipped = Object.fromEntries(
+			Object.keys(equippedState).map((key) => [key, false]),
+		);
+	}
+
+	return itemData;
 };
 
 export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
@@ -941,6 +995,110 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		};
 	}
 
+	async _onFirstRender(context, options) {
+		await super._onFirstRender(context, options);
+		this._createContextMenu(
+			this._getInventoryContextOptions,
+			"[data-draggable='inventory-item']",
+		);
+	}
+
+	_getInventoryContextOptions() {
+		return [
+			{
+				label: "Supprimer l'objet",
+				icon: "fa-solid fa-trash",
+				visible: (element) => {
+					return Boolean(
+						this.isEditable &&
+						this.actor.isOwner &&
+						String(element?.dataset?.itemUuid ?? "").trim(),
+					);
+				},
+				onClick: (_event, element) => {
+					void this._onDeleteInventoryItem(element);
+				},
+			},
+		];
+	}
+
+	async _onDeleteInventoryItem(element) {
+		if (!this.isEditable || !this.actor.isOwner) return;
+
+		const itemUuid = String(element?.dataset?.itemUuid ?? "").trim();
+		const item = itemUuid ? await fromUuid(itemUuid) : null;
+		if (!(item instanceof Item) || item.parent !== this.actor) {
+			ui.notifications.warn("Objet introuvable dans cet inventaire.");
+			return;
+		}
+
+		const itemName = foundry.utils.escapeHTML(item.name || "cet objet");
+		const confirmed = await waitForCharacterConfirmation({
+			title: "Supprimer un objet",
+			content: `<p>Supprimer <strong>${itemName}</strong> de l'inventaire ?</p>`,
+			confirmLabel: "Supprimer",
+		});
+		if (!confirmed) return;
+
+		await item.delete();
+	}
+
+	async _onDrop(event) {
+		const dropData = foundry.applications.ux.TextEditor.getDragEventData(event);
+		if (dropData?.type !== "Item") return super._onDrop?.(event);
+
+		const item = await Item.implementation.fromDropData(dropData);
+		if (!(item instanceof Item) || item.parent === this.actor) {
+			return super._onDrop?.(event);
+		}
+
+		if (Hooks.call("dropActorSheetData", this.actor, this, dropData) === false) {
+			return null;
+		}
+
+		if (!this.isEditable || !this.actor.isOwner) return null;
+
+		const sourceActor = item.parent instanceof Actor ? item.parent : null;
+		if (sourceActor && !sourceActor.isOwner) {
+			ui.notifications.warn("Vous ne pouvez pas retirer cet objet de son propriétaire.");
+			return null;
+		}
+
+		const itemName = foundry.utils.escapeHTML(item.name || "cet objet");
+		const targetName = foundry.utils.escapeHTML(this.actor.name || "cet acteur");
+		const sourceText = sourceActor
+			? " L'objet sera retiré de l'inventaire du donneur."
+			: "";
+		const confirmed = await waitForCharacterConfirmation({
+			title: "Transférer un objet",
+			content: `<p>Donner <strong>${itemName}</strong> à <strong>${targetName}</strong> ?${sourceText}</p>`,
+			confirmLabel: "Transférer",
+		});
+		if (!confirmed) return null;
+
+		const keepId = !this.actor.items.has(item.id);
+		const itemData = buildUnequippedItemData(item, { keepId });
+		const created = await Item.implementation.create(itemData, {
+			parent: this.actor,
+			keepId,
+		});
+		if (!created) return null;
+
+		if (!sourceActor) return created;
+
+		try {
+			const deleted = await sourceActor.deleteEmbeddedDocuments("Item", [item.id]);
+			if (!deleted?.length) throw new Error("La suppression de la source a échoué.");
+		} catch (error) {
+			await created.delete();
+			console.error("nalfa | Item transfer rollback", error);
+			ui.notifications.error("Le transfert a échoué; l'objet n'a pas été déplacé.");
+			return null;
+		}
+
+		return created;
+	}
+
 	async _onRender(context, options) {
 		await super._onRender(context, options);
 		if (this.tabGroups) {
@@ -988,6 +1146,22 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 				element.addEventListener(
 					"click",
 					this._onOpenActorActionItem.bind(this),
+				),
+			);
+		this.element
+			?.querySelectorAll("[data-draggable='embedded-action']")
+			.forEach((element) =>
+				element.addEventListener(
+					"dragstart",
+					this._onActorActionDragStart.bind(this),
+				),
+			);
+		this.element
+			?.querySelectorAll("[data-draggable='inventory-item']")
+			.forEach((element) =>
+				element.addEventListener(
+					"dragstart",
+					this._onInventoryItemDragStart.bind(this),
 				),
 			);
 		this.element
@@ -1276,6 +1450,45 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 				getDefaultEmbeddedActionName(item.name, actionIndex),
 			actionIndex,
 		};
+	}
+
+	_onActorActionDragStart(event) {
+		const element = event.currentTarget;
+		const itemUuid = String(element?.dataset?.itemUuid ?? "").trim();
+		const refType = String(element?.dataset?.refType ?? "").trim();
+		if (!itemUuid || !event.dataTransfer) return;
+
+		let payload = { type: "Item", uuid: itemUuid };
+		if (refType === ACTION_REF_TYPES.EMBEDDED_ACTION) {
+			const actionIndex = Number(element.dataset.actionIndex ?? -1);
+			if (!Number.isInteger(actionIndex) || actionIndex < 0) return;
+
+			payload = {
+				type: HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
+				refType,
+				itemUuid,
+				actionIndex,
+				actorUuid: this.actor.uuid,
+				actionName: String(element.dataset.actionName ?? "").trim(),
+				actionShorthand: String(element.dataset.actionShorthand ?? "").trim(),
+				sourceUuid: String(element.dataset.sourceUuid ?? "").trim(),
+				img: String(element.dataset.img ?? "").trim(),
+			};
+		}
+
+		event.dataTransfer.setData("text/plain", JSON.stringify(payload));
+		event.dataTransfer.effectAllowed = "copy";
+	}
+
+	_onInventoryItemDragStart(event) {
+		const itemUuid = String(event.currentTarget?.dataset?.itemUuid ?? "").trim();
+		if (!itemUuid || !event.dataTransfer) return;
+
+		event.dataTransfer.setData(
+			"text/plain",
+			JSON.stringify({ type: "Item", uuid: itemUuid }),
+		);
+		event.dataTransfer.effectAllowed = "copy";
 	}
 
 	async _onUseActorAction(event) {

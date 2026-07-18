@@ -4,6 +4,13 @@
 			class="embedded-actions__icon"
 			{{#if enableDrag}}data-draggable="embedded-action" draggable="true"{{/if}}
 			data-index="{{embeddedAction.index}}"
+			data-item-uuid="{{embeddedAction.itemUuid}}"
+			data-ref-type="{{embeddedAction.refType}}"
+			data-action-index="{{embeddedAction.actionIndex}}"
+			data-action-name="{{embeddedAction.displayName}}"
+			data-action-shorthand="{{embeddedAction.actionShorthand}}"
+			data-source-uuid="{{embeddedAction.sourceUuid}}"
+			data-img="{{itemImage}}"
 		>
 			<img
 				class="embedded-actions__image"

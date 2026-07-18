@@ -7,6 +7,7 @@ export const renderActionDialogContent = async ({
 	sourceItem,
 	rollContext,
 	titleName,
+	actionAvailabilityWarning = "",
 }) => {
 	if (!(sourceItem instanceof Item)) {
 		return `<p>${foundry.utils.escapeHTML(titleName)}</p>`;
@@ -36,5 +37,9 @@ export const renderActionDialogContent = async ({
 		},
 	);
 
-	return `${actionHtml}<section class="panel-section nalfa-action-dialog__targets"><div class="nalfa-action-dialog__targets-content">${targetInfoHtml}</div></section>`;
+	const warningHtml = String(actionAvailabilityWarning ?? "").trim()
+		? `<p class="nalfa-action-dialog__availability-warning"><i class="fa-solid fa-triangle-exclamation"></i> ${foundry.utils.escapeHTML(actionAvailabilityWarning)}</p>`
+		: "";
+
+	return `${warningHtml}${actionHtml}<section class="panel-section nalfa-action-dialog__targets"><div class="nalfa-action-dialog__targets-content">${targetInfoHtml}</div></section>`;
 };

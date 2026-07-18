@@ -1,5 +1,18 @@
 import { maybeHandleActionUpgradePreCreate } from "../actions/upgrades.mjs";
 
+const clearEquippedState = (item, sourceData = {}) => {
+	if (!(item.parent instanceof Actor)) return;
+
+	const equippedState = sourceData?.system?.equipped;
+	if (!equippedState || !Object.values(equippedState).some(Boolean)) return;
+
+	item.updateSource({
+		"system.equipped": Object.fromEntries(
+			Object.keys(equippedState).map((key) => [key, false]),
+		),
+	});
+};
+
 export default class NalfaItem extends Item {
 	static TYPE_ICON_MAP = Object.freeze({
 		Action: "Spell",
@@ -70,6 +83,7 @@ export default class NalfaItem extends Item {
 	async _preCreate(data, options, user) {
 		const allowed = await super._preCreate(data, options, user);
 		if (allowed === false) return false;
+		clearEquippedState(this, data);
 		return maybeHandleActionUpgradePreCreate(this);
 	}
 }

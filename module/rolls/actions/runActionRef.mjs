@@ -10,11 +10,8 @@ import {
 	rollInitiative,
 	rollSkill,
 } from "../index.mjs";
+import { getActionAvailability, getMacroActor } from "./availability.mjs";
 import { executeActionPrompt } from "./execution.mjs";
-
-const getMacroActor = () => {
-	return canvas?.tokens?.controlled?.[0]?.actor ?? game.user?.character ?? null;
-};
 
 const ensureActor = () => {
 	const actor = getMacroActor();
@@ -33,6 +30,9 @@ const resolveActorFromUuid = async (actorUuid) => {
 };
 
 const resolveActionActor = async (actorUuid) => {
+	const activeActor = getMacroActor();
+	if (activeActor) return activeActor;
+
 	const linkedActor = await resolveActorFromUuid(actorUuid);
 	if (linkedActor) return linkedActor;
 
@@ -140,11 +140,18 @@ export const runActionRef = async (actionRef = {}) => {
 		const actor = await resolveActionActor(actionRef.actorUuid);
 		if (!actor) return null;
 
+		const availability = getActionAvailability({
+			actor,
+			actionRef,
+			actionName: item.name,
+		});
+
 		return executeActionPrompt({
 			actor,
 			actionData: item.system,
 			sourceItem: item,
 			titleName: item.name,
+			actionAvailabilityWarning: availability.available ? "" : availability.reason,
 		});
 	}
 
@@ -169,7 +176,7 @@ export const runActionRef = async (actionRef = {}) => {
 
 		const linkedActor = await resolveActorFromUuid(actionRef.actorUuid);
 		const parentActor = item.parent instanceof Actor ? item.parent : null;
-		const actor = linkedActor ?? parentActor ?? getMacroActor();
+		const actor = getMacroActor() ?? linkedActor ?? parentActor;
 		if (!actor) {
 			ui.notifications.warn("Aucun acteur sélectionné.");
 			return null;
@@ -181,13 +188,20 @@ export const runActionRef = async (actionRef = {}) => {
 			actionData,
 		});
 		actionData = refreshResult.actionData ?? actionData;
+		const titleName = buildEmbeddedActionTitle({ item, actionData, actionIndex });
+		const availability = getActionAvailability({
+			actor,
+			actionRef,
+			actionName: titleName,
+		});
 
 		return executeActionPrompt({
 			actor,
 			actionData,
 			sourceItem: item,
-			titleName: buildEmbeddedActionTitle({ item, actionData, actionIndex }),
+			titleName,
 			actionIndex,
+			actionAvailabilityWarning: availability.available ? "" : availability.reason,
 		});
 	}
 

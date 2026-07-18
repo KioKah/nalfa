@@ -237,6 +237,7 @@ export const executeActionPrompt = async ({
 	titleName = "",
 	actionIndex = -1,
 	forcePrompt = false,
+	actionAvailabilityWarning = "",
 } = {}) => {
 	if (!actor) {
 		ui.notifications.warn("Aucun acteur sélectionné.");
@@ -270,7 +271,12 @@ export const executeActionPrompt = async ({
 	}
 
 	const overloadAvailable = hasNalfaOverload(actionData);
-	if (choices.length === 1 && !overloadAvailable && !forcePrompt) {
+	if (
+		choices.length === 1 &&
+		!overloadAvailable &&
+		!forcePrompt &&
+		!String(actionAvailabilityWarning ?? "").trim()
+	) {
 		const canPayNalfa = await consumeNalfaCost({ actor, actionData });
 		if (!canPayNalfa) return null;
 		return choices[0].run();
@@ -282,6 +288,7 @@ export const executeActionPrompt = async ({
 		sourceItem,
 		rollContext,
 		titleName: resolvedTitle,
+		actionAvailabilityWarning,
 	});
 	const previewController = createActionPreviewController({ actor, actionData });
 	const liveController = createActionDialogLiveController({

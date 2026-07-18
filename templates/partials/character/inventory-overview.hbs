@@ -69,7 +69,14 @@
           {{/if}}
           <div class="actor-inventory__list">
             {{#each group.rows as |row|}}
-              <article class="actor-inventory__row {{row.cssClass}}">
+              <article
+                class="actor-inventory__row {{row.cssClass}}"
+                {{#if @root.rollable}}
+                  data-draggable="inventory-item"
+                  data-item-uuid="{{row.itemUuid}}"
+                  draggable="true"
+                {{/if}}
+              >
                 <button
                   class="actor-inventory__icon"
                   type="button"
