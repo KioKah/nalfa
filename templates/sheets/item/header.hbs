@@ -1,9 +1,12 @@
 <header class="nalfa-sheet-header">
 	{{#if isActionItem}}
-		<div class="item-sheet-header__icon embedded-actions__icon">
+		<div
+			class="item-sheet-header__icon embedded-actions__icon"
+			data-edit-image
+		>
 			<img
 				src="{{itemImage}}"
-				{{#unless readonly}}data-edit="img"{{/unless}}
+				data-edit="img"
 				data-tooltip="{{item.name}}"
 				height="64"
 				width="64"

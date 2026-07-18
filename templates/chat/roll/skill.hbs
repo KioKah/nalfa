@@ -8,11 +8,19 @@
 			{{/if}}
 		</h3>
 		<div class="nalfa-roll-tags">
-			{{#if isCrit}}
-				<span class="nalfa-roll-tag nalfa-roll-tag--crit">Réussite Critique !</span>
-			{{/if}}
-			{{#if isFumble}}
-				<span class="nalfa-roll-tag nalfa-roll-tag--fumble">Échec Critique !</span>
+			{{#if hasTarget}}
+				{{#if isSuccess}}
+					<span class="nalfa-roll-tag nalfa-roll-tag--success">Réussite</span>
+				{{else}}
+					<span class="nalfa-roll-tag nalfa-roll-tag--fail">Échec</span>
+				{{/if}}
+			{{else}}
+				{{#if isCrit}}
+					<span class="nalfa-roll-tag nalfa-roll-tag--crit">Réussite Critique !</span>
+				{{/if}}
+				{{#if isFumble}}
+					<span class="nalfa-roll-tag nalfa-roll-tag--fumble">Échec Critique !</span>
+				{{/if}}
 			{{/if}}
 		</div>
 	</header>

@@ -8,7 +8,8 @@ const openImagePicker = async (sheet, image) => {
 
 	const FilePickerClass = getFilePickerClass();
 	const current = foundry.utils.getProperty(sheet.document._source, path);
-	const defaultArtwork = sheet.document.constructor.getDefaultArtwork?.(sheet.document._source) ?? {};
+	const defaultArtwork =
+		sheet.document.constructor.getDefaultArtwork?.(sheet.document._source) ?? {};
 	const defaultImage = foundry.utils.getProperty(defaultArtwork, path);
 	const picker = new FilePickerClass({
 		type: "image",
@@ -31,11 +32,17 @@ const openImagePicker = async (sheet, image) => {
 
 export const bindImageEditContextMenu = (sheet) => {
 	if (!sheet?.isEditable) return;
-	sheet.element?.querySelectorAll("img[data-edit]").forEach((image) => {
-		image.addEventListener("contextmenu", (event) => {
-			event.preventDefault();
-			event.stopPropagation();
-			void openImagePicker(sheet, image);
+	sheet.element
+		?.querySelectorAll("img[data-edit], [data-edit-image]")
+		.forEach((target) => {
+			target.addEventListener("contextmenu", (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				const image = target.matches("img")
+					? target
+					: target.querySelector("img[data-edit]");
+				if (!image) return;
+				void openImagePicker(sheet, image);
+			});
 		});
-	});
 };

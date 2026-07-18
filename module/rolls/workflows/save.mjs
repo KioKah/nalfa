@@ -37,11 +37,17 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 	const statKey = jds.stat ?? "";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, "");
 	const statLabel = statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
-	const dc = Number(options.dc ?? jds.dd ?? 0);
 	const adjustments = options.promptAdjustments
-		? await promptD20RollOptions({ typeLabel: "JdS", baseModifier: 0 })
+		? await promptD20RollOptions({
+				typeLabel: "JdS",
+				baseModifier: 0,
+				includeDifficulty: options.includeDifficulty,
+			})
 		: options.adjustments ?? null;
 	if (options.promptAdjustments && !adjustments) return null;
+	const dc = Number.isFinite(adjustments?.difficulty)
+		? adjustments.difficulty
+		: Number(options.dc ?? jds.dd ?? 0);
 	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const content = await foundry.applications.handlebars.renderTemplate(
@@ -238,18 +244,31 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 	const rollResult = await rollD20WithModifier(modifier, {
 		promptAdjustments: options.promptAdjustments,
 		adjustments: options.adjustments,
+		includeDifficulty: options.includeDifficulty,
 		typeLabel: "JdS",
 	});
 	if (!rollResult) return null;
 	const { roll, dieResult, isCrit, isFumble } = rollResult;
 	const titleLabel = "JdS";
 	const titleName = statName;
+	const difficulty = options.promptAdjustments
+		? rollResult.adjustments?.difficulty
+		: options.difficulty;
+	const hasTarget = difficulty !== null && Number.isFinite(Number(difficulty));
+	const targetDifficulty = Number(difficulty);
+	const isSuccess = hasTarget ? Number(roll.total ?? 0) >= targetDifficulty : null;
 	const titleValue = roll.total;
 	const saveSuffix = formatStatSuffix(statKey, statName, modifier, modifier);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
-	const formulaText = `d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix}`;
+	const comparison = hasTarget
+		? `${getCompareSymbol(isSuccess)} DD ${targetDifficulty}`
+		: "";
+	const formulaText =
+		`d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix}` +
+		(comparison ? ` ${comparison}` : "");
 	const rollDetail = getD20RollDetail(roll, `${saveSuffix}${adjustmentSuffix}`, {
 		modifier: rollResult.modifier,
+		comparison,
 	});
 
 	await postRollMessage(actor, "save", {
@@ -260,9 +279,10 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 		titleValue,
 		formulaText,
 		rollDetail,
-		hasTarget: false,
-		isCrit,
-		isFumble,
+		hasTarget,
+		isSuccess,
+		isCrit: hasTarget ? false : isCrit,
+		isFumble: hasTarget ? false : isFumble,
 	});
 
 	return {

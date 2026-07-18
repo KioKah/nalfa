@@ -245,10 +245,15 @@ const getD20RollFormula = (mode) => {
 	return "1d20 + @modifier";
 };
 
-export const promptD20RollOptions = async ({ typeLabel, baseModifier = 0 } = {}) => {
+export const promptD20RollOptions = async ({
+	typeLabel,
+	baseModifier = 0,
+	includeDifficulty = false,
+} = {}) => {
 	const { DialogV2 } = foundry.applications.api;
 	const inputId = foundry.utils.randomID();
 	const modeId = foundry.utils.randomID();
+	const difficultyId = foundry.utils.randomID();
 	const normalizedBaseModifier = Number(baseModifier) || 0;
 
 	return new Promise((resolve) => {
@@ -276,6 +281,12 @@ export const promptD20RollOptions = async ({ typeLabel, baseModifier = 0 } = {})
 							<option value="disadvantage">${ROLL_MODE_LABELS.disadvantage}</option>
 						</select>
 					</label>
+					${includeDifficulty ? `
+						<label class="field field--inline">
+							<span class="field__label">DD</span>
+							<input id="${difficultyId}" name="roll-difficulty" type="number" placeholder="Aucune" />
+						</label>
+					` : ""}
 				</section>
 			`,
 			buttons: [
@@ -293,9 +304,15 @@ export const promptD20RollOptions = async ({ typeLabel, baseModifier = 0 } = {})
 							currentDialog.element?.querySelector(`[name='roll-bonus']`)?.value ?? 0,
 						);
 						const mode = currentDialog.element?.querySelector(`[name='roll-mode']`)?.value;
+						const difficultyInput = currentDialog.element?.querySelector(
+							`[name='roll-difficulty']`,
+						);
+						const difficultyText = String(difficultyInput?.value ?? "").trim();
+						const difficulty = difficultyText === "" ? null : Number(difficultyText);
 						settle({
 							bonus: Number.isFinite(bonus) ? bonus : 0,
 							mode: mode in ROLL_MODE_LABELS ? mode : "normal",
+							difficulty: Number.isFinite(difficulty) ? difficulty : null,
 						});
 					},
 				},
@@ -317,6 +334,7 @@ export const rollD20WithModifier = async (modifier, options = {}) => {
 		rollOptions = await promptD20RollOptions({
 			typeLabel: options.typeLabel ?? "Jet",
 			baseModifier: modifier,
+			includeDifficulty: options.includeDifficulty,
 		});
 		if (!rollOptions) return null;
 	}
@@ -336,5 +354,6 @@ export const rollD20WithModifier = async (modifier, options = {}) => {
 		modifier: totalModifier,
 		customBonus,
 		rollMode: rollOptions.mode,
+		adjustments: rollOptions,
 	};
 };

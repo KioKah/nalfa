@@ -1549,7 +1549,10 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 	}
 	async _onRollBasicSave(event) {
 		event.preventDefault();
-		return rollSavePrompt(this.actor, { promptAdjustments: event.altKey });
+		return rollSavePrompt(this.actor, {
+			promptAdjustments: event.altKey,
+			includeDifficulty: event.altKey,
+		});
 	}
 
 	async _onRollConcentration(event) {
@@ -1563,14 +1566,20 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		event.preventDefault();
 		const statKey = event.currentTarget?.dataset?.stat;
 		if (!statKey) return null;
-		return rollStatSave(this.actor, statKey, { promptAdjustments: event.altKey });
+		return rollStatSave(this.actor, statKey, {
+			promptAdjustments: event.altKey,
+			includeDifficulty: event.altKey,
+		});
 	}
 
 	async _onRollSkill(event) {
 		event.preventDefault();
 		const skillKey = event.currentTarget?.dataset?.skill;
 		if (!skillKey) return null;
-		return rollSkill(this.actor, skillKey, { promptAdjustments: event.altKey });
+		return rollSkill(this.actor, skillKey, {
+			promptAdjustments: event.altKey,
+			includeDifficulty: event.altKey,
+		});
 	}
 
 	// activateListeners(html) {
