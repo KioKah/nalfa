@@ -114,27 +114,6 @@
       </div>
     </div>
     <div class="grid grid--three">
-      <div class="field field--inline" data-has-alt="true">
-        <span class="field__label">Perception passive</span>
-        <span class="field__total field__value">{{sysData.attributes.passive_percep.value}}</span>
-        <select class="stat" name="system.attributes.passive_percep.stat">
-          {{selectOptions config.stats selected=sysData.attributes.passive_percep.stat}}
-        </select>
-        <input
-          class="field__base"
-          name="system.attributes.passive_percep.base"
-          type="number"
-          value="{{sysData.attributes.passive_percep.base}}"
-          data-dtype="Number"
-        />
-        <input
-          class="field__alt"
-          name="system.attributes.passive_percep.alt"
-          type="number"
-          value="{{sysData.attributes.passive_percep.alt}}"
-          data-dtype="Number"
-        />
-      </div>
       <label class="field">
         <span class="field__label">Capacité</span>
         <input

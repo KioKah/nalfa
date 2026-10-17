@@ -1,0 +1,471 @@
+import { getFatigueEffects } from "./fatigue.mjs";
+
+const STATE_STATUS_PREFIX = "nalfa-state-";
+
+const allSaveChanges = (value) =>
+  Object.keys(CONFIG.nalfa.stats).map((stat) => ({
+    key: `system.stats.${stat}.save.alt`,
+    type: "add",
+    value,
+    phase: "initial",
+    priority: 20,
+  }));
+
+const saveChanges = (stats, value) =>
+  stats.map((stat) => ({
+    key: `system.stats.${stat}.save.alt`,
+    type: "add",
+    value,
+    phase: "initial",
+    priority: 20,
+  }));
+
+const change = (key, value, type = "add") => ({
+  key,
+  type,
+  value,
+  phase: "initial",
+  priority: type === "multiply" ? 10 : 20,
+});
+
+const state = (definition) =>
+  Object.freeze({
+    intensity: false,
+    icon: "icons/svg/aura.svg",
+    description: "",
+    behavior: {},
+    changes: () => [],
+    ...definition,
+  });
+
+export const NALFA_STATE_DEFINITIONS = Object.freeze({
+  hebetement: state({
+    name: "Hébétement",
+    category: "Conscience",
+    icon: "icons/svg/daze.svg",
+    description: "-2 Sauv, -2 JdT, ne peut réagir ni se concentrer.",
+    behavior: { blocksReaction: true, blocksConcentration: true },
+    changes: () => [
+      ...allSaveChanges(-2),
+      change("system.roll_stats.physical.alt", -2),
+      change("system.roll_stats.incant.alt", -2),
+    ],
+  }),
+  etourdissement: state({
+    name: "Étourdissement",
+    category: "Conscience",
+    icon: "icons/svg/daze.svg",
+    description:
+      "-2 Défense, -4 JdT, -6 Sauv, ne peut réagir ni se concentrer.",
+    behavior: { blocksReaction: true, blocksConcentration: true },
+    changes: () => [
+      ...allSaveChanges(-6),
+      change("system.attributes.defense.alt", -2),
+      change("system.roll_stats.physical.alt", -4),
+      change("system.roll_stats.incant.alt", -4),
+    ],
+  }),
+  endormissement: state({
+    name: "Endormissement",
+    category: "Conscience",
+    icon: "icons/svg/sleep.svg",
+    description:
+      "-6 Défense, Rate Sauv, ne peut agir. Subir des dégâts annule l'effet.",
+    behavior: {
+      blocksAction: true,
+      autoFailSaves: ["all"],
+      wakesOnDamage: true,
+    },
+    changes: () => [change("system.attributes.defense.alt", -6)],
+  }),
+  inconscience: state({
+    name: "Inconscience",
+    category: "Conscience",
+    icon: "icons/svg/unconscious.svg",
+    description: "-6 Défense, Rate Sauv, ne peut agir.",
+    behavior: { blocksAction: true, autoFailSaves: ["all"] },
+    changes: () => [change("system.attributes.defense.alt", -6)],
+  }),
+  ralentissement: state({
+    name: "Ralentissement",
+    category: "Déplacement",
+    icon: "icons/svg/net.svg",
+    intensity: true,
+    description: (intensity) => `-${intensity}m de déplacement.`,
+    changes: (intensity) => [change("system.actions.movement.alt", -intensity)],
+  }),
+  immobilisation: state({
+    name: "Immobilisation",
+    category: "Déplacement",
+    icon: "icons/svg/net.svg",
+    description: "-6 Sauv (Dex), ne peut se déplacer.",
+    behavior: { blocksMovement: true },
+    changes: () => [...saveChanges(["dex"], -6)],
+  }),
+  paralysie: state({
+    name: "Paralysie",
+    category: "Déplacement",
+    icon: "icons/svg/lightning.svg",
+    description:
+      "-6 Défense, Rate Sauv (For, Dex), ne peut agir mais peut se concentrer.",
+    behavior: {
+      blocksAction: true,
+      blocksMovement: true,
+      autoFailSaves: ["str", "dex"],
+    },
+    changes: () => [change("system.attributes.defense.alt", -6)],
+  }),
+  mise_a_terre: state({
+    name: "Mise à Terre",
+    category: "Déplacement",
+    icon: "icons/svg/falling.svg",
+    description:
+      "-2 Défense (Allonge), -6 Sauv (For, Dex), ne peut Attaquer et se déplacer. Doit utiliser la moitié du déplacement à son tour pour se relever.",
+    behavior: {
+      blocksAttack: true,
+      blocksMovement: true,
+      recoveryNote:
+        "Utiliser la moitié du déplacement au tour pour se relever.",
+    },
+    changes: () => [
+      change("system.attributes.defense.alt", -2),
+      ...saveChanges(["str", "dex"], -6),
+    ],
+  }),
+  repoussement: state({
+    name: "Repoussement",
+    category: "Déplacement",
+    icon: "icons/svg/falling.svg",
+    description:
+      "Repousse de quelques mètres. La distance varie en fonction du poids, de la taille et de la puissance de l'Attaque. Repousser contre un mur peut provoquer d'autres CdF. Cela est à déterminer au cas par cas.",
+  }),
+  effroi: state({
+    name: "Effroi",
+    category: "Contrôles",
+    icon: "icons/svg/terror.svg",
+    description:
+      "-6 Sauv (Int, Sag, Cha), -2 JdT. Doit réussir une Sauv 10 (Sag) au début de son tour afin de pouvoir agir.",
+    behavior: { turnSave: "Sauv 10 (SAG) pour agir" },
+    changes: () => [
+      ...saveChanges(["int", "wis", "cha"], -6),
+      change("system.roll_stats.physical.alt", -2),
+      change("system.roll_stats.incant.alt", -2),
+    ],
+  }),
+  charme: state({
+    name: "Charme",
+    category: "Contrôles",
+    icon: "icons/svg/aura.svg",
+    description: "-6 Sauv (Int, Sag, Cha), ne peut attaquer son charmeur.",
+    behavior: { targetingNote: "Ne peut attaquer son charmeur." },
+    changes: () => [...saveChanges(["int", "wis", "cha"], -6)],
+  }),
+  controle: state({
+    name: "Contrôle",
+    category: "Contrôles",
+    icon: "icons/svg/aura.svg",
+    description:
+      "Ne peut rien faire car une autre entité a le Contrôle. A voir au cas par cas.",
+    behavior: {
+      blocksAction: true,
+      targetingNote: "Contrôle à résoudre au cas par cas.",
+    },
+  }),
+  affolement: state({
+    name: "Affolement",
+    category: "Contrôles",
+    icon: "icons/svg/daze.svg",
+    description:
+      "Le Personnage effectue si elle le peut, une Attaque sur la cible la plus proche. Doit réussir une Sauv 10 (Cha) au début du tour afin de reprendre le contrôle et choisir son Action.",
+    behavior: {
+      targetingNote: "Attaque la cible la plus proche si possible.",
+      turnSave: "Sauv 10 (CHA) pour reprendre le contrôle.",
+    },
+  }),
+  provocation: state({
+    name: "Provocation",
+    category: "Contrôles",
+    icon: "icons/svg/target.svg",
+    description:
+      "Ne peut effectuer d'Action d'Attaque sur une autre cible que le Provocateur. Doit réussir une Sauv 10 (Sag) au début du tour afin de reprendre le contrôle et choisir son Action.",
+    behavior: {
+      targetingNote: "Ne peut attaquer qu'un provocateur désigné.",
+      turnSave: "Sauv 10 (SAG) pour reprendre le contrôle.",
+    },
+  }),
+  eblouissement: state({
+    name: "Éblouissement",
+    category: "Sens",
+    icon: "icons/svg/sun.svg",
+    description: "-2 Défense, -2 Sauv (Dex), -2 JdT, portée /2.",
+    changes: () => [
+      change("system.attributes.defense.alt", -2),
+      ...saveChanges(["dex"], -2),
+      change("system.roll_stats.physical.alt", -2),
+      change("system.roll_stats.incant.alt", -2),
+      change("system.attributes.range_coef.alt_mult", 0.5, "multiply"),
+    ],
+  }),
+  aveuglement: state({
+    name: "Aveuglement",
+    category: "Sens",
+    icon: "icons/svg/blind.svg",
+    description:
+      "-6 Défense, -6 Sauv (Dex), -4 JdT, portée /2, ne peut réagir (visuel).",
+    behavior: { blocksReaction: true },
+    changes: () => [
+      change("system.attributes.defense.alt", -6),
+      ...saveChanges(["dex"], -6),
+      change("system.roll_stats.physical.alt", -4),
+      change("system.roll_stats.incant.alt", -4),
+      change("system.attributes.range_coef.alt_mult", 0.5, "multiply"),
+    ],
+  }),
+  assourdissement: state({
+    name: "Assourdissement",
+    category: "Sens",
+    icon: "icons/svg/deaf.svg",
+    description: "Ne peut réagir (auditif).",
+    behavior: {
+      blocksReaction: true,
+      reactionNote: "Réactions auditives impossibles.",
+    },
+  }),
+  silence: state({
+    name: "Réduction au Silence",
+    category: "Sens",
+    icon: "icons/svg/aura.svg",
+    description: "Ne peut parler, ni réaliser d'Actions nécessitant la parole.",
+    behavior: { blocksSpeech: true },
+  }),
+  gel: state({
+    name: "Gel",
+    category: "États",
+    icon: "icons/svg/ice-shield.svg",
+    description:
+      "-2 Défense, -6 Sauv (For), Rate Sauv (Dex), ne peut se déplacer. Subir des dégâts de feu peut supprimer l'effet et vous devenez humide.",
+    behavior: {
+      blocksMovement: true,
+      autoFailSaves: ["dex"],
+      meltOnFire: true,
+    },
+    changes: () => [
+      change("system.attributes.defense.alt", -2),
+      ...saveChanges(["str"], -6),
+    ],
+  }),
+  humidite: state({
+    name: "Humidité",
+    category: "États",
+    icon: "icons/svg/aura.svg",
+    description:
+      "Vulnérable aux dégâts de type foudre et givre, le montant est calculé cas par cas.",
+    behavior: { mjNote: "Vulnérabilité foudre/givre à déterminer par le MJ." },
+  }),
+  encombrement: state({
+    name: "Encombrement",
+    category: "États",
+    icon: "icons/svg/aura.svg",
+    intensity: true,
+    description:
+      "Debuff attribués par le MJ en fonction du degré d’encombrement.",
+    behavior: { mjNote: "Malus déterminés par le MJ selon l'encombrement." },
+  }),
+  ivresse: state({
+    name: "Ivresse",
+    category: "États",
+    icon: "icons/svg/aura.svg",
+    intensity: true,
+    description:
+      "Debuff attribués par le MJ en fonction du degré d’alcoolémie vision altérée. Les Malus diffèrent selon la quantité d'alcool dans le sang.",
+    behavior: { mjNote: "Malus déterminés par le MJ selon l'alcoolémie." },
+  }),
+});
+
+const getStateId = (effect) =>
+  String(effect.flags?.nalfa?.state?.id ?? "").trim();
+
+const isActiveNalfaState = (effect) =>
+  effect?.active && getStateId(effect) in NALFA_STATE_DEFINITIONS;
+
+export const getActorStateEffects = (actor) =>
+  [...(actor?.effects ?? [])].filter(isActiveNalfaState);
+
+export const getActorStateProfile = (actor) => {
+  const profile = {
+    blocksAction: false,
+    blocksAttack: false,
+    blocksMovement: false,
+    blocksReaction: false,
+    blocksConcentration: false,
+    blocksSpeech: false,
+    autoFailSaves: new Set(),
+    notes: [],
+  };
+
+  for (const effect of getActorStateEffects(actor)) {
+    const behavior = effect.flags?.nalfa?.state?.behavior ?? {};
+    for (const key of [
+      "blocksAction",
+      "blocksAttack",
+      "blocksMovement",
+      "blocksReaction",
+      "blocksConcentration",
+      "blocksSpeech",
+    ]) {
+      profile[key] ||= behavior[key] === true;
+    }
+    for (const stat of behavior.autoFailSaves ?? []) {
+      profile.autoFailSaves.add(stat);
+    }
+    for (const key of ["targetingNote", "turnSave", "recoveryNote", "mjNote"]) {
+      if (behavior[key]) profile.notes.push(behavior[key]);
+    }
+  }
+
+  if (getFatigueEffects(actor?.system?.attributes?.exhaustion).isUnconscious) {
+    profile.blocksAction = true;
+    profile.blocksAttack = true;
+    profile.blocksMovement = true;
+    profile.blocksReaction = true;
+    profile.blocksConcentration = true;
+    profile.autoFailSaves.add("all");
+    profile.notes.push("Inconscient à cause de la fatigue.");
+  }
+
+  return profile;
+};
+
+export const doesStateAutoFailSave = (actor, statKey) => {
+  const autoFailSaves = getActorStateProfile(actor).autoFailSaves;
+  return autoFailSaves.has("all") || autoFailSaves.has(statKey);
+};
+
+const getStateStatusId = (id) => `${STATE_STATUS_PREFIX}${id}`;
+
+const getStateDescription = (definition, intensity) => {
+  const description =
+    typeof definition.description === "function"
+      ? definition.description(intensity)
+      : definition.description;
+  return String(description ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `<p>${foundry.utils.escapeHTML(line)}</p>`)
+    .join("");
+};
+
+export const registerNalfaStateStatuses = () => {
+  for (const [id, definition] of Object.entries(NALFA_STATE_DEFINITIONS)) {
+    const statusId = getStateStatusId(id);
+    CONFIG.statusEffects[statusId] = {
+      id: statusId,
+      name: definition.name,
+      img: definition.icon,
+      type: "base",
+      disabled: false,
+      transfer: false,
+      origin: null,
+      changes: definition.changes(1),
+      description: getStateDescription(definition, 1),
+      statuses: [statusId],
+      showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.ALWAYS,
+      flags: {
+        nalfa: {
+          state: {
+            id,
+            intensity: 1,
+            note: "",
+            behavior: definition.behavior,
+          },
+        },
+      },
+      hud: true,
+    };
+  }
+};
+
+export const buildNalfaStateEffect = ({
+  stateId,
+  intensity = 1,
+  duration = null,
+  units = "rounds",
+  note = "",
+} = {}) => {
+  const definition = NALFA_STATE_DEFINITIONS[stateId];
+  if (!definition) return null;
+  const normalizedIntensity = definition.intensity
+    ? Math.max(1, Math.trunc(Number(intensity) || 1))
+    : 1;
+  const numericDuration = Number(duration);
+  const hasDuration = Number.isInteger(numericDuration) && numericDuration >= 0;
+  const behavior = definition.behavior;
+  return {
+    name: definition.intensity
+      ? `${definition.name} ${normalizedIntensity}`
+      : definition.name,
+    img: definition.icon,
+    type: "base",
+    disabled: false,
+    transfer: false,
+    statuses: [getStateStatusId(stateId)],
+    showIcon: CONST.ACTIVE_EFFECT_SHOW_ICON.ALWAYS,
+    description: getStateDescription(definition, normalizedIntensity),
+    duration: {
+      value: hasDuration ? numericDuration : null,
+      units: hasDuration ? units : "seconds",
+      expiry: hasDuration ? "turnStart" : null,
+    },
+    system: { changes: definition.changes(normalizedIntensity) },
+    flags: {
+      nalfa: {
+        state: {
+          id: stateId,
+          intensity: normalizedIntensity,
+          note: String(note ?? "").trim(),
+          behavior,
+        },
+      },
+    },
+  };
+};
+
+export const buildActorStateRows = (actor) =>
+  getActorStateEffects(actor).map((effect) => {
+    const state = effect.flags?.nalfa?.state ?? {};
+    return {
+      id: effect.id,
+      name: effect.name,
+      img: effect.img,
+      intensity: state.intensity ?? 1,
+      note: state.note ?? "",
+      duration: effect.duration?.remaining ?? effect.duration?.value ?? null,
+      units: effect.duration?.units ?? "",
+      behaviorNotes: Object.values(state.behavior ?? {}).filter(
+        (value) => typeof value === "string",
+      ),
+    };
+  });
+
+export const getNalfaStateOptions = () =>
+  Object.entries(NALFA_STATE_DEFINITIONS).map(([id, definition]) => ({
+    id,
+    name: definition.name,
+    category: definition.category,
+    intensity: definition.intensity,
+  }));
+
+export const removeStatesAfterDamage = async (actor, damageTypes = []) => {
+  if (!actor?.deleteEmbeddedDocuments) return;
+  const types = new Set(damageTypes);
+  const ids = getActorStateEffects(actor)
+    .filter((effect) => {
+      const behavior = effect.flags?.nalfa?.state?.behavior ?? {};
+      return (
+        behavior.wakesOnDamage || (behavior.meltOnFire && types.has("feu"))
+      );
+    })
+    .map((effect) => effect.id);
+  if (ids.length) await actor.deleteEmbeddedDocuments("ActiveEffect", ids);
+};

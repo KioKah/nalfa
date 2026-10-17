@@ -5,15 +5,21 @@
     config=config
     isKO=isKO
     deathTick=deathTick
+    hpTooltip=hpTooltip
   }}
   {{>
     "systems/nalfa/templates/partials/character/combat-defense-card.hbs"
     sysData=sysData
     config=config
+    defenseTooltip=defenseTooltip
+    evasionTooltip=evasionTooltip
   }}
-  {{>
-    "systems/nalfa/templates/partials/character/combat-initiative-card.hbs"
-    sysData=sysData
-    config=config
-  }}
+  {{#if isCharacter}}
+    {{>
+      "systems/nalfa/templates/partials/character/character-status-card.hbs"
+      sysData=sysData
+      isEditable=isEditable
+      fatigue=fatigue
+    }}
+  {{/if}}
 </div>

@@ -90,6 +90,23 @@ const getActionRefFromMacro = (macro) => {
 	}
 };
 
+export const getActionMacroPresentation = (macro, { actor } = {}) => {
+	const metadata = getActionMacroMetadata(macro);
+	if (!metadata) return null;
+
+	const actionRef = getActionRefFromMacro(macro);
+	const availability = getActionAvailability({
+		actor,
+		actionRef,
+		actionName: metadata.actionName,
+	});
+	return {
+		...metadata,
+		actionRef,
+		availability,
+	};
+};
+
 const getMacroForHotbarSlot = (slotElement) => {
 	const slot = Number(slotElement?.dataset?.slot ?? -1);
 	if (!Number.isInteger(slot) || slot < 1) return null;
@@ -313,16 +330,13 @@ export const renderHotbarActionShorthand = (hotbar, html) => {
 	const macroLookup = getRenderedMacroLookup(hotbar);
 	root.querySelectorAll(".slot[data-slot]").forEach((slotElement) => {
 		const macro = getHotbarMacroForSlot(slotElement, macroLookup);
-		const metadata = getActionMacroMetadata(macro);
-		if (!metadata) return;
+		const presentation = getActionMacroPresentation(macro);
+		if (!presentation) return;
 
-		const availability = getActionAvailability({
-			actionRef: getActionRefFromMacro(macro),
-		actionName: metadata.actionName,
-		});
-		if (!availability.available) {
+		if (!presentation.availability.available) {
 			slotElement.classList.add(HOTBAR_ACTION_UNAVAILABLE_CLASS);
-			slotElement.dataset.tooltipText = `${macro.name}\n${availability.reason}`;
+			slotElement.dataset.tooltipText =
+				`${macro.name}\n${presentation.availability.reason}`;
 		} else {
 			slotElement.dataset.tooltipText = macro.name;
 		}
@@ -330,7 +344,9 @@ export const renderHotbarActionShorthand = (hotbar, html) => {
 		const shorthandElement = document.createElement("span");
 		shorthandElement.className = HOTBAR_ACTION_SHORTHAND_CLASS;
 		shorthandElement.innerHTML = foundry.utils
-			.escapeHTML(formatEmbeddedActionShorthand(metadata.displayShorthand))
+			.escapeHTML(
+				formatEmbeddedActionShorthand(presentation.displayShorthand),
+			)
 			.replace(/\n/g, "<br>");
 
 		slotElement.classList.add(HOTBAR_ACTION_CLASS);

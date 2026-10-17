@@ -10,6 +10,7 @@ import {
 	rollD20WithModifier,
 	withActionSheetFlag,
 } from "../core/shared.mjs";
+import { getActorStateProfile } from "../../rules/states.mjs";
 
 export const rollConcentrationFromAction = async (
 	actor,
@@ -17,6 +18,11 @@ export const rollConcentrationFromAction = async (
 	options = {},
 ) => {
 	if (!actor) return null;
+	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksAction || stateProfile.blocksConcentration) {
+		ui.notifications.warn("Un état empêche ce personnage de se concentrer.");
+		return null;
+	}
 	const messageOptions = withActionSheetFlag(
 		options.messageOptions ?? {},
 		options.chatContext,

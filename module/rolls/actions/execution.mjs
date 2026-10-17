@@ -16,6 +16,7 @@ import {
 	executeActionAttackRoll,
 	executeActionSavePromptRoll,
 } from "./targeting/index.mjs";
+import { getActorStateProfile } from "../../rules/states.mjs";
 
 const getConcentrationInputValue = (dialog, fallback = 0) => {
 	const input = dialog.element?.querySelector("[name='enemy-attack-bonus']");
@@ -43,6 +44,16 @@ const getNalfaCost = (actionData, { useOverload = false } = {}) => {
 	const overloadAmount =
 		useOverload && overload.enabled === true ? toCostAmount(overload.amount) : 0;
 	return baseAmount + overloadAmount;
+};
+
+const requiresReactionCost = (actionData) => {
+	const options = Array.isArray(actionData?.cost?.actions?.options)
+		? actionData.cost.actions.options
+		: [];
+	return (
+		options.length > 0 &&
+		options.every((option) => Number(option?.reaction ?? 0) > 0)
+	);
 };
 
 const consumeNalfaCost = async ({ actor, actionData, useOverload = false } = {}) => {
@@ -173,6 +184,15 @@ export const executeActionConcentrationPrompt = async ({
 		ui.notifications.warn("Aucun acteur sélectionné.");
 		return null;
 	}
+	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksAction) {
+		ui.notifications.warn("Un état empêche ce personnage d'agir.");
+		return null;
+	}
+	if (stateProfile.blocksConcentration) {
+		ui.notifications.warn("Un état empêche ce personnage de se concentrer.");
+		return null;
+	}
 
 	if (!actionData?.concentration?.enabled) {
 		ui.notifications.warn("Cette action n'a pas de JdF.");
@@ -241,6 +261,30 @@ export const executeActionPrompt = async ({
 } = {}) => {
 	if (!actor) {
 		ui.notifications.warn("Aucun acteur sélectionné.");
+		return null;
+	}
+	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksAction) {
+		ui.notifications.warn("Un état empêche ce personnage d'agir.");
+		return null;
+	}
+	if (stateProfile.blocksReaction && requiresReactionCost(actionData)) {
+		ui.notifications.warn("Un état empêche ce personnage de réagir.");
+		return null;
+	}
+	if (stateProfile.blocksAttack && actionData?.jdt?.enabled) {
+		ui.notifications.warn("Un état empêche ce personnage d'attaquer.");
+		return null;
+	}
+	if (
+		stateProfile.blocksMovement &&
+		String(actionData?.cost?.movement?.mode ?? "none") !== "none"
+	) {
+		ui.notifications.warn("Un état empêche ce personnage de se déplacer.");
+		return null;
+	}
+	if (stateProfile.blocksConcentration && actionData?.concentration?.enabled) {
+		ui.notifications.warn("Un état empêche ce personnage de se concentrer.");
 		return null;
 	}
 

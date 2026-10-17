@@ -1,4 +1,4 @@
-# Roadmap d'implémentation Foundry - Nalfa 1.2.0
+# Roadmap d'implémentation Foundry - Nalfa 0.1.2
 
 Objectif : appliquer les changements de règles validés dans le système Foundry, dans l'ordre le plus utile pour le développement.
 

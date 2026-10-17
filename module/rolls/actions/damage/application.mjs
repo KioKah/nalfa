@@ -1,3 +1,5 @@
+import { removeStatesAfterDamage } from "../../../rules/states.mjs";
+
 export const applyDamageSummaryRowsToTargets = async (rows = []) => {
 	for (const row of rows) {
 		const actor = row?.targetToken?.actor;
@@ -5,7 +7,11 @@ export const applyDamageSummaryRowsToTargets = async (rows = []) => {
 
 		const hpDelta = Number(row?.hpDelta ?? 0);
 		const tempHpDelta = Number(row?.tempHpDelta ?? 0);
-		if (!hpDelta && !tempHpDelta) continue;
+		const damageTypes = Array.isArray(row?.damageTypes) ? row.damageTypes : [];
+		if (!hpDelta && !tempHpDelta) {
+			if (damageTypes.length) await removeStatesAfterDamage(actor, damageTypes);
+			continue;
+		}
 
 		const currentHp = Number(actor.system?.attributes?.hp?.value ?? 0);
 		const currentMaxHp = Number(actor.system?.attributes?.hp?.max ?? NaN);
@@ -21,5 +27,6 @@ export const applyDamageSummaryRowsToTargets = async (rows = []) => {
 			"system.attributes.hp.value": nextHp,
 			"system.attributes.hp.abso": nextTempHp,
 		});
+		if (damageTypes.length) await removeStatesAfterDamage(actor, damageTypes);
 	}
 };

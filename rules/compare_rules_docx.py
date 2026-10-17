@@ -111,8 +111,8 @@ def main() -> None:
     old_lines = extract_docx(args.old_docx)
     new_lines = extract_docx(args.new_docx)
 
-    old_txt = args.out / "Nalfa Regles 1.1.0 extracted.txt"
-    new_txt = args.out / "Nalfa Regles 1.2.0 extracted.txt"
+    old_txt = args.out / "Nalfa Regles 0.1.1 extracted.txt"
+    new_txt = args.out / "Nalfa Regles 0.1.2 extracted.txt"
     write_lines(old_txt, old_lines)
     write_lines(new_txt, new_lines)
 

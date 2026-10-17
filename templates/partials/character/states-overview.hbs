@@ -1,0 +1,50 @@
+<section class="sheet-section states-overview">
+  <div class="states-overview__heading">
+    <div>
+      <h2>États &amp; contrôles de foule</h2>
+      <span class="field__meta">Les contraintes de ciblage et les décisions MJ restent signalées.</span>
+    </div>
+    {{#if isEditable}}
+      <button type="button" data-action="add-state">
+        <i class="fa-light fa-plus" aria-hidden="true"></i>
+        <span>Ajouter un état</span>
+      </button>
+    {{/if}}
+  </div>
+
+  {{#if stateRows.length}}
+    <div class="states-overview__list">
+      {{#each stateRows}}
+        <article class="states-overview__row">
+          <img src="{{img}}" alt="" />
+          <div class="states-overview__main">
+            <strong>{{name}}</strong>
+            {{#if note}}<span class="field__meta">{{note}}</span>{{/if}}
+            {{#each behaviorNotes}}
+              <span class="states-overview__note">{{this}}</span>
+            {{/each}}
+          </div>
+          {{#if duration}}
+            <span class="states-overview__duration">{{duration}} {{units}}</span>
+          {{/if}}
+          {{#if ../isEditable}}
+            <button
+              type="button"
+              class="states-overview__remove"
+              data-action="remove-state"
+              data-effect-id="{{id}}"
+              data-tooltip="Retirer l'état"
+            >
+              <i class="fa-light fa-xmark" aria-hidden="true"></i>
+            </button>
+          {{/if}}
+        </article>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="states-overview__empty">
+      <i class="fa-light fa-shield-heart" aria-hidden="true"></i>
+      <span>Aucun état actif</span>
+    </div>
+  {{/if}}
+</section>

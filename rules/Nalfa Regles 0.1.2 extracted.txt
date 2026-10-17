@@ -1,0 +1,200 @@
+Nalfa : Règles du Jeu
+1. Règles générales
+Système de Dés :
+Dés : Nalfa possède un système se basant sur des jets de dés. Le d20 est utilisé pour la plupart des Jets (compétences, toucher, sauvegarde, etc.). Pour les Jets de dégâts, qui utilisent tous types de dés, le résultat est toujours au moins égal à la moitié du maximum possible.
+Exemple : 1d4 vaut min 2 et max 4 ; 1d8 vaut min 4 et max 8 (etc.)
+Arrondis : Quand cela n’est pas mentionné expressément, tous les arrondis sont calculés à l’entier inférieur.
+1 et 20 : Un jet de 20 naturel (sans modificateur) est toujours un succès, tandis que 1 est toujours un échec, dépendamment de la difficulté de l’action. Le MJ peut choisir de renforcer les effets ou de créer une interaction unique selon la situation.
+Avantage et désavantage : Lorsqu’une entité a un Avantage ou un Désavantage sur un lancer de dé, elle lance le dé deux fois. Avec un avantage, elle garde le meilleur résultat. Avec un désavantage, elle garde le moins bon résultat.
+Invention & Évolution de Sorts :
+Dans Nalfa, les joueurs et le MJ peuvent demander à inventer ou faire évoluer des sorts qui correspondent à l'identité de leur classe voire même de leur personnage, dans la limite de leur puissance théorique à l’instant t. Le MJ créera et estimera les statistiques du sort en fonction de la demande du joueur.
+Rareté des Objets :
+Il existe plusieurs raretés d'objets afin de catégoriser la difficulté d’obtention et la rareté de ces derniers dans l’univers : Commun, Rare, Épique, Héroïque, Mythique.
+2. Statistiques :
+Dans Nalfa, les Statistiques Principales influencent directement les compétences, les jets de dés et de nombreuses autres mécaniques. Ces caractéristiques définissent les capacités fondamentales de chaque personnage et sont utilisées dans la majorité des actions en jeu.
+For : Force
+Dex : Dextérité
+Int : Intelligence
+Sag : Sagesse
+Cha : Charisme
+Con : Constitution
+En plus des caractéristiques principales, chaque personnage est défini par un ensemble de Statistiques Générales, représentant divers aspects de son état et de ses capacités.
+Points de Vie (Pv) : Cela détermine la capacité d’un personnage à encaisser les coups subis jusqu’à ce qu’il tombe inconscient. Un personnage tombe donc Inconscient à partir de 0 Pv ou moins. Le personnage perd 10% de ses Pv max chaque tour/round. Descendre en dessous des Pv max dans le négatif provoque la mort du personnage. En revanche, il reprend conscience s’il remonte au-dessus de 0 Pv et obtient un niveau de Fatigue.
+Défense (Def) : Déterminé par l’archétype de classe et l’équipement, cela représente la capacité à encaisser, bloquer ou éviter une attaque en fonction de vos attributs.
+Évasion (Eva) : Statistique identique à la Défense (et cumulable à celle-ci) utilisable uniquement sur les Attaques d'opportunités (voir les règles sur les attaques d’opportunités).
+Initiative : Utilisée dans le Jet d'Initiative, elle détermine l’ordre de passage des entités en combat. Initiative = Dex*2.
+Nalfa : Le Nalfa est la ressource utilisée pour lancer des Sorts. Certains Sorts peuvent être Surchargés en Nalfa pour augmenter leurs effets ou bien en rajouter.
+Les Compétences sont des sous-catégories des 6 Statistiques Principales. Elles reflètent des savoir-faire spécifiques et permettent d’obtenir des résultats précis lors des Jets de Compétence (JdC). Chaque personnage possède des bonus ou malus propres à chaque compétence, en fonction de ses forces et faiblesses déterminées par la race, ou bien le personnage en lui-même :
+Athlétisme : Escalader, forcer des obstacles, soulever du poids.
+Robustesse : Résister aux chocs ou à des poussées physiques.
+Adresse : Viser, désamorcer, rattraper ou manipuler avec précision.
+Acrobaties : Se faufiler, esquiver, réaliser des mouvements agiles.
+Discrétion : Se cacher, se rendre silencieux ou invisible.
+Magie : Connaissances magiques générales, détection de magie.
+Culture : Connaissance : histoire, cultes, objets anciens, architectures, lieux.
+Nature : Connaissances : faune, flore, climat, maladies, poisons, magie naturelle.
+Investigation : Déduire l’origine d'une blessure, l’emplacement d’un objet caché, etc..
+Sérénité : Résistance au stress, calme sous pression.
+Perception : Repérer des sons, présences ou pièges.
+Intuition : Deviner les mensonges, intentions d’une créature, dangers.
+Intimidation : Faire peur, menacer, imposer sa volonté.
+Persuasion : Convaincre, négocier, diplomatie.
+Tromperie : Mentir, manipuler, inventer des histoires.
+Performance : Imitation, musique, faire un tour de passe-passe.
+Santé : Résister aux maladies, poisons, fatigue.
+Endurance : Effort prolongé, course, nage, ténacité.
+3. Lancer ou Jets de Dés
+Les lancers de dés sont au cœur des mécaniques du jeu. Ils permettent de résoudre les actions entreprises par les personnages, qu’il s’agisse d’attaquer, de résister à un effet, de se concentrer ou d’interagir avec l’environnement.
+Des bonus variables de différentes sources peuvent être appliqués à ces jets. Ils seront à prendre en compte dans les calculs.
+Jet de Compétence (JdC)
+Le JdC sert à évaluer une action liée aux compétences du personnage. Le MJ fixe secrètement (ou non) une difficulté de manière arbitraire ou selon la table des difficultés, que le joueur doit égaler ou dépasser avec :
+1d20 + Compétence
+Jet de Toucher (JdT)
+Le JdT s’oppose à la Défense d’une cible (souvent lors d’une attaque). Il réussit si le résultat est égal ou supérieur à ce dernier avec :
+Sorts : 1d20 + Statistique Principale
+Jet de Dégâts (JdD)
+La formule exacte du JdD est précisée dans chaque action qui en nécessite un, que ce soit un sort, une attaque basique ou un effet particulier.
+Souvent sous la forme : xdn + Stat Type
+où
+“xdn” représente x dés à n faces. Il peut y avoir plusieurs dés différents.
+“Stat” est la Statistique utilisée par une potentielle entité qui agit.
+“Type” est le type de dégâts infligé
+Jet de Sauvegarde (Sauv)
+Un Jet de Sauvegarde, aussi appelé simplement Sauvegarde, représente la tentative d’une entité pour résister à un danger : sort, piège, poison, maladie ou toute autre menace similaire. Une entité ne choisit généralement pas de faire une Sauv. Elle y est contrainte lorsqu’un effet ou une situation la met en danger.
+Pour effectuer un Jet de Sauvegarde, lancez : 1d20 + Stat demandée
+La Statistique demandée dépend du type de menace. Le jet peut être modifié par des bonus, des malus, un avantage ou un désavantage, selon la situation et la décision du MJ. La difficulté à atteindre dépend toujours de l’effet qui provoque la Sauv. Par exemple, pour résister à un sort, la difficulté est généralement déterminée par le Sort, et la Statistique Principale du lanceur. L’effet indique également les conséquences d’une réussite ou d’un échec. En général, une Sauv réussie permet d’éviter totalement l’effet ou d’en réduire les dégâts.
+Lorsqu’une entité subit des dégâts alors qu’elle maintient un sort avec Concentration, elle doit effectuer un Jet de Concentration pour conserver le sort actif. Le Jet de Concentration est similaire à une Sauvegarde, les détails de celui-ci sont indiqués sur le Sort nécessitant la Concentration.
+Règles spéciales de Dégâts & Soins
+Dégâts Critiques : Les dés du Jet de Dégâts sont lancés deux fois.
+Soins Critiques : Les dés du Jet de Soins sont lancés deux fois.
+Dégâts & Effets sur la durée : Sauf mention contraire, ces dégâts sont infligés à la fin du tour de l’entité affectée et continuent tant que l’entité est affectée par l’effet. La Sauvegarde pour annuler cet effet (si elle existe) est lancée avant l’application des dégâts.
+Dégâts sur des cibles multiples : Les Jets de toucher sont calculés séparément pour chaque cible. Cependant, les Jets de Dégâts restent identiques pour toutes les cibles.
+Soins sur la durée : Sauf mention contraire, ces soins sont appliqués au début du tour de la cible affectée et se poursuivent périodiquement tant que l’effet est actif.
+4. Actions
+Dans Nalfa, chaque personnage peut effectuer différentes actions pendant son tour incluant une Action Principale, une Action Bonus, du Déplacement, ainsi que des Réactions hors de son tour et une Concentration pour maintenir certains effets actifs.
+Les Actions Principales
+Action d’Attaque : L’Action d’Attaque est définie dans le Sort ou l’Attaque utilisée.
+Courir : Vous permet d’augmenter votre Déplacement pour ce tour d’un montant d’1d(Déplacement)min.
+Charge : Porte une Attaque bénéficiant de +2 JdT contre une cible se situant entre 4m et votre maximum de Déplacement. Cela coûte également la distance parcourue en Déplacement.
+Si un bouclier est équipé, vous pouvez choisir de tenter d’étourdir la cible pendant 1 tour à la place (Sauv 4 + distance parcourue For/Dex = Hébété).
+Certains Sorts peuvent être greffés à une Attaque sous forme de Charge. Cela sera spécifié dans la description de celui-ci.
+Désengagement : Retire le statut Menacé à l’instant t de votre action, ce qui vous permet de vous déplacer librement sans subir d’Attaques d’opportunité.
+Blocage : Vous prépare à d’éventuelles attaques ennemies en augmentant de 3 votre Défense jusqu’à votre prochain tour. Nécessite un bouclier.
+Provoquer : Impose une Sauvegarde à votre cible contre votre Force ou votre Charisme, tout dépend du type de provocation (Insulte, rugissement …).
+(Sauv 10 For/Cha = 0)
+Si la cible échoue, elle est Provoquée pour une durée déterminée par le MJ.
+Les Actions Bonus
+Consommables : Boire une potion, lancer des objets etc...
+Changement d'arme : Effectuer un changement d’arme depuis l’inventaire, le sol ou à l’aide d’une autre entité. L’entité qui change d’arme avec vous devra alors utiliser sa Réaction.
+Autres : Certaines classes convertissent des Actions Principales en Action Bonus, comme le Désengagement par exemple. Mais les Actions bonus sont aussi utilisées pour lancer d’autres actions spécifiques aux Classes.
+Le Déplacement
+Se déplacer : À son tour, chaque joueur bénéficie d’une distance de déplacement maximum. Il est libre d’utiliser son déplacement au début de son tour, entre deux actions, ou à la fin du tour. Il est possible d’utiliser le déplacement en plusieurs fois.
+La Réaction
+Réaction générale : Il est possible de se tenir prêt à réagir à un événement précis susceptible de se produire. Si cet événement survient, votre réaction est consommée et l’action prévue s’exécute immédiatement.
+La réaction peut également être utilisée de manière plus souple dans certaines situations, par exemple pour attraper un objet lancé par un allié en plein combat.
+Attaque d’opportunité : L’Attaque d’opportunité est une Attaque Basique utilisable en réaction de plusieurs situations. Le MJ s’occupera de vous notifier lorsqu’il est possible d’en exécuter. Exemple : lorsqu’un ennemi quitte votre rayon de menace.
+La Concentration
+Se Concentrer : Certains Sorts ou Actions nécessitent de la Concentration. Celle-ci est consommée au début du tour et reste active tant qu’elle est maintenue. Le personnage concentré peut interrompre sa Concentration à tout moment durant son tour. Cependant, dans certaines situations, elle peut être interrompue, et un Jet de Concentration sera effectué par le lanceur de sort.
+5. Équipement
+Armes
+Les armes sont variées et possèdent chacune des caractéristiques propres. Leur utilisation repose sur les emplacements d’équipement du personnage, principalement la main droite et la main gauche.
+Selon la manière dont une arme est équipée, ses effets peuvent différer. Afin d’éviter toute ambiguïté, chaque fiche d’arme doit préciser explicitement ses dégâts et ses propriétés en fonction des différentes utilisations possibles (une main/deux mains/combat à deux armes/autre. . .)
+Certains effets, notamment les sorts, interagissent différemment selon la main qui porte l’arme. Pour cette raison, ces valeurs de dégâts “peuvent” être distinguées :
+dA (dégâts Arme) : dégâts infligés par l’arme
+dAp (dégâts Arme principale) : dégâts infligés par l’arme principale
+dAs (dégâts Arme secondaire) : dégâts infligés par l’arme secondaire
+Lancer d’Arme : Lorsqu’une Arme est lancée, son JdD est divisé par 2.
+Attributs des Armes :
+Finesse : Arme pouvant utiliser la Dex sur les JdT et les dégâts au lieu de la For.
+Deux mains : Arme ne pouvant se manier qu’à 2M. Le JdD est souvent très élevé.
+Légère : Arme se maniant à 1M. Possibilité d’en avoir une dans chaque main ou de la tenir à 2M. Ne peut être Lourde.
+Lourde : Arme se maniant à 1M. Possibilité de la tenir à 2M. Ne peut être Légère et Finesse.
+Lancer : Arme pouvant être lancée sans malus de dégâts. Compatible avec Légère seulement.
+Accessoires
+Les accessoires, aussi appelés Trinkets sont des objets d'équipement conférant des effets, bonus comme malus, passifs comme actifs, aux personnages.
+Armures
+Dans Nalfa, l’armure physique n’est pas un objet à part entière et ne donne pas de statistiques précises ; seule la Défense reflète sa protection. Un changement important de tenue peut modifier la Défense, selon l’appréciation du MJ. Si une armure confère un effet spécifique, elle est alors considérée comme un Accessoire.
+5. Exploration & Dangers
+Tenir compte du temps
+Au cours d’une aventure, le MJ doit suivre le temps qui s’écoule dans le monde du jeu. Ce temps de jeu est différent du temps réel. Une action décrite en quelques secondes par les joueurs peut représenter plusieurs heures, voire plusieurs jours pour leurs personnages.
+Le MJ décide en dernier ressort ce qu’il est possible d’accomplir pendant une durée donnée.
+À mesure que le temps de jeu avance, le MJ doit également suivre les ressources consommées par le groupe, comme la nourriture, l’eau, les sources de lumière, ainsi que la durée des sorts et des effets magiques.
+En plus des unités de temps communes (minutes, heures, jours, etc.), le jeu utilise les unités suivantes :
+Rounds : Représente 10s à 20s dans l’univers du jeu, le temps se mesure en rounds pendant les rencontres, notamment les combats.
+Tours : Représente environ 10min dans l’univers du jeu, le temps est mesuré en tour lors de l’exploration de donjons (à ne pas confondre avec le “tour” du joueur).
+Faim & Soif
+Si les personnages passent un jour complet sans manger ni boire, le MJ peut imposer des malus tels que des niveaux de fatigue ou bien leur faire perdre des points de vie.
+Ténèbres
+Les personnages qui prévoient une expédition souterraine voudront souvent emporter des sources d’éclairage comme des torches. En général, celles-ci durent 1 heure soit 6 tours, sauf mention contraire. Ainsi, une torche s’éteint au bout de 6 tours et un sort utilisé dans le but d’éclairer coûte 1 Nalfa pour 1 heure.
+Escalade
+Chute
+Tomber d’une hauteur sur une surface dure inflige des dégâts. Et vu que c’est trop chiant et rare, cela sera calculé au cas par cas :)
+6. Fatigue & Repos
+7. Rencontres
+Monstres Errants
+En plus des monstres spécifiquement placés dans un donjon ou dans une contrée sauvage, les PJ risquent de rencontrer des monstres qui se déplacent d’un endroit à l’autre. On appelle ces créatures des monstres errants.
+Fréquence : Le MJ lance un dé à intervalles réguliers pour déterminer si le groupe rencontre des monstres errants. La fréquence de ces jets dépend du type de zone explorée.
+Fréquence générale en Donjon : Une fois tous les 2 tours.
+Fréquence générale en Contrée Sauvage : Une fois par jour.
+Probabilité : Quand l’arbitre effectue un jet de rencontre aléatoire, la probabilité est généralement de 1 sur 6 (1 sur 1d6). Mais elle peut varier en fonction de la dangerosité de la zone où les personnages joueurs se trouvent.
+Si le groupe se montre bruyant ou s’il transporte de puissantes sources d’éclairage, le MJ peut augmenter les chances de rencontre avec des monstres errants. À l’inverse, si le groupe se repose en silence dans un lieu sans trop de passage, les chances de rencontre avec des monstres errants peuvent être réduites.
+Surprises
+Distance de Rencontre
+Initiative
+Fuite
+Moral des Monstres
+8. Combat
+Séquences d’un Round
+Rayon de Menace
+Déplacements
+Couverture et Lignes de Vues
+Attaque à distance
+Attaques en mêlée
+X. Contrôles de Foules et États
+Cdf de Conscience :
+Hébétement : -2 Sauv, -2 JdT, ne peut réagir ni se concentrer.
+Étourdissement : -2 Défense, -4 JdT, -6 Sauv, ne peut réagir ni se concentrer.
+Endormissement : -6 Défense, Rate Sauv, ne peut agir. Subir des dégâts annule l'effet.
+Inconscience : -6 Défense, Rate Sauv, ne peut agir.
+Cdf de Déplacement :
+Ralentissement : -xm de déplacement.
+Immobilisation : -6 Sauv (Dex), ne peut se déplacer.
+Paralysie : -6 Défense, Rate Sauv (For,Dex), ne peut agir mais peut se concentrer.
+Mise à Terre : -2 Défense (Allonge), -6 Sauv (For,Dex), ne peut Attaquer et se déplacer. Doit utiliser la moitié du déplacement à son tour pour se relever.
+Repoussement : Repousse de quelques mètres. La distance varie en fonction du poids, de la taille et de la puissance de l'Attaque. Repousser contre un mur peut provoquer d'autres CdF. Cela est à déterminer au cas par cas.
+Cdf de Contrôles :
+Effroi : -6 Sauv (Int,Sag,Cha), -2 JdT. Doit réussir une Sauv 10 (Sag) au début de son tour afin de pouvoir agir.
+Charme : -6 Sauv (Int,Sag,Cha), ne peut attaquer son charmeur.
+Contrôle : Ne peut rien faire car une autre entité a le Contrôle. A voir au cas par cas.
+Affolement : Le Personnage effectue si elle le peut, une Attaque sur la cible la plus proche. Doit réussir une Sauv 10 (Cha) au début du tour afin de reprendre le contrôle et choisir son Action.
+Provocation : Ne peut effectuer d'Action d'Attaque sur une autre cible que le Provocateur. Doit réussir une Sauv 10 (Sag) au début du tour afin de reprendre le contrôle et choisir son Action.
+Cdf de Sens :
+Éblouissement : -2 Défense, -2 Sauv (Dex), -2 JdT, portée /2
+Aveuglement : -6 Défense, -6 Sauv (Dex), -4 JdT, portée /2, ne peut réagir (visuel)
+Assourdissement : Ne peut réagir (auditif)
+Réduction au Silence : Ne peut parler, ni réaliser d'Actions nécessitant la parole.
+États :
+Gel : -2 Défense, -6 Sauv (For), Rate Sauv (Dex), ne peut se déplacer. Subir des dégâts de feu peut supprimer l'effet et vous devenez humide.
+Humidité : Vulnérable aux dégâts de type fou et giv, le montant est calculé cas par cas.
+Encombrement : Debuff attribués par le MJ en fonction du degré d’encombrement.
+Ivresse : Debuff attribués par le MJ en fonction du degré d’alcoolémie vision altérée.
+Les Malus diffèrent selon la quantité d'alcool dans le sang.
+Contrôle sur Grosse Entités :
+Sur les grosses entités, les CdF se cumulent et contrôlent la cible uniquement au bout d'un certain nombre d'effets. Seul le MJ détermine cela.
+Attaques d’opportunités, rayon de menace et désengagement.
+Les entités qui se retrouvent dans votre portée d’Allonge deviennent menacées. La Menace est une mécanique qui permet les Attaques d’opportunité et qui peut être contrée par le Désengagement. Cela permet une gestion plus logique des combats du point de vue des déplacements.
+Sorts
+Catégorie de “Puissance des sorts” :
+Sorts Mineurs : Sorts ne consommant pas de Nalfa.
+Sorts Intermédiaires : Sorts consommant peu de Nalfa, pouvant être surchargés.
+Sorts Avancés : Sort très puissants consommant davantage de Nalfa.
+Sorts Majeurs : Sort ultimes ayant souvent un nombre limités d’utilisations par période.
+Sources des Sorts :
+Sort Racial : Sort relatif à la race du Personnage.
+Sort Héroïque : Sort lié directement au Personnage et à son histoire.
+S’il n’y a aucune mention, le sort provient de la classe.
+4.6 Types de Dégâts
+Dégâts Physique : Tranchant (tran) ; Perforant (perf) ; Contondant (cont) ; Saignement (sang) ; Sonique (soni)
+Dégâts Élémentaires : Feu (feu) ; Eau (eau) ; Air (air) ; Terre (terr) ; Foudre (foud) ; Nature (natu) ; Givre (givr)
+Dégâts Magiques : Radiant (radt) ; Obscur (obsc) ; Arcane (arca) ; Chaos (chao) ; Nécrotique (necr) ; Psychique (psyc)
+Dégâts Spéciaux : Arme (arme) ; Soins (soins) ; Absorption (abso)

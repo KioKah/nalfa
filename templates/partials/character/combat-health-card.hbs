@@ -1,10 +1,9 @@
-<div class="combat-overview__card">
-  <div class="combat-overview__header">
-    <div class="combat-overview__title">Santé</div>
-  </div>
-  <div class="combat-overview__separator"></div>
-  <div class="field combat-overview__hp">
-    <span class="field__label">PV</span>
+<div class="combat-overview__card combat-overview__card--health">
+  <div class="combat-overview__line combat-overview__line--primary">
+    <span class="combat-overview__metric-label combat-overview__metric-label--hp">
+      <i class="fa-solid fa-heart" aria-hidden="true"></i>
+      <span>PV</span>
+    </span>
     <input
       name="system.attributes.hp.value"
       type="number"
@@ -12,14 +11,9 @@
       data-dtype="Number"
     />
     <span class="field__separator">/</span>
-    <span class="field__total">{{sysData.attributes.hp.max}}</span>
-    {{#if (eq sysData.ui.valueMode "values")}}
-      {{#if (gt sysData.attributes.hp.max 0)}}
-        <span class="field__meta field__meta--formula">
-          ({{hpFormula}})
-        </span>
-      {{/if}}
-    {{/if}}
+    <span class="field__total" data-tooltip="{{hpTooltip}}">
+      {{sysData.attributes.hp.max}}
+    </span>
     {{#if (eq sysData.ui.valueMode "base")}}
       <input
         class="combat-overview__hp-edit-input"
@@ -37,64 +31,87 @@
         data-dtype="Number"
       />
     {{/if}}
-    {{#if isKO}}
-      <span class="ko-indicator">
-        {{#if deathTick.isDead}}Mort{{else}}KO{{/if}}
-      </span>
-    {{/if}}
+    <span class="combat-overview__line-spacer"></span>
+    <label class="combat-overview__compact-field" data-tooltip="PV temporaires">
+      <i class="fa-light fa-shield-plus" aria-hidden="true"></i>
+      <span class="combat-overview__compact-label">PV temporaires</span>
+      <input
+        name="system.attributes.hp.abso"
+        type="number"
+        value="{{sysData.attributes.hp.abso}}"
+        data-dtype="Number"
+      />
+    </label>
   </div>
-  <div class="combat-overview__line">
-    {{#if (eq sysData.ui.valueMode "base")}}
-      <label class="field field--inline combat-overview__entry">
-        <span class="field__label">Profil</span>
-        <select class="combat-overview__profile-select" name="system.profile">
-          {{selectOptions config.profiles selected=sysData.profile}}
-        </select>
-      </label>
-    {{else if (eq sysData.ui.valueMode "alt")}}
-      <label class="field field--inline combat-overview__entry">
-        <span class="field__label">Profil</span>
-        <select class="combat-overview__profile-select" name="system.profile">
-          {{selectOptions config.profiles selected=sysData.profile}}
-        </select>
-      </label>
+  {{#if isKO}}
+    {{#if deathTick.isDead}}
+      <div class="combat-overview__ko-status combat-overview__ko-status--dead">
+        <i class="fa-light fa-skull" aria-hidden="true"></i>
+        <strong>Mort</strong>
+        <span class="field__meta">PV négatifs au-delà du maximum</span>
+      </div>
     {{else}}
+      <div class="combat-overview__ko-status">
+        <span class="ko-indicator">KO</span>
+        <span>Mort dans</span>
+        <strong>{{deathTick.turnsToDeath}}</strong>
+        <span>{{#if (eq deathTick.turnsToDeath 1)}}tour{{else}}tours{{/if}}</span>
+        <span class="field__meta">−{{deathTick.lossPerTurn}} PV / tour</span>
+      </div>
+    {{/if}}
+  {{else}}
+    <div class="combat-overview__line combat-overview__line--resource">
+      <span class="combat-overview__metric-label nalfa-resource__label">
+        <i class="fa-light fa-sparkle nalfa-resource__icon" aria-hidden="true"></i>
+        <span>Nalfa</span>
+      </span>
+      <input
+        name="system.nalfa.value"
+        type="number"
+        value="{{sysData.nalfa.value}}"
+        data-dtype="Number"
+      />
+      <span class="field__separator">/</span>
+      <input
+        name="system.nalfa.max"
+        type="number"
+        value="{{sysData.nalfa.max}}"
+        data-dtype="Number"
+      />
+    </div>
+  {{/if}}
+
+  {{#unless (eq sysData.ui.valueMode "values")}}
+    <div class="combat-overview__profile-row">
+      <label class="field field--inline combat-overview__entry">
+        <span class="field__label">Profil de santé</span>
+        <select class="combat-overview__profile-select" name="system.profile">
+          {{selectOptions config.profiles selected=sysData.profile}}
+        </select>
+      </label>
       {{#if isKO}}
-        {{#if deathTick.isDead}}
-          <div class="field field--inline combat-overview__entry combat-overview__entry--death-rip">
-            <span class="combat-overview__value ko-indicator">RIP</span>
-          </div>
-        {{else}}
-          <div class="field field--inline combat-overview__entry combat-overview__entry--death">
-            <span class="combat-overview__death-main">
-              <span class="field__label">Mort dans</span>
-              <span class="field__total combat-overview__value">{{deathTick.turnsToDeath}}</span>
-              <span class="field__meta">
-                {{#if (eq deathTick.turnsToDeath 1)}}tour{{else}}tours{{/if}}
-              </span>
-            </span>
-            <span class="combat-overview__rate combat-overview__death-rate">
-              <span>(</span>
-              <span>-{{deathTick.lossPerTurn}}</span>
-              <span class="combat-overview__fraction">
-                <span>PV</span>
-                <span>tour</span>
-              </span>
-              <span>)</span>
-            </span>
-          </div>
-        {{/if}}
-      {{else}}
-        <label class="field field--inline combat-overview__entry">
-          <span class="field__label">Absorption</span>
+        <div class="combat-overview__line combat-overview__line--resource">
+          <span class="combat-overview__metric-label nalfa-resource__label">
+            <i class="fa-light fa-sparkle nalfa-resource__icon" aria-hidden="true"></i>
+            <span>Nalfa</span>
+          </span>
           <input
-            name="system.attributes.hp.abso"
+            name="system.nalfa.value"
             type="number"
-            value="{{sysData.attributes.hp.abso}}"
+            value="{{sysData.nalfa.value}}"
             data-dtype="Number"
           />
-        </label>
+          <span class="field__separator">/</span>
+          <input
+            name="system.nalfa.max"
+            type="number"
+            value="{{sysData.nalfa.max}}"
+            data-dtype="Number"
+          />
+        </div>
+      {{else}}
+        <span></span>
       {{/if}}
-    {{/if}}
-  </div>
+    </div>
+  {{/unless}}
 </div>

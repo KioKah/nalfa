@@ -23,7 +23,9 @@
       actor=actor
       sysData=sysData
       config=config
-      bioResistances=bioResistances
+      bioEnriched=bioEnriched
+      hasBioContent=hasBioContent
+      readonly=readonly
     }}
   </div>
 
@@ -35,6 +37,12 @@
         config=config
         isKO=isKO
         deathTick=deathTick
+        hpTooltip=hpTooltip
+        defenseTooltip=defenseTooltip
+        evasionTooltip=evasionTooltip
+        fatigue=fatigue
+        isCharacter=isCharacter
+        isEditable=isEditable
       }}
     </div>
 
@@ -44,18 +52,54 @@
       config=config
       rollable=rollable
     }}
-  </div>
 
-  <div class="tab {{tabs.resources.cssClass}}" data-group="primary" data-tab="resources">
-		{{> "systems/nalfa/templates/partials/character/nalfa-resource.hbs" sysData=sysData}}
-    {{> "systems/nalfa/templates/partials/character/action-pools.hbs" sysData=sysData}}
+    {{>
+      "systems/nalfa/templates/partials/character/resistances.hbs"
+      sysData=sysData
+      resistanceRows=resistanceRows
+      hasModifiedResistances=hasModifiedResistances
+    }}
   </div>
 
   <div class="tab {{tabs.combat.cssClass}}" data-group="primary" data-tab="combat">
-    {{> "systems/nalfa/templates/partials/character/roll-stats.hbs" sysData=sysData config=config}}
+    {{>
+      "systems/nalfa/templates/partials/character/combat-summary.hbs"
+      sysData=sysData
+      combatSummary=combatSummary
+      isEditable=isEditable
+    }}
+    {{>
+      "systems/nalfa/templates/partials/character/roll-stats.hbs"
+      sysData=sysData
+      config=config
+    }}
+    {{>
+      "systems/nalfa/templates/partials/character/action-resources.hbs"
+      sysData=sysData
+      combatResources=combatResources
+      stateProfile=stateProfile
+      isEditable=isEditable
+    }}
+    {{>
+      "systems/nalfa/templates/partials/character/combat-action-grid.hbs"
+      combatHotbar=combatHotbar
+      isEditable=isEditable
+    }}
+  </div>
+
+  <div class="tab {{tabs.states.cssClass}}" data-group="primary" data-tab="states">
+    {{>
+      "systems/nalfa/templates/partials/character/states-overview.hbs"
+      stateRows=stateRows
+      isEditable=isEditable
+    }}
   </div>
 
   {{#if isEditable}}
-    {{> "systems/nalfa/templates/partials/character/value-mode-toggle.hbs" sysData=sysData config=config}}
+    {{>
+      "systems/nalfa/templates/partials/character/value-mode-toggle.hbs"
+      sysData=sysData
+      config=config
+    }}
   {{/if}}
 </section>

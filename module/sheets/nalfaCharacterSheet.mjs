@@ -15,6 +15,15 @@ import {
 	executeActionConcentrationPrompt,
 	executeActionPrompt,
 } from "../rolls/actions/execution.mjs";
+import {
+	getActionAvailability,
+	getActionResourceAvailability,
+} from "../rolls/actions/availability.mjs";
+import {
+	createHotbarMacro,
+	getActionMacroPresentation,
+	isNalfaHotbarDrop,
+} from "../rolls/actions/hotbar.mjs";
 import { buildEmbeddedActionRow } from "./item/context/actions.mjs";
 import {
 	EQUIP_SLOT_COIN_POUCH,
@@ -31,6 +40,19 @@ import {
 } from "./item/equipment.mjs";
 import { bindImageEditContextMenu } from "./imageEdit.mjs";
 import { openRichTextEditorDialog } from "./item/dialogs/richTextDialog.mjs";
+import {
+	getFatigueEffects,
+	getFatigueHealthMax,
+	getFatigueSummary,
+	getRestRecoveryAmount,
+	getRestResult,
+} from "../rules/fatigue.mjs";
+import {
+	buildActorStateRows,
+	buildNalfaStateEffect,
+	getActorStateProfile,
+	getNalfaStateOptions,
+} from "../rules/states.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -57,6 +79,34 @@ const ACTION_BROWSER_GROUP_OPTIONS = Object.freeze([
 	{ value: "cost", label: "Coût" },
 	{ value: "mode", label: "Mode" },
 	{ value: "kind", label: "Type" },
+]);
+
+const COMBAT_RESOURCE_META = Object.freeze([
+	{
+		key: "main",
+		shortLabel: "Principale",
+		iconClass: "fa-light fa-sword",
+	},
+	{
+		key: "bonus",
+		shortLabel: "Bonus",
+		iconClass: "fa-light fa-plus",
+	},
+	{
+		key: "reaction",
+		shortLabel: "Réaction",
+		iconClass: "fa-light fa-rotate-left",
+	},
+	{
+		key: "concentration",
+		shortLabel: "Concentration",
+		iconClass: "fa-light fa-bullseye",
+	},
+	{
+		key: "movement",
+		shortLabel: "Déplacement",
+		iconClass: "fa-light fa-person-running",
+	},
 ]);
 
 const INVENTORY_BROWSER_DEFAULTS = Object.freeze({
@@ -180,7 +230,7 @@ const formatFormulaNumber = (value) => {
 
 const formatProfileFormula = (sysData, valueObj = {}) => {
 	const profileValue = Number(valueObj.profile ?? 0);
-	const baseValue = Number(valueObj.base ?? 0);
+	const baseValue = Number(valueObj.used_base ?? valueObj.base ?? 0);
 	const altValue = Number(valueObj.alt ?? 0);
 	const parts = [];
 	const profileLabel = String(CONFIG.nalfa.profiles?.[sysData.profile] ?? "Sans Profil");
@@ -198,6 +248,201 @@ const formatProfileFormula = (sysData, valueObj = {}) => {
 	}
 
 	return parts.join("") || profileLabel;
+};
+
+const buildCombatResources = (sysData) => {
+	return COMBAT_RESOURCE_META.map((meta) => {
+		const resource = sysData.actions?.[meta.key] ?? {};
+		const value = Number(resource.value ?? 0);
+		const max = Number(resource.max ?? 0);
+		const safeValue = Number.isFinite(value) ? value : 0;
+		const safeMax = Number.isFinite(max) ? Math.max(0, max) : 0;
+		const percent =
+			safeMax > 0
+				? Math.min(100, Math.max(0, (safeValue / safeMax) * 100))
+				: 0;
+
+		return {
+			...meta,
+			label: CONFIG.nalfa.actions?.[meta.key] ?? meta.shortLabel,
+			value: safeValue,
+			max: safeMax,
+			percent: Math.round(percent * 100) / 100,
+			rangeValue: Math.min(safeMax, Math.max(0, safeValue)),
+			hasCapacity: safeMax > 0,
+			step: meta.key === "movement" ? "any" : 1,
+			unit: meta.key === "movement" ? "m" : "",
+			isMovement: meta.key === "movement",
+			valueLabel:
+				meta.key === "movement" ? formatCombatDecimal(safeValue) : String(safeValue),
+			maxLabel:
+				meta.key === "movement" ? formatCombatDecimal(safeMax) : String(safeMax),
+			base: Number(resource.base ?? 0),
+			alt: Number(resource.alt ?? 0),
+			altMult: Number(resource.alt_mult ?? 1),
+		};
+	});
+};
+
+const formatCombatDecimal = (value) => {
+	const number = Number(value);
+	if (!Number.isFinite(number)) return "0";
+	return new Intl.NumberFormat("fr-FR", {
+		maximumFractionDigits: 2,
+		useGrouping: false,
+	}).format(number);
+};
+
+const buildActorCombatTiming = (actor) => {
+	const initiative = formatCombatDecimal(actor?.system?.attributes?.initiative?.value);
+	const initiativeState = {
+		mode: "initiative",
+		label: "Initiative",
+		value: initiative,
+		meta: "",
+	};
+	const combat = game.combats?.active ?? null;
+	if (!combat?.started) return initiativeState;
+
+	const actorCombatants = combat.getCombatantsByActor(actor);
+	const rolledIds = new Set(
+		actorCombatants
+			.filter((combatant) => combatant.initiative !== null)
+			.map((combatant) => combatant.id),
+	);
+	if (!rolledIds.size) return initiativeState;
+	if (rolledIds.has(combat.combatant?.id)) {
+		return {
+			mode: "current",
+			label: "À toi",
+			value: "",
+			meta: "Tour en cours",
+		};
+	}
+
+	const currentIndex = Number(combat.turn);
+	const turns = Array.isArray(combat.turns) ? combat.turns : [];
+	if (!Number.isInteger(currentIndex) || currentIndex < 0 || !turns.length) {
+		return initiativeState;
+	}
+
+	const distances = turns.flatMap((combatant, index) => {
+		if (!rolledIds.has(combatant.id)) return [];
+		return [(index - currentIndex + turns.length) % turns.length];
+	});
+	const distance = distances.length ? Math.min(...distances) : null;
+	if (!(distance > 0)) return initiativeState;
+
+	return {
+		mode: "waiting",
+		label: "Joue dans",
+		value: String(distance),
+		meta: `tour${distance > 1 ? "s" : ""}`,
+	};
+};
+
+const getActionRefKey = (actionRef = {}) => {
+	const refType = String(actionRef.refType ?? "");
+	const itemUuid = String(actionRef.itemUuid ?? "");
+	if (!refType || !itemUuid) return "";
+	const actionIndex = Number(actionRef.actionIndex ?? -1);
+	return `${refType}:${itemUuid}:${Number.isInteger(actionIndex) ? actionIndex : -1}`;
+};
+
+const getActorActionRef = (action) => ({
+	refType: action.embeddedAction?.refType,
+	itemUuid: action.embeddedAction?.itemUuid,
+	actionIndex: action.embeddedAction?.actionIndex,
+});
+
+const buildReserveAction = (actor, action) => {
+	const actionRef = getActorActionRef(action);
+	const actionKey = getActionRefKey(actionRef);
+	const resourceAvailability = getActionResourceAvailability(
+		actor,
+		action.actionData,
+	);
+	const availability = getActionAvailability({
+		actor,
+		actionRef,
+		actionName: action.embeddedAction?.displayName,
+	});
+	const unavailableReason = availability.available ? "" : availability.reason;
+
+	return {
+		actionKey,
+		name: action.embeddedAction?.displayName ?? action.item?.name ?? "Action",
+		img: action.itemImage,
+		shorthandHtml: action.embeddedAction?.displayShorthandHtml ?? "",
+		available: availability.available,
+		tooltip: unavailableReason
+			? `${action.embeddedAction?.displayName}\n${unavailableReason}`
+			: action.embeddedAction?.displayName,
+		resourceKeys: resourceAvailability.resourceKeys.join(" "),
+		refType: actionRef.refType,
+		itemUuid: actionRef.itemUuid,
+		actionIndex: actionRef.actionIndex,
+		actionName: action.embeddedAction?.displayName,
+		actionShorthand: action.embeddedAction?.actionShorthand,
+		sourceUuid: action.embeddedAction?.sourceUuid,
+	};
+};
+
+const buildCombatHotbar = (actor, actorActions) => {
+	const reserveActions = actorActions.map((action) => buildReserveAction(actor, action));
+	const actorActionByKey = new Map(
+		reserveActions.map((action) => [action.actionKey, action]),
+	);
+	const assignedActorActionKeys = new Set();
+	const hotbar = game.user?.hotbar ?? {};
+	const slots = Array.from({ length: 50 }, (_, index) => {
+		const slot = index + 1;
+		const occupied = Object.hasOwn(hotbar, slot);
+		const macroId = occupied ? String(hotbar[slot] ?? "") : "";
+		const macro = macroId ? game.macros?.get(macroId) ?? null : null;
+		const presentation = getActionMacroPresentation(macro, { actor });
+		const actionKey = getActionRefKey(presentation?.actionRef);
+		const actorAction = actorActionByKey.get(actionKey) ?? null;
+		if (actorAction) assignedActorActionKeys.add(actionKey);
+		const available = presentation?.availability?.available ?? true;
+		const unavailableReason = available
+			? ""
+			: presentation?.availability?.reason ?? "Action indisponible.";
+
+		return {
+			slot,
+			page: Math.ceil(slot / 10),
+			occupied,
+			missing: occupied && !macro,
+			macroId,
+			macroUuid: macro?.uuid ?? "",
+			isAction: Boolean(presentation),
+			actionKey: actionKey || `macro:${macroId}`,
+			name: macro?.name ?? (occupied ? "Macro introuvable" : ""),
+			img: macro?.img ?? "icons/svg/hazard.svg",
+			shorthand: presentation?.displayShorthand ?? "",
+			available,
+			tooltip:
+				occupied && !macro
+					? "Macro introuvable"
+					: unavailableReason
+						? `${macro?.name ?? "Action"}\n${unavailableReason}`
+						: macro?.name ?? "",
+			resourceKeys:
+				actorAction?.resourceKeys ??
+				presentation?.availability?.resourceKeys?.join(" ") ??
+				"",
+		};
+	});
+	const reserve = reserveActions.filter(
+		(action) => !assignedActorActionKeys.has(action.actionKey),
+	);
+
+	return {
+		slots,
+		reserve,
+		hasReserve: reserve.length > 0,
+	};
 };
 
 const buildActionBrowserCountLabel = ({ query, visibleCount, totalCount }) => {
@@ -622,15 +867,16 @@ const buildActorActionBanner = ({
 		kind,
 		kindLabel,
 		item,
+		actionData,
 		itemImage: item.img,
 		sourceLabel,
 		modeLabel,
 		costLabel,
 		spellTypeLabel,
 		searchText: normalizeActionSearch(searchableText),
-		embeddedAction: {
-			...embeddedAction,
-			refType,
+			embeddedAction: {
+				...embeddedAction,
+				refType,
 			itemUuid: item.uuid,
 			actionIndex: Number.isInteger(actionIndex) ? actionIndex : -1,
 			actionShorthand: String(actionData?.shorthand ?? "").trim(),
@@ -638,7 +884,11 @@ const buildActorActionBanner = ({
 	};
 };
 
-const buildActorActionBanners = (actor, inventoryRows = []) => {
+const buildActorActionBanners = (
+	actor,
+	inventoryRows = [],
+	{ includeUnequipped = false } = {},
+) => {
 	const banners = [];
 
 	for (const item of actor?.items ?? []) {
@@ -655,7 +905,12 @@ const buildActorActionBanners = (actor, inventoryRows = []) => {
 			continue;
 		}
 
-		if (!canShowEmbeddedActionsForItem(item, inventoryRows)) continue;
+		if (
+			!includeUnequipped &&
+			!canShowEmbeddedActionsForItem(item, inventoryRows)
+		) {
+			continue;
+		}
 
 		const actions = Array.isArray(item.system?.actions)
 			? item.system.actions
@@ -815,6 +1070,188 @@ const waitForCharacterConfirmation = ({ title, content, confirmLabel }) => {
 	});
 };
 
+const waitForRestSelection = () => {
+	return new Promise((resolve) => {
+		let settled = false;
+		const settle = (value) => {
+			if (settled) return;
+			settled = true;
+			resolve(value);
+		};
+		const dialog = new DialogV2({
+			classes: ["nalfa", "sheet", "nalfa-action-dialog"],
+			window: { title: "Repos" },
+			content: `
+				<section class="panel-section nalfa-rest-dialog">
+					<p class="hint">La durée et la qualité déterminent la récupération.</p>
+					<div class="nalfa-rest-dialog__choices">
+						<label class="field field--inline">
+							<span class="field__label">Durée</span>
+							<select name="rest-duration">
+								<option value="1">1 h</option>
+								<option value="2">2 h</option>
+								<option value="4">4 h</option>
+								<option value="8" selected>8 h</option>
+								<option value="24">24 h</option>
+							</select>
+						</label>
+						<label class="field field--inline">
+							<span class="field__label">Qualité</span>
+							<input name="rest-quality" type="number" step="1" value="5" data-dtype="Number" />
+						</label>
+					</div>
+					<p class="hint nalfa-rest-dialog__quality-key">
+						≤0 Misérable · 1–2 Mauvaise · 3–4 Légère · 5–6 Correcte · 7–8 Bonne · 9+ Complète
+					</p>
+					<div class="nalfa-rest-dialog__preview">
+						<span data-rest-quality-label>Correcte</span>
+						<strong data-rest-percent>60 % PV &amp; Nalfa</strong>
+						<strong data-rest-fatigue>−1 F</strong>
+					</div>
+				</section>
+			`,
+			buttons: [
+				{
+					action: "cancel",
+					label: "Annuler",
+					callback: () => settle(null),
+				},
+				{
+					action: "rest",
+					label: "Appliquer le repos",
+					default: true,
+					callback: (_event, _target, currentDialog) => {
+						const duration = currentDialog.element?.querySelector(
+							"[name='rest-duration']",
+						)?.value;
+						const quality = currentDialog.element?.querySelector(
+							"[name='rest-quality']",
+						)?.value;
+						settle(getRestResult(duration, quality));
+					},
+				},
+			],
+		});
+		const updatePreview = () => {
+			const duration = dialog.element?.querySelector(
+				"[name='rest-duration']",
+			)?.value;
+			const quality = dialog.element?.querySelector(
+				"[name='rest-quality']",
+			)?.value;
+			const result = getRestResult(duration, quality);
+			const qualityLabel = dialog.element?.querySelector(
+				"[data-rest-quality-label]",
+			);
+			const percentLabel = dialog.element?.querySelector("[data-rest-percent]");
+			const fatigueLabel = dialog.element?.querySelector("[data-rest-fatigue]");
+			if (qualityLabel) qualityLabel.textContent = result.qualityLabel;
+			if (percentLabel) {
+				percentLabel.textContent = `${result.percent} % PV & Nalfa`;
+			}
+			if (fatigueLabel) {
+				fatigueLabel.textContent = result.fatigueReduction
+					? `−${result.fatigueReduction} F`
+					: "";
+			}
+		};
+		dialog.addEventListener("render", () => {
+			dialog.element
+				?.querySelectorAll("[name='rest-duration'], [name='rest-quality']")
+				.forEach((element) => {
+					element.addEventListener("input", updatePreview);
+					element.addEventListener("change", updatePreview);
+				});
+			updatePreview();
+		});
+
+		dialog.addEventListener("close", () => settle(null));
+		dialog.render({ force: true });
+	});
+};
+
+const waitForStateSelection = (stateOptions) => {
+	const options = stateOptions
+		.map(
+			({ id, name, category, intensity }) =>
+				`<option value="${foundry.utils.escapeHTML(id)}" data-intensity="${intensity}">` +
+					`${foundry.utils.escapeHTML(category)} · ${foundry.utils.escapeHTML(name)}</option>`,
+		)
+		.join("");
+
+	return new Promise((resolve) => {
+		let settled = false;
+		const settle = (value) => {
+			if (settled) return;
+			settled = true;
+			resolve(value);
+		};
+		const dialog = new DialogV2({
+			classes: ["nalfa", "sheet", "nalfa-action-dialog"],
+			window: { title: "Ajouter un état" },
+			content: `
+				<section class="panel-section nalfa-state-dialog">
+					<label class="field field--inline">
+						<span class="field__label">État</span>
+						<select name="state-id">${options}</select>
+					</label>
+					<label class="field field--inline" data-state-intensity-row>
+						<span class="field__label">Intensité</span>
+						<input name="state-intensity" type="number" min="1" step="1" value="1" />
+					</label>
+					<label class="field field--inline">
+						<span class="field__label">Durée</span>
+						<input name="state-duration" type="number" min="0" step="1" placeholder="Illimitée" />
+						<select name="state-duration-units">
+							<option value="turns">Tours</option>
+							<option value="rounds">Rounds</option>
+							<option value="minutes">Minutes</option>
+							<option value="hours">Heures</option>
+						</select>
+					</label>
+					<label class="field nalfa-state-dialog__note">
+						<span class="field__label">Note MJ / source / cible</span>
+						<input name="state-note" type="text" placeholder="Ex. provoqué par le gardien" />
+					</label>
+				</section>
+			`,
+			buttons: [
+				{ action: "cancel", label: "Annuler", callback: () => settle(null) },
+				{
+					action: "apply",
+					label: "Appliquer",
+					default: true,
+					callback: (_event, _target, currentDialog) => {
+						const value = (name) =>
+							currentDialog.element?.querySelector(`[name='${name}']`)?.value;
+						settle({
+							stateId: value("state-id"),
+							intensity: value("state-intensity"),
+							duration: value("state-duration"),
+							units: value("state-duration-units"),
+							note: value("state-note"),
+						});
+					},
+				},
+			],
+		});
+		dialog.addEventListener("render", () => {
+			const select = dialog.element?.querySelector("[name='state-id']");
+			const intensityRow = dialog.element?.querySelector("[data-state-intensity-row]");
+			const updateIntensityVisibility = () => {
+				const option = select?.selectedOptions?.[0];
+				if (intensityRow) {
+					intensityRow.hidden = option?.dataset?.intensity !== "true";
+				}
+			};
+			select?.addEventListener("change", updateIntensityVisibility);
+			updateIntensityVisibility();
+		});
+		dialog.addEventListener("close", () => settle(null));
+		dialog.render({ force: true });
+	});
+};
+
 const buildUnequippedItemData = (item, { keepId = true } = {}) => {
 	const itemData = item.inCompendium
 		? game.items.fromCompendium(item, { clearFolder: true, keepId })
@@ -871,8 +1308,8 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 				{ id: "actions", label: "Actions" },
 				{ id: "inventory", label: "Inventaire" },
 				{ id: "bio", label: "Bio" },
-				{ id: "resources", label: "Ressources" },
 				{ id: "combat", label: "Combat" },
+				{ id: "states", label: "États" },
 			],
 			initial: "character",
 		},
@@ -902,6 +1339,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			this._getInventoryBrowserState(),
 		);
 		const actorActions = buildActorActionBanners(this.actor, inventoryRows);
+		const allActorActions = buildActorActionBanners(this.actor, inventoryRows, {
+			includeUnequipped: true,
+		});
 		const actionBrowser = buildActorActionBrowser(
 			actorActions,
 			this._getActionBrowserState(),
@@ -912,11 +1352,35 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		});
 		const hpValue = Number(sysData.attributes?.hp?.value ?? 0);
 		const hpMax = Math.max(1, Number(sysData.attributes?.hp?.max ?? 0));
+		const hpUncappedMax = Math.max(
+			1,
+			Number(sysData.attributes?.hp?.uncapped_max ?? hpMax),
+		);
 		const hpFormula = formatProfileFormula(sysData, sysData.attributes?.hp);
 		const defenseFormula = formatProfileFormula(
 			sysData,
 			sysData.attributes?.defense,
 		);
+		const fatigueEffects = getFatigueEffects(
+			this.actor.type === "Character" ? sysData.attributes?.exhaustion : 0,
+		);
+		const hpTooltipParts = [`PV max : ${hpFormula} = ${hpUncappedMax}`];
+		if (fatigueEffects.healthCap < 1) {
+			hpTooltipParts.push(
+				`Fatigue ${fatigueEffects.level} : plafond ${Math.round(fatigueEffects.healthCap * 100)} % = ${hpMax}`,
+			);
+		}
+		const defensePenalty = fatigueEffects.defensePenalty;
+		const defenseTooltip = defensePenalty
+			? `Défense : ${defenseFormula} ${formatFormulaNumber(defensePenalty)} (Fatigue ${fatigueEffects.level}) = ${sysData.attributes?.defense?.value}`
+			: `Défense : ${defenseFormula} = ${sysData.attributes?.defense?.value}`;
+		const evasionBase = Number(
+			sysData.attributes?.evasion?.used_base ??
+				sysData.attributes?.evasion?.base ??
+				0,
+		);
+		const evasionAlt = Number(sysData.attributes?.evasion?.alt ?? 0);
+		const evasionFormula = `${evasionBase}${formatFormulaNumber(evasionAlt)}`;
 		const isKO = hpValue <= 0;
 		let deathTick = null;
 
@@ -934,7 +1398,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			};
 		}
 
-		const bioResistances = Object.entries(
+		const resistanceRows = Object.entries(
 			CONFIG.nalfa.base_standard_damage_types,
 		)
 			.filter(([key]) => key !== "none")
@@ -969,8 +1433,44 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 					usedCoef,
 					usedValue,
 					isDefault: usedCoef === 1 && usedValue === 0,
+					state:
+						usedCoef === 0
+							? "immune"
+							: usedCoef > 1
+								? "vulnerable"
+								: usedCoef < 1
+									? "resistant"
+									: usedValue > 0
+										? "reduced"
+										: "modified",
 				};
 			});
+		const combatResources = buildCombatResources(sysData);
+		const nalfaValue = Number(sysData.nalfa?.value ?? 0);
+		const nalfaMax = Math.max(0, Number(sysData.nalfa?.max ?? 0));
+		const combatSummary = {
+			hp: {
+				value: hpValue,
+				max: hpMax,
+				temporary: Math.max(0, Number(sysData.attributes?.hp?.abso ?? 0)),
+				percent: Math.min(100, Math.max(0, (hpValue / hpMax) * 100)),
+				min: -hpMax,
+			},
+			nalfa: {
+				value: nalfaValue,
+				max: nalfaMax,
+				percent:
+					nalfaMax > 0
+						? Math.min(100, Math.max(0, (nalfaValue / nalfaMax) * 100))
+						: 0,
+			},
+			defense: sysData.attributes?.defense?.value ?? 0,
+			evasion: sysData.attributes?.evasion?.value ?? 0,
+			timing: buildActorCombatTiming(this.actor),
+		};
+		const combatHotbar = buildCombatHotbar(this.actor, allActorActions);
+		const stateRows = buildActorStateRows(this.actor);
+		const stateProfile = getActorStateProfile(this.actor);
 
 		return {
 			isOwner: this.actor.isOwner,
@@ -987,11 +1487,26 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			inventoryBrowser,
 			bioEnriched,
 			hasBioContent: bioValue.trim().length > 0,
-			bioResistances,
-			hpFormula,
-			defenseFormula,
+			resistanceRows,
+			hasModifiedResistances: resistanceRows.some(
+				(resistance) => !resistance.isDefault,
+			),
+			combatResources,
+			combatSummary,
+			combatHotbar,
+			stateRows,
+			stateProfile,
+			hpTooltip: hpTooltipParts.join(" · "),
+			defenseTooltip,
+			evasionTooltip: `Évasion : ${evasionFormula} = ${sysData.attributes?.evasion?.value}`,
+			fatigue: {
+				...fatigueEffects,
+				summary: getFatigueSummary(fatigueEffects.level),
+				isNone: fatigueEffects.level === 0,
+			},
 			isKO,
 			deathTick,
+			isCharacter: this.actor.type === "Character",
 		};
 	}
 
@@ -1041,6 +1556,74 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		if (!confirmed) return;
 
 		await item.delete();
+	}
+
+	async _onTakeRest(event) {
+		event.preventDefault();
+		if (!this.isEditable || !this.actor.isOwner) return;
+
+		const rest = await waitForRestSelection();
+		if (!rest) return;
+
+		const hp = this.actor.system.attributes?.hp ?? {};
+		const nalfa = this.actor.system.nalfa ?? {};
+		const fatigue = getFatigueEffects(
+			this.actor.system.attributes?.exhaustion,
+		).level;
+		const hpValue = Number(hp.value ?? 0);
+		const hpUncappedMax = Math.max(1, Number(hp.uncapped_max ?? hp.max ?? 0));
+		const nalfaValue = Number(nalfa.value ?? 0);
+		const nalfaMax = Math.max(0, Number(nalfa.max ?? 0));
+		const nextFatigue = Math.max(0, fatigue - rest.fatigueReduction);
+		const nextHpMax = getFatigueHealthMax(hpUncappedMax, nextFatigue);
+		const hpRecovery = getRestRecoveryAmount(nextHpMax, rest.percent);
+		const nalfaRecovery = getRestRecoveryAmount(nalfaMax, rest.percent);
+		const nextHpValue = Math.min(nextHpMax, hpValue + hpRecovery);
+		const nextNalfaValue = Math.min(nalfaMax, nalfaValue + nalfaRecovery);
+		const gainedHp = Math.max(0, nextHpValue - hpValue);
+		const gainedNalfa = Math.max(0, nextNalfaValue - nalfaValue);
+		const reducedFatigue = fatigue - nextFatigue;
+
+		await this.actor.update({
+			"system.attributes.hp.value": nextHpValue,
+			"system.nalfa.value": nextNalfaValue,
+			"system.attributes.exhaustion": nextFatigue,
+		});
+
+		const recoveryParts = [`+${gainedHp} PV`, `+${gainedNalfa} Nalfa`];
+		if (reducedFatigue > 0) recoveryParts.push(`-${reducedFatigue} Fatigue`);
+		ui.notifications.info(
+			`Repos ${rest.duration} h · ${rest.qualityLabel} (${rest.quality}) : ${recoveryParts.join(", ")}.`,
+		);
+	}
+
+	async _onAddState(event) {
+		event.preventDefault();
+		if (!this.isEditable || !this.actor.isOwner) return;
+
+		const selection = await waitForStateSelection(getNalfaStateOptions());
+		if (!selection) return;
+		const effect = buildNalfaStateEffect(selection);
+		if (!effect) return;
+		const previousStateIds = [...this.actor.effects]
+			.filter(
+				(activeEffect) =>
+					activeEffect.flags?.nalfa?.state?.id === selection.stateId,
+			)
+			.map((activeEffect) => activeEffect.id);
+		if (previousStateIds.length) {
+			await this.actor.deleteEmbeddedDocuments("ActiveEffect", previousStateIds);
+		}
+		await this.actor.createEmbeddedDocuments("ActiveEffect", [effect]);
+	}
+
+	async _onRemoveState(event) {
+		event.preventDefault();
+		if (!this.isEditable || !this.actor.isOwner) return;
+
+		const effectId = String(event.currentTarget?.dataset?.effectId ?? "").trim();
+		if (!effectId) return;
+		await this.actor.deleteEmbeddedDocuments("ActiveEffect", [effectId]);
 	}
 
 	async _onDrop(event) {
@@ -1229,8 +1812,203 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			.forEach((element) =>
 				element.addEventListener("click", this._onRollSkill.bind(this)),
 			);
+		this.element
+			?.querySelectorAll("[data-action='take-rest']")
+			.forEach((element) =>
+				element.addEventListener("click", this._onTakeRest.bind(this)),
+			);
+		this.element
+			?.querySelectorAll("[data-action='add-state']")
+			.forEach((element) =>
+				element.addEventListener("click", this._onAddState.bind(this)),
+			);
+		this.element
+			?.querySelectorAll("[data-action='remove-state']")
+			.forEach((element) =>
+				element.addEventListener("click", this._onRemoveState.bind(this)),
+			);
+		this.element
+			?.querySelectorAll("[data-action-resource-range]")
+			.forEach((element) =>
+				element.addEventListener(
+					"input",
+					this._onActionResourceInput.bind(this),
+				),
+			);
+		this.element
+			?.querySelectorAll("[data-combat-resource-adjust]")
+			.forEach((element) => {
+				element.addEventListener(
+					"click",
+					this._onCombatResourceAdjust.bind(this),
+				);
+				element.addEventListener(
+					"contextmenu",
+					this._onCombatResourceAdjust.bind(this),
+				);
+			});
+		this.element
+			?.querySelectorAll("[data-action='focus-combat-action']")
+			.forEach((element) => {
+				element.addEventListener(
+					"click",
+					this._onFocusCombatAction.bind(this),
+				);
+			});
+		this.element
+			?.querySelectorAll("[data-combat-grid-drag]")
+			.forEach((element) => {
+				element.addEventListener(
+					"dragstart",
+					this._onCombatActionDragStart.bind(this),
+				);
+			});
+		this.element
+			?.querySelectorAll("[data-hotbar-slot]")
+			.forEach((element) => {
+				element.addEventListener("dragover", this._onCombatActionDragOver.bind(this));
+				element.addEventListener("drop", this._onCombatActionDrop.bind(this));
+			});
+		this._applyCombatActionFocus();
 		this._restoreActionBrowserFocus();
 		this._restoreInventoryBrowserFocus();
+	}
+
+	_onActionResourceInput(event) {
+		if (!this.isEditable) return;
+
+		const range = event.currentTarget;
+		const resourceKey = String(range?.dataset?.actionResourceRange ?? "");
+		const item = range?.closest(".action-resources__item");
+		const valueInput = item?.querySelector(
+			`[data-action-resource-value='${resourceKey}']`,
+		);
+		if (!(valueInput instanceof HTMLInputElement)) return;
+
+		valueInput.value = range.value;
+		const valueLabel = item.querySelector("[data-action-resource-count]");
+		if (valueLabel) {
+			valueLabel.textContent =
+				resourceKey === "movement"
+					? formatCombatDecimal(range.value)
+					: range.value;
+		}
+
+		const max = Number(range.max);
+		const value = Number(range.value);
+		const percent = max > 0 ? Math.min(100, Math.max(0, (value / max) * 100)) : 0;
+		range.style.setProperty("--resource-fill", `${percent}%`);
+	}
+
+	async _onCombatResourceAdjust(event) {
+		if (!event.altKey) return;
+		event.preventDefault();
+		event.stopPropagation();
+		if (!this.isEditable || !this.actor.isOwner) return;
+
+		const element = event.currentTarget;
+		const path = String(element?.dataset?.combatResourceAdjust ?? "").trim();
+		if (!path) return;
+		const current = Number(foundry.utils.getProperty(this.actor.system, path));
+		if (!Number.isFinite(current)) return;
+
+		const rawMin = Number(element.dataset.resourceMin);
+		const rawMax = Number(element.dataset.resourceMax);
+		const min = Number.isFinite(rawMin) ? rawMin : Number.NEGATIVE_INFINITY;
+		const max = Number.isFinite(rawMax) ? rawMax : Number.POSITIVE_INFINITY;
+		const delta = event.type === "contextmenu" ? 1 : -1;
+		const next = Math.min(max, Math.max(min, current + delta));
+		if (next === current) return;
+		await this.actor.update({ [`system.${path}`]: next });
+	}
+
+	_onFocusCombatAction(event) {
+		if (event.altKey) return;
+		event.preventDefault();
+		this._focusedCombatActionKey = String(
+			event.currentTarget?.dataset?.combatActionKey ?? "",
+		);
+		this._applyCombatActionFocus();
+	}
+
+	_applyCombatActionFocus() {
+		const focusedKey = String(this._focusedCombatActionKey ?? "");
+		let resourceKeys = new Set();
+		this.element
+			?.querySelectorAll("[data-combat-action-key]")
+			.forEach((element) => {
+				const isFocused = element.dataset.combatActionKey === focusedKey;
+				element.classList.toggle("combat-action-grid__action--focused", isFocused);
+				if (isFocused) {
+					resourceKeys = new Set(
+						String(element.dataset.resourceKeys ?? "")
+							.split(/\s+/)
+							.filter(Boolean),
+					);
+				}
+			});
+		this.element
+			?.querySelectorAll("[data-combat-resource-key]")
+			.forEach((element) => {
+				element.classList.toggle(
+					"combat-resource--focused-cost",
+					resourceKeys.has(element.dataset.combatResourceKey),
+				);
+			});
+	}
+
+	_onCombatActionDragStart(event) {
+		if (!this.isEditable || ui.hotbar?.locked || !event.dataTransfer) {
+			event.preventDefault();
+			return;
+		}
+		const sourceSlot = Number(event.currentTarget?.dataset?.sourceHotbarSlot ?? -1);
+		const macroUuid = String(event.currentTarget?.dataset?.macroUuid ?? "").trim();
+		if (Number.isInteger(sourceSlot) && sourceSlot > 0 && macroUuid) {
+			event.dataTransfer.setData(
+				"text/plain",
+				JSON.stringify({ type: "Macro", uuid: macroUuid, slot: sourceSlot }),
+			);
+			event.dataTransfer.effectAllowed = "move";
+			return;
+		}
+
+		this._onActorActionDragStart(event);
+	}
+
+	_onCombatActionDragOver(event) {
+		if (!this.isEditable || ui.hotbar?.locked) return;
+		event.preventDefault();
+		if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+	}
+
+	async _onCombatActionDrop(event) {
+		if (!this.isEditable || !this.actor.isOwner || ui.hotbar?.locked) return;
+		const targetSlot = Number(event.currentTarget?.dataset?.hotbarSlot ?? -1);
+		if (!Number.isInteger(targetSlot) || targetSlot < 1 || targetSlot > 50) return;
+		const payload = foundry.applications.ux.TextEditor.getDragEventData(event);
+		const isActionDrop = isNalfaHotbarDrop(payload);
+		if (payload?.type !== "Macro" && !isActionDrop) return;
+
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		event.stopPropagation();
+		if (isActionDrop) {
+			await createHotbarMacro(payload, targetSlot);
+			return;
+		}
+
+		const macroClass = getDocumentClass("Macro");
+		let macro = await macroClass?.fromDropData(payload);
+		if (!(macro instanceof Macro)) return;
+		if (!game.macros.has(macro.id)) {
+			macro = await Macro.create(macro.toObject());
+		}
+		const sourceSlot = Number(payload.slot ?? -1);
+		await game.user.assignHotbarMacro(macro, targetSlot, {
+			fromSlot:
+				Number.isInteger(sourceSlot) && sourceSlot > 0 ? sourceSlot : undefined,
+		});
 	}
 
 	_restoreActionBrowserFocus() {

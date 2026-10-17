@@ -1,4 +1,5 @@
 import { roundNumber, toFiniteNumber } from "../base.mjs";
+import { getFatigueEffects, getFatigueHealthMax } from "../../../rules/fatigue.mjs";
 
 const ITEM_TYPES_WITH_MODIFIERS = new Set(["Class", "Trinket"]);
 
@@ -255,6 +256,9 @@ const analyzeActorEquippedWeapons = (actor) => {
 
 export const prepareActorDerivedData = (model) => {
 	const sys = model;
+	const fatigue = getFatigueEffects(
+		model.parent?.type === "Character" ? sys.attributes?.exhaustion : 0,
+	);
 	const modifierMap = collectActorItemModifiers(model.parent, sys);
 	const getNumberAtPath = (path, fallback = 0) => {
 		const modifiedValue = modifierMap.get(path);
@@ -305,7 +309,8 @@ export const prepareActorDerivedData = (model) => {
 	}
 
 	for (const [skill, skillObj] of Object.entries(sys.attributes?.skills ?? {})) {
-		skillObj.value = statBased({ path: `attributes.skills.${skill}` });
+		skillObj.value =
+			statBased({ path: `attributes.skills.${skill}` }) + fatigue.skillPenalty;
 	}
 
 	const physicalRollStat = sys.roll_stats?.physical ?? {};
@@ -340,18 +345,22 @@ export const prepareActorDerivedData = (model) => {
 	const profile = sys.profile ?? "none";
 	const defenseObj = sys.attributes?.defense ?? {};
 	const defenseProfile = defenseTable[profile] ?? 0;
+	const defenseBase = getNumberAtPath("attributes.defense.base", 0);
 	defenseObj.profile = defenseProfile;
+	defenseObj.used_base = defenseBase;
 	defenseObj.value =
-		defenseProfile + withBaseAlt("attributes.defense.base", "attributes.defense.alt");
+		defenseProfile +
+		defenseBase +
+		getNumberAtPath("attributes.defense.alt", 0) +
+		fatigue.defensePenalty;
 
 	const evasionObj = sys.attributes?.evasion ?? {};
-	evasionObj.value = withBaseAlt("attributes.evasion.base", "attributes.evasion.alt");
+	const evasionBase = getNumberAtPath("attributes.evasion.base", 0);
+	evasionObj.used_base = evasionBase;
+	evasionObj.value = evasionBase + getNumberAtPath("attributes.evasion.alt", 0);
 
 	const initiativeObj = sys.attributes?.initiative ?? {};
 	initiativeObj.value = statBased({ path: "attributes.initiative" });
-
-	const passivePerceptionObj = sys.attributes?.passive_percep ?? {};
-	passivePerceptionObj.value = statBased({ path: "attributes.passive_percep" });
 
 	const reachObj = sys.attributes?.reach ?? {};
 	reachObj.value = withBaseAltMult(
@@ -395,18 +404,24 @@ export const prepareActorDerivedData = (model) => {
 	const healthObj = sys.attributes?.hp ?? {};
 	const profileArray = maxHealthTable[profile] ?? maxHealthTable.none;
 	const profileHealth = profileArray[charLevel] ?? 0;
+	const healthBase = getNumberAtPath("attributes.hp.base", 0);
 	healthObj.profile = profileHealth;
-	healthObj.max = Math.max(
+	healthObj.used_base = healthBase;
+	healthObj.uncapped_max = Math.max(
 		1,
-		profileHealth + withBaseAlt("attributes.hp.base", "attributes.hp.alt"),
+		profileHealth + healthBase + getNumberAtPath("attributes.hp.alt", 0),
 	);
+	healthObj.max = getFatigueHealthMax(healthObj.uncapped_max, fatigue.level);
 
 	for (const [key, actionObj] of Object.entries(sys.actions ?? {})) {
 		if (key === "movement") {
-			actionObj.max = withBaseAltMult(
-				`actions.${key}.base`,
-				`actions.${key}.alt_mult`,
-				`actions.${key}.alt`,
+			actionObj.max = Math.max(
+				0,
+				withBaseAltMult(
+					`actions.${key}.base`,
+					`actions.${key}.alt_mult`,
+					`actions.${key}.alt`,
+				) + fatigue.movementPenalty,
 			);
 		} else {
 			actionObj.max = withBaseAlt(`actions.${key}.base`, `actions.${key}.alt`);

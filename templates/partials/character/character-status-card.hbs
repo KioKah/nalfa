@@ -1,0 +1,36 @@
+<div class="combat-overview__card combat-overview__card--status">
+  <div class="combat-overview__line combat-overview__line--primary">
+    <span class="combat-overview__metric-label combat-overview__metric-label--fatigue">
+      <i class="fa-light fa-battery-quarter" aria-hidden="true"></i>
+      <span>Fatigue</span>
+    </span>
+    <input
+      name="system.attributes.exhaustion"
+      type="number"
+      min="0"
+      max="6"
+      step="1"
+      value="{{sysData.attributes.exhaustion}}"
+      data-dtype="Number"
+    />
+    {{#if isEditable}}
+      <button
+        class="combat-overview__rest-button"
+        type="button"
+        data-action="take-rest"
+        data-tooltip="Récupérer des PV, du Nalfa et réduire la fatigue"
+      >
+        <i class="fa-light fa-campfire" aria-hidden="true"></i>
+        <span>Repos</span>
+      </button>
+    {{/if}}
+  </div>
+  <div class="combat-overview__status-note {{#if fatigue.isUnconscious}}combat-overview__status-note--danger{{/if}}">
+    {{#if fatigue.isNone}}
+      <i class="fa-light fa-circle-check" aria-hidden="true"></i>
+    {{else}}
+      <i class="fa-light fa-triangle-exclamation" aria-hidden="true"></i>
+    {{/if}}
+    <span>{{fatigue.summary}}</span>
+  </div>
+</div>

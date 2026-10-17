@@ -629,6 +629,15 @@ export const summarizeAppliedDamageForToken = (
 		hpDelta,
 		tempHpDelta,
 		finalTempHp,
+		damageTypes: [...new Set(
+			appliedResults
+				.filter(
+					(result) =>
+						["damage", "piercing"].includes(result.appliedEffectKind) &&
+						Number(result.finalAmount) > 0,
+				)
+				.map((result) => result.damageTypeKey),
+		)],
 		summaryParts,
 		isKo: hpDelta < 0 && resultingHp <= 0,
 		isDead: hpDelta < 0 && Number.isFinite(maxHp) && maxHp > 0 && resultingHp <= -maxHp,

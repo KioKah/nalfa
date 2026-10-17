@@ -1,0 +1,74 @@
+<section class="combat-action-space" aria-label="Hotbar et actions disponibles">
+  <div class="combat-action-grid combat-action-grid--hotbar" aria-label="Hotbar">
+    {{#each combatHotbar.slots}}
+      <div
+        class="combat-action-grid__slot
+          {{#if occupied}}combat-action-grid__slot--occupied{{/if}}"
+        data-hotbar-slot="{{slot}}"
+      >
+        {{#if occupied}}
+          <button
+            class="combat-action-grid__action
+              {{#unless isAction}}combat-action-grid__action--macro{{/unless}}
+              {{#if missing}}combat-action-grid__action--missing{{/if}}
+              {{#unless available}}combat-action-grid__action--unavailable{{/unless}}"
+            type="button"
+            {{#if ../isEditable}}
+              {{#if macroUuid}}draggable="true"{{/if}}
+            {{/if}}
+            data-combat-grid-drag
+            data-macro-uuid="{{macroUuid}}"
+            data-source-hotbar-slot="{{slot}}"
+            data-action="focus-combat-action"
+            {{#if isAction}}
+              data-combat-action-key="{{actionKey}}"
+              data-resource-keys="{{resourceKeys}}"
+            {{/if}}
+            data-tooltip="{{tooltip}}"
+            data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+          >
+            <img src="{{img}}" alt="{{name}}" draggable="false" />
+            {{#if isAction}}
+              {{#if shorthand}}
+                <span class="combat-action-grid__shorthand">{{shorthand}}</span>
+              {{/if}}
+            {{else}}
+              <span class="combat-action-grid__shorthand">{{name}}</span>
+            {{/if}}
+          </button>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+
+  {{#if combatHotbar.hasReserve}}
+    <div class="combat-action-reserve" aria-label="Actions hors hotbar">
+      {{#each combatHotbar.reserve}}
+        <button
+          class="combat-action-grid__action
+            {{#unless available}}combat-action-grid__action--unavailable{{/unless}}"
+          type="button"
+          draggable="{{#if ../isEditable}}true{{else}}false{{/if}}"
+          data-action="focus-combat-action"
+          data-combat-grid-drag
+          data-combat-action-key="{{actionKey}}"
+          data-resource-keys="{{resourceKeys}}"
+          data-ref-type="{{refType}}"
+          data-item-uuid="{{itemUuid}}"
+          data-action-index="{{actionIndex}}"
+          data-action-name="{{actionName}}"
+          data-action-shorthand="{{actionShorthand}}"
+          data-source-uuid="{{sourceUuid}}"
+          data-img="{{img}}"
+          data-tooltip="{{tooltip}}"
+          data-tooltip-class="nalfa-tooltip nalfa-tooltip--multiline"
+        >
+          <img src="{{img}}" alt="{{name}}" draggable="false" />
+          {{#if shorthandHtml}}
+            <span class="combat-action-grid__shorthand">{{{shorthandHtml}}}</span>
+          {{/if}}
+        </button>
+      {{/each}}
+    </div>
+  {{/if}}
+</section>

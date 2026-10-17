@@ -1,4 +1,4 @@
-# Changements de règles Foundry - Nalfa 0.2.0 vs 0.1.0
+# Changements de règles Foundry - Nalfa 0.1.2 vs 0.1.1
 
 Ce document ne garde que les changements ayant un impact de règle potentiellement implémentable dans le système Foundry.
 
@@ -30,7 +30,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 ### - :
 
 - [x] La section autonome `Jet d'Initiative` n'est plus présente.
-- [x] La formule explicite `1d20 + Initiative` n'est plus présente dans la version 1.2.0.
+- [x] La formule explicite `1d20 + Initiative` n'est plus présente dans la version 0.1.2.
 - [ ] La nomenclature mécanique détaillée des sauvegardes n'est plus présente : `[Sauv X+StatIncantAttaquant] StatSauv = M`.
 - [ ] La règle `En cas de réduction de dégâts, ceux-ci sont arrondis à l'entier supérieur` n'est plus présente.
 - [ ] L'exemple de sauvegarde avec `1d10 + Int Feu`, étourdissement, `Sauv 9 Dex` et difficulté augmentée par StatIncant n'est plus présent.
@@ -42,7 +42,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 ### ~ :
 
 - [ ] Le JdT des sorts passe de `1d20 + StatIncant` à `1d20 + Statistique Principale`.
-- [ ] Le JdT d'armes `1d20 + StatArme` n'est plus explicitement défini dans la règle de JdT 1.2.0.
+- [ ] Le JdT d'armes `1d20 + StatArme` n'est plus explicitement défini dans la règle de JdT 0.1.2.
 - [~] Le JdD passe d'une nomenclature `xdn + StatIncant/StatArme Type` à `xdn + Stat Type`.
 - [~] La notion de `Stat` du JdD remplace les références explicites `StatIncant/StatArme`.
 - [~] La sauvegarde passe d'une règle très formalisée avec `StatSauv`, difficulté de base, difficulté ajoutée par l'attaquant et modification `M`, à une règle générique `1d20 + Stat demandée`.
@@ -50,7 +50,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 - [~] Pour résister à un sort, la difficulté est généralement déterminée par le sort et la Statistique Principale du lanceur.
 - [~] Le Jet de Concentration passe d'un jet avec `StatConcentr` explicite à une sauvegarde similaire dont les détails sont indiqués sur le sort nécessitant la Concentration.
 - [~] /!\ Le système utilise encore `incant`/`physical` dans les stats de roll, mais pas exactement sous les noms textuels `StatIncant`/`StatArme`.
-- [~] /!\ La concentration applique encore une logique de stat attaquant en malus, donc ce n'est ni le modèle 1.1.0 strict ni le modèle 1.2.0 propre.
+- [~] /!\ La concentration applique encore une logique de stat attaquant en malus, donc ce n'est ni le modèle 0.1.1 strict ni le modèle 0.1.2 propre.
 
 ## Statistiques et ressources d'acteur
 
@@ -66,7 +66,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 
 ### - :
 
-- [x] `Résistances & Vulnérabilités & Immunités` n'est plus listé comme statistique générale dans le document 1.2.0.
+- [x] `Résistances & Vulnérabilités & Immunités` n'est plus listé comme statistique générale dans le document 0.1.2.
 - [x] `Perception Passive` n'est plus listée comme statistique générale.
 - [x] La formule `Percep.Passive = 8 + Sagesse` n'est plus présente.
 - [~] `Capacité` n'est plus listée comme statistique générale.
@@ -94,7 +94,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 
 ### - :
 
-- [~] Les règles de création de personnage ne sont plus présentes dans le document 1.2.0.
+- [~] Les règles de création de personnage ne sont plus présentes dans le document 0.1.2.
 - [ ] Les archétypes de classe de création ne sont plus listés comme règles : `Tank`, `Assassin`, `Mage`, `Combattant`, `Support`, `Tireur`, `Invocateur`.
 - [ ] La liste complète des classes n'est plus présente comme règle du document.
 - [ ] La liste complète des races n'est plus présente comme règle du document.
@@ -123,7 +123,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 
 ### - :
 
-- [ ] La compétence `Médecine` n'existe plus comme compétence séparée dans le document 1.2.0.
+- [ ] La compétence `Médecine` n'existe plus comme compétence séparée dans le document 0.1.2.
 
 ### ~ :
 
@@ -301,7 +301,7 @@ Changées : `[x]` déjà modifié, `[~]` ne reflète aucune des versions, `[ ]` 
 
 ### ~ :
 
-- [x] Le repos n'a plus de règle générale détaillée de récupération dans la 1.2.0.
+- [x] Le repos n'a plus de règle générale détaillée de récupération dans la 0.1.2.
 - [~] La fatigue gagne au moins deux points d'entrée mécaniques : reprise de conscience après inconscience, et faim/soif prolongée.
 - [~] /!\ `exhaustion` existe dans le modèle acteur, mais pas comme mécanique active affichée dans la fiche principale.
 

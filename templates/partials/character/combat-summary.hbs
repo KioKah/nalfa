@@ -1,0 +1,93 @@
+<section class="combat-summary">
+  <div class="combat-summary__card combat-summary__card--hp">
+    <span class="combat-summary__label">PV</span>
+    <div
+      class="combat-summary__bar"
+      style="--resource-fill: {{combatSummary.hp.percent}}%"
+      data-combat-resource-adjust="attributes.hp.value"
+      data-resource-min="{{combatSummary.hp.min}}"
+      data-resource-max="{{combatSummary.hp.max}}"
+      role="meter"
+      aria-valuemin="{{combatSummary.hp.min}}"
+      aria-valuemax="{{combatSummary.hp.max}}"
+      aria-valuenow="{{combatSummary.hp.value}}"
+    ></div>
+    <span class="combat-summary__value">
+      <strong>{{combatSummary.hp.value}}</strong>
+      {{#if (gt combatSummary.hp.temporary 0)}}
+        <span class="combat-summary__temporary">+{{combatSummary.hp.temporary}}</span>
+      {{/if}}
+      <span>/ {{combatSummary.hp.max}}</span>
+    </span>
+  </div>
+
+  <div
+    class="combat-summary__card combat-summary__card--nalfa"
+    data-combat-resource-key="nalfa"
+  >
+    <i class="fa-light fa-sparkle combat-summary__nalfa-icon" aria-hidden="true"></i>
+    <div
+      class="combat-summary__bar"
+      style="--resource-fill: {{combatSummary.nalfa.percent}}%"
+      data-combat-resource-adjust="nalfa.value"
+      data-resource-min="0"
+      data-resource-max="{{combatSummary.nalfa.max}}"
+      role="meter"
+      aria-valuemin="0"
+      aria-valuemax="{{combatSummary.nalfa.max}}"
+      aria-valuenow="{{combatSummary.nalfa.value}}"
+    ></div>
+    <span class="combat-summary__value">
+      <strong>{{combatSummary.nalfa.value}}</strong>
+      <span>/ {{combatSummary.nalfa.max}}</span>
+    </span>
+  </div>
+
+  <div class="combat-summary__card combat-summary__card--defense">
+    <span class="combat-summary__defense-entry">
+      <i class="fa-light fa-shield" aria-hidden="true"></i>
+      <span>Déf.</span>
+      <strong>{{combatSummary.defense}}</strong>
+    </span>
+    <span class="combat-summary__defense-entry">
+      <i class="fa-light fa-person-running" aria-hidden="true"></i>
+      <span>Éva.</span>
+      <strong>{{combatSummary.evasion}}</strong>
+    </span>
+  </div>
+
+  <div
+    class="combat-summary__card combat-summary__card--timing
+      combat-summary__card--{{combatSummary.timing.mode}}"
+  >
+    {{#if (eq sysData.ui.valueMode "base")}}
+      <label class="combat-summary__initiative-edit">
+        <span>Initiative</span>
+        <input
+          name="system.attributes.initiative.base"
+          type="number"
+          value="{{sysData.attributes.initiative.base}}"
+          data-dtype="Number"
+        />
+      </label>
+    {{else if (eq sysData.ui.valueMode "alt")}}
+      <label class="combat-summary__initiative-edit">
+        <span>Initiative</span>
+        <input
+          name="system.attributes.initiative.alt"
+          type="number"
+          value="{{sysData.attributes.initiative.alt}}"
+          data-dtype="Number"
+        />
+      </label>
+    {{else}}
+      <span class="combat-summary__timing-label">{{combatSummary.timing.label}}</span>
+      {{#if combatSummary.timing.value}}
+        <strong class="combat-summary__timing-value">{{combatSummary.timing.value}}</strong>
+      {{/if}}
+      {{#if combatSummary.timing.meta}}
+        <span class="combat-summary__timing-meta">{{combatSummary.timing.meta}}</span>
+      {{/if}}
+    {{/if}}
+  </div>
+</section>

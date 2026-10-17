@@ -13,6 +13,7 @@ import {
 	withActionSheetFlag,
 } from "../core/shared.mjs";
 import { storeActionSaveResult } from "../actions/context.mjs";
+import { doesStateAutoFailSave } from "../../rules/states.mjs";
 
 const getWhisperUserIdsForActor = (actor) => {
 	if (!actor || !game.users) return [];
@@ -105,7 +106,10 @@ export const sendPrivateSavePromptsFromAction = async (
 	const messages = [];
 
 	for (const targetToken of targets) {
-		const targetStatValue = statKey ? getStatTotal(targetToken.actor, statKey) : 0;
+		const targetStatValue = Number(
+			targetToken.actor?.system?.stats?.[statKey]?.save?.value ??
+				(statKey ? getStatTotal(targetToken.actor, statKey) : 0),
+		);
 		const targetName =
 			String(targetToken.document?.name ?? targetToken.name ?? "Cible").trim() || "Cible";
 		const content = await foundry.applications.handlebars.renderTemplate(
@@ -159,10 +163,14 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 	if (!actor) return null;
 	const statName = String(options.statName ?? getLabel(CONFIG.nalfa.stats, statKey, statKey));
 	const explicitStatValue = Number(options.statValue ?? NaN);
+	const preparedSaveValue = Number(actor.system?.stats?.[statKey]?.save?.value);
 	const statValue = Number.isFinite(explicitStatValue)
 		? explicitStatValue
-		: (statKey ? getStatTotal(actor, statKey) : 0);
+		: Number.isFinite(preparedSaveValue)
+			? preparedSaveValue
+			: (statKey ? getStatTotal(actor, statKey) : 0);
 	const targetDc = Number(dc ?? 0);
+	const autoFail = doesStateAutoFailSave(actor, statKey);
 	const rollResult = await rollD20WithModifier(statValue, {
 		promptAdjustments: options.promptAdjustments,
 		adjustments: options.adjustments,
@@ -171,15 +179,18 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 	if (!rollResult) return null;
 	const { roll, dieResult, isCrit, isFumble } = rollResult;
 	const autoNatural = options.autoNatural === true;
-	const isSuccess = autoNatural
+	const isSuccess = autoFail
+		? false
+		: autoNatural
 		? (isCrit || (!isFumble && Number(roll.total ?? 0) >= targetDc))
 		: Number(roll.total ?? 0) >= targetDc;
 	const saveSuffix = formatStatSuffix(statKey, statName, statValue, statValue);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const compareSymbol = getCompareSymbol(isSuccess);
+	const autoFailSuffix = autoFail ? " · Échec automatique (état)" : "";
 	const formulaText =
 		`d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix} ` +
-		`${compareSymbol} DD ${targetDc}`;
+		`${compareSymbol} DD ${targetDc}${autoFailSuffix}`;
 	const rollDetail = getD20RollDetail(
 		roll,
 		`${saveSuffix}${adjustmentSuffix}`,
@@ -240,7 +251,10 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 	if (!actor) return null;
 	const statObj = actor.system?.stats?.[statKey] ?? {};
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
-	const modifier = getStatBasedValue(actor, statObj.save ?? {}, statKey);
+	const preparedModifier = Number(statObj.save?.value);
+	const modifier = Number.isFinite(preparedModifier)
+		? preparedModifier
+		: getStatBasedValue(actor, statObj.save ?? {}, statKey);
 	const rollResult = await rollD20WithModifier(modifier, {
 		promptAdjustments: options.promptAdjustments,
 		adjustments: options.adjustments,
@@ -256,16 +270,22 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 		: options.difficulty;
 	const hasTarget = difficulty !== null && Number.isFinite(Number(difficulty));
 	const targetDifficulty = Number(difficulty);
-	const isSuccess = hasTarget ? Number(roll.total ?? 0) >= targetDifficulty : null;
+	const autoFail = doesStateAutoFailSave(actor, statKey);
+	const isSuccess = autoFail
+		? false
+		: hasTarget
+			? Number(roll.total ?? 0) >= targetDifficulty
+			: null;
 	const titleValue = roll.total;
 	const saveSuffix = formatStatSuffix(statKey, statName, modifier, modifier);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const comparison = hasTarget
 		? `${getCompareSymbol(isSuccess)} DD ${targetDifficulty}`
 		: "";
+	const autoFailSuffix = autoFail ? " · Échec automatique (état)" : "";
 	const formulaText =
 		`d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix}` +
-		(comparison ? ` ${comparison}` : "");
+		(comparison ? ` ${comparison}${autoFailSuffix}` : "");
 	const rollDetail = getD20RollDetail(roll, `${saveSuffix}${adjustmentSuffix}`, {
 		modifier: rollResult.modifier,
 		comparison,

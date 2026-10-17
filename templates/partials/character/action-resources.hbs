@@ -1,0 +1,100 @@
+<section class="sheet-section action-resources">
+  <div class="action-resources__grid">
+    {{#each combatResources}}
+      <div
+        class="action-resources__item action-resources__item--{{key}}"
+        data-combat-resource-key="{{key}}"
+        data-tooltip="{{label}} : {{valueLabel}} / {{maxLabel}}{{unit}}"
+      >
+        <i class="{{iconClass}} action-resources__icon" aria-hidden="true"></i>
+        {{#if (eq ../sysData.ui.valueMode "values")}}
+          <div
+            class="action-resources__bar
+              {{#if (eq key "movement")}}
+                {{#if ../stateProfile.blocksMovement}}action-resources__bar--blocked{{/if}}
+              {{/if}}"
+            style="--resource-fill: {{percent}}%"
+            {{#if (eq key "movement")}}
+              {{#unless ../stateProfile.blocksMovement}}
+                data-combat-resource-adjust="actions.{{key}}.value"
+                data-resource-min="0"
+                data-resource-max="{{max}}"
+              {{/unless}}
+            {{else}}
+              data-combat-resource-adjust="actions.{{key}}.value"
+              data-resource-min="0"
+              data-resource-max="{{max}}"
+            {{/if}}
+            role="meter"
+            aria-valuemin="0"
+            aria-valuemax="{{max}}"
+            aria-valuenow="{{value}}"
+          ></div>
+        {{else}}
+          <input
+            class="action-resources__range"
+            style="--resource-fill: {{percent}}%"
+            data-action-resource-range="{{key}}"
+            type="range"
+            min="0"
+            max="{{max}}"
+            step="{{step}}"
+            value="{{rangeValue}}"
+            aria-label="{{label}} disponible"
+            {{#unless hasCapacity}}disabled{{/unless}}
+            {{#unless ../isEditable}}disabled{{/unless}}
+            {{#if (eq key "movement")}}
+              {{#if ../stateProfile.blocksMovement}}disabled{{/if}}
+            {{/if}}
+          />
+          <input
+            data-action-resource-value="{{key}}"
+            name="system.actions.{{key}}.value"
+            type="hidden"
+            value="{{value}}"
+            {{#if (eq key "movement")}}
+              {{#if ../stateProfile.blocksMovement}}disabled{{/if}}
+            {{/if}}
+          />
+        {{/if}}
+        <span class="action-resources__count">
+          <strong data-action-resource-count>{{valueLabel}}</strong>
+          <span>/{{maxLabel}}{{unit}}</span>
+        </span>
+
+        <label class="action-resources__adjustment value-mode value-mode--base">
+          <span>Base</span>
+          <input
+            name="system.actions.{{key}}.base"
+            type="number"
+            value="{{base}}"
+            data-dtype="Number"
+            {{#unless ../isEditable}}disabled{{/unless}}
+          />
+        </label>
+        <label class="action-resources__adjustment value-mode value-mode--alt">
+          <span>Alt.</span>
+          <input
+            name="system.actions.{{key}}.alt"
+            type="number"
+            value="{{alt}}"
+            data-dtype="Number"
+            {{#unless ../isEditable}}disabled{{/unless}}
+          />
+        </label>
+        {{#if isMovement}}
+          <label class="action-resources__adjustment value-mode value-mode--alt">
+            <span>&times;</span>
+            <input
+              name="system.actions.{{key}}.alt_mult"
+              type="number"
+              value="{{altMult}}"
+              data-dtype="Number"
+              {{#unless ../isEditable}}disabled{{/unless}}
+            />
+          </label>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+</section>

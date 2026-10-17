@@ -16,7 +16,10 @@ export const rollSkill = async (actor, skillKey, options = {}) => {
 	const skillName = getLabel(CONFIG.nalfa.skills, skillKey, skillKey);
 	const statKey = skillObj.stat ?? "";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
-	const modifier = getStatBasedValue(actor, skillObj);
+	const preparedModifier = Number(skillObj.value);
+	const modifier = Number.isFinite(preparedModifier)
+		? preparedModifier
+		: getStatBasedValue(actor, skillObj);
 	const rollResult = await rollD20WithModifier(modifier, {
 		promptAdjustments: options.promptAdjustments,
 		includeDifficulty: options.includeDifficulty,
@@ -35,7 +38,12 @@ export const rollSkill = async (actor, skillKey, options = {}) => {
 	const isSuccess = hasTarget ? Number(roll.total ?? 0) >= targetDifficulty : null;
 	const titleValue = roll.total;
 	const skillTotal = Number(skillObj.value ?? modifier);
-	const statTotal = hasStat(statKey) ? getStatTotal(actor, statKey) : 0;
+	const preparedStatTotal = Number(actor.system?.stats?.[statKey]?.value);
+	const statTotal = hasStat(statKey)
+		? Number.isFinite(preparedStatTotal)
+			? preparedStatTotal
+			: getStatTotal(actor, statKey)
+		: 0;
 	const baseSkill = hasStat(statKey) ? skillTotal - statTotal : skillTotal;
 	const statDetail = hasStat(statKey) ? ` + ${statName} (${statTotal})` : "";
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);

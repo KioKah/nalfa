@@ -37,6 +37,7 @@ export const buildDamageSummaryRows = ({
 			hpDelta: summary.hpDelta,
 			tempHpDelta: summary.tempHpDelta,
 			finalTempHp: summary.finalTempHp,
+			damageTypes: summary.damageTypes,
 			summaryParts: summary.summaryParts,
 			isKo: summary.isKo,
 			isDead: summary.isDead,

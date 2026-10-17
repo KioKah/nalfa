@@ -6,6 +6,20 @@
         {{sysData.roll_stats.physical.value}}
       </span>
     </div>
+    <div class="field roll-stats__item">
+      <span class="field__label">Stat Incant</span>
+      <span
+        class="roll-stats__value
+          {{#unless (eq sysData.roll_stats.incant.stat "none")}}
+            color-{{sysData.roll_stats.incant.stat}}
+          {{/unless}}"
+      >
+        {{sysData.roll_stats.incant.value}}
+      </span>
+    </div>
+  </div>
+  <div class="roll-stats__separator" aria-hidden="true"></div>
+  <div class="roll-stats__group roll-stats__group--incant">
     <div class="field roll-stats__item roll-stats__item--aux">
       <div class="roll-stats__aux-row">
         <span class="field__label">Allonge</span>
@@ -16,19 +30,10 @@
       </div>
       <div class="roll-stats__aux-row">
         <span class="field__label">dA</span>
-        <span class="roll-stats__value roll-stats__value--compact">{{sysData.da.value}}</span>
+        <span class="roll-stats__value roll-stats__value--compact">
+          {{sysData.da.value}}
+        </span>
       </div>
-    </div>
-  </div>
-  <div class="roll-stats__separator" aria-hidden="true"></div>
-  <div class="roll-stats__group roll-stats__group--incant">
-    <div class="field roll-stats__item">
-      <span class="field__label">Stat Incant</span>
-      <span
-        class="roll-stats__value {{#unless (eq sysData.roll_stats.incant.stat "none")}}color-{{sysData.roll_stats.incant.stat}}{{/unless}}"
-      >
-        {{sysData.roll_stats.incant.value}}
-      </span>
     </div>
     <div class="field roll-stats__item">
       <span class="field__label">Portée</span>

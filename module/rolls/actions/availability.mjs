@@ -2,7 +2,11 @@ import { getDefaultEmbeddedActionName } from "../../actions/embedded.mjs";
 import {
 	ITEM_TYPES_WITH_PHYSICAL,
 } from "../../sheets/item/constants.mjs";
-import { getEquippedSlotValue, isEquippedSlotLocked } from "../../sheets/item/equipment.mjs";
+import {
+	getEquippedSlotValue,
+	isEquippedSlotLocked,
+} from "../../sheets/item/equipment.mjs";
+import { getActorStateProfile } from "../../rules/states.mjs";
 
 const ITEM_TYPE_PRIORITY = Object.freeze({
 	Weapon: 0,
@@ -96,29 +100,128 @@ const getEffectivelyEquippedItemUuids = (actor) => {
 	return effective;
 };
 
-const getAvailableActionNames = (actor) => {
+const getAvailableActions = (actor) => {
 	const effectiveEquipment = getEffectivelyEquippedItemUuids(actor);
-	const names = new Set();
+	const availableActions = [];
 
 	for (const item of actor?.items ?? []) {
 		if (item.type === "Action") {
-			names.add(normalizeActionName(item.name));
+			availableActions.push({
+				name: normalizeActionName(item.name),
+				actionData: item.system,
+			});
 			continue;
 		}
 
-		const actions = Array.isArray(item.system?.actions) ? item.system.actions : [];
-		if (!actions.length) continue;
+		const embeddedActions = Array.isArray(item.system?.actions)
+			? item.system.actions
+			: [];
+		if (!embeddedActions.length) continue;
 		if (hasInventoryEquipOptions(item) && !effectiveEquipment.has(item.uuid)) continue;
 
-		for (let index = 0; index < actions.length; index += 1) {
+		for (let index = 0; index < embeddedActions.length; index += 1) {
 			const actionName =
-				String(actions[index]?.name ?? "").trim() ||
+				String(embeddedActions[index]?.name ?? "").trim() ||
 				getDefaultEmbeddedActionName(item.name, index);
-			names.add(normalizeActionName(actionName));
+			availableActions.push({
+				name: normalizeActionName(actionName),
+				actionData: embeddedActions[index],
+			});
 		}
 	}
 
-	return names;
+	return availableActions;
+};
+
+const toCostAmount = (value) => {
+	const amount = Number(value);
+	return Number.isFinite(amount) ? Math.max(0, amount) : 0;
+};
+
+export const getActionResourceAvailability = (actor, actionData = {}) => {
+	const resources = actor?.system?.actions ?? {};
+	const stateProfile = getActorStateProfile(actor);
+	const resourceKeys = new Set();
+	const reasons = [];
+	const rawOptions = Array.isArray(actionData?.cost?.actions?.options)
+		? actionData.cost.actions.options
+		: [];
+	const options = rawOptions.length ? rawOptions : [{}];
+	const actionKeys = ["main", "bonus", "reaction"];
+	const usesReaction = options.some((option) => toCostAmount(option?.reaction) > 0);
+	if (stateProfile.blocksAction) reasons.push("Un état empêche d'agir.");
+	if (stateProfile.blocksAttack && actionData?.jdt?.enabled) {
+		reasons.push("Un état empêche d'attaquer.");
+	}
+
+	for (const option of options) {
+		for (const key of actionKeys) {
+			if (toCostAmount(option?.[key]) > 0) resourceKeys.add(key);
+		}
+	}
+
+	const payableOption = options.some((option) => {
+		if (stateProfile.blocksReaction && toCostAmount(option?.reaction) > 0) {
+			return false;
+		}
+		return actionKeys.every((key) => {
+			const cost = toCostAmount(option?.[key]);
+			return cost <= toCostAmount(resources?.[key]?.value);
+		});
+	});
+	if (!payableOption) {
+		const onlyReactionOptions = options.every(
+			(option) => toCostAmount(option?.reaction) > 0,
+		);
+		if (stateProfile.blocksReaction && usesReaction && onlyReactionOptions) {
+			reasons.push("Un état empêche les réactions.");
+		} else {
+			reasons.push("Actions du tour insuffisantes.");
+		}
+	}
+
+	if (actionData?.concentration?.enabled) {
+		resourceKeys.add("concentration");
+		if (stateProfile.blocksConcentration) {
+			reasons.push("Un état empêche la concentration.");
+		}
+		if (toCostAmount(resources?.concentration?.value) < 1) {
+			reasons.push("Concentration insuffisante.");
+		}
+	}
+
+	const movement = actionData?.cost?.movement ?? {};
+	const movementMode = String(movement.mode ?? "none");
+	if (movementMode !== "none") resourceKeys.add("movement");
+	if (movementMode !== "none" && stateProfile.blocksMovement) {
+		reasons.push("Un état empêche le déplacement.");
+	}
+	if (
+		movementMode === "fixed" &&
+		toCostAmount(resources?.movement?.value) < toCostAmount(movement.amount)
+	) {
+		reasons.push("Déplacement insuffisant.");
+	}
+
+	const nalfaCost = toCostAmount(actionData?.cost?.nalfa?.amount);
+	if (nalfaCost > 0) {
+		resourceKeys.add("nalfa");
+		if (toCostAmount(actor?.system?.nalfa?.value) < nalfaCost) {
+			reasons.push("Nalfa insuffisant.");
+		}
+	}
+
+	const uses = actionData?.cost?.uses ?? {};
+	const usesMax = toCostAmount(uses.max);
+	if (usesMax > 0 && toCostAmount(uses.value) < 1) {
+		reasons.push("Aucune utilisation restante.");
+	}
+
+	return {
+		available: reasons.length === 0,
+		reason: reasons.join(" "),
+		resourceKeys: [...resourceKeys],
+	};
 };
 
 const getSourceActionName = ({ sourceItem, actionRef, fallbackName = "" } = {}) => {
@@ -147,7 +250,11 @@ const getSourceItem = (actionRef) => {
 	}
 };
 
-export const getActionAvailability = ({ actor = getMacroActor(), actionRef, actionName } = {}) => {
+export const getActionAvailability = ({
+	actor = getMacroActor(),
+	actionRef,
+	actionName,
+} = {}) => {
 	if (!(actor instanceof Actor)) {
 		return {
 			available: false,
@@ -168,20 +275,32 @@ export const getActionAvailability = ({ actor = getMacroActor(), actionRef, acti
 			reason: "Le nom de l'action est introuvable.",
 		};
 	}
+	if (sourceItem?.parent === actor) {
+		if (hasInventoryEquipOptions(sourceItem)) {
+			const effectiveEquipment = getEffectivelyEquippedItemUuids(actor);
+			if (!effectiveEquipment.has(sourceItem.uuid)) {
+				return {
+					available: false,
+					reason: `L'objet source « ${sourceItem.name} » n'est pas équipé.`,
+				};
+			}
+		}
 
-	const availableNames = getAvailableActionNames(actor);
-	if (availableNames.has(normalizedName)) {
-		return { available: true, reason: "" };
+		const actionIndex = Number(actionRef?.actionIndex ?? -1);
+		const exactActionData =
+			sourceItem.type === "Action"
+				? sourceItem.system
+				: sourceItem.system?.actions?.[actionIndex];
+		if (exactActionData) {
+			return getActionResourceAvailability(actor, exactActionData);
+		}
 	}
 
-	if (sourceItem?.parent === actor && hasInventoryEquipOptions(sourceItem)) {
-		const effectiveEquipment = getEffectivelyEquippedItemUuids(actor);
-		if (!effectiveEquipment.has(sourceItem.uuid)) {
-			return {
-				available: false,
-				reason: `L'objet source « ${sourceItem.name} » n'est pas équipé.`,
-			};
-		}
+	const availableAction = getAvailableActions(actor).find(
+		(action) => action.name === normalizedName,
+	);
+	if (availableAction) {
+		return getActionResourceAvailability(actor, availableAction.actionData);
 	}
 
 	const effectiveEquipment = getEffectivelyEquippedItemUuids(actor);

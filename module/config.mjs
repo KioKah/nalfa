@@ -261,7 +261,6 @@ nalfa.modifier_base_paths_by_category = {
 		"attributes.defense.base": "Défense",
 		"attributes.evasion.base": "Évasion",
 		"attributes.initiative.base": "Initiative",
-		"attributes.passive_percep.base": "Percep. passive",
 		"attributes.reach.base": "Allonge",
 		"attributes.range_coef.base": "Coef. portée",
 		"attributes.death.passing_throw.base": "DD JdMort",

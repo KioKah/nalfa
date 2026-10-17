@@ -7,7 +7,8 @@ This repository is a V14 Foundry Virtual Tabletop game system named `nalfa`.
 - Prefer current APIs (V14) and schemas in runtime code.
 - Development/testing project (no production compatibility requirements).
 - Do not add backward-compatibility migrations unless explicitly requested.
-- If Foundry behavior is uncertain, ask to verify against `https://foundryvtt.com/api/`.
+- If Foundry behavior is uncertain, do not try to check the official docs online because you are not allowed there.
+  - You instead have to go read the code yourself at `D:\FoundryVTT\Foundry Virtual Tabletop\resources\app`.
 
 ## Runtime Entry Points
 
@@ -54,9 +55,8 @@ This repository is a V14 Foundry Virtual Tabletop game system named `nalfa`.
 - When editing LESS files for the first time, remind user to run `npm run less:watch`.
 - Never compile CSS or run the above command yourself.
 
-## Legacy / Non-runtime
+## Non-runtime
 
-- `_old/` is historical reference only (not loaded at runtime); what remains there is intentionally kept reference material.
 - `modules.txt` is local world tooling info, not system runtime config.
 
 ## Formatting

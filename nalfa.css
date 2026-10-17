@@ -598,8 +598,9 @@
 }
 .nalfa.sheet.actor-sheet .combat-overview {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: var(--nalfa-padding);
+  align-items: stretch;
 }
 .nalfa.sheet.actor-sheet .bio-overview {
   display: flex;
@@ -693,53 +694,159 @@
   opacity: 1;
   pointer-events: auto;
 }
-.nalfa.sheet.actor-sheet .bio-overview__heading {
+.nalfa.sheet.actor-sheet .resistance-overview__heading,
+.nalfa.sheet.actor-sheet .action-resources__heading {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--nalfa-padding);
+  flex-wrap: wrap;
 }
-.nalfa.sheet.actor-sheet .bio-overview__heading > h2 {
+.nalfa.sheet.actor-sheet .resistance-overview__heading > h2,
+.nalfa.sheet.actor-sheet .action-resources__heading > h2 {
   margin: 0;
 }
-.nalfa.sheet.actor-sheet .bio-overview__resistances {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--nalfa-padding);
-}
-.nalfa.sheet.actor-sheet .bio-overview__resistance-card {
+.nalfa.sheet.actor-sheet .resistance-overview {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 6px;
-  padding: 8px;
+  gap: calc(var(--nalfa-padding) / 2);
+  margin-bottom: 0;
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-none {
+  color: var(--nalfa-color-text-dark-0);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-tran {
+  color: var(--nalfa-color-type-phys-tran);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-perf {
+  color: var(--nalfa-color-type-phys-perf);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-cont {
+  color: var(--nalfa-color-type-phys-cont);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-soni {
+  color: var(--nalfa-color-type-phys-soni);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-sang {
+  color: var(--nalfa-color-type-phys-sang);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-feu {
+  color: var(--nalfa-color-type-elem-feu);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-eau {
+  color: var(--nalfa-color-type-elem-eau);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-terr {
+  color: var(--nalfa-color-type-elem-terr);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-air {
+  color: var(--nalfa-color-type-elem-air);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-natu {
+  color: var(--nalfa-color-type-elem-natu);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-givr {
+  color: var(--nalfa-color-type-elem-givr);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-foud {
+  color: var(--nalfa-color-type-elem-foud);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-radt {
+  color: var(--nalfa-color-type-magi-radt);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-obsc {
+  color: var(--nalfa-color-type-magi-obsc);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-arca {
+  color: var(--nalfa-color-type-magi-arca);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-chao {
+  color: var(--nalfa-color-type-magi-chao);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-necr {
+  color: var(--nalfa-color-type-magi-necr);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-psyc {
+  color: var(--nalfa-color-type-magi-psyc);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-arme {
+  color: var(--nalfa-color-type-spec-arme);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-soin {
+  color: var(--nalfa-color-type-spec-soin);
+}
+.nalfa.sheet.actor-sheet .resistance-overview .color-abso {
+  color: var(--nalfa-color-type-spec-abso);
+}
+.nalfa.sheet.actor-sheet .resistance-overview__grid {
+  display: grid;
+  gap: calc(var(--nalfa-padding) / 2);
+}
+.nalfa.sheet.actor-sheet .resistance-overview__grid--summary {
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+}
+.nalfa.sheet.actor-sheet .resistance-overview__grid--editor {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+}
+.nalfa.sheet.actor-sheet .resistance-overview__card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nalfa-gap-text);
+  min-width: 0;
+  padding: 7px 9px;
   border-radius: 6px;
   border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   background: color-mix(in srgb, var(--color-cool-5-50), transparent 85%);
 }
-.nalfa.sheet.actor-sheet .bio-overview__resistance-label {
-  font-weight: 700;
+.nalfa.sheet.actor-sheet .resistance-overview__card--immune {
+  border-color: color-mix(in srgb, currentColor, transparent 35%);
+  box-shadow: inset 3px 0 0 currentColor;
 }
-.nalfa.sheet.actor-sheet .bio-overview__resistance-inputs {
+.nalfa.sheet.actor-sheet .resistance-overview__card--resistant,
+.nalfa.sheet.actor-sheet .resistance-overview__card--reduced {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, currentColor, transparent 20%);
+}
+.nalfa.sheet.actor-sheet .resistance-overview__card--vulnerable {
+  border-color: color-mix(in srgb, #e06666, transparent 30%);
+  box-shadow: inset 3px 0 0 #e06666;
+}
+.nalfa.sheet.actor-sheet .resistance-overview__label {
+  min-width: 0;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nalfa.sheet.actor-sheet .resistance-overview__inputs {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
+  gap: 3px;
+  color: var(--color-text-primary);
 }
-.nalfa.sheet.actor-sheet .bio-overview__resistance-readout {
+.nalfa.sheet.actor-sheet .resistance-overview__readout {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-}
-.nalfa.sheet.actor-sheet .bio-overview__resistance-symbol {
-  font-size: 18px;
+  gap: 5px;
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-text-primary);
 }
-.nalfa.sheet.actor-sheet .bio-overview__resistance-number {
-  font-size: 27px;
-  font-weight: 700;
-  line-height: 1;
+.nalfa.sheet.actor-sheet .resistance-overview .color-obsc {
+  color: color-mix(in srgb, var(--color-text-primary), #666 45%);
+}
+.nalfa.sheet.actor-sheet .resistance-overview__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nalfa-gap-text);
+  min-height: 42px;
+  padding: 8px;
+  border: 1px dashed color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  opacity: 0.72;
 }
 .nalfa.sheet.actor-sheet .combat-overview__card {
   display: flex;
@@ -750,8 +857,11 @@
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   min-width: 0;
-  justify-content: space-between;
+  min-height: 100px;
+  justify-content: flex-start;
   gap: var(--nalfa-gap-text);
+  padding: 12px;
+  background: color-mix(in srgb, var(--background), transparent 42%);
 }
 .nalfa.sheet.actor-sheet .combat-overview__title {
   font-weight: 700;
@@ -769,13 +879,59 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--nalfa-gap-text);
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .combat-overview__line--primary {
+  min-height: 28px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__line--resource {
+  justify-content: flex-start;
+}
+.nalfa.sheet.actor-sheet .combat-overview__line-spacer {
+  flex: 1 1 auto;
 }
 .nalfa.sheet.actor-sheet .combat-overview__line--mode {
   justify-content: flex-start;
   gap: var(--nalfa-gap-text);
 }
-.nalfa.sheet.actor-sheet .combat-overview__hp {
-  height: 27px;
+.nalfa.sheet.actor-sheet .combat-overview__metric-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .combat-overview__metric-label i {
+  font-size: 14px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__metric-label--hp {
+  color: var(--nalfa-color-attr-hp);
+}
+.nalfa.sheet.actor-sheet .combat-overview__metric-label--defense,
+.nalfa.sheet.actor-sheet .combat-overview__metric-label--evasion {
+  color: var(--nalfa-color-attr-defence);
+}
+.nalfa.sheet.actor-sheet .combat-overview__metric-label--fatigue {
+  color: var(--nalfa-color-stat-int);
+}
+.nalfa.sheet.actor-sheet .combat-overview__compact-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--nalfa-color-type-spec-abso);
+}
+.nalfa.sheet.actor-sheet .combat-overview__compact-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .nalfa.sheet.actor-sheet .combat-overview__header {
   display: flex;
@@ -790,6 +946,13 @@
   height: 27px;
   flex: 0 1 150px;
   max-width: 150px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__profile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nalfa-gap-text);
+  padding-top: 2px;
 }
 .nalfa.sheet.actor-sheet .combat-overview__hp-edit-input {
   margin-left: 2px;
@@ -820,6 +983,55 @@
   align-items: center;
   text-align: center;
   flex: 1 1 100%;
+}
+.nalfa.sheet.actor-sheet .combat-overview__ko-status {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  min-height: 28px;
+  font-size: 13px;
+  flex-wrap: wrap;
+  line-height: 1.2;
+  white-space: normal;
+}
+.nalfa.sheet.actor-sheet .combat-overview__ko-status strong:not(.ko-indicator) {
+  font-size: 22px;
+  line-height: 1;
+}
+.nalfa.sheet.actor-sheet .combat-overview__ko-status--dead {
+  align-items: center;
+  color: #e06666;
+}
+.nalfa.sheet.actor-sheet .combat-overview__ko-status--dead strong {
+  font-size: 18px;
+}
+.nalfa.sheet.actor-sheet .combat-overview__rest-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: auto;
+  height: 27px;
+  margin: 0 0 0 auto;
+  padding: 0 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .combat-overview__status-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 28px;
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.76;
+}
+.nalfa.sheet.actor-sheet .combat-overview__status-note--danger {
+  color: #e06666;
+  font-weight: 700;
+  opacity: 1;
 }
 .nalfa.sheet.actor-sheet .combat-overview__rate {
   display: inline-flex;
@@ -857,25 +1069,418 @@
   font-size: 14px;
   line-height: 0.95;
 }
-@media (max-width: 980px) {
-  .nalfa.sheet.actor-sheet .bio-overview__resistances {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .nalfa.sheet.actor-sheet .combat-overview {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 680px) {
-  .nalfa.sheet.actor-sheet .bio-overview__resistances {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .nalfa.sheet.actor-sheet .bio-overview__heading {
+  .nalfa.sheet.actor-sheet .resistance-overview__heading,
+  .nalfa.sheet.actor-sheet .action-resources__heading {
     align-items: flex-start;
     flex-direction: column;
   }
-  .nalfa.sheet.actor-sheet .combat-overview {
-    grid-template-columns: minmax(0, 1fr);
-  }
+}
+.nalfa.sheet.actor-sheet .action-resources {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  margin-bottom: 0;
+}
+.nalfa.sheet.actor-sheet .action-resources__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
+  gap: calc(var(--nalfa-padding) / 2);
+}
+.nalfa.sheet.actor-sheet .action-resources__item {
+  display: grid;
+  grid-template-columns: 18px minmax(42px, 1fr) auto;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 34px;
+  padding: 6px 7px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 48%);
+}
+.nalfa.sheet.actor-sheet .action-resources__item--main {
+  color: var(--nalfa-color-action-main);
+}
+.nalfa.sheet.actor-sheet .action-resources__item--bonus {
+  color: var(--nalfa-color-action-bonus);
+}
+.nalfa.sheet.actor-sheet .action-resources__item--reaction {
+  color: var(--nalfa-color-action-reaction);
+}
+.nalfa.sheet.actor-sheet .action-resources__item--concentration {
+  color: var(--nalfa-color-action-concentration);
+}
+.nalfa.sheet.actor-sheet .action-resources__item--movement {
+  color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.actor-sheet .action-resources__icon {
+  font-size: 15px;
+  line-height: 1;
+  text-align: center;
+}
+.nalfa.sheet.actor-sheet .action-resources__bar,
+.nalfa.sheet.actor-sheet .combat-summary__bar {
+  height: 8px;
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, currentColor, transparent 50%);
+  border-radius: 999px;
+  background: linear-gradient(to right, currentColor 0 var(--resource-fill), color-mix(in srgb, currentColor, transparent 84%) var(--resource-fill) 100%);
+}
+.nalfa.sheet.actor-sheet .action-resources__bar--blocked {
+  opacity: 0.35;
+  filter: grayscale(0.8);
+}
+.nalfa.sheet.actor-sheet .action-resources__item.combat-resource--focused-cost,
+.nalfa.sheet.actor-sheet .combat-summary__card.combat-resource--focused-cost {
+  border-color: currentColor;
+  box-shadow: inset 0 0 0 1px currentColor, 0 0 8px color-mix(in srgb, currentColor, transparent 58%);
+}
+.nalfa.sheet.actor-sheet .action-resources__range {
+  --resource-track: color-mix(in srgb, currentColor, transparent 82%);
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.nalfa.sheet.actor-sheet .action-resources__range::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 1px solid color-mix(in srgb, currentColor, transparent 45%);
+  border-radius: 999px;
+  background: linear-gradient(to right, currentColor 0 var(--resource-fill), var(--resource-track) var(--resource-fill) 100%);
+}
+.nalfa.sheet.actor-sheet .action-resources__range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 4px;
+  height: 14px;
+  margin-top: -5px;
+  border: 1px solid var(--background);
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor, transparent 25%);
+}
+.nalfa.sheet.actor-sheet .action-resources__range:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+.nalfa.sheet.actor-sheet .action-resources__range:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.nalfa.sheet.actor-sheet .action-resources__count {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+}
+.nalfa.sheet.actor-sheet .action-resources__count strong {
+  font-size: 13px;
+}
+.nalfa.sheet.actor-sheet .action-resources__count span {
+  opacity: 0.68;
+}
+.nalfa.sheet.actor-sheet .action-resources__adjustment {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  font-size: 10px;
+  color: var(--color-text-primary);
+}
+.nalfa.sheet.actor-sheet .action-resources__adjustment input {
+  width: calc((1px * 3 + 2px) * (11 / 2));
+  min-width: calc((1px * 3 + 2px) * (11 / 2));
+  max-width: calc((1px * 3 + 2px) * (11 / 2));
+  height: calc(11px + 8px);
+  line-height: calc(calc(11px + 8px) - 2px);
+  padding: initial;
+  text-align: center;
+  font-size: 11px;
+}
+.nalfa.sheet.actor-sheet .tab[data-tab="combat"].active {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .combat-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: calc(var(--nalfa-padding) / 2);
+}
+.nalfa.sheet.actor-sheet .combat-summary__card {
+  display: grid;
+  grid-template-columns: auto minmax(28px, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 45%);
+}
+.nalfa.sheet.actor-sheet .combat-summary__card--hp {
+  color: var(--nalfa-color-attr-hp);
+}
+.nalfa.sheet.actor-sheet .combat-summary__card--nalfa {
+  color: var(--nalfa-color-resource-nalfa);
+}
+.nalfa.sheet.actor-sheet .combat-summary__label,
+.nalfa.sheet.actor-sheet .combat-summary__nalfa-icon {
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .combat-summary__nalfa-icon {
+  transform: rotate(45deg);
+}
+.nalfa.sheet.actor-sheet .combat-summary__value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-size: 11px;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+}
+.nalfa.sheet.actor-sheet .combat-summary__value strong {
+  font-size: 14px;
+}
+.nalfa.sheet.actor-sheet .combat-summary__temporary {
+  font-weight: 700;
+  color: var(--nalfa-color-type-spec-abso);
+}
+.nalfa.sheet.actor-sheet .combat-summary__card--defense {
+  display: flex;
+  justify-content: space-evenly;
+  color: var(--nalfa-color-attr-defence);
+}
+.nalfa.sheet.actor-sheet .combat-summary__defense-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .combat-summary__defense-entry strong {
+  font-size: 20px;
+  line-height: 1;
+}
+.nalfa.sheet.actor-sheet .combat-summary__card--timing {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+}
+.nalfa.sheet.actor-sheet .combat-summary__card--current {
+  border-color: color-mix(in srgb, var(--nalfa-color-action-main), transparent 35%);
+  color: var(--nalfa-color-action-main);
+}
+.nalfa.sheet.actor-sheet .combat-summary__timing-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .combat-summary__timing-value {
+  font-size: 22px;
+  line-height: 1;
+}
+.nalfa.sheet.actor-sheet .combat-summary__timing-meta {
+  font-size: 11px;
+  opacity: 0.72;
+}
+.nalfa.sheet.actor-sheet .combat-summary__initiative-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.nalfa.sheet.actor-sheet .combat-action-space {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .combat-action-grid,
+.nalfa.sheet.actor-sheet .combat-action-reserve {
+  display: grid;
+  grid-template-columns: repeat(10, 64px);
+  grid-auto-rows: 64px;
+  column-gap: 4px;
+  row-gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 2px;
+}
+.nalfa.sheet.actor-sheet .combat-action-reserve {
+  padding-top: calc(var(--nalfa-padding) / 2);
+  border-top: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 78%);
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__slot {
+  width: 64px;
+  height: 64px;
+  border: 1px dashed color-mix(in srgb, var(--color-text-primary), transparent 82%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 62%);
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__action {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid color-mix(in srgb, var(--color-text-primary), transparent 72%);
+  border-radius: 6px;
+  background: var(--background);
+  cursor: pointer;
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__action img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__action--focused {
+  border-color: var(--color-warm-1, #d3b15f);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-warm-1, #d3b15f), transparent 35%);
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__action--macro {
+  border-color: color-mix(in srgb, var(--color-text-primary), transparent 62%);
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__action--missing {
+  opacity: 0.4;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__action--unavailable {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+}
+.nalfa.sheet.actor-sheet .combat-action-grid__shorthand {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  display: block;
+  max-width: calc(100% - 8px);
+  max-height: 2em;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: left;
+  white-space: pre-line;
+  text-shadow: 0 0 3px #000, 0 0 7px #000;
+  pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .states-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nalfa-padding);
+  margin-bottom: 0;
+}
+.nalfa.sheet.actor-sheet .states-overview__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.actor-sheet .states-overview__heading h2 {
+  margin: 0 0 3px;
+}
+.nalfa.sheet.actor-sheet .states-overview__heading button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: auto;
+  margin: 0;
+  padding: 0 9px;
+  white-space: nowrap;
+}
+.nalfa.sheet.actor-sheet .states-overview__list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+}
+.nalfa.sheet.actor-sheet .states-overview__row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--nalfa-gap-text);
+  min-height: 48px;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 48%);
+}
+.nalfa.sheet.actor-sheet .states-overview__row img {
+  width: 30px;
+  height: 30px;
+  border: 0;
+}
+.nalfa.sheet.actor-sheet .states-overview__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 3px 8px;
+  min-width: 0;
+}
+.nalfa.sheet.actor-sheet .states-overview__main strong {
+  font-size: 15px;
+}
+.nalfa.sheet.actor-sheet .states-overview__note {
+  flex: 1 1 100%;
+  font-size: 12px;
+  line-height: 1.25;
+  opacity: 0.78;
+}
+.nalfa.sheet.actor-sheet .states-overview__duration {
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0.72;
+}
+.nalfa.sheet.actor-sheet .states-overview__remove {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  padding: 0;
+  line-height: calc(16px - 2px);
+  border-style: none;
+}
+.nalfa.sheet.actor-sheet .states-overview__remove i {
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .states-overview__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nalfa-gap-text);
+  min-height: 90px;
+  border: 1px dashed color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  opacity: 0.72;
+}
+.nalfa.sheet.actor-sheet .roll-stats {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nalfa-padding) / 2);
+  padding: var(--nalfa-padding);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 50%);
+  margin-bottom: 0;
+  padding: 12px;
 }
 .nalfa.sheet.actor-sheet .roll-stats .color-str {
   color: var(--nalfa-color-stat-str);
@@ -984,7 +1589,7 @@
 }
 .nalfa.sheet.actor-sheet .skills-by-stat {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: var(--nalfa-padding);
 }
 .nalfa.sheet.actor-sheet .skills-by-stat .color-str {
@@ -1014,6 +1619,9 @@
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
   --nalfa-stat-field-border-color: var(--color-text-primary);
+  padding: 12px;
+  border-top: 2px solid var(--nalfa-stat-field-border-color);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 94%), color-mix(in srgb, var(--background), transparent 48%));
 }
 .nalfa.sheet.actor-sheet .skill-by-stat.color-str {
   --nalfa-stat-field-border-color: var(--nalfa-color-stat-str);
@@ -1181,6 +1789,9 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--nalfa-gap-text);
+  min-height: 25px;
+  padding: 1px 3px;
+  border-radius: 4px;
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-str {
   border-color: var(--nalfa-color-stat-str);
@@ -1199,6 +1810,9 @@
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-con {
   border-color: var(--nalfa-color-stat-con);
+}
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info:has([data-action="roll-skill"]):hover {
+  background: color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 90%);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-name {
   font-weight: 600;
@@ -2278,6 +2892,118 @@
   border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 75%);
   border-radius: 6px;
   background: color-mix(in srgb, var(--background), transparent 50%);
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__choices,
+.nalfa.sheet.item .nalfa-rest-dialog__choices,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__choices,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__choices .field,
+.nalfa.sheet.item .nalfa-rest-dialog__choices .field,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__choices .field,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__choices .field {
+  justify-content: space-between;
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__choices select,
+.nalfa.sheet.item .nalfa-rest-dialog__choices select,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__choices select,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__choices select,
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__choices input,
+.nalfa.sheet.item .nalfa-rest-dialog__choices input,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__choices input,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__choices input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__quality-key,
+.nalfa.sheet.item .nalfa-rest-dialog__quality-key,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__quality-key,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__quality-key {
+  margin: 0;
+  line-height: 1.45;
+  text-align: center;
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__preview,
+.nalfa.sheet.item .nalfa-rest-dialog__preview,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__preview,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nalfa-padding);
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 72%);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--background), transparent 45%);
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__preview [data-rest-quality-label],
+.nalfa.sheet.item .nalfa-rest-dialog__preview [data-rest-quality-label],
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__preview [data-rest-quality-label],
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__preview [data-rest-quality-label] {
+  opacity: 0.75;
+}
+.nalfa.sheet.item-sheet .nalfa-rest-dialog__preview [data-rest-fatigue]:empty,
+.nalfa.sheet.item .nalfa-rest-dialog__preview [data-rest-fatigue]:empty,
+.nalfa.sheet.embedded-action-editor .nalfa-rest-dialog__preview [data-rest-fatigue]:empty,
+.nalfa.sheet.nalfa-action-dialog .nalfa-rest-dialog__preview [data-rest-fatigue]:empty {
+  display: none;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog,
+.nalfa.sheet.item .nalfa-state-dialog,
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog,
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog {
+  gap: var(--nalfa-padding);
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog .field,
+.nalfa.sheet.item .nalfa-state-dialog .field,
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog .field,
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog .field {
+  justify-content: space-between;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog select,
+.nalfa.sheet.item .nalfa-state-dialog select,
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog select,
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog select,
+.nalfa.sheet.item-sheet .nalfa-state-dialog input,
+.nalfa.sheet.item .nalfa-state-dialog input,
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog input,
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog input {
+  min-width: 0;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog [name="state-id"],
+.nalfa.sheet.item .nalfa-state-dialog [name="state-id"],
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog [name="state-id"],
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog [name="state-id"] {
+  flex: 1 1 auto;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog [name="state-duration"],
+.nalfa.sheet.item .nalfa-state-dialog [name="state-duration"],
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog [name="state-duration"],
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog [name="state-duration"] {
+  flex: 1 1 70px;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog [name="state-duration-units"],
+.nalfa.sheet.item .nalfa-state-dialog [name="state-duration-units"],
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog [name="state-duration-units"],
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog [name="state-duration-units"] {
+  flex: 1 1 92px;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog__note,
+.nalfa.sheet.item .nalfa-state-dialog__note,
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog__note,
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog__note {
+  align-items: stretch !important;
+  flex-direction: column;
+}
+.nalfa.sheet.item-sheet .nalfa-state-dialog__note input,
+.nalfa.sheet.item .nalfa-state-dialog__note input,
+.nalfa.sheet.embedded-action-editor .nalfa-state-dialog__note input,
+.nalfa.sheet.nalfa-action-dialog .nalfa-state-dialog__note input {
+  width: 100%;
 }
 .nalfa.sheet.item-sheet .physical-flags,
 .nalfa.sheet.item .physical-flags,

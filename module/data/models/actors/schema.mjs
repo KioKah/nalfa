@@ -56,12 +56,6 @@ export const baseAttributesSchema = () => ({
 		stat: stringField("dex"),
 		stat_coef: numberField(2),
 	}),
-	passive_percep: schemaField({
-		value: numberValueField(null),
-		base: numberField(8),
-		alt: numberField(0),
-		stat: stringField("wis"),
-	}),
 	reach: schemaField({
 		value: numberValueField(null),
 		base: numberField(1),
@@ -174,7 +168,7 @@ export const characterActorSchema = () => ({
 	attributes: schemaField({
 		...baseAttributesSchema(),
 		level: numberField(1),
-		exhaustion: numberField(0),
+		exhaustion: numberField(0, { min: 0, max: 6, integer: true }),
 		death: schemaField({
 			passing_throw: schemaField({
 				base: numberField(11),

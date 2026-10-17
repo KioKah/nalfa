@@ -10,9 +10,16 @@ import {
 	rollD20WithModifier,
 	withActionSheetFlag,
 } from "../core/shared.mjs";
+import { getFatigueEffects } from "../../rules/fatigue.mjs";
+import { getActorStateProfile } from "../../rules/states.mjs";
 
 export const rollAttackFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;
+	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksAction || stateProfile.blocksAttack) {
+		ui.notifications.warn("Un état empêche ce personnage d'attaquer.");
+		return null;
+	}
 	const messageOptions = withActionSheetFlag(
 		options.messageOptions ?? {},
 		options.chatContext,
@@ -58,7 +65,10 @@ export const rollAttackFromAction = async (actor, actionData = {}, options = {})
 		resolvedMode === "incant"
 			? incantValue
 			: (resolvedMode === "physical" ? physicalValue : 0);
-	const modifier = statValue + bonusValue;
+	const fatigue = getFatigueEffects(
+		actor.type === "Character" ? actor.system.attributes?.exhaustion : 0,
+	);
+	const modifier = statValue + bonusValue + fatigue.attackPenalty;
 	const rollResult = await rollD20WithModifier(modifier, {
 		promptAdjustments: options.promptAdjustments,
 		typeLabel: "JdT",

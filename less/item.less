@@ -252,6 +252,82 @@
 		background: color-mix(in srgb, var(--background), transparent 50%);
 	}
 
+	.nalfa-rest-dialog__choices {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--nalfa-padding);
+
+		.field {
+			justify-content: space-between;
+		}
+
+		select,
+		input {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+	}
+
+	.nalfa-rest-dialog__quality-key {
+		margin: 0;
+		line-height: 1.45;
+		text-align: center;
+	}
+
+	.nalfa-rest-dialog__preview {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--nalfa-padding);
+		min-height: 42px;
+		padding: 8px 12px;
+		border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 72%);
+		border-radius: 6px;
+		background: color-mix(in srgb, var(--background), transparent 45%);
+
+		[data-rest-quality-label] {
+			opacity: 0.75;
+		}
+
+		[data-rest-fatigue]:empty {
+			display: none;
+		}
+	}
+
+	.nalfa-state-dialog {
+		gap: var(--nalfa-padding);
+
+		.field {
+			justify-content: space-between;
+		}
+
+		select,
+		input {
+			min-width: 0;
+		}
+
+		[name="state-id"] {
+			flex: 1 1 auto;
+		}
+
+		[name="state-duration"] {
+			flex: 1 1 70px;
+		}
+
+		[name="state-duration-units"] {
+			flex: 1 1 92px;
+		}
+	}
+
+	.nalfa-state-dialog__note {
+		align-items: stretch !important;
+		flex-direction: column;
+
+		input {
+			width: 100%;
+		}
+	}
+
 	.physical-flags {
 		display: flex;
 		align-items: center;
