@@ -71,6 +71,7 @@ export const actionSchemaDefinition = () => {
 						main: numberField(1),
 						secondary: numberField(0),
 						reaction: numberField(0),
+						interaction: numberField(0),
 						condition: stringField(""),
 					}),
 					defaults.cost.actions.options,

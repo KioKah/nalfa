@@ -23,19 +23,6 @@ const getTrimmedString = (value) => {
 	return String(value ?? "").trim();
 };
 
-const dedupeStrings = (values = []) => {
-	return [...new Set(values.map(getTrimmedString).filter(Boolean))];
-};
-
-const buildActionMacroAliases = ({ actionName = "", actionShorthand = "" } = {}) => {
-	const labels = dedupeStrings([actionShorthand, actionName]);
-	return dedupeStrings([
-		...labels,
-		...labels.map((label) => `Action: ${label}`),
-		...labels.map((label) => `${ACTION_MACRO_NAME_PREFIX}${label}`),
-	]);
-};
-
 const buildActionMacroFlags = ({ actionName = "", actionShorthand = "" } = {}) => {
 	return {
 		[MACRO_FLAG_SCOPE]: {
@@ -211,13 +198,11 @@ const createOrAssignMacro = async ({
 	name,
 	command,
 	img,
-	legacyNames = [],
 	flags = {},
 }) => {
-	const aliasNames = dedupeStrings([name, ...legacyNames]);
 	let macro = game.macros.find((entry) => {
 		if (entry.command !== command) return false;
-		return isManagedActionMacro(entry) || aliasNames.includes(entry.name);
+		return isManagedActionMacro(entry);
 	});
 
 	if (!macro) {
@@ -507,7 +492,6 @@ const createEmbeddedActionMacro = async ({ item, actionIndex, slot }) => {
 		name: getMacroDisplayName(actionName),
 		command,
 		img,
-		legacyNames: buildActionMacroAliases({ actionName, actionShorthand }),
 		flags: buildActionMacroFlags({ actionName, actionShorthand }),
 	});
 	return false;
@@ -536,10 +520,6 @@ export const createHotbarMacro = async (dropData, slot) => {
 			name: macroName,
 			command,
 			img,
-			legacyNames: buildActionMacroAliases({
-				actionName,
-				actionShorthand: embeddedActionDrop.actionShorthand,
-			}),
 			flags: buildActionMacroFlags({
 				actionName,
 				actionShorthand: embeddedActionDrop.actionShorthand,
@@ -585,7 +565,6 @@ export const createHotbarMacro = async (dropData, slot) => {
 		name: getMacroDisplayName(actionName),
 		command,
 		img: actionItem.img,
-		legacyNames: buildActionMacroAliases({ actionName, actionShorthand }),
 		flags: buildActionMacroFlags({ actionName, actionShorthand }),
 	});
 

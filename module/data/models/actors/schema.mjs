@@ -103,6 +103,7 @@ const baseActionsSchema = () => ({
 	concentration: actionResourceSchema(1),
 	reaction: actionResourceSchema(1),
 	movement: movementSchema(),
+	interaction: actionResourceSchema(1),
 });
 
 export const baseActorSchema = () => ({

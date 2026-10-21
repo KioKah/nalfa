@@ -65,7 +65,7 @@ const ACTION_BROWSER_SORT_OPTIONS = Object.freeze([
 	{ value: "name", label: "Nom" },
 	{ value: "source", label: "Source" },
 	{ value: "cost", label: "Coût" },
-	{ value: "mode", label: "Mode" },
+	{ value: "kind", label: "Type" },
 	{ value: "spell", label: "Type de sort" },
 ]);
 
@@ -74,7 +74,6 @@ const ACTION_BROWSER_GROUP_OPTIONS = Object.freeze([
 	{ value: "source", label: "Source" },
 	{ value: "spell", label: "Type de sort" },
 	{ value: "cost", label: "Coût" },
-	{ value: "mode", label: "Mode" },
 	{ value: "kind", label: "Type" },
 ]);
 
@@ -103,6 +102,11 @@ const COMBAT_RESOURCE_META = Object.freeze([
 		key: "movement",
 		shortLabel: "Déplacement",
 		iconClass: "fa-light fa-person-running",
+	},
+	{
+		key: "interaction",
+		shortLabel: "Interaction simple",
+		iconClass: "fa-light fa-hand",
 	},
 ]);
 
@@ -174,10 +178,6 @@ const makeSelectedOptions = (options, selectedValue) => {
 	}));
 };
 
-const getActionModeLabel = (actionData = {}) => {
-	return Number(actionData?.cost?.nalfa?.amount ?? 0) > 0 ? "Sort" : "Action";
-};
-
 const getActionSpellTypeLabel = (actionData = {}) => {
 	const nalfaCategory =
 		String(actionData?.cost?.nalfa?.category ?? "minor").trim() || "minor";
@@ -195,7 +195,7 @@ const getActionCostLabel = (actionData = {}) => {
 		? actionData.cost.actions.options
 		: [];
 	const option = options.find((entry) => {
-		return [entry?.main, entry?.secondary, entry?.reaction].some(
+		return [entry?.main, entry?.secondary, entry?.reaction, entry?.interaction].some(
 			(value) => Number(value) > 0,
 		);
 	});
@@ -205,6 +205,7 @@ const getActionCostLabel = (actionData = {}) => {
 	if (Number(option.main) > 0) parts.push("Principale");
 	if (Number(option.secondary) > 0) parts.push("Secondaire");
 	if (Number(option.reaction) > 0) parts.push("Réaction");
+	if (Number(option.interaction) > 0) parts.push("Interaction simple");
 	return parts.join(" + ") || "Principale";
 };
 
@@ -721,14 +722,12 @@ const buildActorActionBanner = ({ item, actionData, actionIndex, refType, kind }
 	});
 	const kindLabel = kind === "standalone" ? "Action" : "Action intégrée";
 	const sourceLabel = String(item.name ?? "").trim() || "Sans source";
-	const modeLabel = getActionModeLabel(actionData);
 	const costLabel = getActionCostLabel(actionData);
 	const spellTypeLabel = getActionSpellTypeLabel(actionData);
 	const searchableText = [
 		embeddedAction.displayName,
 		sourceLabel,
 		kindLabel,
-		modeLabel,
 		costLabel,
 		spellTypeLabel,
 		embeddedAction.detailRow1,
@@ -745,7 +744,6 @@ const buildActorActionBanner = ({ item, actionData, actionIndex, refType, kind }
 		actionData,
 		itemImage: item.img,
 		sourceLabel,
-		modeLabel,
 		costLabel,
 		spellTypeLabel,
 		searchText: normalizeActionSearch(searchableText),
@@ -820,12 +818,6 @@ const compareActorActions = (sortMode) => (left, right) => {
 			compareActionLabels(leftName, rightName)
 		);
 	}
-	if (sortMode === "mode") {
-		return (
-			compareActionLabels(left.modeLabel, right.modeLabel) ||
-			compareActionLabels(leftName, rightName)
-		);
-	}
 	if (sortMode === "spell") {
 		return (
 			compareActionLabels(left.spellTypeLabel, right.spellTypeLabel) ||
@@ -839,7 +831,6 @@ const getActorActionGroupLabel = (action, groupMode) => {
 	if (groupMode === "source") return action.sourceLabel;
 	if (groupMode === "spell") return action.spellTypeLabel;
 	if (groupMode === "cost") return action.costLabel;
-	if (groupMode === "mode") return action.modeLabel;
 	if (groupMode === "kind") return action.kindLabel;
 	return "Actions";
 };
@@ -1308,6 +1299,16 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 				};
 			});
 		const combatResources = buildCombatResources(sysData);
+		const progressionStats = ["pui", "poly"].map((key) => ({
+			key,
+			label: CONFIG.nalfa.stats[key],
+			data: sysData.stats?.[key] ?? {},
+		}));
+		const saveStats = Object.entries(CONFIG.nalfa.save_stats).map(([key, label]) => ({
+			key,
+			label,
+			data: sysData.stats?.[key] ?? {},
+		}));
 		const nalfaValue = Number(sysData.nalfa?.value ?? 0);
 		const nalfaMax = Math.max(0, Number(sysData.nalfa?.max ?? 0));
 		const combatSummary = {
@@ -1353,6 +1354,8 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 				(resistance) => !resistance.isDefault,
 			),
 			combatResources,
+			progressionStats,
+			saveStats,
 			combatSummary,
 			combatHotbar,
 			stateRows,

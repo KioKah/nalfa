@@ -49,6 +49,21 @@ nalfa.skills = {
 	trompe: "Tromperie",
 };
 
+nalfa.skill_groups = {
+	physical: {
+		label: "Physiques",
+		keys: ["athlet", "acroba", "adress", "discre", "endura"],
+	},
+	mental: {
+		label: "Mentales",
+		keys: ["percep", "analyse", "intuit"],
+	},
+	social: {
+		label: "Sociales",
+		keys: ["persua", "intimi", "trompe"],
+	},
+};
+
 nalfa.health_profiles = {
 	fragile: "Fragile",
 	standard: "Standard",
@@ -86,6 +101,7 @@ nalfa.actions = {
 	reaction: "Réaction",
 	concentration: "Concentration",
 	movement: "Déplacement",
+	interaction: "Interaction simple",
 };
 
 nalfa.nalfa_cost_categories = {
@@ -148,9 +164,12 @@ nalfa.weapon_attack_usages = {
 };
 
 nalfa.weapon_attributes = {
-	Légère: "Légère",
 	Finesse: "Finesse",
-	Lourde: "Lourde",
+	Brutalité: "Brutalité",
+	"Deux mains": "Deux mains",
+	Légèreté: "Légèreté",
+	Maniabilité: "Maniabilité",
+	Allonge: "Allonge",
 	Lancer: "Lancer",
 };
 
@@ -178,6 +197,7 @@ nalfa.action_cost_hover_labels = {
 	reaction: "Action de Réaction",
 	concentration: "Action de Concentration",
 	movement: "Action de Déplacement",
+	interaction: "Interaction simple",
 	nalfa: "Nalfa",
 };
 

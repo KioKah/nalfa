@@ -443,7 +443,7 @@
 	}
 
 	.combat-overview__metric-label--fatigue {
-		color: var(--nalfa-color-stat-int);
+		color: var(--nalfa-color-stat-vol);
 	}
 
 	.combat-overview__compact-field {
@@ -665,8 +665,8 @@
 		color: var(--nalfa-color-action-main);
 	}
 
-	.action-resources__item--bonus {
-		color: var(--nalfa-color-action-bonus);
+	.action-resources__item--secondary {
+		color: var(--nalfa-color-action-secondary);
 	}
 
 	.action-resources__item--reaction {
@@ -679,6 +679,10 @@
 
 	.action-resources__item--movement {
 		color: var(--nalfa-color-action-movement);
+	}
+
+	.action-resources__item--interaction {
+		color: var(--nalfa-color-action-interaction);
 	}
 
 	.action-resources__icon {
@@ -1218,28 +1222,24 @@
 			color-mix(in srgb, var(--background), transparent 48%)
 		);
 
-		&.color-str {
-			--nalfa-stat-field-border-color: var(--nalfa-color-stat-str);
+		&.color-pui {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-pui);
 		}
 
-		&.color-dex {
-			--nalfa-stat-field-border-color: var(--nalfa-color-stat-dex);
+		&.color-poly {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-poly);
 		}
 
-		&.color-int {
-			--nalfa-stat-field-border-color: var(--nalfa-color-stat-int);
+		&.color-vig {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-vig);
 		}
 
-		&.color-wis {
-			--nalfa-stat-field-border-color: var(--nalfa-color-stat-wis);
+		&.color-agi {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-agi);
 		}
 
-		&.color-cha {
-			--nalfa-stat-field-border-color: var(--nalfa-color-stat-cha);
-		}
-
-		&.color-con {
-			--nalfa-stat-field-border-color: var(--nalfa-color-stat-con);
+		&.color-vol {
+			--nalfa-stat-field-border-color: var(--nalfa-color-stat-vol);
 		}
 
 		.stat {
@@ -1909,8 +1909,8 @@
 			color: var(--nalfa-color-action-main);
 		}
 
-		&--bonus {
-			color: var(--nalfa-color-action-bonus);
+		&--secondary {
+			color: var(--nalfa-color-action-secondary);
 		}
 
 		&--reaction {
@@ -1923,6 +1923,10 @@
 
 		&--movement {
 			color: var(--nalfa-color-action-movement);
+		}
+
+		&--interaction {
+			color: var(--nalfa-color-action-interaction);
 		}
 
 		&--nalfa {

@@ -144,7 +144,7 @@ export const getActionResourceAvailability = (actor, actionData = {}) => {
 		? actionData.cost.actions.options
 		: [];
 	const options = rawOptions.length ? rawOptions : [{}];
-	const actionKeys = ["main", "secondary", "reaction"];
+	const actionKeys = ["main", "secondary", "reaction", "interaction"];
 	const usesReaction = options.some((option) => toCostAmount(option?.reaction) > 0);
 	if (stateProfile.blocksAction) reasons.push("Un état empêche d'agir.");
 	if (stateProfile.blocksAttack && actionData?.jdt?.enabled) {

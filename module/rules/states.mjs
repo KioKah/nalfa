@@ -426,6 +426,17 @@ export const buildNalfaStateEffect = ({
 export const buildActorStateRows = (actor) =>
   getActorStateEffects(actor).map((effect) => {
     const state = effect.flags?.nalfa?.state ?? {};
+    const behavior = state.behavior ?? {};
+    const restrictions = [
+      ["blocksAction", "Actions indisponibles"],
+      ["blocksAttack", "Attaques indisponibles"],
+      ["blocksReaction", "Réactions indisponibles"],
+      ["blocksConcentration", "Concentration indisponible"],
+      ["blocksMovement", "Déplacement indisponible"],
+      ["blocksSpeech", "Parole indisponible"],
+    ]
+      .filter(([key]) => behavior[key])
+      .map(([, label]) => label);
     return {
       id: effect.id,
       name: effect.name,
@@ -434,7 +445,7 @@ export const buildActorStateRows = (actor) =>
       note: state.note ?? "",
       duration: effect.duration?.remaining ?? effect.duration?.value ?? null,
       units: effect.duration?.units ?? "",
-      behaviorNotes: Object.values(state.behavior ?? {}).filter(
+      behaviorNotes: [...restrictions, ...Object.values(behavior)].filter(
         (value) => typeof value === "string",
       ),
     };

@@ -29,6 +29,11 @@ const ACTION_RESOURCE_TOKEN_META = Object.freeze({
 		colorClass: "reaction",
 		label: "reaction",
 	},
+	interaction: {
+		iconClass: "fa-light fa-hand",
+		colorClass: "interaction",
+		label: "interaction",
+	},
 	concentration: {
 		iconClass: "fa-light fa-bullseye",
 		colorClass: "concentration",
@@ -172,6 +177,7 @@ const buildActionResourceOptionTokens = ({ option, config }) => {
 		main: toFiniteNumber(option?.main, 0),
 		secondary: toFiniteNumber(option?.secondary, 0),
 		reaction: toFiniteNumber(option?.reaction, 0),
+		interaction: toFiniteNumber(option?.interaction, 0),
 	};
 
 	return Object.entries(values)
@@ -300,7 +306,7 @@ function buildActionCoreSummary(item, actionData, config) {
 	};
 
 	if (actionData?.jdt?.enabled) {
-		const statKey = String(actionData?.jdt?.stat ?? "none");
+		const statKey = "pui";
 		const statValue = getActorStatValue(item, statKey);
 		const bonus = toFiniteNumber(actionData?.jdt?.bonus, 0);
 		const total = statValue + bonus;
@@ -614,8 +620,8 @@ const buildActionRangeSummary = (actionData, config) => {
 
 const buildDamageFormulaEntry = (item, formulaData, config) => {
 	const formulaText = String(formulaData?.formula ?? "").trim();
-	const statKey = String(formulaData?.stat ?? "none");
-	if (!formulaText && statKey === "none") return null;
+	if (!formulaText) return null;
+	const statKey = "pui";
 
 	const effect = String(formulaData?.effect ?? "damage").trim() || "damage";
 	const type = String(formulaData?.type ?? "none").trim() || "none";

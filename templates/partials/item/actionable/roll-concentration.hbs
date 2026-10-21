@@ -1,24 +1,18 @@
 <div class="attack-config__section attack-config__section--row">
   <div class="attack-config__section-title">
-    <span class="field__label">Concentr.</span>
+    <span class="field__label">Maintien</span>
   </div>
   <div class="attack-config__fields attack-config__fields--row">
     <select class="stat" name="system.{{actionPath}}concentration.stat">
 		{{selectOptions config.save_stats selected=actionData.concentration.stat}}
     </select>
-    <span class="attack-config__row-sep">vs DD</span>
+    <span class="attack-config__row-sep">JdF DD</span>
     <input
       name="system.{{actionPath}}concentration.dd"
       type="number"
       value="{{actionData.concentration.dd}}"
       data-dtype="Number"
     />
-		<span class="attack-config__row-sep">+ Bonus/malus</span>
-    <input
-      name="system.{{actionPath}}concentration.enemy_attack_bonus"
-      type="number"
-      value="{{actionData.concentration.enemy_attack_bonus}}"
-      data-dtype="Number"
-    />
+    <span class="attack-config__row-sep">Effet unique maintenu</span>
   </div>
 </div>

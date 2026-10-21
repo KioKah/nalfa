@@ -16,12 +16,12 @@
       placeholder="{{formulaPlaceholder}}"
     />
     <span class="attack-config__row-sep">+</span>
-    <select
-      class="stat"
+    <span class="attack-config__row-value">Pui</span>
+    <input
       name="system.{{actionPath}}{{damagePath}}.{{index}}.stat"
-    >
-      {{selectOptions config.stats_optional selected=damage.stat}}
-    </select>
+      type="hidden"
+      value="pui"
+    />
   </div>
   <div class="attack-config__damage-tail">
     <span class="attack-config__row-sep">:</span>

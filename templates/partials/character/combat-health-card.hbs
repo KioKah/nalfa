@@ -76,8 +76,21 @@
     </div>
   {{/if}}
 
-  {{#unless (eq sysData.ui.valueMode "values")}}
-    <div class="combat-overview__profile-row">
+  <div class="combat-overview__profile-row">
+    {{#if (eq sysData.ui.valueMode "values")}}
+      <div class="combat-overview__entry">
+        <span class="field__label">Profil de santé</span>
+        <span class="field__value">{{lookup config.health_profiles sysData.health_profile}}</span>
+      </div>
+      <div class="combat-overview__entry">
+        <span class="field__label">Profil de défense</span>
+        <span class="field__value">{{lookup config.defense_profiles sysData.defense_profile}} + Poly</span>
+      </div>
+      <div class="combat-overview__entry">
+        <span class="field__label">Profil de sauvegarde</span>
+        <span class="field__value">{{lookup config.save_profiles sysData.save_profile}}</span>
+      </div>
+    {{else}}
       <label class="field field--inline combat-overview__entry">
         <span class="field__label">Profil de santé</span>
         <select class="combat-overview__profile-select" name="system.health_profile">
@@ -114,6 +127,6 @@
       {{else}}
         <span></span>
       {{/if}}
-    </div>
-  {{/unless}}
+    {{/if}}
+  </div>
 </div>

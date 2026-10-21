@@ -100,23 +100,20 @@
 }
 
 .stats-set-color-property(@property) {
-	.@{property}-str {
-		@{property}: var(--nalfa-color-stat-str);
+	.@{property}-pui {
+		@{property}: var(--nalfa-color-stat-pui);
 	}
-	.@{property}-dex {
-		@{property}: var(--nalfa-color-stat-dex);
+	.@{property}-poly {
+		@{property}: var(--nalfa-color-stat-poly);
 	}
-	.@{property}-int {
-		@{property}: var(--nalfa-color-stat-int);
+	.@{property}-vig {
+		@{property}: var(--nalfa-color-stat-vig);
 	}
-	.@{property}-wis {
-		@{property}: var(--nalfa-color-stat-wis);
+	.@{property}-agi {
+		@{property}: var(--nalfa-color-stat-agi);
 	}
-	.@{property}-cha {
-		@{property}: var(--nalfa-color-stat-cha);
-	}
-	.@{property}-con {
-		@{property}: var(--nalfa-color-stat-con);
+	.@{property}-vol {
+		@{property}: var(--nalfa-color-stat-vol);
 	}
 }
 
@@ -193,28 +190,24 @@
 	color: var(--color-text-primary);
 }
 
-.color-keyword(@keyword) when (@keyword = "str") {
-	color: var(--nalfa-color-stat-str);
+.color-keyword(@keyword) when (@keyword = "pui") {
+	color: var(--nalfa-color-stat-pui);
 }
 
-.color-keyword(@keyword) when (@keyword = "dex") {
-	color: var(--nalfa-color-stat-dex);
+.color-keyword(@keyword) when (@keyword = "poly") {
+	color: var(--nalfa-color-stat-poly);
 }
 
-.color-keyword(@keyword) when (@keyword = "int") {
-	color: var(--nalfa-color-stat-int);
+.color-keyword(@keyword) when (@keyword = "vig") {
+	color: var(--nalfa-color-stat-vig);
 }
 
-.color-keyword(@keyword) when (@keyword = "wis") {
-	color: var(--nalfa-color-stat-wis);
+.color-keyword(@keyword) when (@keyword = "agi") {
+	color: var(--nalfa-color-stat-agi);
 }
 
-.color-keyword(@keyword) when (@keyword = "cha") {
-	color: var(--nalfa-color-stat-cha);
-}
-
-.color-keyword(@keyword) when (@keyword = "con") {
-	color: var(--nalfa-color-stat-con);
+.color-keyword(@keyword) when (@keyword = "vol") {
+	color: var(--nalfa-color-stat-vol);
 }
 
 .color-keyword(@keyword) when (@keyword = "tran") {

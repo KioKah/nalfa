@@ -15,8 +15,9 @@ export const createDefaultActionData = () => ({
 			options: [
 				{
 					main: 1,
-					secondary: 0,
-					reaction: 0,
+				secondary: 0,
+				reaction: 0,
+				interaction: 0,
 					condition: "",
 				},
 			],

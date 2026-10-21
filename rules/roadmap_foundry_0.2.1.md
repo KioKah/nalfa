@@ -79,19 +79,19 @@ conserver dans l'interface des controles de l'ancien systeme.
 
 ### Fiche personnage
 
-- [ ] Recomposer le panneau statistiques : `Pui` et `Poly` doivent etre
+- [x] Recomposer le panneau statistiques : `Pui` et `Poly` doivent etre
   identifies comme valeurs de progression, tandis que `Vig`, `Agi` et `Vol`
   sont presentees comme sauvegardes.
-- [ ] Remplacer la liste des 18 competences par les 11 competences 0.2.1,
+- [x] Remplacer la liste des 18 competences par les 11 competences 0.2.1,
   avec leurs nouveaux groupes Physiques, Mentales et Sociales.
-- [ ] Afficher la formule de Defense `profil + Poly` et retirer les
+- [x] Afficher la formule de Defense `profil + Poly` et retirer les
   explications de profil et de statistiques heritees.
-- [ ] Afficher le profil de Sante, de Defense et de Sauvegarde, ainsi que les
+- [x] Afficher le profil de Sante, de Defense et de Sauvegarde, ainsi que les
   valeurs de `Pui`, `Poly` et Nalfa calculees par niveau.
-- [ ] Retirer ou masquer l'initiative tant que sa regle reste WIP.
-- [ ] Retirer les panneaux et boutons `Physique`/`Incantation` issus de
+- [x] Retirer ou masquer l'initiative tant que sa regle reste WIP.
+- [x] Retirer les panneaux et boutons `Physique`/`Incantation` issus de
   `roll_stats`; les jets directs doivent exposer `Pui` et les trois Sauv.
-- [ ] Renommer `Action bonus` en `Action secondaire` partout sur la fiche,
+- [x] Renommer `Action bonus` en `Action secondaire` partout sur la fiche,
   l'explorateur d'actions et les infobulles.
 - [ ] Afficher l'effet concentre actif et une action pour l'interrompre.
 - [ ] Afficher lisiblement le cout, l'etat disponible/consomme et la remise a
@@ -106,14 +106,14 @@ conserver dans l'interface des controles de l'ancien systeme.
 
 ### Fiches d'objet et editeur d'action
 
-- [ ] Retirer les modes et selecteurs `Physique`/`Incantation` devenus lies a
+- [x] Retirer les modes et selecteurs `Physique`/`Incantation` devenus lies a
   l'ancien modele de statistiques; distinguer explicitement sort, arme et
   action generique lorsque cela est necessaire a l'affichage.
-- [ ] Remplacer tous les selecteurs de statistique par `Pui` ou `Vig/Agi/Vol`
+- [x] Remplacer tous les selecteurs de statistique par `Pui` ou `Vig/Agi/Vol`
   selon le jet configure; supprimer les choix d'anciennes statistiques.
-- [ ] Mettre a jour l'editeur de couts : Principale, Secondaire, Reaction,
+- [x] Mettre a jour l'editeur de couts : Principale, Secondaire, Reaction,
   Deplacement, Interaction Simple, Nalfa, utilisations et cooldowns.
-- [ ] Distinguer dans l'editeur de concentration le maintien d'un effet, son
+- [x] Distinguer dans l'editeur de concentration le maintien d'un effet, son
   JdF et son unicite.
 - [ ] Ajouter dans l'editeur les champs necessaires aux actions generiques :
   duree jusqu'au prochain tour, cible source d'un etat, Charge et sort
@@ -124,7 +124,7 @@ conserver dans l'interface des controles de l'ancien systeme.
   Maniable, et l'usage du lancer improvise lorsqu'elle n'a pas `Lancer`.
 - [ ] Revoir les apercus d'arme et d'action pour qu'ils affichent JdT/JdD avec
   `Pui`, les Sauv avec leur statistique et les nouveaux couts de tour.
-- [ ] Mettre a jour les filtres, regroupements et resumes de l'explorateur
+- [x] Mettre a jour les filtres, regroupements et resumes de l'explorateur
   d'actions apres renommage de `bonus` et retrait de `incant`.
 
 ### Chat, tokens et suivi de combat
