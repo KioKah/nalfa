@@ -20,12 +20,18 @@
           <div class="states-overview__main">
             <strong>{{name}}</strong>
             {{#if note}}<span class="field__meta">{{note}}</span>{{/if}}
+            {{#if sourceName}}<span class="states-overview__note">Source : {{sourceName}}</span>{{/if}}
             {{#each behaviorNotes}}
               <span class="states-overview__note">{{this}}</span>
             {{/each}}
           </div>
           {{#if duration}}
             <span class="states-overview__duration">{{duration}} {{units}}</span>
+          {{/if}}
+          {{#if canStand}}
+            {{#if ../isEditable}}
+              <button type="button" class="states-overview__stand" data-action="stand-up" data-effect-id="{{id}}">Se relever</button>
+            {{/if}}
           {{/if}}
           {{#if ../isEditable}}
             <button

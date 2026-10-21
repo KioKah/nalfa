@@ -22,6 +22,7 @@ import {
 	getTargetDefense,
 	getTokenDisplayName,
 } from "../internal/shared.mjs";
+import { getStateTargetRestriction } from "../../../rules/states.mjs";
 
 export const getSaveOutcomeStatus = ({ saveResult, actionData }) => {
 	if (!saveResult) return null;
@@ -339,7 +340,14 @@ export const executeActionAttackRoll = async ({
 	rollContext,
 	promptAdjustments = false,
 }) => {
-	const targets = getCurrentTargetTokens();
+	const selectedTargets = getCurrentTargetTokens();
+	const targets = selectedTargets.filter(
+		(targetToken) => !getStateTargetRestriction(actor, targetToken.actor),
+	);
+	if (selectedTargets.length && !targets.length) {
+		ui.notifications.warn(getStateTargetRestriction(actor, selectedTargets[0].actor));
+		return [];
+	}
 	if (!targets.length) {
 		return rollAttackFromAction(actor, actionData, {
 			titleName,

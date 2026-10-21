@@ -103,9 +103,9 @@ d'etats, de KO ou de repos des phases 4, 5 et 7.
 - [x] (Fait phase 4) Afficher lisiblement le cout, l'etat disponible/consomme et la remise a
   zero au prochain tour pour Principale, Secondaire, Reaction, Deplacement et
   Interaction Simple.
-- [ ] Ajouter aux panneaux d'etats `Menace` et `Cache`, la source de Charme ou
+- [x] (Fait phase 5) Ajouter aux panneaux d'etats `Menace` et `Cache`, la source de Charme ou
   Provocation, les sauvegardes de debut de tour et les restrictions actives.
-- [ ] Afficher l'etat KO/inconscience, le seuil de mort et la perte de PV de
+- [x] (Fait phase 5) Afficher l'etat KO/inconscience, le seuil de mort et la perte de PV de
   fin de tour comme des effets appliques, pas comme de simples rappels.
 - [ ] Conserver le dialogue de repos, mais remplacer son champ de qualite par
   les facteurs de repos et previsualiser PV, Nalfa et Fatigue recuperes.
@@ -148,7 +148,7 @@ ressources et de la concentration (phase 4), ainsi que des états et du KO
 - [x] (Fait phase 4) Ajouter aux cartes d'action un recapitulatif des ressources effectivement
   consommees, de l'effet de concentration cree ou interrompu et des etats
   appliques.
-- [ ] Exposer sur token et dans le suivi de combat les etats bloquants, les
+- [x] (Fait phase 5) Exposer sur token et dans le suivi de combat les etats bloquants, les
   ressources de tour et l'inconscience, sans ajouter d'initiative automatisee.
 - [ ] Verifier les styles LESS de tous les panneaux ajoutes ou renommes sur
   bureau et mobile.
@@ -211,21 +211,21 @@ But : terminer les effets deja modelises et les integrer au cycle de tour.
 
 Taches :
 
-- [ ] Adapter tous les etats aux nouvelles cles `Pui/Poly/Vig/Agi/Vol`.
-- [ ] Corriger les DD de liberation `10` en `11` pour Effroi, Affolement et
+- [x] Adapter tous les etats aux nouvelles cles `Pui/Poly/Vig/Agi/Vol`.
+- [x] Corriger les DD de liberation `10` en `11` pour Effroi, Affolement et
   Provocation.
-- [ ] Ajouter les etats `Menace` et `Cache` avec seulement les comportements
+- [x] Ajouter les etats `Menace` et `Cache` avec seulement les comportements
   qui ont ete definis par les regles.
-- [ ] Ajouter la cible source aux effets Charme et Provocation afin de pouvoir
+- [x] Ajouter la cible source aux effets Charme et Provocation afin de pouvoir
   interdire les cibles illegales.
-- [ ] Executer les sauvegardes de debut de tour des etats qui le demandent.
-- [ ] Implementer l'inconscience automatique a 0 PV, la perte de 10 % des PV
+- [x] Executer les sauvegardes de debut de tour des etats qui le demandent.
+- [x] Implementer l'inconscience automatique a 0 PV, la perte de 10 % des PV
   max par tour/round et la mort sous `-PV max`.
-- [ ] Ajouter un niveau de Fatigue lors du reveil au-dessus de 0 PV.
-- [ ] Completer les comportements explicites : mise a terre (releve), gel,
+- [x] Ajouter un niveau de Fatigue lors du reveil au-dessus de 0 PV.
+- [x] Completer les comportements explicites : mise a terre (releve), gel,
   endormissement annule par degats, et desactivation de la concentration ou
   reaction lorsque l'etat le demande.
-- [ ] Garder les comportements laisses au MJ sous forme de note : repoussement,
+- [x] Garder les comportements laisses au MJ sous forme de note : repoussement,
   humidite, encombrement, ivresse et controles sur grandes entites.
 
 Dependances : phases 1 a 4.

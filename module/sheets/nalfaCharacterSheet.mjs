@@ -50,6 +50,7 @@ import {
 	buildNalfaStateEffect,
 	getActorStateProfile,
 	getNalfaStateOptions,
+	standUpFromState,
 } from "../rules/states.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -1025,12 +1026,28 @@ const waitForRestSelection = () => {
 	});
 };
 
-const waitForStateSelection = (stateOptions) => {
+const getStateSourceOptions = () => {
+	const sources = new Map();
+	for (const token of canvas?.tokens?.placeables ?? []) {
+		const actor = token.actor;
+		if (!actor?.uuid || sources.has(actor.uuid)) continue;
+		sources.set(actor.uuid, { uuid: actor.uuid, name: token.name || actor.name });
+	}
+	return [...sources.values()];
+};
+
+const waitForStateSelection = (stateOptions, sourceOptions) => {
 	const options = stateOptions
 		.map(
 			({ id, name, category, intensity }) =>
 				`<option value="${foundry.utils.escapeHTML(id)}" data-intensity="${intensity}">` +
 				`${foundry.utils.escapeHTML(category)} · ${foundry.utils.escapeHTML(name)}</option>`,
+		)
+		.join("");
+	const sources = sourceOptions
+		.map(
+			({ uuid, name }) =>
+				`<option value="${foundry.utils.escapeHTML(uuid)}">${foundry.utils.escapeHTML(name)}</option>`,
 		)
 		.join("");
 
@@ -1068,6 +1085,10 @@ const waitForStateSelection = (stateOptions) => {
 						<span class="field__label">Note MJ / source / cible</span>
 						<input name="state-note" type="text" placeholder="Ex. provoqué par le gardien" />
 					</label>
+					<label class="field field--inline" data-state-source-row hidden>
+						<span class="field__label">Source</span>
+						<select name="state-source"><option value="">Aucune</option>${sources}</select>
+					</label>
 				</section>
 			`,
 			buttons: [
@@ -1085,6 +1106,10 @@ const waitForStateSelection = (stateOptions) => {
 							duration: value("state-duration"),
 							units: value("state-duration-units"),
 							note: value("state-note"),
+							sourceUuid: value("state-source"),
+							sourceName:
+								currentDialog.element?.querySelector("[name='state-source']")?.selectedOptions?.[0]
+									?.textContent ?? "",
 						});
 					},
 				},
@@ -1095,10 +1120,14 @@ const waitForStateSelection = (stateOptions) => {
 			const intensityRow = dialog.element?.querySelector(
 				"[data-state-intensity-row]",
 			);
+			const sourceRow = dialog.element?.querySelector("[data-state-source-row]");
 			const updateIntensityVisibility = () => {
 				const option = select?.selectedOptions?.[0];
 				if (intensityRow) {
 					intensityRow.hidden = option?.dataset?.intensity !== "true";
+				}
+				if (sourceRow) {
+					sourceRow.hidden = !["charme", "provocation"].includes(select?.value);
 				}
 			};
 			select?.addEventListener("change", updateIntensityVisibility);
@@ -1243,11 +1272,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		let deathTick = null;
 
 		if (isKO) {
-			const hpLossPerTurn = Math.max(1, Math.ceil(hpMax * 0.1));
-			const isDead = hpValue <= -hpMax;
+			const hpLossPerTurn = Math.max(1, Math.floor(hpMax * 0.1));
+			const isDead = hpValue < -hpMax;
 			const turnsToDeath = isDead
 				? 0
-				: Math.max(0, Math.ceil((hpValue + hpMax) / hpLossPerTurn));
+				: Math.max(1, Math.floor((hpValue + hpMax) / hpLossPerTurn) + 1);
 
 			deathTick = {
 				isDead,
@@ -1466,8 +1495,15 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		event.preventDefault();
 		if (!this.isEditable || !this.actor.isOwner) return;
 
-		const selection = await waitForStateSelection(getNalfaStateOptions());
+		const selection = await waitForStateSelection(getNalfaStateOptions(), getStateSourceOptions());
 		if (!selection) return;
+		if (
+			["charme", "provocation"].includes(selection.stateId) &&
+			!String(selection.sourceUuid ?? "").trim()
+		) {
+			ui.notifications.warn("Une source est requise pour cet état.");
+			return;
+		}
 		const effect = buildNalfaStateEffect(selection);
 		if (!effect) return;
 		const previousStateIds = [...this.actor.effects]
@@ -1489,6 +1525,13 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		const effectId = String(event.currentTarget?.dataset?.effectId ?? "").trim();
 		if (!effectId) return;
 		await this.actor.deleteEmbeddedDocuments("ActiveEffect", [effectId]);
+	}
+
+	async _onStandUp(event) {
+		event.preventDefault();
+		if (!this.isEditable || !this.actor.isOwner) return;
+		const effectId = String(event.currentTarget?.dataset?.effectId ?? "").trim();
+		if (effectId) await standUpFromState(this.actor, effectId);
 	}
 
 	async _onDrop(event) {
@@ -1681,6 +1724,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			.forEach((element) =>
 				element.addEventListener("click", this._onRemoveState.bind(this)),
 			);
+		this.element
+			?.querySelectorAll("[data-action='stand-up']")
+			.forEach((element) => element.addEventListener("click", this._onStandUp.bind(this)));
 		this.element
 			?.querySelectorAll("[data-action-resource-range]")
 			.forEach((element) =>

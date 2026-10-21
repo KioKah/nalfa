@@ -1415,7 +1415,7 @@
 }
 .nalfa.sheet.actor-sheet .states-overview__row {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto auto;
+  grid-template-columns: 32px minmax(0, 1fr) auto auto auto;
   align-items: center;
   gap: var(--nalfa-gap-text);
   min-height: 48px;
@@ -1463,6 +1463,12 @@
   font-size: 16px;
   line-height: 1;
   pointer-events: none;
+}
+.nalfa.sheet.actor-sheet .states-overview__stand {
+  width: auto;
+  margin: 0;
+  padding: 0 8px;
+  white-space: nowrap;
 }
 .nalfa.sheet.actor-sheet .states-overview__empty {
   display: flex;
@@ -2505,6 +2511,29 @@
 .nalfa.sheet.actor-sheet .value-mode-toggle__button:has(input:checked) {
   opacity: 1;
   background: color-mix(in srgb, var(--color-text-primary), transparent 86%);
+}
+#combat .nalfa-combat-tracker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 5px;
+  padding: 2px 4px 4px 40px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-11);
+  line-height: 1.2;
+}
+#combat .nalfa-combat-tracker__state,
+#combat .nalfa-combat-tracker__blocks {
+  color: var(--color-warm-1);
+  font-weight: bold;
+}
+#combat .nalfa-combat-tracker__state--ko,
+#combat .nalfa-combat-tracker__state--dead {
+  color: var(--color-level-error);
+}
+#combat .nalfa-combat-tracker__resources {
+  flex-basis: 100%;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
 }
 .nalfa.sheet.item-sheet,
 .nalfa.sheet.item,

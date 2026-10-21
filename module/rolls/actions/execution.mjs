@@ -189,6 +189,10 @@ export const executeActionConcentrationPrompt = async ({
 		return null;
 	}
 	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksTurn) {
+		ui.notifications.warn("Un état empêche ce personnage d'agir ce tour.");
+		return null;
+	}
 	if (stateProfile.blocksAction) {
 		ui.notifications.warn("Un état empêche ce personnage d'agir.");
 		return null;
@@ -230,6 +234,10 @@ export const executeActionPrompt = async ({
 		return null;
 	}
 	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksTurn) {
+		ui.notifications.warn("Un état empêche ce personnage d'agir ce tour.");
+		return null;
+	}
 	if (stateProfile.blocksAction) {
 		ui.notifications.warn("Un état empêche ce personnage d'agir.");
 		return null;

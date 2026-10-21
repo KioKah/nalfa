@@ -1037,7 +1037,7 @@
 
 	.states-overview__row {
 		display: grid;
-		grid-template-columns: 32px minmax(0, 1fr) auto auto;
+		grid-template-columns: 32px minmax(0, 1fr) auto auto auto;
 		align-items: center;
 		gap: var(--nalfa-gap-text);
 		min-height: 48px;
@@ -1080,6 +1080,13 @@
 
 	.states-overview__remove {
 		.array-action-button();
+	}
+
+	.states-overview__stand {
+		width: auto;
+		margin: 0;
+		padding: 0 8px;
+		white-space: nowrap;
 	}
 
 	.states-overview__empty {

@@ -70,6 +70,7 @@ export const getActionResourceAvailability = (
 	const uses = actionData?.cost?.uses ?? {};
 	const reasons = [];
 	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksTurn) reasons.push("Un état empêche d'agir ce tour.");
 	const option = getActionOptions(actionData).find((candidate) =>
 		(!stateProfile.blocksReaction || toAmount(candidate?.reaction) === 0) &&
 		ACTION_RESOURCE_KEYS.every(
@@ -98,6 +99,10 @@ export const consumeActionResources = async ({
 	if (!(actor instanceof Actor)) return false;
 	return withActorLock(actor, async () => {
 	const stateProfile = getActorStateProfile(actor);
+	if (stateProfile.blocksTurn) {
+		ui.notifications.warn("Un état empêche ce personnage d'agir ce tour.");
+		return false;
+	}
 	if (stateProfile.blocksAction) {
 		ui.notifications.warn("Un état empêche ce personnage d'agir.");
 		return false;
@@ -228,12 +233,38 @@ export const refreshActorTurnResources = async (actor, { cooldownUnit = "turns" 
 	if (!(actor instanceof Actor)) return;
 	return withActorLock(actor, async () => {
 		const updates = {};
+		const stateProfile = getActorStateProfile(actor);
 		for (const key of [...ACTION_RESOURCE_KEYS, "movement"]) {
-			updates[`system.actions.${key}.value`] = toAmount(actor.system?.actions?.[key]?.max);
+			updates[`system.actions.${key}.value`] =
+				key === "reaction" && stateProfile.blocksReaction
+					? 0
+					: toAmount(actor.system?.actions?.[key]?.max);
 		}
 		await actor.update(updates);
 		for (const item of actor.items ?? []) await tickItemCooldowns(item, cooldownUnit);
 	});
+};
+
+export const syncActorStateRestrictions = async (actor, { options = {}, userId = null } = {}) => {
+	if (!(actor instanceof Actor)) return;
+	if (userId && userId !== game.user?.id) return;
+	if (options.nalfaStateSync) return;
+	const profile = getActorStateProfile(actor);
+	const updates = {};
+	if (profile.blocksReaction && toAmount(actor.system?.actions?.reaction?.value) > 0) {
+		updates["system.actions.reaction.value"] = 0;
+	}
+	const active = actor.system?.actions?.concentration?.active ?? {};
+	if (profile.blocksConcentration && String(active.name ?? "").trim()) {
+		updates["system.actions.concentration.active"] = {
+			name: "",
+			stat: "vig",
+			dd: 0,
+			source_item_uuid: "",
+			action_index: -1,
+		};
+	}
+	if (Object.keys(updates).length) await actor.update(updates, { nalfaStateSync: true });
 };
 
 export const tickActorRoundCooldowns = async (actor) => {

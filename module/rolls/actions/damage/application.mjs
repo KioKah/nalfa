@@ -27,6 +27,8 @@ export const applyDamageSummaryRowsToTargets = async (rows = []) => {
 			"system.attributes.hp.value": nextHp,
 			"system.attributes.hp.abso": nextTempHp,
 		});
-		if (damageTypes.length) await removeStatesAfterDamage(actor, damageTypes);
+		await removeStatesAfterDamage(actor, damageTypes, {
+			sufferedDamage: hpDelta < 0 || tempHpDelta < 0,
+		});
 	}
 };
