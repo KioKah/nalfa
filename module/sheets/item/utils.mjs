@@ -58,9 +58,6 @@ export const getActorStatValue = (item, statKey) => {
 
 	const actor = item.actor ?? item.parent ?? null;
 	const actorSystem = actor?.system ?? {};
-	const rollStatValue = actorSystem?.roll_stats?.[statKey]?.value;
-	if (Number.isFinite(Number(rollStatValue))) return Number(rollStatValue);
-
 	const statValue = actorSystem?.stats?.[statKey]?.value;
 	if (Number.isFinite(Number(statValue))) return Number(statValue);
 

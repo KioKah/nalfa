@@ -72,7 +72,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		const index = this._getActionIndex();
 		const actionData = this._draftAction;
 		const actionName = String(actionData?.name ?? "").trim();
-		const resolvedName = actionName || getDefaultEmbeddedActionName(this.item.name, index);
+		const resolvedName =
+			actionName || getDefaultEmbeddedActionName(this.item.name, index);
 		return `Action - ${resolvedName}`;
 	}
 
@@ -82,7 +83,6 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		const actionIndex = this._getActionIndex();
 		const actionData = this._draftAction;
 		const hasActionable = actionData !== null;
-		const actionMode = actionData?.mode ?? "physical";
 		const requirementsTextSource = actionData?.requires ?? "";
 		const effectTextSource = actionData?.effect?.text ?? "";
 		const noteTextSource = actionData?.cost?.actions?.note ?? "";
@@ -96,7 +96,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 		const defaultActionName = getDefaultEmbeddedActionName(item.name, actionIndex);
 		const actionName = String(actionData?.name ?? "").trim() || defaultActionName;
 		const defaultActionShorthand = getDefaultEmbeddedActionShorthand(actionName);
-		const actionDisplayName = String(actionData?.name ?? "").trim() || defaultActionName;
+		const actionDisplayName =
+			String(actionData?.name ?? "").trim() || defaultActionName;
 		const alwaysRefresh = actionData?.always_refresh === true;
 		const actionDisplayShorthand = formatEmbeddedActionShorthand(
 			resolveEmbeddedActionShorthand({
@@ -131,8 +132,6 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			actionDisplayName,
 			actionDisplayShorthand,
 			actionDisplayShorthandHtml,
-			isActionModeIncant: actionMode === "incant",
-			isActionModePhysical: actionMode === "physical",
 			requirementsNamePath: `system.actions.${actionIndex}.requires`,
 			effectNamePath: `system.actions.${actionIndex}.effect.text`,
 			noteNamePath: `system.actions.${actionIndex}.cost.actions.note`,
@@ -185,7 +184,10 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 			"[data-action='change-damage-type']",
 			this._onDraftDamageTypeChange,
 		);
-		this._bindClickAction("[data-action='add-array-entry']", this._onAddArrayEntryDraft);
+		this._bindClickAction(
+			"[data-action='add-array-entry']",
+			this._onAddArrayEntryDraft,
+		);
 		this._bindClickAction(
 			"[data-action='remove-array-entry']",
 			this._onRemoveArrayEntryDraft,
@@ -271,10 +273,13 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 
 		try {
 			const currentValue =
-				String(foundry.utils.getProperty(this._draftAction, path) ?? "none").trim() ||
-				"none";
+				String(
+					foundry.utils.getProperty(this._draftAction, path) ?? "none",
+				).trim() || "none";
 			const nextType = await chooseSpecialDamageType(currentValue);
-			const safeType = CONFIG.nalfa?.fusion_damage_types?.[nextType] ? nextType : "none";
+			const safeType = CONFIG.nalfa?.fusion_damage_types?.[nextType]
+				? nextType
+				: "none";
 			console.info("[nalfa] draft special damage type resolved", {
 				item: this.item?.name,
 				path,
@@ -358,7 +363,8 @@ export default class NalfaEmbeddedActionEditor extends HandlebarsApplicationMixi
 
 		const title = button.dataset.title || "Editeur";
 		openRichTextEditorDialog(null, "", title, {
-			getValue: () => String(foundry.utils.getProperty(this._draftAction, path) ?? ""),
+			getValue: () =>
+				String(foundry.utils.getProperty(this._draftAction, path) ?? ""),
 			onSave: async (content) => {
 				foundry.utils.setProperty(this._draftAction, path, String(content ?? ""));
 				await this.#saveDraftAction();

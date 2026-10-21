@@ -16,7 +16,6 @@ import {
 	WeaponAttributeData,
 	WeaponData,
 } from "../data/models.mjs";
-import NalfaCombat from "../documents/nalfaCombat.mjs";
 import { registerHalfMinimumDiceModifier } from "../rolls/core/diceModifiers.mjs";
 import * as rollMacros from "../rolls/actions/macros.mjs";
 import * as rollHandlers from "../rolls/index.mjs";
@@ -24,10 +23,7 @@ import * as actionExecution from "../rolls/actions/execution.mjs";
 import NalfaCharacterSheet from "../sheets/nalfaCharacterSheet.mjs";
 import NalfaItem from "../sheets/nalfaItem.mjs";
 import NalfaItemSheet from "../sheets/nalfaItemSheet.mjs";
-import {
-	registerFatigueStatus,
-	syncActorFatigueState,
-} from "../rules/fatigue.mjs";
+import { registerFatigueStatus, syncActorFatigueState } from "../rules/fatigue.mjs";
 import { registerNalfaStateStatuses } from "../rules/states.mjs";
 import { registerHandlebarsHelpers } from "./handlebars.mjs";
 import { preloadHandlebarsTemplates } from "./templates.mjs";
@@ -218,8 +214,6 @@ export const registerInitHook = () => {
 		CONFIG.nalfa = nalfa;
 		registerStatusEffects();
 		registerHalfMinimumDiceModifier();
-		CONFIG.Combat.initiative.formula = "1d20+@attributes.initiative.value";
-		CONFIG.Combat.documentClass = NalfaCombat;
 		registerDataModels();
 		CONFIG.Item.documentClass = NalfaItem;
 		registerGameApi();

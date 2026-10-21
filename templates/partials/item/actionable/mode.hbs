@@ -1,11 +1,8 @@
 <div class="attack-config__section attack-config__section--row">
   <div class="attack-config__section-title">
-    <span class="field__label">Mode</span>
+    <span class="field__label">Jet et portée</span>
   </div>
   <div class="attack-config__fields attack-config__fields--row attack-config__mode-row">
-    <select class="attack-config__mode-select" name="system.{{actionPath}}mode">
-      {{selectOptions config.attack_mode selected=actionData.mode}}
-    </select>
     <select class="attack-config__mode-select" name="system.{{actionPath}}weapon_usage">
       {{selectOptions config.weapon_usages selected=actionData.weapon_usage}}
     </select>

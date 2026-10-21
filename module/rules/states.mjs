@@ -3,7 +3,7 @@ import { getFatigueEffects } from "./fatigue.mjs";
 const STATE_STATUS_PREFIX = "nalfa-state-";
 
 const allSaveChanges = (value) =>
-  Object.keys(CONFIG.nalfa.stats).map((stat) => ({
+  Object.keys(CONFIG.nalfa.save_stats).map((stat) => ({
     key: `system.stats.${stat}.save.alt`,
     type: "add",
     value,
@@ -45,11 +45,7 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     icon: "icons/svg/daze.svg",
     description: "-2 Sauv, -2 JdT, ne peut réagir ni se concentrer.",
     behavior: { blocksReaction: true, blocksConcentration: true },
-    changes: () => [
-      ...allSaveChanges(-2),
-      change("system.roll_stats.physical.alt", -2),
-      change("system.roll_stats.incant.alt", -2),
-    ],
+    changes: () => [...allSaveChanges(-2), change("system.stats.pui.alt", -2)],
   }),
   etourdissement: state({
     name: "Étourdissement",
@@ -61,8 +57,7 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     changes: () => [
       ...allSaveChanges(-6),
       change("system.attributes.defense.alt", -2),
-      change("system.roll_stats.physical.alt", -4),
-      change("system.roll_stats.incant.alt", -4),
+      change("system.stats.pui.alt", -4),
     ],
   }),
   endormissement: state({
@@ -100,7 +95,7 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     icon: "icons/svg/net.svg",
     description: "-6 Sauv (Dex), ne peut se déplacer.",
     behavior: { blocksMovement: true },
-    changes: () => [...saveChanges(["dex"], -6)],
+    changes: () => [...saveChanges(["agi"], -6)],
   }),
   paralysie: state({
     name: "Paralysie",
@@ -111,7 +106,7 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     behavior: {
       blocksAction: true,
       blocksMovement: true,
-      autoFailSaves: ["str", "dex"],
+      autoFailSaves: ["vig", "agi"],
     },
     changes: () => [change("system.attributes.defense.alt", -6)],
   }),
@@ -129,7 +124,7 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     },
     changes: () => [
       change("system.attributes.defense.alt", -2),
-      ...saveChanges(["str", "dex"], -6),
+      ...saveChanges(["vig", "agi"], -6),
     ],
   }),
   repoussement: state({
@@ -147,9 +142,8 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
       "-6 Sauv (Int, Sag, Cha), -2 JdT. Doit réussir une Sauv 10 (Sag) au début de son tour afin de pouvoir agir.",
     behavior: { turnSave: "Sauv 10 (SAG) pour agir" },
     changes: () => [
-      ...saveChanges(["int", "wis", "cha"], -6),
-      change("system.roll_stats.physical.alt", -2),
-      change("system.roll_stats.incant.alt", -2),
+      ...saveChanges(["vol"], -6),
+      change("system.stats.pui.alt", -2),
     ],
   }),
   charme: state({
@@ -158,7 +152,7 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     icon: "icons/svg/aura.svg",
     description: "-6 Sauv (Int, Sag, Cha), ne peut attaquer son charmeur.",
     behavior: { targetingNote: "Ne peut attaquer son charmeur." },
-    changes: () => [...saveChanges(["int", "wis", "cha"], -6)],
+    changes: () => [...saveChanges(["vol"], -6)],
   }),
   controle: state({
     name: "Contrôle",
@@ -200,9 +194,8 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     description: "-2 Défense, -2 Sauv (Dex), -2 JdT, portée /2.",
     changes: () => [
       change("system.attributes.defense.alt", -2),
-      ...saveChanges(["dex"], -2),
-      change("system.roll_stats.physical.alt", -2),
-      change("system.roll_stats.incant.alt", -2),
+      ...saveChanges(["agi"], -2),
+      change("system.stats.pui.alt", -2),
       change("system.attributes.range_coef.alt_mult", 0.5, "multiply"),
     ],
   }),
@@ -215,9 +208,8 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
     behavior: { blocksReaction: true },
     changes: () => [
       change("system.attributes.defense.alt", -6),
-      ...saveChanges(["dex"], -6),
-      change("system.roll_stats.physical.alt", -4),
-      change("system.roll_stats.incant.alt", -4),
+      ...saveChanges(["agi"], -6),
+      change("system.stats.pui.alt", -4),
       change("system.attributes.range_coef.alt_mult", 0.5, "multiply"),
     ],
   }),
@@ -246,12 +238,12 @@ export const NALFA_STATE_DEFINITIONS = Object.freeze({
       "-2 Défense, -6 Sauv (For), Rate Sauv (Dex), ne peut se déplacer. Subir des dégâts de feu peut supprimer l'effet et vous devenez humide.",
     behavior: {
       blocksMovement: true,
-      autoFailSaves: ["dex"],
+      autoFailSaves: ["agi"],
       meltOnFire: true,
     },
     changes: () => [
       change("system.attributes.defense.alt", -2),
-      ...saveChanges(["str"], -6),
+      ...saveChanges(["vig"], -6),
     ],
   }),
   humidite: state({

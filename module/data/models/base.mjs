@@ -35,6 +35,7 @@ export const toFiniteNumber = (value) => {
 
 export const saveSchema = () =>
 	schemaField({
+		profile: stringField("low"),
 		base: numberField(0),
 		alt: numberField(0),
 		value: numberValueField(null),
@@ -66,13 +67,11 @@ export const rollStatSchema = ({ defaultStat = null, stat = null } = {}) => {
 	return schemaField(schema);
 };
 
-export const skillSchema = (statKey) =>
+export const skillSchema = () =>
 	schemaField({
 		value: numberValueField(null),
 		base: numberField(0),
 		alt: numberField(0),
-		stat: stringField(statKey),
-		default_stat: stringField(statKey),
 	});
 
 export const resistanceSchema = (coefInitial = 1) =>

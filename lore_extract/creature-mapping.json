@@ -1,29 +1,12 @@
 {
 	"actorType": "NPC",
 	"creatureTemplate": "Créature",
-	"statLabels": {
-		"Force": "str",
-		"Dextérité": "dex",
-		"Intelligence": "int",
-		"Sagesse": "wis",
-		"Charisme": "cha",
-		"Constitution": "con"
-	},
+	"statLabels": {},
 	"directAttributes": {
-		"Force": "system.stats.str.base",
-		"Dextérité": "system.stats.dex.base",
-		"Intelligence": "system.stats.int.base",
-		"Sagesse": "system.stats.wis.base",
-		"Charisme": "system.stats.cha.base",
-		"Constitution": "system.stats.con.base",
 		"Difficulté": "system.difficulty",
-		"Défense": "system.attributes.defense.base",
-		"Pv max": "system.attributes.hp.base",
 		"Déplacement/tour": "system.actions.movement.base"
 	},
-	"specialAttributes": {
-		"Statistique d'Attaque": "system.roll_stats.incant.stat"
-	},
+	"specialAttributes": {},
 	"descriptionAttributes": [
 		"Actions",
 		"Ressources récoltables",
@@ -38,6 +21,8 @@
 		"Archétype 2"
 	],
 	"defaults": {
-		"system.profile": "none"
+		"system.health_profile": "standard",
+		"system.defense_profile": "standard",
+		"system.save_profile": "stoic"
 	}
 }

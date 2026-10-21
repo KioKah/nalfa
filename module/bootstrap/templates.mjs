@@ -17,10 +17,6 @@ const TEMPLATE_PATHS = [
 	"systems/nalfa/templates/partials/character/skill-row.hbs",
 	"systems/nalfa/templates/partials/character/stat-card.hbs",
 	"systems/nalfa/templates/partials/character/stats-skills.hbs",
-	"systems/nalfa/templates/partials/character/roll-stats-base.hbs",
-	"systems/nalfa/templates/partials/character/roll-stats-alt.hbs",
-	"systems/nalfa/templates/partials/character/roll-stats-values.hbs",
-	"systems/nalfa/templates/partials/character/roll-stats.hbs",
 	"systems/nalfa/templates/partials/character/value-mode-toggle.hbs",
 	"systems/nalfa/templates/sheets/item/header.hbs",
 	"systems/nalfa/templates/sheets/item/tabs.hbs",
@@ -66,7 +62,6 @@ const TEMPLATE_PATHS = [
 	"systems/nalfa/templates/chat/roll/damage-grouped.hbs",
 	"systems/nalfa/templates/chat/roll/damage-summary.hbs",
 	"systems/nalfa/templates/chat/roll/save.hbs",
-	"systems/nalfa/templates/chat/roll/initiative.hbs",
 	"systems/nalfa/templates/chat/roll/prompt-save.hbs",
 ];
 

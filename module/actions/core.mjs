@@ -1,12 +1,11 @@
 export const createDefaultDamageFormula = () => ({
 	formula: "",
 	type: "none",
-	stat: "none",
+	stat: "pui",
 	effect: "damage",
 });
 
 export const createDefaultActionData = () => ({
-	mode: "physical",
 	weapon_usage: "normal",
 	range_type: "ranged",
 	requires: "",
@@ -16,7 +15,7 @@ export const createDefaultActionData = () => ({
 			options: [
 				{
 					main: 1,
-					bonus: 0,
+					secondary: 0,
 					reaction: 0,
 					condition: "",
 				},
@@ -71,13 +70,13 @@ export const createDefaultActionData = () => ({
 	},
 	jdt: {
 		enabled: false,
-		stat: "physical",
+		stat: "pui",
 		bonus: 0,
 	},
 	jds: {
 		enabled: false,
 		dd: 0,
-		stat: "none",
+		stat: "vig",
 		text: "",
 		fails_on_save: false,
 	},
@@ -92,7 +91,7 @@ export const createDefaultActionData = () => ({
 	},
 	concentration: {
 		enabled: false,
-		stat: "none",
+		stat: "vig",
 		dd: 0,
 		enemy_attack_bonus: 0,
 	},

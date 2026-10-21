@@ -1,12 +1,11 @@
 {
 	"nalfa": {
 		"stats-short": {
-			"str": "FOR",
-			"dex": "DEX",
-			"int": "INT",
-			"wis": "SAG",
-			"cha": "CHA",
-			"con": "CON"
+			"pui": "PUI",
+			"poly": "POLY",
+			"vig": "VIG",
+			"agi": "AGI",
+			"vol": "VOL"
 		},
 		"element": {
 			"none": "",

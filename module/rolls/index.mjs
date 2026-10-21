@@ -1,5 +1,8 @@
 export { rollAttack, rollAttackFromAction } from "./workflows/attack.mjs";
-export { rollConcentration, rollConcentrationFromAction } from "./workflows/concentration.mjs";
+export {
+	rollConcentration,
+	rollConcentrationFromAction,
+} from "./workflows/concentration.mjs";
 export {
 	normalizeDamageFormula,
 	postDamageGroupMessage,
@@ -10,7 +13,6 @@ export {
 	rollDamageSetFromAction,
 	summarizeAppliedDamageForToken,
 } from "./workflows/damage.mjs";
-export { rollInitiative } from "./workflows/initiative.mjs";
 export {
 	rollSavePrompt,
 	rollSavePromptFromAction,

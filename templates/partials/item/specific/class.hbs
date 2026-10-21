@@ -1,11 +1,35 @@
 <div class="grid grid--two">
 	<div class="panel-section">
-		<label class="field">
-			<span class="field__label">Stat ester</span>
-			<select name="system.stat_ester">
-				{{selectOptions config.stats selected=sysData.stat_ester}}
-			</select>
-		</label>
+		<div class="field field--inline">
+			<span class="field__label">Profils de sauvegarde compatibles</span>
+			<button
+				type="button"
+				class="array-action-btn"
+				data-action="add-array-entry"
+				data-path="save_profiles"
+				data-entry-type="save-profile"
+				data-tooltip="Ajouter un profil compatible"
+			>
+				<i class="fa-light fa-square-plus"></i>
+			</button>
+		</div>
+		{{#each sysData.save_profiles as |profile index|}}
+			<div class="field field--inline">
+				<select name="system.save_profiles.{{index}}">
+					{{selectOptions ../config.save_profiles selected=profile}}
+				</select>
+				<button
+					type="button"
+					class="array-action-btn"
+					data-action="remove-array-entry"
+					data-path="save_profiles"
+					data-index="{{index}}"
+					data-tooltip="Supprimer ce profil compatible"
+				>
+					<i class="fa-light fa-square-minus"></i>
+				</button>
+			</div>
+		{{/each}}
 
 		<span class="field__label">Choix</span>
 		<label class="field">
@@ -55,11 +79,11 @@
 				/>
 			</label>
 			<label class="field">
-				<span class="field__label">Bonus</span>
+				<span class="field__label">Secondaire</span>
 				<input
-					name="system.attributes.actions.bonus"
+					name="system.attributes.actions.secondary"
 					type="number"
-					value="{{sysData.attributes.actions.bonus}}"
+					value="{{sysData.attributes.actions.secondary}}"
 					data-dtype="Number"
 				/>
 			</label>

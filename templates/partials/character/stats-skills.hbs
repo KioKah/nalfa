@@ -1,5 +1,5 @@
 <div class="sheet-section">
-  <h2>Compétences</h2>
+  <h2>Progression et sauvegardes</h2>
   <div class="skills-by-stat">
     {{#each sysData.stats as |statObj statKey|}}
       <div class="skill-by-stat color-{{statKey}}">
@@ -23,6 +23,7 @@
                 data-dtype="Number"
               />
             </div>
+            {{#if (lookup ../config.save_stats statKey)}}
             <div class="stat-right">
               <span class="stat-save">Sauv</span>
               {{#if ../rollable}}
@@ -57,23 +58,24 @@
                 data-dtype="Number"
               />
             </div>
+            {{/if}}
           </div>
           <div class="stat-separator"></div>
         </div>
 
-        {{#each ../sysData.attributes.skills as |skillObj skillKey|}}
-          {{#if (eq skillObj.stat statKey)}}
-            {{>
-              "systems/nalfa/templates/partials/character/skill-row.hbs"
-              skillObj=skillObj
-              skillKey=skillKey
-              statKey=statKey
-              config=../../config
-              rollable=../../rollable
-            }}
-          {{/if}}
-        {{/each}}
       </div>
+    {{/each}}
+  </div>
+  <h2>Compétences</h2>
+  <div class="skills-by-stat">
+    {{#each sysData.attributes.skills as |skillObj skillKey|}}
+      {{>
+        "systems/nalfa/templates/partials/character/skill-row.hbs"
+        skillObj=skillObj
+        skillKey=skillKey
+        config=../config
+        rollable=../rollable
+      }}
     {{/each}}
   </div>
 </div>

@@ -72,12 +72,7 @@
         data-dtype="Number"
       />
       <span class="field__separator">/</span>
-      <input
-        name="system.nalfa.max"
-        type="number"
-        value="{{sysData.nalfa.max}}"
-        data-dtype="Number"
-      />
+      <span class="field__total">{{sysData.nalfa.max}}</span>
     </div>
   {{/if}}
 
@@ -85,8 +80,20 @@
     <div class="combat-overview__profile-row">
       <label class="field field--inline combat-overview__entry">
         <span class="field__label">Profil de santé</span>
-        <select class="combat-overview__profile-select" name="system.profile">
-          {{selectOptions config.profiles selected=sysData.profile}}
+        <select class="combat-overview__profile-select" name="system.health_profile">
+          {{selectOptions config.health_profiles selected=sysData.health_profile}}
+        </select>
+      </label>
+      <label class="field field--inline combat-overview__entry">
+        <span class="field__label">Profil de défense</span>
+        <select class="combat-overview__profile-select" name="system.defense_profile">
+          {{selectOptions config.defense_profiles selected=sysData.defense_profile}}
+        </select>
+      </label>
+      <label class="field field--inline combat-overview__entry">
+        <span class="field__label">Profil de sauvegarde</span>
+        <select class="combat-overview__profile-select" name="system.save_profile">
+          {{selectOptions config.save_profiles selected=sysData.save_profile}}
         </select>
       </label>
       {{#if isKO}}
@@ -102,12 +109,7 @@
             data-dtype="Number"
           />
           <span class="field__separator">/</span>
-          <input
-            name="system.nalfa.max"
-            type="number"
-            value="{{sysData.nalfa.max}}"
-            data-dtype="Number"
-          />
+          <span class="field__total">{{sysData.nalfa.max}}</span>
         </div>
       {{else}}
         <span></span>

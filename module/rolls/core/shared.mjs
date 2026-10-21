@@ -3,7 +3,6 @@ const CHAT_TEMPLATES = {
 	attack: "systems/nalfa/templates/chat/roll/attack.hbs",
 	damage: "systems/nalfa/templates/chat/roll/damage.hbs",
 	save: "systems/nalfa/templates/chat/roll/save.hbs",
-	initiative: "systems/nalfa/templates/chat/roll/initiative.hbs",
 };
 
 const getD20Result = (roll) => {
@@ -98,7 +97,7 @@ export const promptEnemyAttackBonus = async (defaultValue = 0) => {
 			title: "JdF - Stat attaquant",
 			content: `
 				<div class="form-group">
-					<label for="${inputId}">Stat Physique / Stat Incant de l'attaquant</label>
+						<label for="${inputId}">Bonus / malus de l'effet</label>
 					<input id="${inputId}" type="number" value="${Number(defaultValue ?? 0)}" />
 				</div>
 			`,
@@ -146,7 +145,10 @@ export const postRollMessage = async (actor, templateKey, data, messageOptions =
 	const templatePath = CHAT_TEMPLATES[templateKey];
 	if (!templatePath) return null;
 
-	const content = await foundry.applications.handlebars.renderTemplate(templatePath, data);
+	const content = await foundry.applications.handlebars.renderTemplate(
+		templatePath,
+		data,
+	);
 	return ChatMessage.create({
 		user: game.user.id,
 		speaker: ChatMessage.getSpeaker({ actor }),
@@ -201,7 +203,9 @@ export const getD20RollDetail = (
 	const isDisadvantage = modifiers.some((modifier) => modifier.startsWith("kl"));
 	const automaticOutcome = isCrit
 		? "Réussite automatique"
-		: (isFumble ? "Échec automatique" : "");
+		: isFumble
+			? "Échec automatique"
+			: "";
 	if (!automaticOutcome && !isAdvantage && !isDisadvantage) return null;
 	const results = die?.results ?? [];
 	const discardedResult = results.find((result) => result.active === false);
@@ -210,20 +214,20 @@ export const getD20RollDetail = (
 		const leftDiscarded = left === discardedResult || left.active === false;
 		const rightDiscarded = right === discardedResult || right.active === false;
 		if (leftDiscarded === rightDiscarded) return 0;
-		return isAdvantage
-			? (leftDiscarded ? 1 : -1)
-			: (leftDiscarded ? -1 : 1);
+		return isAdvantage ? (leftDiscarded ? 1 : -1) : leftDiscarded ? -1 : 1;
 	});
 
 	return {
-		label: isAdvantage ? "d20Av" : (isDisadvantage ? "d20Dav" : "d20"),
+		label: isAdvantage ? "d20Av" : isDisadvantage ? "d20Dav" : "d20",
 		results: orderedResults.map((result) => ({
 			value: result.result,
 			isDiscarded: result === discardedResult || result.active === false,
 		})),
 		keptValue: results.find((result) => result.active !== false)?.result ?? null,
 		discardedValue:
-			discardedResult === undefined ? null : discardedResult.result + normalizedModifier,
+			discardedResult === undefined
+				? null
+				: discardedResult.result + normalizedModifier,
 		showDiscardedInTotal: Boolean(discardedResult) && !automaticOutcome,
 		prefix: suffix,
 		comparison: automaticOutcome ? "" : comparison,
@@ -281,12 +285,16 @@ export const promptD20RollOptions = async ({
 							<option value="disadvantage">${ROLL_MODE_LABELS.disadvantage}</option>
 						</select>
 					</label>
-					${includeDifficulty ? `
+					${
+						includeDifficulty
+							? `
 						<label class="field field--inline">
 							<span class="field__label">DD</span>
 							<input id="${difficultyId}" name="roll-difficulty" type="number" placeholder="Aucune" />
 						</label>
-					` : ""}
+					`
+							: ""
+					}
 				</section>
 			`,
 			buttons: [
@@ -301,14 +309,19 @@ export const promptD20RollOptions = async ({
 					default: true,
 					callback: (_event, _target, currentDialog) => {
 						const bonus = Number(
-							currentDialog.element?.querySelector(`[name='roll-bonus']`)?.value ?? 0,
+							currentDialog.element?.querySelector(`[name='roll-bonus']`)
+								?.value ?? 0,
 						);
-						const mode = currentDialog.element?.querySelector(`[name='roll-mode']`)?.value;
+						const mode =
+							currentDialog.element?.querySelector(
+								`[name='roll-mode']`,
+							)?.value;
 						const difficultyInput = currentDialog.element?.querySelector(
 							`[name='roll-difficulty']`,
 						);
 						const difficultyText = String(difficultyInput?.value ?? "").trim();
-						const difficulty = difficultyText === "" ? null : Number(difficultyText);
+						const difficulty =
+							difficultyText === "" ? null : Number(difficultyText);
 						settle({
 							bonus: Number.isFinite(bonus) ? bonus : 0,
 							mode: mode in ROLL_MODE_LABELS ? mode : "normal",

@@ -35,16 +35,17 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 	);
 
 	const jds = actionData?.jds ?? {};
-	const statKey = jds.stat ?? "";
+	const statKey = CONFIG.nalfa.save_stats?.[jds.stat] ? jds.stat : "vig";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, "");
-	const statLabel = statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
+	const statLabel =
+		statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
 	const adjustments = options.promptAdjustments
 		? await promptD20RollOptions({
 				typeLabel: "JdS",
 				baseModifier: 0,
 				includeDifficulty: options.includeDifficulty,
 			})
-		: options.adjustments ?? null;
+		: (options.adjustments ?? null);
 	if (options.promptAdjustments && !adjustments) return null;
 	const dc = Number.isFinite(adjustments?.difficulty)
 		? adjustments.difficulty
@@ -57,11 +58,11 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 			titleName,
 			statKey,
 			statLabel,
-				dc,
-				rollBonus: adjustments?.bonus ?? 0,
-				rollMode: adjustments?.mode ?? "normal",
-				autoNatural: options.autoNatural === true,
-			},
+			dc,
+			rollBonus: adjustments?.bonus ?? 0,
+			rollMode: adjustments?.mode ?? "normal",
+			autoNatural: options.autoNatural === true,
+		},
 	);
 
 	return ChatMessage.create({
@@ -80,7 +81,7 @@ export const sendPrivateSavePromptsFromAction = async (
 	if (!actor) return [];
 	const adjustments = options.promptAdjustments
 		? await promptD20RollOptions({ typeLabel: "JdS", baseModifier: 0 })
-		: options.adjustments ?? null;
+		: (options.adjustments ?? null);
 	if (options.promptAdjustments && !adjustments) return [];
 
 	const targets = Array.isArray(options.targets) ? options.targets.filter(Boolean) : [];
@@ -94,9 +95,10 @@ export const sendPrivateSavePromptsFromAction = async (
 	}
 
 	const jds = actionData?.jds ?? {};
-	const statKey = jds.stat ?? "";
+	const statKey = CONFIG.nalfa.save_stats?.[jds.stat] ? jds.stat : "vig";
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, "");
-	const statLabel = statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
+	const statLabel =
+		statName || (statKey && statKey !== "none" ? statKey.toUpperCase() : "");
 	const dc = Number(options.dc ?? jds.dd ?? 0);
 	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
@@ -111,20 +113,23 @@ export const sendPrivateSavePromptsFromAction = async (
 				(statKey ? getStatTotal(targetToken.actor, statKey) : 0),
 		);
 		const targetName =
-			String(targetToken.document?.name ?? targetToken.name ?? "Cible").trim() || "Cible";
+			String(targetToken.document?.name ?? targetToken.name ?? "Cible").trim() ||
+			"Cible";
 		const content = await foundry.applications.handlebars.renderTemplate(
 			"systems/nalfa/templates/chat/roll/prompt-save.hbs",
 			{
 				titleName,
 				statKey,
 				statLabel,
-					dc,
-					rollBonus: adjustments?.bonus ?? 0,
-					rollMode: adjustments?.mode ?? "normal",
-					autoNatural: options.autoNatural === true,
+				dc,
+				rollBonus: adjustments?.bonus ?? 0,
+				rollMode: adjustments?.mode ?? "normal",
+				autoNatural: options.autoNatural === true,
 				targetName,
 				sourceTokenName,
-				targetTokenUuid: String(targetToken.document?.uuid ?? targetToken.uuid ?? "").trim(),
+				targetTokenUuid: String(
+					targetToken.document?.uuid ?? targetToken.uuid ?? "",
+				).trim(),
 				targetActorUuid: String(targetToken.actor?.uuid ?? "").trim(),
 				targetStatValue,
 				sourceTokenUuid,
@@ -140,7 +145,10 @@ export const sendPrivateSavePromptsFromAction = async (
 		const whisper = getWhisperUserIdsForActor(targetToken.actor);
 		const message = await ChatMessage.create({
 			user: game.user.id,
-			speaker: ChatMessage.getSpeaker({ actor, token: options.sourceTokenDocument ?? null }),
+			speaker: ChatMessage.getSpeaker({
+				actor,
+				token: options.sourceTokenDocument ?? null,
+			}),
 			content,
 			whisper,
 			...withActionSheetFlag(options.messageOptions ?? {}, options.chatContext),
@@ -161,14 +169,19 @@ export const rollSavePrompt = async (actor, options = {}) => {
 
 export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}) => {
 	if (!actor) return null;
-	const statName = String(options.statName ?? getLabel(CONFIG.nalfa.stats, statKey, statKey));
+	if (!CONFIG.nalfa.save_stats?.[statKey]) return null;
+	const statName = String(
+		options.statName ?? getLabel(CONFIG.nalfa.stats, statKey, statKey),
+	);
 	const explicitStatValue = Number(options.statValue ?? NaN);
 	const preparedSaveValue = Number(actor.system?.stats?.[statKey]?.save?.value);
 	const statValue = Number.isFinite(explicitStatValue)
 		? explicitStatValue
 		: Number.isFinite(preparedSaveValue)
 			? preparedSaveValue
-			: (statKey ? getStatTotal(actor, statKey) : 0);
+			: statKey
+				? getStatTotal(actor, statKey)
+				: 0;
 	const targetDc = Number(dc ?? 0);
 	const autoFail = doesStateAutoFailSave(actor, statKey);
 	const rollResult = await rollD20WithModifier(statValue, {
@@ -182,8 +195,8 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 	const isSuccess = autoFail
 		? false
 		: autoNatural
-		? (isCrit || (!isFumble && Number(roll.total ?? 0) >= targetDc))
-		: Number(roll.total ?? 0) >= targetDc;
+			? isCrit || (!isFumble && Number(roll.total ?? 0) >= targetDc)
+			: Number(roll.total ?? 0) >= targetDc;
 	const saveSuffix = formatStatSuffix(statKey, statName, statValue, statValue);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const compareSymbol = getCompareSymbol(isSuccess);
@@ -196,19 +209,24 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 		`${saveSuffix}${adjustmentSuffix}`,
 		autoNatural
 			? {
-				isCrit,
-				isFumble,
-				modifier: rollResult.modifier,
-				comparison: `${compareSymbol} DD ${targetDc}`,
-			}
-			: { modifier: rollResult.modifier, comparison: `${compareSymbol} DD ${targetDc}` },
+					isCrit,
+					isFumble,
+					modifier: rollResult.modifier,
+					comparison: `${compareSymbol} DD ${targetDc}`,
+				}
+			: {
+					modifier: rollResult.modifier,
+					comparison: `${compareSymbol} DD ${targetDc}`,
+				},
 	);
 	const naturalTitle = isCrit
-		? (rollResult.rollMode === "disadvantage" ? "20 Naturel !!" : "20 Naturel !")
-		: (rollResult.rollMode === "advantage" ? "1 Naturel ?!" : "1 Naturel...");
-	const titleValue = autoNatural && (isCrit || isFumble)
-		? naturalTitle
-		: roll.total;
+		? rollResult.rollMode === "disadvantage"
+			? "20 Naturel !!"
+			: "20 Naturel !"
+		: rollResult.rollMode === "advantage"
+			? "1 Naturel ?!"
+			: "1 Naturel...";
+	const titleValue = autoNatural && (isCrit || isFumble) ? naturalTitle : roll.total;
 	const messageOptions = withActionSheetFlag(
 		options.messageOptions ?? {},
 		options.chatContext,
@@ -224,20 +242,25 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 		casterTokenName: String(options.versusName ?? "").trim(),
 	});
 
-	await postRollMessage(actor, "save", {
+	await postRollMessage(
 		actor,
-		roll,
-		titleLabel: "JdS",
-		titleName: titleName ?? "",
-		titleValue,
-		formulaText,
-		rollDetail,
-		hasTarget: true,
-		isSuccess,
-		versusName: String(options.versusName ?? "").trim(),
-		isCrit,
-		isFumble,
-	}, messageOptions);
+		"save",
+		{
+			actor,
+			roll,
+			titleLabel: "JdS",
+			titleName: titleName ?? "",
+			titleValue,
+			formulaText,
+			rollDetail,
+			hasTarget: true,
+			isSuccess,
+			versusName: String(options.versusName ?? "").trim(),
+			isCrit,
+			isFumble,
+		},
+		messageOptions,
+	);
 
 	return {
 		type: "save",
@@ -249,6 +272,7 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 
 export const rollStatSave = async (actor, statKey, options = {}) => {
 	if (!actor) return null;
+	if (!CONFIG.nalfa.save_stats?.[statKey]) return null;
 	const statObj = actor.system?.stats?.[statKey] ?? {};
 	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
 	const preparedModifier = Number(statObj.save?.value);

@@ -7,7 +7,6 @@ export {
 export {
 	rollBasicAttackMacro,
 	rollBasicDamageMacro,
-	rollInitiativeMacro,
 	rollSkillMacro,
 	runActionRef,
 } from "./runActionRef.mjs";

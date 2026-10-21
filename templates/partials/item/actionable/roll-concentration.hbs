@@ -4,7 +4,7 @@
   </div>
   <div class="attack-config__fields attack-config__fields--row">
     <select class="stat" name="system.{{actionPath}}concentration.stat">
-      {{selectOptions config.stats_optional selected=actionData.concentration.stat}}
+		{{selectOptions config.save_stats selected=actionData.concentration.stat}}
     </select>
     <span class="attack-config__row-sep">vs DD</span>
     <input
@@ -13,7 +13,7 @@
       value="{{actionData.concentration.dd}}"
       data-dtype="Number"
     />
-    <span class="attack-config__row-sep">+ Stat Physique/Incant</span>
+		<span class="attack-config__row-sep">+ Bonus/malus</span>
     <input
       name="system.{{actionPath}}concentration.enemy_attack_bonus"
       type="number"

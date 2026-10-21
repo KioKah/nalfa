@@ -4,12 +4,7 @@ import {
 	hasEmbeddedActionSource,
 } from "../../actions/embedded.mjs";
 import { ACTION_REF_TYPES } from "../../actions/refs.mjs";
-import {
-	rollAttack,
-	rollDamageSet,
-	rollInitiative,
-	rollSkill,
-} from "../index.mjs";
+import { rollAttack, rollDamageSet, rollSkill } from "../index.mjs";
 import { getActionAvailability, getMacroActor } from "./availability.mjs";
 import { executeActionPrompt } from "./execution.mjs";
 
@@ -188,7 +183,11 @@ export const runActionRef = async (actionRef = {}) => {
 			actionData,
 		});
 		actionData = refreshResult.actionData ?? actionData;
-		const titleName = buildEmbeddedActionTitle({ item, actionData, actionIndex });
+		const titleName = buildEmbeddedActionTitle({
+			item,
+			actionData,
+			actionIndex,
+		});
 		const availability = getActionAvailability({
 			actor,
 			actionRef,
@@ -219,16 +218,10 @@ export const rollSkillMacro = async (skillKey) => {
 	return rollSkill(actor, skillKey);
 };
 
-export const rollInitiativeMacro = async () => {
-	const actor = ensureActor();
-	if (!actor) return null;
-	return rollInitiative(actor);
-};
-
 export const rollBasicAttackMacro = async () => {
 	const actor = ensureActor();
 	if (!actor) return null;
-	return rollAttack(actor, "physical");
+	return rollAttack(actor);
 };
 
 export const rollBasicDamageMacro = async () => {

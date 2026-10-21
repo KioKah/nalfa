@@ -12,11 +12,7 @@ import {
 } from "../core/shared.mjs";
 import { getActorStateProfile } from "../../rules/states.mjs";
 
-export const rollConcentrationFromAction = async (
-	actor,
-	actionData = {},
-	options = {},
-) => {
+export const rollConcentrationFromAction = async (actor, actionData = {}, options = {}) => {
 	if (!actor) return null;
 	const stateProfile = getActorStateProfile(actor);
 	if (stateProfile.blocksAction || stateProfile.blocksConcentration) {
@@ -29,14 +25,20 @@ export const rollConcentrationFromAction = async (
 	);
 
 	const concentration = actionData?.concentration ?? {};
-	const resolvedStatKey = options.statKey ?? concentration.stat ?? "";
+	const requestedStatKey = options.statKey ?? concentration.stat ?? "vig";
+	const resolvedStatKey = CONFIG.nalfa.save_stats?.[requestedStatKey]
+		? requestedStatKey
+		: "vig";
 	const statName = getLabel(CONFIG.nalfa.stats, resolvedStatKey, resolvedStatKey);
 	const attackerStatValue = await promptEnemyAttackBonus(
 		options.enemyAttackBonus ?? concentration.enemy_attack_bonus ?? 0,
 	);
 	if (attackerStatValue === null) return null;
 
-	const actorStatValue = resolvedStatKey ? getStatTotal(actor, resolvedStatKey) : 0;
+	const actorStatValue = Number(
+		actor.system?.stats?.[resolvedStatKey]?.save?.value ??
+			getStatTotal(actor, resolvedStatKey),
+	);
 	const modifier = actorStatValue - Number(attackerStatValue ?? 0);
 	const rollResult = await rollD20WithModifier(modifier, {
 		promptAdjustments: options.promptAdjustments,
@@ -47,13 +49,19 @@ export const rollConcentrationFromAction = async (
 	const targetDc = Number(options.dc ?? concentration.dd ?? 0);
 	const isSuccess = isCrit
 		? true
-		: (isFumble ? false : Number(roll.total ?? 0) >= targetDc);
+		: isFumble
+			? false
+			: Number(roll.total ?? 0) >= targetDc;
 	const titleLabel = "JdF";
 	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const naturalTitle = isCrit
-		? (rollResult.rollMode === "disadvantage" ? "20 Naturel !!" : "20 Naturel !")
-		: (rollResult.rollMode === "advantage" ? "1 Naturel ?!" : "1 Naturel...");
+		? rollResult.rollMode === "disadvantage"
+			? "20 Naturel !!"
+			: "20 Naturel !"
+		: rollResult.rollMode === "advantage"
+			? "1 Naturel ?!"
+			: "1 Naturel...";
 	const titleValue = isCrit || isFumble ? naturalTitle : roll.total;
 	const compareSymbol = getCompareSymbol(isSuccess);
 	const attackerStatNumber = Math.max(0, Number(attackerStatValue ?? 0));
@@ -83,19 +91,24 @@ export const rollConcentrationFromAction = async (
 		rollDetail,
 	};
 
-	await postRollMessage(actor, "save", {
+	await postRollMessage(
 		actor,
-		roll,
-		titleLabel,
-		titleName,
-		titleValue,
-		formulaText,
-		rollDetail,
-		hasTarget: true,
-		isSuccess,
-		isCrit,
-		isFumble,
-	}, messageOptions);
+		"save",
+		{
+			actor,
+			roll,
+			titleLabel,
+			titleName,
+			titleValue,
+			formulaText,
+			rollDetail,
+			hasTarget: true,
+			isSuccess,
+			isCrit,
+			isFumble,
+		},
+		messageOptions,
+	);
 
 	return rollData;
 };

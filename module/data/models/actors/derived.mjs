@@ -79,7 +79,8 @@ const collectActorItemModifiers = (actor, systemData) => {
 			if (delta === null) continue;
 
 			const baseValue =
-				valueMap.get(path) ?? toFiniteNumber(foundry.utils.getProperty(systemData, path));
+				valueMap.get(path) ??
+				toFiniteNumber(foundry.utils.getProperty(systemData, path));
 			if (baseValue === null) continue;
 
 			const nextValue = applyModifierToNumber(mode, baseValue, delta);
@@ -203,7 +204,9 @@ const analyzeActorEquippedWeapons = (actor) => {
 
 	let mainWeaponEntry = null;
 	if (mainOccupants.length > 0) {
-		mainWeaponEntry = mainOccupants.find((entry) => entry.isMainHand && !entry.isTwoHanded);
+		mainWeaponEntry = mainOccupants.find(
+			(entry) => entry.isMainHand && !entry.isTwoHanded,
+		);
 		mainWeaponEntry ??= mainOccupants[0];
 	} else if (offOccupants.length > 0) {
 		mainWeaponEntry = offOccupants[0];
@@ -221,8 +224,12 @@ const analyzeActorEquippedWeapons = (actor) => {
 	const weaponAttributes = mainWeaponSystem.weapon_attributes ?? {};
 	const attributes = Array.isArray(weaponAttributes.list) ? weaponAttributes.list : [];
 	const canUseDex = attributes.includes("Finesse");
-	const mainHandEntry = equippedWeapons.find((entry) => entry.isMainHand && !entry.isTwoHanded);
-	const secondaryHandEntry = equippedWeapons.find((entry) => entry.isOffHand && !entry.isTwoHanded);
+	const mainHandEntry = equippedWeapons.find(
+		(entry) => entry.isMainHand && !entry.isTwoHanded,
+	);
+	const secondaryHandEntry = equippedWeapons.find(
+		(entry) => entry.isOffHand && !entry.isTwoHanded,
+	);
 	const twoHandsEntry = equippedWeapons.find((entry) => entry.isTwoHanded);
 	const daPrimary = twoHandsEntry
 		? getWeaponAttackByUsage(twoHandsEntry.system, "two_hands")
@@ -273,9 +280,16 @@ export const prepareActorDerivedData = (model) => {
 		getNumberAtPath(basePath, 0) * getNumberAtPath(altMultPath, 1) +
 		getNumberAtPath(altPath, 0);
 
+	const charLevel = Math.max(1, Math.trunc(getNumberAtPath("attributes.level", 1)));
+	const progression = {
+		pui: [0, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7],
+		poly: [0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4],
+	};
 	const statValues = {};
 	for (const [stat, statObj] of Object.entries(sys.stats ?? {})) {
-		const total = withBaseAlt(`stats.${stat}.base`, `stats.${stat}.alt`);
+		const progressionValue = progression[stat]?.[charLevel] ?? 0;
+		const total =
+			progressionValue + withBaseAlt(`stats.${stat}.base`, `stats.${stat}.alt`);
 		statObj.value = total;
 		statValues[stat] = total;
 	}
@@ -284,7 +298,7 @@ export const prepareActorDerivedData = (model) => {
 	const weaponState = sys.weapon_state ?? {};
 	weaponState.main_weapon_name = equippedWeapons.mainWeapon?.name ?? "";
 	weaponState.main_weapon_slot = equippedWeapons.mainWeaponSlot;
-	weaponState.main_weapon_can_use_dex = equippedWeapons.canUseDex;
+	weaponState.main_weapon_can_use_dex = false;
 	weaponState.main_weapon_attributes = equippedWeapons.attributes;
 	weaponState.invalid_configuration = equippedWeapons.invalidConfiguration;
 	weaponState.warning = equippedWeapons.warning;
@@ -297,15 +311,26 @@ export const prepareActorDerivedData = (model) => {
 
 	const statBased = ({ path, stat = null, defaultStat = "none" } = {}) => {
 		if (!path) return 0;
-		const statKey = stat ?? foundry.utils.getProperty(sys, `${path}.stat`) ?? defaultStat;
+		const statKey =
+			stat ?? foundry.utils.getProperty(sys, `${path}.stat`) ?? defaultStat;
 		const statValue = statValues[statKey] ?? 0;
 		const statCoef = getNumberAtPath(`${path}.stat_coef`, 1);
 		return statValue * statCoef + withBaseAlt(`${path}.base`, `${path}.alt`);
 	};
 
-	for (const [stat, statObj] of Object.entries(sys.stats ?? {})) {
+	const classSaveProfiles = [...(model.parent?.items ?? [])]
+		.filter((item) => item.type === "Class")
+		.flatMap((item) => item.system?.save_profiles ?? [])
+		.filter((profile) => CONFIG.nalfa?.save_profiles?.[profile]);
+	const saveProfile = classSaveProfiles.includes(sys.save_profile)
+		? sys.save_profile
+		: (classSaveProfiles[0] ?? sys.save_profile);
+	const saveProfileTiers = CONFIG.nalfa?.save_profile_tiers?.[saveProfile] ?? {};
+	for (const stat of ["vig", "agi", "vol"]) {
+		const statObj = sys.stats?.[stat] ?? {};
 		const save = statObj?.save ?? {};
-		save.value = statBased({ path: `stats.${stat}.save`, stat });
+		save.profile = saveProfileTiers[stat] ?? "low";
+		save.value = withBaseAlt(`stats.${stat}.save.base`, `stats.${stat}.save.alt`);
 	}
 
 	for (const [skill, skillObj] of Object.entries(sys.attributes?.skills ?? {})) {
@@ -313,43 +338,20 @@ export const prepareActorDerivedData = (model) => {
 			statBased({ path: `attributes.skills.${skill}` }) + fatigue.skillPenalty;
 	}
 
-	const physicalRollStat = sys.roll_stats?.physical ?? {};
-	const strTotal = statValues.str ?? 0;
-	const dexTotal = statValues.dex ?? 0;
-	const physicalStatTotal = equippedWeapons.canUseDex
-		? Math.max(strTotal, dexTotal)
-		: strTotal;
-	physicalRollStat.default_stat =
-		equippedWeapons.canUseDex && dexTotal >= strTotal ? "dex" : "str";
-	physicalRollStat.value =
-		physicalStatTotal +
-		withBaseAlt("roll_stats.physical.base", "roll_stats.physical.alt");
-
-	for (const [key, rollStat] of Object.entries(sys.roll_stats ?? {})) {
-		if (key === "physical") continue;
-		const statKey =
-			foundry.utils.getProperty(sys, `roll_stats.${key}.stat`) ??
-			foundry.utils.getProperty(sys, `roll_stats.${key}.default_stat`) ??
-			"none";
-		const statValue = statValues[statKey] ?? 0;
-		rollStat.value =
-			statValue + withBaseAlt(`roll_stats.${key}.base`, `roll_stats.${key}.alt`);
-	}
-
 	const defenseTable = {
-		squishy: 8,
-		soft: 9,
-		sturdy: 10,
-		tanky: 11,
+		exposed: 9,
+		standard: 10,
+		protected: 11,
+		bastion: 12,
 	};
-	const profile = sys.profile ?? "none";
 	const defenseObj = sys.attributes?.defense ?? {};
-	const defenseProfile = defenseTable[profile] ?? 0;
+	const defenseProfile = defenseTable[sys.defense_profile] ?? 10;
 	const defenseBase = getNumberAtPath("attributes.defense.base", 0);
 	defenseObj.profile = defenseProfile;
 	defenseObj.used_base = defenseBase;
 	defenseObj.value =
 		defenseProfile +
+		(statValues.poly ?? 0) +
 		defenseBase +
 		getNumberAtPath("attributes.defense.alt", 0) +
 		fatigue.defensePenalty;
@@ -358,9 +360,6 @@ export const prepareActorDerivedData = (model) => {
 	const evasionBase = getNumberAtPath("attributes.evasion.base", 0);
 	evasionObj.used_base = evasionBase;
 	evasionObj.value = evasionBase + getNumberAtPath("attributes.evasion.alt", 0);
-
-	const initiativeObj = sys.attributes?.initiative ?? {};
-	initiativeObj.value = statBased({ path: "attributes.initiative" });
 
 	const reachObj = sys.attributes?.reach ?? {};
 	reachObj.value = withBaseAltMult(
@@ -393,17 +392,14 @@ export const prepareActorDerivedData = (model) => {
 	const deathObj = sys.attributes?.death?.passing_throw ?? {};
 	deathObj.value = statBased({ path: "attributes.death.passing_throw" });
 
-	const charLevel = Math.max(1, Math.trunc(getNumberAtPath("attributes.level", 1)));
-	const maxHealthTable = {
-		none: [0],
-		squishy: [0, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52],
-		soft: [0, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59],
-		sturdy: [0, 10, 16, 21, 26, 31, 36, 41, 46, 51, 56, 61, 66],
-		tanky: [0, 11, 18, 24, 29, 35, 40, 46, 51, 57, 62, 68, 73],
+	const healthProfiles = {
+		fragile: { initial: 11, perLevel: 5 },
+		standard: { initial: 12, perLevel: 6 },
+		robust: { initial: 13, perLevel: 7 },
 	};
 	const healthObj = sys.attributes?.hp ?? {};
-	const profileArray = maxHealthTable[profile] ?? maxHealthTable.none;
-	const profileHealth = profileArray[charLevel] ?? 0;
+	const healthProfile = healthProfiles[sys.health_profile] ?? healthProfiles.standard;
+	const profileHealth = healthProfile.initial + healthProfile.perLevel * (charLevel - 1);
 	const healthBase = getNumberAtPath("attributes.hp.base", 0);
 	healthObj.profile = profileHealth;
 	healthObj.used_base = healthBase;
@@ -412,6 +408,11 @@ export const prepareActorDerivedData = (model) => {
 		profileHealth + healthBase + getNumberAtPath("attributes.hp.alt", 0),
 	);
 	healthObj.max = getFatigueHealthMax(healthObj.uncapped_max, fatigue.level);
+
+	const nalfaMaxTable = [0, 6, 7, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26];
+	const nalfa = sys.nalfa ?? {};
+	nalfa.max = nalfaMaxTable[charLevel] ?? nalfaMaxTable.at(-1);
+	nalfa.value = Math.min(Math.max(0, Number(nalfa.value ?? 0)), nalfa.max);
 
 	for (const [key, actionObj] of Object.entries(sys.actions ?? {})) {
 		if (key === "movement") {

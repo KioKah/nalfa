@@ -17,16 +17,10 @@
     />
     <span class="attack-config__row-sep">+</span>
     <select
-      class="stat-physical"
+      class="stat"
       name="system.{{actionPath}}{{damagePath}}.{{index}}.stat"
     >
-      {{#if isActionModeIncant}}
-        {{selectOptions config.stats_optional_incant selected=damage.stat}}
-      {{else if isActionModePhysical}}
-        {{selectOptions config.stats_optional_physical selected=damage.stat}}
-      {{else}}
-        {{selectOptions config.stats_optional selected=damage.stat}}
-      {{/if}}
+      {{selectOptions config.stats_optional selected=damage.stat}}
     </select>
   </div>
   <div class="attack-config__damage-tail">

@@ -56,38 +56,4 @@
     </span>
   </div>
 
-  <div
-    class="combat-summary__card combat-summary__card--timing
-      combat-summary__card--{{combatSummary.timing.mode}}"
-  >
-    {{#if (eq sysData.ui.valueMode "base")}}
-      <label class="combat-summary__initiative-edit">
-        <span>Initiative</span>
-        <input
-          name="system.attributes.initiative.base"
-          type="number"
-          value="{{sysData.attributes.initiative.base}}"
-          data-dtype="Number"
-        />
-      </label>
-    {{else if (eq sysData.ui.valueMode "alt")}}
-      <label class="combat-summary__initiative-edit">
-        <span>Initiative</span>
-        <input
-          name="system.attributes.initiative.alt"
-          type="number"
-          value="{{sysData.attributes.initiative.alt}}"
-          data-dtype="Number"
-        />
-      </label>
-    {{else}}
-      <span class="combat-summary__timing-label">{{combatSummary.timing.label}}</span>
-      {{#if combatSummary.timing.value}}
-        <strong class="combat-summary__timing-value">{{combatSummary.timing.value}}</strong>
-      {{/if}}
-      {{#if combatSummary.timing.meta}}
-        <span class="combat-summary__timing-meta">{{combatSummary.timing.meta}}</span>
-      {{/if}}
-    {{/if}}
-  </div>
 </section>

@@ -117,7 +117,9 @@ const getDamageFormulaPrefix = (effect, damageTypeKey) => {
 
 const normalizeEffectCoefficient = (damageTypeKey, coefficient, resistanceValue) => {
 	const normalizedKey = String(damageTypeKey ?? "none").trim() || "none";
-	const numericCoefficient = Number.isFinite(Number(coefficient)) ? Number(coefficient) : 1;
+	const numericCoefficient = Number.isFinite(Number(coefficient))
+		? Number(coefficient)
+		: 1;
 	const numericResistanceValue = Math.max(0, Number(resistanceValue ?? 0));
 	if (
 		(normalizedKey === "soin" || normalizedKey === "abso") &&
@@ -186,7 +188,9 @@ const getUsedResistanceValues = (resistance, defaultCoefficient = 1) => ({
 		: (Number.isFinite(Number(resistance?.coef))
 				? Number(resistance.coef)
 				: defaultCoefficient) *
-			(Number.isFinite(Number(resistance?.alt_mult)) ? Number(resistance.alt_mult) : 1),
+			(Number.isFinite(Number(resistance?.alt_mult))
+				? Number(resistance.alt_mult)
+				: 1),
 	value: Number.isFinite(Number(resistance?.used_value))
 		? Number(resistance.used_value)
 		: (Number.isFinite(Number(resistance?.value)) ? Number(resistance.value) : 0) +
@@ -250,7 +254,9 @@ const evaluateDamageEntry = async (actor, config = {}) => {
 	const weaponUsage = String(config.weaponUsage ?? "normal").trim();
 	const weaponAttributes = actor.system?.weapon_state?.main_weapon_attributes ?? [];
 	const isThrownWithoutThrowingAttribute =
-		usesWeaponDamage && weaponUsage === "thrown" && !weaponAttributes.includes("Lancer");
+		usesWeaponDamage &&
+		weaponUsage === "thrown" &&
+		!weaponAttributes.includes("Lancer");
 	const diceOnly = config.diceOnly === true;
 	const baseRollFormula = diceOnly
 		? extractCritBonusFormula(normalizedFormula)
@@ -269,17 +275,9 @@ const evaluateDamageEntry = async (actor, config = {}) => {
 	if (!rollFormula) return null;
 	const shortFormula = toShortHalfMinimumFormula(rollFormula);
 	const includeStat = config.includeStat !== false;
-	const statKey = config.statKey ?? "";
-	const statName =
-		statKey === "physical"
-			? getLabel(CONFIG.nalfa.attack_mode, "physical", "Physique")
-			: getLabel(CONFIG.nalfa.stats, statKey, statKey);
-	const statValue =
-		statKey === "physical"
-			? Number(actor.system?.roll_stats?.physical?.value ?? 0)
-			: statKey
-				? getStatTotal(actor, statKey)
-				: 0;
+	const statKey = config.statKey === "none" ? "none" : "pui";
+	const statName = getLabel(CONFIG.nalfa.stats, statKey, statKey);
+	const statValue = statKey === "none" ? 0 : getStatTotal(actor, statKey);
 	const damageTypeKey = resolveDamageType(config.damageType, actor);
 	const damageTypeLabel = getLabel(
 		CONFIG.nalfa.all_damage_types,
@@ -324,7 +322,8 @@ export const rollDamage = async (actor, config = {}) => {
 	);
 	const attack = actor.system?.attack ?? {};
 	const weapon = actor.system?.weapon ?? {};
-	const titleName = (config.titleName ?? getAttackName(attack, weapon)).trim() || "Attaque";
+	const titleName =
+		(config.titleName ?? getAttackName(attack, weapon)).trim() || "Attaque";
 	const titleLabel = config.titleLabel ?? "JdD";
 	const result = await evaluateDamageEntry(actor, config);
 	if (!result) return null;
@@ -569,7 +568,10 @@ export const summarizeAppliedDamageForToken = (
 				finalTempHp =
 					finalTempHp >= appliedMaxAmount
 						? finalTempHp
-						: Math.max(0, Math.min(finalTempHp + appliedAmount, appliedMaxAmount));
+						: Math.max(
+								0,
+								Math.min(finalTempHp + appliedAmount, appliedMaxAmount),
+							);
 			} else {
 				finalTempHp = Math.max(0, finalTempHp + appliedAmount);
 			}
@@ -620,7 +622,8 @@ export const summarizeAppliedDamageForToken = (
 	}
 
 	return {
-		targetName: String(token?.name ?? token?.document?.name ?? "Cible").trim() || "Cible",
+		targetName:
+			String(token?.name ?? token?.document?.name ?? "Cible").trim() || "Cible",
 		targetActorUuid: String(token?.actor?.uuid ?? "").trim(),
 		previousHp: currentHp,
 		nextHp: resultingHp,
@@ -629,15 +632,17 @@ export const summarizeAppliedDamageForToken = (
 		hpDelta,
 		tempHpDelta,
 		finalTempHp,
-		damageTypes: [...new Set(
-			appliedResults
-				.filter(
-					(result) =>
-						["damage", "piercing"].includes(result.appliedEffectKind) &&
-						Number(result.finalAmount) > 0,
-				)
-				.map((result) => result.damageTypeKey),
-		)],
+		damageTypes: [
+			...new Set(
+				appliedResults
+					.filter(
+						(result) =>
+							["damage", "piercing"].includes(result.appliedEffectKind) &&
+							Number(result.finalAmount) > 0,
+					)
+					.map((result) => result.damageTypeKey),
+			),
+		],
 		summaryParts,
 		isKo: hpDelta < 0 && resultingHp <= 0,
 		isDead: hpDelta < 0 && Number.isFinite(maxHp) && maxHp > 0 && resultingHp <= -maxHp,
@@ -654,12 +659,16 @@ export const postDamageSummaryMessage = async (
 	const damageSummaryRows = rows
 		.map((row) => ({
 			targetActorUuid: String(row?.targetActorUuid ?? "").trim(),
-			previousHp: Number.isFinite(Number(row?.previousHp)) ? Number(row.previousHp) : 0,
+			previousHp: Number.isFinite(Number(row?.previousHp))
+				? Number(row.previousHp)
+				: 0,
 			nextHp: Number.isFinite(Number(row?.nextHp)) ? Number(row.nextHp) : 0,
 			previousTempHp: Number.isFinite(Number(row?.previousTempHp))
 				? Number(row.previousTempHp)
 				: 0,
-			nextTempHp: Number.isFinite(Number(row?.nextTempHp)) ? Number(row.nextTempHp) : 0,
+			nextTempHp: Number.isFinite(Number(row?.nextTempHp))
+				? Number(row.nextTempHp)
+				: 0,
 		}))
 		.filter((row) => row.targetActorUuid);
 

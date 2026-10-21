@@ -60,7 +60,6 @@ export const actionSchemaDefinition = () => {
 	const defaults = createDefaultActionData();
 
 	return {
-		mode: stringField(defaults.mode),
 		weapon_usage: stringField(defaults.weapon_usage),
 		range_type: stringField(defaults.range_type),
 		requires: htmlField(defaults.requires),
@@ -70,7 +69,7 @@ export const actionSchemaDefinition = () => {
 				options: arrayField(
 					schemaField({
 						main: numberField(1),
-						bonus: numberField(0),
+						secondary: numberField(0),
 						reaction: numberField(0),
 						condition: stringField(""),
 					}),
@@ -173,7 +172,9 @@ const embeddedActionSchema = () => {
 };
 
 const defaultEmbeddedActionArrayInitial = () => [
-	createDefaultEmbeddedAction({ shorthand: getDefaultEmbeddedActionShorthand("") }),
+	createDefaultEmbeddedAction({
+		shorthand: getDefaultEmbeddedActionShorthand(""),
+	}),
 ];
 
 export const itemDescriptionSchema = (textInitial = "", loretextInitial = "") => ({
@@ -184,15 +185,15 @@ export const itemDescriptionSchema = (textInitial = "", loretextInitial = "") =>
 });
 
 const actionSyncSchema = () => ({
-		sync: schemaField({
-			id: stringField(""),
-			class_key: stringField(""),
-			level: numberValueField(null),
-			slot: numberValueField(null),
-			upgraded: numberField(0),
-			lineage: stringField(""),
-		}),
-	});
+	sync: schemaField({
+		id: stringField(""),
+		class_key: stringField(""),
+		level: numberValueField(null),
+		slot: numberValueField(null),
+		upgraded: numberField(0),
+		lineage: stringField(""),
+	}),
+});
 
 const itemRaritySchema = () => ({
 	rarity: stringField("unknown"),
@@ -247,12 +248,11 @@ const actionableSchema = () => ({
 const racePointBuySchema = () =>
 	schemaField({
 		stat_advantage: schemaField({
-			str: stringField("choice"),
-			dex: stringField("choice"),
-			int: stringField("choice"),
-			wis: stringField("choice"),
-			cha: stringField("choice"),
-			con: stringField("choice"),
+			pui: stringField("choice"),
+			poly: stringField("choice"),
+			vig: stringField("choice"),
+			agi: stringField("choice"),
+			vol: stringField("choice"),
 		}),
 	});
 
@@ -391,14 +391,13 @@ export const raceItemSchema = (baseSchema) => ({
 	}),
 	life_expectancy: numberField(0),
 	size: stringField("medium"),
-	playable_classes: arrayField(stringField(""), []),
 	racial_traits: arrayField(stringField(""), []),
 	point_buy: racePointBuySchema(),
 });
 
 export const classItemSchema = (baseSchema) => ({
 	...baseSchema,
-	stat_ester: stringField("str"),
+	save_profiles: arrayField(stringField(""), []),
 	modifiers: arrayField(itemModifierSchema(), []),
 	choices: schemaField({
 		bonus_skill_points: schemaField({
@@ -413,7 +412,7 @@ export const classItemSchema = (baseSchema) => ({
 	attributes: schemaField({
 		actions: schemaField({
 			main: numberField(1),
-			bonus: numberField(1),
+			secondary: numberField(1),
 			reaction: numberField(1),
 			concentration: numberField(1),
 			movement: numberField(6),

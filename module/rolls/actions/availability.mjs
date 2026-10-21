@@ -1,7 +1,5 @@
 import { getDefaultEmbeddedActionName } from "../../actions/embedded.mjs";
-import {
-	ITEM_TYPES_WITH_PHYSICAL,
-} from "../../sheets/item/constants.mjs";
+import { ITEM_TYPES_WITH_PHYSICAL } from "../../sheets/item/constants.mjs";
 import {
 	getEquippedSlotValue,
 	isEquippedSlotLocked,
@@ -86,8 +84,7 @@ const getEffectivelyEquippedItemUuids = (actor) => {
 	for (const slotKey of ["main_hand", "off_hand"]) {
 		const occupants = rows
 			.filter(
-				(row) =>
-					row.equippedSlot === slotKey || row.equippedSlot === "two_handed",
+				(row) => row.equippedSlot === slotKey || row.equippedSlot === "two_handed",
 			)
 			.sort((left, right) => compareEquipmentPriority(left, right, slotKey));
 		if (occupants[0]) effective.add(occupants[0].item.uuid);
@@ -147,7 +144,7 @@ export const getActionResourceAvailability = (actor, actionData = {}) => {
 		? actionData.cost.actions.options
 		: [];
 	const options = rawOptions.length ? rawOptions : [{}];
-	const actionKeys = ["main", "bonus", "reaction"];
+	const actionKeys = ["main", "secondary", "reaction"];
 	const usesReaction = options.some((option) => toCostAmount(option?.reaction) > 0);
 	if (stateProfile.blocksAction) reasons.push("Un état empêche d'agir.");
 	if (stateProfile.blocksAttack && actionData?.jdt?.enabled) {
@@ -305,7 +302,8 @@ export const getActionAvailability = ({
 
 	const effectiveEquipment = getEffectivelyEquippedItemUuids(actor);
 	const unavailableItem = [...(actor.items ?? [])].find((item) => {
-		if (!hasInventoryEquipOptions(item) || effectiveEquipment.has(item.uuid)) return false;
+		if (!hasInventoryEquipOptions(item) || effectiveEquipment.has(item.uuid))
+			return false;
 		return (item.system?.actions ?? []).some((actionData, index) => {
 			const name =
 				String(actionData?.name ?? "").trim() ||

@@ -2,18 +2,17 @@ export const nalfa = {};
 
 // Actor data
 nalfa.stats = {
-	str: "FOR",
-	dex: "DEX",
-	int: "INT",
-	wis: "SAG",
-	cha: "CHA",
-	con: "CON",
+	pui: "Pui",
+	poly: "Poly",
+	vig: "Vigueur",
+	agi: "Agilité",
+	vol: "Volonté",
 };
 
-nalfa.attack_mode = {
-	none: "",
-	physical: "Phys.",
-	incant: "Incant.",
+nalfa.save_stats = {
+	vig: "Vigueur",
+	agi: "Agilité",
+	vol: "Volonté",
 };
 
 nalfa.weapon_usages = {
@@ -26,59 +25,64 @@ nalfa.stats_optional = {
 	...nalfa.stats,
 };
 
-nalfa.stats_optional_physical = {
-	physical: "Phys.",
-	...nalfa.stats_optional,
-};
-
-nalfa.stats_optional_incant = {
-	incant: "Incant.",
-	...nalfa.stats_optional,
-};
-
 // "Bonus pour [...]"
 nalfa.stats_conditional = {
-	str: "FOR uniq",
-	dex: "DEX uniq",
-	int: "INT uniq",
-	wis: "SAG uniq",
-	cha: "CHA uniq",
-	con: "CON uniq",
+	pui: "Pui uniq",
+	poly: "Poly uniq",
+	vig: "Vigueur uniq",
+	agi: "Agilité uniq",
+	vol: "Volonté uniq",
 	all: "Toutes les stats",
 };
 
 nalfa.skills = {
 	athlet: "Athlétisme",
-	robust: "Robustesse",
+	acroba: "Acrobaties",
 	adress: "Adresse",
 	discre: "Discrétion",
-	acroba: "Acrobaties",
-	cultur: "Culture",
-	magie: "Magie",
-	nature: "Nature",
-	invest: "Investigation",
+	endura: "Endurance",
 	percep: "Perception",
-	sereni: "Sérénité",
+	analyse: "Analyse",
 	intuit: "Intuition",
+	persua: "Persuasion",
 	intimi: "Intimidation",
 	trompe: "Tromperie",
-	persua: "Persuasion",
-	perfor: "Performance",
-	sante: "Santé",
-	endura: "Endurance",
 };
 
-nalfa.profiles = {
-	none: "Sans Profil",
-	squishy: "Squishy",
-	soft: "Soft",
-	sturdy: "Sturdy",
-	tanky: "Tanky",
+nalfa.health_profiles = {
+	fragile: "Fragile",
+	standard: "Standard",
+	robust: "Robuste",
+};
+
+nalfa.defense_profiles = {
+	exposed: "Exposé",
+	standard: "Standard",
+	protected: "Protégé",
+	bastion: "Bastion",
+};
+
+nalfa.save_profiles = {
+	stoic: "Stoïque",
+	enduring: "Endurant",
+	swift: "Vif",
+	elusive: "Insaisissable",
+	resilient: "Résilient",
+	lucid: "Lucide",
+};
+
+nalfa.save_profile_tiers = {
+	stoic: { vig: "high", agi: "low", vol: "medium" },
+	enduring: { vig: "high", agi: "medium", vol: "low" },
+	swift: { vig: "medium", agi: "high", vol: "low" },
+	elusive: { vig: "low", agi: "high", vol: "medium" },
+	resilient: { vig: "medium", agi: "low", vol: "high" },
+	lucid: { vig: "low", agi: "medium", vol: "high" },
 };
 
 nalfa.actions = {
 	main: "Action principale",
-	bonus: "Action bonus",
+	secondary: "Action secondaire",
 	reaction: "Réaction",
 	concentration: "Concentration",
 	movement: "Déplacement",
@@ -144,7 +148,7 @@ nalfa.weapon_attack_usages = {
 };
 
 nalfa.weapon_attributes = {
-	"Légère": "Légère",
+	Légère: "Légère",
 	Finesse: "Finesse",
 	Lourde: "Lourde",
 	Lancer: "Lancer",
@@ -170,7 +174,7 @@ nalfa.action_units = {
 
 nalfa.action_cost_hover_labels = {
 	main: "Action Principale",
-	bonus: "Action Bonus",
+	secondary: "Action secondaire",
 	reaction: "Action de Réaction",
 	concentration: "Action de Concentration",
 	movement: "Action de Déplacement",
@@ -211,72 +215,56 @@ nalfa.modifier_path_categories = {
 	stats: "Stats",
 	saving_throws: "Sauvegardes",
 	skills: "Compétences",
-	roll_stats: "Jets",
 	actions: "Actions",
 };
 
 nalfa.modifier_base_paths_by_category = {
 	stats: {
-		"stats.str.base": "FOR",
-		"stats.dex.base": "DEX",
-		"stats.int.base": "INT",
-		"stats.wis.base": "SAG",
-		"stats.cha.base": "CHA",
-		"stats.con.base": "CON",
+		"stats.pui.base": "Pui",
+		"stats.poly.base": "Poly",
+		"stats.vig.base": "Vigueur",
+		"stats.agi.base": "Agilité",
+		"stats.vol.base": "Volonté",
 	},
 	saving_throws: {
-		"stats.str.save.base": "FOR",
-		"stats.dex.save.base": "DEX",
-		"stats.int.save.base": "INT",
-		"stats.wis.save.base": "SAG",
-		"stats.cha.save.base": "CHA",
-		"stats.con.save.base": "CON",
+		"stats.vig.save.base": "Vigueur",
+		"stats.agi.save.base": "Agilité",
+		"stats.vol.save.base": "Volonté",
 	},
 	skills: {
 		"attributes.skills.athlet.base": "Athlétisme",
-		"attributes.skills.robust.base": "Robustesse",
+		"attributes.skills.acroba.base": "Acrobaties",
 		"attributes.skills.adress.base": "Adresse",
 		"attributes.skills.discre.base": "Discrétion",
-		"attributes.skills.acroba.base": "Acrobaties",
-		"attributes.skills.cultur.base": "Culture",
-		"attributes.skills.magie.base": "Magie",
-		"attributes.skills.nature.base": "Nature",
-		"attributes.skills.invest.base": "Investigation",
+		"attributes.skills.endura.base": "Endurance",
 		"attributes.skills.percep.base": "Perception",
-		"attributes.skills.sereni.base": "Sérénité",
+		"attributes.skills.analyse.base": "Analyse",
 		"attributes.skills.intuit.base": "Intuition",
+		"attributes.skills.persua.base": "Persuasion",
 		"attributes.skills.intimi.base": "Intimidation",
 		"attributes.skills.trompe.base": "Tromperie",
-		"attributes.skills.persua.base": "Persuasion",
-		"attributes.skills.perfor.base": "Performance",
-		"attributes.skills.sante.base": "Santé",
-		"attributes.skills.endura.base": "Endurance",
-	},
-	roll_stats: {
-		"roll_stats.physical.base": "Physique",
-		"roll_stats.incant.base": "Incantation",
 	},
 	attributes: {
 		"attributes.hp.base": "PV max",
 		"attributes.defense.base": "Défense",
 		"attributes.evasion.base": "Évasion",
-		"attributes.initiative.base": "Initiative",
 		"attributes.reach.base": "Allonge",
 		"attributes.range_coef.base": "Coef. portée",
 		"attributes.death.passing_throw.base": "DD JdMort",
 	},
 	actions: {
 		"actions.main.base": "Principales",
-		"actions.bonus.base": "Bonus",
+		"actions.secondary.base": "Secondaires",
 		"actions.concentration.base": "Concentration",
 		"actions.reaction.base": "Réaction",
 		"actions.movement.base": "Déplacement",
 	},
 };
 
-nalfa.modifier_base_paths = Object.values(
-	nalfa.modifier_base_paths_by_category,
-).reduce((allPaths, groupPaths) => ({ ...allPaths, ...groupPaths }), {});
+nalfa.modifier_base_paths = Object.values(nalfa.modifier_base_paths_by_category).reduce(
+	(allPaths, groupPaths) => ({ ...allPaths, ...groupPaths }),
+	{},
+);
 
 nalfa.range_types = {
 	melee: "Au CàC",

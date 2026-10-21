@@ -6,10 +6,7 @@ import {
 	rollSkill,
 	rollStatSave,
 } from "../rolls/index.mjs";
-import {
-	ACTION_REF_TYPES,
-	HOTBAR_DROP_TYPE_EMBEDDED_ACTION,
-} from "../actions/refs.mjs";
+import { ACTION_REF_TYPES, HOTBAR_DROP_TYPE_EMBEDDED_ACTION } from "../actions/refs.mjs";
 import { getDefaultEmbeddedActionName } from "../actions/embedded.mjs";
 import {
 	executeActionConcentrationPrompt,
@@ -88,8 +85,8 @@ const COMBAT_RESOURCE_META = Object.freeze([
 		iconClass: "fa-light fa-sword",
 	},
 	{
-		key: "bonus",
-		shortLabel: "Bonus",
+		key: "secondary",
+		shortLabel: "Secondaire",
 		iconClass: "fa-light fa-plus",
 	},
 	{
@@ -141,9 +138,7 @@ const INVENTORY_TYPE_LABELS = Object.freeze({
 });
 
 const INVENTORY_EQUIPMENT_SLOT_OPTIONS = Object.freeze(
-	EQUIP_SLOT_OPTIONS.filter(({ key }) =>
-		["main_hand", "off_hand", "body"].includes(key),
-	),
+	EQUIP_SLOT_OPTIONS.filter(({ key }) => ["main_hand", "off_hand", "body"].includes(key)),
 );
 
 const INVENTORY_EQUIPPED_SLOT_KEYS = new Set([
@@ -180,21 +175,18 @@ const makeSelectedOptions = (options, selectedValue) => {
 };
 
 const getActionModeLabel = (actionData = {}) => {
-	const mode = String(actionData?.mode ?? "none").trim() || "none";
-	return (
-		String(CONFIG.nalfa.attack_mode?.[mode] ?? mode).trim() || "Sans mode"
-	);
+	return Number(actionData?.cost?.nalfa?.amount ?? 0) > 0 ? "Sort" : "Action";
 };
 
 const getActionSpellTypeLabel = (actionData = {}) => {
 	const nalfaCategory =
 		String(actionData?.cost?.nalfa?.category ?? "minor").trim() || "minor";
 	const nalfaAmount = Number(actionData?.cost?.nalfa?.amount ?? 0);
-	const mode = String(actionData?.mode ?? "none").trim() || "none";
-	if (mode !== "incant" && !(nalfaAmount > 0)) return "Non-sort";
+	if (!(nalfaAmount > 0)) return "Non-sort";
 	return (
-		String(CONFIG.nalfa.nalfa_cost_categories?.[nalfaCategory] ?? nalfaCategory).trim() ||
-		"Mineur"
+		String(
+			CONFIG.nalfa.nalfa_cost_categories?.[nalfaCategory] ?? nalfaCategory,
+		).trim() || "Mineur"
 	);
 };
 
@@ -203,7 +195,7 @@ const getActionCostLabel = (actionData = {}) => {
 		? actionData.cost.actions.options
 		: [];
 	const option = options.find((entry) => {
-		return [entry?.main, entry?.bonus, entry?.reaction].some(
+		return [entry?.main, entry?.secondary, entry?.reaction].some(
 			(value) => Number(value) > 0,
 		);
 	});
@@ -211,16 +203,14 @@ const getActionCostLabel = (actionData = {}) => {
 
 	const parts = [];
 	if (Number(option.main) > 0) parts.push("Principale");
-	if (Number(option.bonus) > 0) parts.push("Bonus");
+	if (Number(option.secondary) > 0) parts.push("Secondaire");
 	if (Number(option.reaction) > 0) parts.push("Réaction");
 	return parts.join(" + ") || "Principale";
 };
 
-const pluralizeActionCount = (count) =>
-	`${count} action${count > 1 ? "s" : ""}`;
+const pluralizeActionCount = (count) => `${count} action${count > 1 ? "s" : ""}`;
 
-const pluralizeInventoryCount = (count) =>
-	`${count} objet${count > 1 ? "s" : ""}`;
+const pluralizeInventoryCount = (count) => `${count} objet${count > 1 ? "s" : ""}`;
 
 const formatFormulaNumber = (value) => {
 	const number = Number(value);
@@ -228,13 +218,11 @@ const formatFormulaNumber = (value) => {
 	return number >= 0 ? `+${number}` : String(number);
 };
 
-const formatProfileFormula = (sysData, valueObj = {}) => {
+const formatProfileFormula = (profileLabel, valueObj = {}) => {
 	const profileValue = Number(valueObj.profile ?? 0);
 	const baseValue = Number(valueObj.used_base ?? valueObj.base ?? 0);
 	const altValue = Number(valueObj.alt ?? 0);
 	const parts = [];
-	const profileLabel = String(CONFIG.nalfa.profiles?.[sysData.profile] ?? "Sans Profil");
-
 	if (Number.isFinite(profileValue) && profileValue !== 0) {
 		parts.push(profileLabel);
 	}
@@ -258,9 +246,7 @@ const buildCombatResources = (sysData) => {
 		const safeValue = Number.isFinite(value) ? value : 0;
 		const safeMax = Number.isFinite(max) ? Math.max(0, max) : 0;
 		const percent =
-			safeMax > 0
-				? Math.min(100, Math.max(0, (safeValue / safeMax) * 100))
-				: 0;
+			safeMax > 0 ? Math.min(100, Math.max(0, (safeValue / safeMax) * 100)) : 0;
 
 		return {
 			...meta,
@@ -274,7 +260,9 @@ const buildCombatResources = (sysData) => {
 			unit: meta.key === "movement" ? "m" : "",
 			isMovement: meta.key === "movement",
 			valueLabel:
-				meta.key === "movement" ? formatCombatDecimal(safeValue) : String(safeValue),
+				meta.key === "movement"
+					? formatCombatDecimal(safeValue)
+					: String(safeValue),
 			maxLabel:
 				meta.key === "movement" ? formatCombatDecimal(safeMax) : String(safeMax),
 			base: Number(resource.base ?? 0),
@@ -291,54 +279,6 @@ const formatCombatDecimal = (value) => {
 		maximumFractionDigits: 2,
 		useGrouping: false,
 	}).format(number);
-};
-
-const buildActorCombatTiming = (actor) => {
-	const initiative = formatCombatDecimal(actor?.system?.attributes?.initiative?.value);
-	const initiativeState = {
-		mode: "initiative",
-		label: "Initiative",
-		value: initiative,
-		meta: "",
-	};
-	const combat = game.combats?.active ?? null;
-	if (!combat?.started) return initiativeState;
-
-	const actorCombatants = combat.getCombatantsByActor(actor);
-	const rolledIds = new Set(
-		actorCombatants
-			.filter((combatant) => combatant.initiative !== null)
-			.map((combatant) => combatant.id),
-	);
-	if (!rolledIds.size) return initiativeState;
-	if (rolledIds.has(combat.combatant?.id)) {
-		return {
-			mode: "current",
-			label: "À toi",
-			value: "",
-			meta: "Tour en cours",
-		};
-	}
-
-	const currentIndex = Number(combat.turn);
-	const turns = Array.isArray(combat.turns) ? combat.turns : [];
-	if (!Number.isInteger(currentIndex) || currentIndex < 0 || !turns.length) {
-		return initiativeState;
-	}
-
-	const distances = turns.flatMap((combatant, index) => {
-		if (!rolledIds.has(combatant.id)) return [];
-		return [(index - currentIndex + turns.length) % turns.length];
-	});
-	const distance = distances.length ? Math.min(...distances) : null;
-	if (!(distance > 0)) return initiativeState;
-
-	return {
-		mode: "waiting",
-		label: "Joue dans",
-		value: String(distance),
-		meta: `tour${distance > 1 ? "s" : ""}`,
-	};
 };
 
 const getActionRefKey = (actionRef = {}) => {
@@ -358,10 +298,7 @@ const getActorActionRef = (action) => ({
 const buildReserveAction = (actor, action) => {
 	const actionRef = getActorActionRef(action);
 	const actionKey = getActionRefKey(actionRef);
-	const resourceAvailability = getActionResourceAvailability(
-		actor,
-		action.actionData,
-	);
+	const resourceAvailability = getActionResourceAvailability(actor, action.actionData);
 	const availability = getActionAvailability({
 		actor,
 		actionRef,
@@ -399,7 +336,7 @@ const buildCombatHotbar = (actor, actorActions) => {
 		const slot = index + 1;
 		const occupied = Object.hasOwn(hotbar, slot);
 		const macroId = occupied ? String(hotbar[slot] ?? "") : "";
-		const macro = macroId ? game.macros?.get(macroId) ?? null : null;
+		const macro = macroId ? (game.macros?.get(macroId) ?? null) : null;
 		const presentation = getActionMacroPresentation(macro, { actor });
 		const actionKey = getActionRefKey(presentation?.actionRef);
 		const actorAction = actorActionByKey.get(actionKey) ?? null;
@@ -407,7 +344,7 @@ const buildCombatHotbar = (actor, actorActions) => {
 		const available = presentation?.availability?.available ?? true;
 		const unavailableReason = available
 			? ""
-			: presentation?.availability?.reason ?? "Action indisponible.";
+			: (presentation?.availability?.reason ?? "Action indisponible.");
 
 		return {
 			slot,
@@ -427,7 +364,7 @@ const buildCombatHotbar = (actor, actorActions) => {
 					? "Macro introuvable"
 					: unavailableReason
 						? `${macro?.name ?? "Action"}\n${unavailableReason}`
-						: macro?.name ?? "",
+						: (macro?.name ?? ""),
 			resourceKeys:
 				actorAction?.resourceKeys ??
 				presentation?.availability?.resourceKeys?.join(" ") ??
@@ -453,30 +390,21 @@ const buildActionBrowserCountLabel = ({ query, visibleCount, totalCount }) => {
 };
 
 const compareActionLabels = (left = "", right = "") => {
-	return String(left).localeCompare(
-		String(right),
-		game.i18n?.lang ?? undefined,
-		{
-			sensitivity: "base",
-			numeric: true,
-		},
-	);
+	return String(left).localeCompare(String(right), game.i18n?.lang ?? undefined, {
+		sensitivity: "base",
+		numeric: true,
+	});
 };
 
 const compareInventoryLabels = compareActionLabels;
 
 const getInventoryTypeLabel = (item) => {
 	const type = String(item?.type ?? "").trim();
-	return (
-		CONFIG.nalfa.item_types?.[type] ?? INVENTORY_TYPE_LABELS[type] ?? type
-	);
+	return CONFIG.nalfa.item_types?.[type] ?? INVENTORY_TYPE_LABELS[type] ?? type;
 };
 
 const getEquipSlotLabel = (slot) => {
-	return (
-		EQUIP_SLOT_OPTIONS.find((option) => option.key === slot)?.label ??
-		"Non équipé"
-	);
+	return EQUIP_SLOT_OPTIONS.find((option) => option.key === slot)?.label ?? "Non équipé";
 };
 
 const getInventoryEquippedGroupLabel = (row) => {
@@ -488,9 +416,7 @@ const getInventoryEquippedGroupLabel = (row) => {
 
 const hasInventoryEquipOptions = (item) => {
 	const equippable = item.system?.equippable ?? {};
-	return [...INVENTORY_EQUIPPED_SLOT_KEYS].some(
-		(slot) => equippable[slot] === true,
-	);
+	return [...INVENTORY_EQUIPPED_SLOT_KEYS].some((slot) => equippable[slot] === true);
 };
 
 const toInventoryNumber = (value, fallback = 0) => {
@@ -501,10 +427,7 @@ const toInventoryNumber = (value, fallback = 0) => {
 const buildInventoryRow = (item, { isEditable = false } = {}) => {
 	const equippableState = item.system?.equippable ?? {};
 	const equippedState = item.system?.equipped ?? {};
-	const rawEquippedSlot = getEquippedSlotValue(
-		equippedState,
-		equippableState,
-	);
+	const rawEquippedSlot = getEquippedSlotValue(equippedState, equippableState);
 	const equippedSlot = INVENTORY_EQUIPPED_SLOT_KEYS.has(rawEquippedSlot)
 		? rawEquippedSlot
 		: EQUIP_SLOT_NONE;
@@ -519,13 +442,8 @@ const buildInventoryRow = (item, { isEditable = false } = {}) => {
 	const typeLabel = getInventoryTypeLabel(item);
 	const quantity = toInventoryNumber(item.system?.quantity, 1);
 	const weight = toInventoryNumber(item.system?.weight, 0);
-	const totalWeight = toInventoryNumber(
-		item.system?.total_weight,
-		weight * quantity,
-	);
-	const equippedSlotLabel = isEquipped
-		? getEquipSlotLabel(equippedSlot)
-		: "Non équipé";
+	const totalWeight = toInventoryNumber(item.system?.total_weight, weight * quantity);
+	const equippedSlotLabel = isEquipped ? getEquipSlotLabel(equippedSlot) : "Non équipé";
 	const canChangeEquippedSlot =
 		isEditable && item.type !== "Currency" && canEquip && !isEquipLocked;
 	const searchableText = [
@@ -568,28 +486,20 @@ const buildInventoryRow = (item, { isEditable = false } = {}) => {
 
 const compareEquipmentPriority = (left, right, slotKey) => {
 	const leftTwoHanded =
-		INVENTORY_HAND_SLOT_KEYS.has(slotKey) &&
-		left.equippedSlot === "two_handed";
+		INVENTORY_HAND_SLOT_KEYS.has(slotKey) && left.equippedSlot === "two_handed";
 	const rightTwoHanded =
-		INVENTORY_HAND_SLOT_KEYS.has(slotKey) &&
-		right.equippedSlot === "two_handed";
+		INVENTORY_HAND_SLOT_KEYS.has(slotKey) && right.equippedSlot === "two_handed";
 	if (leftTwoHanded !== rightTwoHanded) return leftTwoHanded ? -1 : 1;
 
-	if (left.isEquipLocked !== right.isEquipLocked)
-		return left.isEquipLocked ? -1 : 1;
+	if (left.isEquipLocked !== right.isEquipLocked) return left.isEquipLocked ? -1 : 1;
 
 	const leftTypePriority = INVENTORY_ITEM_TYPE_PRIORITY[left.type] ?? 99;
 	const rightTypePriority = INVENTORY_ITEM_TYPE_PRIORITY[right.type] ?? 99;
-	if (leftTypePriority !== rightTypePriority)
-		return leftTypePriority - rightTypePriority;
+	if (leftTypePriority !== rightTypePriority) return leftTypePriority - rightTypePriority;
 
 	const leftSort = Number(left.item?.sort ?? 0);
 	const rightSort = Number(right.item?.sort ?? 0);
-	if (
-		Number.isFinite(leftSort) &&
-		Number.isFinite(rightSort) &&
-		leftSort !== rightSort
-	) {
+	if (Number.isFinite(leftSort) && Number.isFinite(rightSort) && leftSort !== rightSort) {
 		return leftSort - rightSort;
 	}
 
@@ -610,13 +520,9 @@ const resolveInventoryEquipment = (rows) => {
 	for (const slotKey of ["main_hand", "off_hand"]) {
 		const occupants = rows
 			.filter(
-				(row) =>
-					row.equippedSlot === slotKey ||
-					row.equippedSlot === "two_handed",
+				(row) => row.equippedSlot === slotKey || row.equippedSlot === "two_handed",
 			)
-			.sort((left, right) =>
-				compareEquipmentPriority(left, right, slotKey),
-			);
+			.sort((left, right) => compareEquipmentPriority(left, right, slotKey));
 		if (!occupants.length) continue;
 
 		const winner = occupants[0];
@@ -660,20 +566,13 @@ const buildInventoryEquipmentSlots = (rows) => {
 	return INVENTORY_EQUIPMENT_SLOT_OPTIONS.map((option) => {
 		const occupants = rows.filter((row) => {
 			if (["main_hand", "off_hand"].includes(option.key)) {
-				return (
-					row.equippedSlot === option.key ||
-					row.equippedSlot === "two_handed"
-				);
+				return row.equippedSlot === option.key || row.equippedSlot === "two_handed";
 			}
 
 			return row.equippedSlot === option.key;
 		});
-		const winners = occupants.filter((row) =>
-			row.effectiveSlots.includes(option.key),
-		);
-		const losers = occupants.filter((row) =>
-			row.lostSlots.includes(option.key),
-		);
+		const winners = occupants.filter((row) => row.effectiveSlots.includes(option.key));
+		const losers = occupants.filter((row) => row.lostSlots.includes(option.key));
 		const hasConflict = losers.length > 0;
 
 		return {
@@ -702,13 +601,9 @@ const compareInventoryRows = (sortMode) => (left, right) => {
 	}
 	if (sortMode === "equipped") {
 		return (
-			Number(right.isEffectivelyEquipped) -
-				Number(left.isEffectivelyEquipped) ||
+			Number(right.isEffectivelyEquipped) - Number(left.isEffectivelyEquipped) ||
 			Number(right.isEquipmentLoser) - Number(left.isEquipmentLoser) ||
-			compareInventoryLabels(
-				left.equippedSlotLabel,
-				right.equippedSlotLabel,
-			) ||
+			compareInventoryLabels(left.equippedSlotLabel, right.equippedSlotLabel) ||
 			compareInventoryLabels(left.name, right.name)
 		);
 	}
@@ -720,8 +615,7 @@ const compareInventoryRows = (sortMode) => (left, right) => {
 	}
 	if (sortMode === "quantity") {
 		return (
-			right.quantity - left.quantity ||
-			compareInventoryLabels(left.name, right.name)
+			right.quantity - left.quantity || compareInventoryLabels(left.name, right.name)
 		);
 	}
 	return compareInventoryLabels(left.name, right.name);
@@ -752,9 +646,7 @@ const buildActorInventoryRows = (actor, { isEditable = false } = {}) => {
 const canShowEmbeddedActionsForItem = (item, inventoryRows) => {
 	if (!hasInventoryEquipOptions(item)) return true;
 
-	const inventoryRow = inventoryRows.find(
-		(row) => row.itemUuid === item.uuid,
-	);
+	const inventoryRow = inventoryRows.find((row) => row.itemUuid === item.uuid);
 	return inventoryRow?.isEffectivelyEquipped === true;
 };
 
@@ -788,18 +680,11 @@ const buildActorInventoryBrowser = (inventoryRows, state) => {
 	}));
 
 	if (group !== "none") {
-		groups.sort((left, right) =>
-			compareInventoryLabels(left.label, right.label),
-		);
+		groups.sort((left, right) => compareInventoryLabels(left.label, right.label));
 	}
 
-	const totalWeight = inventoryRows.reduce(
-		(sum, row) => sum + row.totalWeight,
-		0,
-	);
-	const equippedCount = inventoryRows.filter(
-		(row) => row.isEffectivelyEquipped,
-	).length;
+	const totalWeight = inventoryRows.reduce((sum, row) => sum + row.totalWeight, 0);
+	const equippedCount = inventoryRows.filter((row) => row.isEffectivelyEquipped).length;
 	const equipmentSlots = buildInventoryEquipmentSlots(inventoryRows);
 
 	return {
@@ -807,10 +692,7 @@ const buildActorInventoryBrowser = (inventoryRows, state) => {
 		sort,
 		group,
 		sortOptions: makeSelectedOptions(INVENTORY_BROWSER_SORT_OPTIONS, sort),
-		groupOptions: makeSelectedOptions(
-			INVENTORY_BROWSER_GROUP_OPTIONS,
-			group,
-		),
+		groupOptions: makeSelectedOptions(INVENTORY_BROWSER_GROUP_OPTIONS, group),
 		groups,
 		equipmentSlots,
 		hasEquipmentConflicts: equipmentSlots.some((slot) => slot.hasConflict),
@@ -829,15 +711,8 @@ const buildActorInventoryBrowser = (inventoryRows, state) => {
 	};
 };
 
-const buildActorActionBanner = ({
-	item,
-	actionData,
-	actionIndex,
-	refType,
-	kind,
-}) => {
-	const rowIndex =
-		Number.isInteger(actionIndex) && actionIndex >= 0 ? actionIndex : 0;
+const buildActorActionBanner = ({ item, actionData, actionIndex, refType, kind }) => {
+	const rowIndex = Number.isInteger(actionIndex) && actionIndex >= 0 ? actionIndex : 0;
 	const embeddedAction = buildEmbeddedActionRow({
 		item,
 		actionData,
@@ -874,9 +749,9 @@ const buildActorActionBanner = ({
 		costLabel,
 		spellTypeLabel,
 		searchText: normalizeActionSearch(searchableText),
-			embeddedAction: {
-				...embeddedAction,
-				refType,
+		embeddedAction: {
+			...embeddedAction,
+			refType,
 			itemUuid: item.uuid,
 			actionIndex: Number.isInteger(actionIndex) ? actionIndex : -1,
 			actionShorthand: String(actionData?.shorthand ?? "").trim(),
@@ -905,16 +780,11 @@ const buildActorActionBanners = (
 			continue;
 		}
 
-		if (
-			!includeUnequipped &&
-			!canShowEmbeddedActionsForItem(item, inventoryRows)
-		) {
+		if (!includeUnequipped && !canShowEmbeddedActionsForItem(item, inventoryRows)) {
 			continue;
 		}
 
-		const actions = Array.isArray(item.system?.actions)
-			? item.system.actions
-			: [];
+		const actions = Array.isArray(item.system?.actions) ? item.system.actions : [];
 		for (let index = 0; index < actions.length; index += 1) {
 			banners.push(
 				buildActorActionBanner({
@@ -976,9 +846,7 @@ const getActorActionGroupLabel = (action, groupMode) => {
 
 const buildActorActionBrowser = (actorActions, state) => {
 	const query = normalizeActionSearch(state.query);
-	const sort = ACTION_BROWSER_SORT_OPTIONS.some(
-		(option) => option.value === state.sort,
-	)
+	const sort = ACTION_BROWSER_SORT_OPTIONS.some((option) => option.value === state.sort)
 		? state.sort
 		: ACTION_BROWSER_DEFAULTS.sort;
 	const group = ACTION_BROWSER_GROUP_OPTIONS.some(
@@ -1004,9 +872,7 @@ const buildActorActionBrowser = (actorActions, state) => {
 	}));
 
 	if (group !== "none") {
-		groups.sort((left, right) =>
-			compareActionLabels(left.label, right.label),
-		);
+		groups.sort((left, right) => compareActionLabels(left.label, right.label));
 	}
 
 	return {
@@ -1124,25 +990,20 @@ const waitForRestSelection = () => {
 						const duration = currentDialog.element?.querySelector(
 							"[name='rest-duration']",
 						)?.value;
-						const quality = currentDialog.element?.querySelector(
-							"[name='rest-quality']",
-						)?.value;
+						const quality =
+							currentDialog.element?.querySelector(
+								"[name='rest-quality']",
+							)?.value;
 						settle(getRestResult(duration, quality));
 					},
 				},
 			],
 		});
 		const updatePreview = () => {
-			const duration = dialog.element?.querySelector(
-				"[name='rest-duration']",
-			)?.value;
-			const quality = dialog.element?.querySelector(
-				"[name='rest-quality']",
-			)?.value;
+			const duration = dialog.element?.querySelector("[name='rest-duration']")?.value;
+			const quality = dialog.element?.querySelector("[name='rest-quality']")?.value;
 			const result = getRestResult(duration, quality);
-			const qualityLabel = dialog.element?.querySelector(
-				"[data-rest-quality-label]",
-			);
+			const qualityLabel = dialog.element?.querySelector("[data-rest-quality-label]");
 			const percentLabel = dialog.element?.querySelector("[data-rest-percent]");
 			const fatigueLabel = dialog.element?.querySelector("[data-rest-fatigue]");
 			if (qualityLabel) qualityLabel.textContent = result.qualityLabel;
@@ -1175,7 +1036,7 @@ const waitForStateSelection = (stateOptions) => {
 		.map(
 			({ id, name, category, intensity }) =>
 				`<option value="${foundry.utils.escapeHTML(id)}" data-intensity="${intensity}">` +
-					`${foundry.utils.escapeHTML(category)} · ${foundry.utils.escapeHTML(name)}</option>`,
+				`${foundry.utils.escapeHTML(category)} · ${foundry.utils.escapeHTML(name)}</option>`,
 		)
 		.join("");
 
@@ -1237,7 +1098,9 @@ const waitForStateSelection = (stateOptions) => {
 		});
 		dialog.addEventListener("render", () => {
 			const select = dialog.element?.querySelector("[name='state-id']");
-			const intensityRow = dialog.element?.querySelector("[data-state-intensity-row]");
+			const intensityRow = dialog.element?.querySelector(
+				"[data-state-intensity-row]",
+			);
 			const updateIntensityVisibility = () => {
 				const option = select?.selectedOptions?.[0];
 				if (intensityRow) {
@@ -1267,9 +1130,7 @@ const buildUnequippedItemData = (item, { keepId = true } = {}) => {
 	return itemData;
 };
 
-export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
-	ActorSheetV2,
-) {
+export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 	/** ─── DEFAULT OPTIONS ───────────────────────────────────────────────────────── */
 	static DEFAULT_OPTIONS = {
 		classes: ["nalfa", "sheet", "actor-sheet"],
@@ -1356,9 +1217,12 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			1,
 			Number(sysData.attributes?.hp?.uncapped_max ?? hpMax),
 		);
-		const hpFormula = formatProfileFormula(sysData, sysData.attributes?.hp);
+		const hpFormula = formatProfileFormula(
+			CONFIG.nalfa.health_profiles?.[sysData.health_profile] ?? "Standard",
+			sysData.attributes?.hp,
+		);
 		const defenseFormula = formatProfileFormula(
-			sysData,
+			`${CONFIG.nalfa.defense_profiles?.[sysData.defense_profile] ?? "Standard"} + Poly (${sysData.stats?.poly?.value ?? 0})`,
 			sysData.attributes?.defense,
 		);
 		const fatigueEffects = getFatigueEffects(
@@ -1398,9 +1262,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			};
 		}
 
-		const resistanceRows = Object.entries(
-			CONFIG.nalfa.base_standard_damage_types,
-		)
+		const resistanceRows = Object.entries(CONFIG.nalfa.base_standard_damage_types)
 			.filter(([key]) => key !== "none")
 			.map(([key, label]) => {
 				const resistance = sysData.attributes?.resistances?.[key] ?? {};
@@ -1466,7 +1328,6 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 			},
 			defense: sysData.attributes?.defense?.value ?? 0,
 			evasion: sysData.attributes?.evasion?.value ?? 0,
-			timing: buildActorCombatTiming(this.actor),
 		};
 		const combatHotbar = buildCombatHotbar(this.actor, allActorActions);
 		const stateRows = buildActorStateRows(this.actor);
@@ -1567,9 +1428,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 
 		const hp = this.actor.system.attributes?.hp ?? {};
 		const nalfa = this.actor.system.nalfa ?? {};
-		const fatigue = getFatigueEffects(
-			this.actor.system.attributes?.exhaustion,
-		).level;
+		const fatigue = getFatigueEffects(this.actor.system.attributes?.exhaustion).level;
 		const hpValue = Number(hp.value ?? 0);
 		const hpUncappedMax = Math.max(1, Number(hp.uncapped_max ?? hp.max ?? 0));
 		const nalfaValue = Number(nalfa.value ?? 0);
@@ -1643,7 +1502,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 
 		const sourceActor = item.parent instanceof Actor ? item.parent : null;
 		if (sourceActor && !sourceActor.isOwner) {
-			ui.notifications.warn("Vous ne pouvez pas retirer cet objet de son propriétaire.");
+			ui.notifications.warn(
+				"Vous ne pouvez pas retirer cet objet de son propriétaire.",
+			);
 			return null;
 		}
 
@@ -1708,15 +1569,10 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action='use-embedded-action']")
 			.forEach((element) =>
-				element.addEventListener(
-					"click",
-					this._onUseActorAction.bind(this),
-				),
+				element.addEventListener("click", this._onUseActorAction.bind(this)),
 			);
 		this.element
-			?.querySelectorAll(
-				"[data-action='use-embedded-action-concentration']",
-			)
+			?.querySelectorAll("[data-action='use-embedded-action-concentration']")
 			.forEach((element) =>
 				element.addEventListener(
 					"click",
@@ -1726,10 +1582,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action='open-embedded-action-source']")
 			.forEach((element) =>
-				element.addEventListener(
-					"click",
-					this._onOpenActorActionItem.bind(this),
-				),
+				element.addEventListener("click", this._onOpenActorActionItem.bind(this)),
 			);
 		this.element
 			?.querySelectorAll("[data-draggable='embedded-action']")
@@ -1750,13 +1603,9 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action-browser-control]")
 			.forEach((element) => {
-				element.addEventListener(
-					"input",
-					this._onActionBrowserControl.bind(this),
-					{
-						capture: true,
-					},
-				);
+				element.addEventListener("input", this._onActionBrowserControl.bind(this), {
+					capture: true,
+				});
 				element.addEventListener(
 					"change",
 					this._onActionBrowserControl.bind(this),
@@ -1786,10 +1635,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action='open-inventory-item']")
 			.forEach((element) =>
-				element.addEventListener(
-					"click",
-					this._onOpenInventoryItem.bind(this),
-				),
+				element.addEventListener("click", this._onOpenInventoryItem.bind(this)),
 			);
 		this.element
 			?.querySelectorAll("[data-action='change-inventory-equipped-slot']")
@@ -1802,10 +1648,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action='roll-stat-save']")
 			.forEach((element) =>
-				element.addEventListener(
-					"click",
-					this._onRollStatSave.bind(this),
-				),
+				element.addEventListener("click", this._onRollStatSave.bind(this)),
 			);
 		this.element
 			?.querySelectorAll("[data-action='roll-skill']")
@@ -1830,18 +1673,12 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action-resource-range]")
 			.forEach((element) =>
-				element.addEventListener(
-					"input",
-					this._onActionResourceInput.bind(this),
-				),
+				element.addEventListener("input", this._onActionResourceInput.bind(this)),
 			);
 		this.element
 			?.querySelectorAll("[data-combat-resource-adjust]")
 			.forEach((element) => {
-				element.addEventListener(
-					"click",
-					this._onCombatResourceAdjust.bind(this),
-				);
+				element.addEventListener("click", this._onCombatResourceAdjust.bind(this));
 				element.addEventListener(
 					"contextmenu",
 					this._onCombatResourceAdjust.bind(this),
@@ -1850,25 +1687,15 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		this.element
 			?.querySelectorAll("[data-action='focus-combat-action']")
 			.forEach((element) => {
-				element.addEventListener(
-					"click",
-					this._onFocusCombatAction.bind(this),
-				);
+				element.addEventListener("click", this._onFocusCombatAction.bind(this));
 			});
-		this.element
-			?.querySelectorAll("[data-combat-grid-drag]")
-			.forEach((element) => {
-				element.addEventListener(
-					"dragstart",
-					this._onCombatActionDragStart.bind(this),
-				);
-			});
-		this.element
-			?.querySelectorAll("[data-hotbar-slot]")
-			.forEach((element) => {
-				element.addEventListener("dragover", this._onCombatActionDragOver.bind(this));
-				element.addEventListener("drop", this._onCombatActionDrop.bind(this));
-			});
+		this.element?.querySelectorAll("[data-combat-grid-drag]").forEach((element) => {
+			element.addEventListener("dragstart", this._onCombatActionDragStart.bind(this));
+		});
+		this.element?.querySelectorAll("[data-hotbar-slot]").forEach((element) => {
+			element.addEventListener("dragover", this._onCombatActionDragOver.bind(this));
+			element.addEventListener("drop", this._onCombatActionDrop.bind(this));
+		});
 		this._applyCombatActionFocus();
 		this._restoreActionBrowserFocus();
 		this._restoreInventoryBrowserFocus();
@@ -1889,9 +1716,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		const valueLabel = item.querySelector("[data-action-resource-count]");
 		if (valueLabel) {
 			valueLabel.textContent =
-				resourceKey === "movement"
-					? formatCombatDecimal(range.value)
-					: range.value;
+				resourceKey === "movement" ? formatCombatDecimal(range.value) : range.value;
 		}
 
 		const max = Number(range.max);
@@ -1934,27 +1759,23 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 	_applyCombatActionFocus() {
 		const focusedKey = String(this._focusedCombatActionKey ?? "");
 		let resourceKeys = new Set();
-		this.element
-			?.querySelectorAll("[data-combat-action-key]")
-			.forEach((element) => {
-				const isFocused = element.dataset.combatActionKey === focusedKey;
-				element.classList.toggle("combat-action-grid__action--focused", isFocused);
-				if (isFocused) {
-					resourceKeys = new Set(
-						String(element.dataset.resourceKeys ?? "")
-							.split(/\s+/)
-							.filter(Boolean),
-					);
-				}
-			});
-		this.element
-			?.querySelectorAll("[data-combat-resource-key]")
-			.forEach((element) => {
-				element.classList.toggle(
-					"combat-resource--focused-cost",
-					resourceKeys.has(element.dataset.combatResourceKey),
+		this.element?.querySelectorAll("[data-combat-action-key]").forEach((element) => {
+			const isFocused = element.dataset.combatActionKey === focusedKey;
+			element.classList.toggle("combat-action-grid__action--focused", isFocused);
+			if (isFocused) {
+				resourceKeys = new Set(
+					String(element.dataset.resourceKeys ?? "")
+						.split(/\s+/)
+						.filter(Boolean),
 				);
-			});
+			}
+		});
+		this.element?.querySelectorAll("[data-combat-resource-key]").forEach((element) => {
+			element.classList.toggle(
+				"combat-resource--focused-cost",
+				resourceKeys.has(element.dataset.combatResourceKey),
+			);
+		});
 	}
 
 	_onCombatActionDragStart(event) {
@@ -2051,16 +1872,14 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 
 	async _onRollBasicAttack(event) {
 		event.preventDefault();
-		return rollAttack(this.actor, "physical", { promptAdjustments: event.altKey });
+		return rollAttack(this.actor, { promptAdjustments: event.altKey });
 	}
 
 	_onActionBrowserControl(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		const field = String(
-			event.currentTarget?.dataset?.actionBrowserField ?? "",
-		).trim();
+		const field = String(event.currentTarget?.dataset?.actionBrowserField ?? "").trim();
 		if (!field) return;
 
 		this._actionBrowserState = {
@@ -2112,9 +1931,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 
 	async _onOpenInventoryItem(event) {
 		event.preventDefault();
-		const itemUuid = String(
-			event.currentTarget?.dataset?.itemUuid ?? "",
-		).trim();
+		const itemUuid = String(event.currentTarget?.dataset?.itemUuid ?? "").trim();
 		if (!itemUuid) return;
 
 		const item = await fromUuid(itemUuid);
@@ -2152,26 +1969,18 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 		}
 
 		if (isEquippedSlotLocked(item.system)) {
-			ui.notifications.warn(
-				"Cet objet maudit est verrouillé tant qu'il est équipé.",
-			);
+			ui.notifications.warn("Cet objet maudit est verrouillé tant qu'il est équipé.");
 			select.value = currentSlot;
 			return;
 		}
 
 		const selectedSlot = select.value;
-		if (
-			selectedSlot !== EQUIP_SLOT_NONE &&
-			!EQUIP_SLOT_KEYS.has(selectedSlot)
-		) {
+		if (selectedSlot !== EQUIP_SLOT_NONE && !EQUIP_SLOT_KEYS.has(selectedSlot)) {
 			select.value = currentSlot;
 			return;
 		}
 
-		if (
-			selectedSlot !== EQUIP_SLOT_NONE &&
-			!item.system?.equippable?.[selectedSlot]
-		) {
+		if (selectedSlot !== EQUIP_SLOT_NONE && !item.system?.equippable?.[selectedSlot]) {
 			ui.notifications.warn("Cet emplacement n'est pas autorisé.");
 			select.value = currentSlot;
 			return;
@@ -2294,9 +2103,7 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(
 
 	async _onOpenActorActionItem(event) {
 		event.preventDefault();
-		const itemUuid = String(
-			event.currentTarget?.dataset?.itemUuid ?? "",
-		).trim();
+		const itemUuid = String(event.currentTarget?.dataset?.itemUuid ?? "").trim();
 		if (!itemUuid) return;
 
 		const item = await fromUuid(itemUuid);

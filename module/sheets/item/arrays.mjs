@@ -3,7 +3,7 @@ export const buildDefaultArrayEntry = (entryType) => {
 		case "action-resource-option":
 			return {
 				main: 1,
-				bonus: 0,
+				secondary: 0,
 				reaction: 0,
 				condition: "",
 			};
@@ -11,7 +11,7 @@ export const buildDefaultArrayEntry = (entryType) => {
 			return {
 				formula: "",
 				type: "none",
-				stat: "none",
+				stat: "pui",
 			};
 		case "denomination":
 			return {
@@ -30,19 +30,25 @@ export const buildDefaultArrayEntry = (entryType) => {
 				mode: "add",
 				value: 0,
 			};
+		case "save-profile":
+			return "stoic";
 		default:
 			return "";
 	}
 };
 
 export const addArrayEntry = async (item, path, entryType = "string") => {
-	const array = foundry.utils.deepClone(foundry.utils.getProperty(item.system, path) ?? []);
+	const array = foundry.utils.deepClone(
+		foundry.utils.getProperty(item.system, path) ?? [],
+	);
 	array.push(buildDefaultArrayEntry(entryType));
 	await item.update({ [`system.${path}`]: array });
 };
 
 export const removeArrayEntry = async (item, path, index, minimum = 0) => {
-	const array = foundry.utils.deepClone(foundry.utils.getProperty(item.system, path) ?? []);
+	const array = foundry.utils.deepClone(
+		foundry.utils.getProperty(item.system, path) ?? [],
+	);
 	if (array.length <= minimum) return;
 
 	array.splice(index, 1);
