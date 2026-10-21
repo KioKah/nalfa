@@ -414,8 +414,10 @@ const buildActionCdSummary = (actionData) => {
 	if (unit === "none") return "";
 
 	const amount = toFiniteNumber(cooldown.amount, 0);
+	const remaining = toFiniteNumber(cooldown.remaining, 0);
 	const unitShort = getCooldownUnitShort(unit);
 	if (!unitShort) return "";
+	if (remaining > 0) return `CD ${remaining}${unitShort} restant`;
 	if (amount > 0) return `CD ${amount}${unitShort}`;
 	return `CD ${unitShort}`;
 };

@@ -24,9 +24,9 @@ const resolveActorFromUuid = async (actorUuid) => {
 	return actor instanceof Actor ? actor : null;
 };
 
-const resolveActionActor = async (actorUuid) => {
-	const activeActor = getMacroActor();
-	if (activeActor) return activeActor;
+const resolveActionActor = async (actorUuid, sourceItem = null) => {
+	const parentActor = sourceItem?.parent instanceof Actor ? sourceItem.parent : null;
+	if (parentActor) return parentActor;
 
 	const linkedActor = await resolveActorFromUuid(actorUuid);
 	if (linkedActor) return linkedActor;
@@ -132,7 +132,7 @@ export const runActionRef = async (actionRef = {}) => {
 			return null;
 		}
 
-		const actor = await resolveActionActor(actionRef.actorUuid);
+		const actor = await resolveActionActor(actionRef.actorUuid, item);
 		if (!actor) return null;
 
 		const availability = getActionAvailability({
@@ -169,9 +169,7 @@ export const runActionRef = async (actionRef = {}) => {
 			return null;
 		}
 
-		const linkedActor = await resolveActorFromUuid(actionRef.actorUuid);
-		const parentActor = item.parent instanceof Actor ? item.parent : null;
-		const actor = getMacroActor() ?? linkedActor ?? parentActor;
+		const actor = await resolveActionActor(actionRef.actorUuid, item);
 		if (!actor) {
 			ui.notifications.warn("Aucun acteur sélectionné.");
 			return null;

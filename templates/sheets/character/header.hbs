@@ -15,4 +15,13 @@
     <span>Niveau</span>
     <input name="system.attributes.level" type="number" value="{{sysData.attributes.level}}" placeholder="Niv."/>
   </div>
+
+  {{#if sysData.actions.concentration.active.name}}
+    <div class="sheet-secondary-info">
+      <span>Concentration : {{sysData.actions.concentration.active.name}}</span>
+      {{#if isEditable}}
+        <button type="button" data-action="stop-concentration">Interrompre</button>
+      {{/if}}
+    </div>
+  {{/if}}
 </header>

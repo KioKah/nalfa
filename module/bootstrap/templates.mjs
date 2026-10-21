@@ -58,6 +58,7 @@ const TEMPLATE_PATHS = [
 	"systems/nalfa/templates/partials/item/specific/weapon-attribute.hbs",
 	"systems/nalfa/templates/chat/roll/skill.hbs",
 	"systems/nalfa/templates/chat/roll/attack.hbs",
+	"systems/nalfa/templates/chat/roll/action-execution.hbs",
 	"systems/nalfa/templates/chat/roll/damage.hbs",
 	"systems/nalfa/templates/chat/roll/damage-grouped.hbs",
 	"systems/nalfa/templates/chat/roll/damage-summary.hbs",

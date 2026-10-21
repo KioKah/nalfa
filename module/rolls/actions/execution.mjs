@@ -17,6 +17,8 @@ import {
 	executeActionSavePromptRoll,
 } from "./targeting/index.mjs";
 import { getActorStateProfile } from "../../rules/states.mjs";
+import { consumeActionResources, startConcentration } from "../../actions/turnResources.mjs";
+import { withActionSheetFlag } from "../core/shared.mjs";
 
 const toCostAmount = (value) => {
 	const amount = Number(value ?? 0);
@@ -29,14 +31,6 @@ const hasNalfaOverload = (actionData) => {
 	return toCostAmount(overload.amount) > 0 || String(overload.effect ?? "").trim().length > 0;
 };
 
-const getNalfaCost = (actionData, { useOverload = false } = {}) => {
-	const baseAmount = toCostAmount(actionData?.cost?.nalfa?.amount);
-	const overload = actionData?.cost?.nalfa?.overload ?? {};
-	const overloadAmount =
-		useOverload && overload.enabled === true ? toCostAmount(overload.amount) : 0;
-	return baseAmount + overloadAmount;
-};
-
 const requiresReactionCost = (actionData) => {
 	const options = Array.isArray(actionData?.cost?.actions?.options)
 		? actionData.cost.actions.options
@@ -45,22 +39,6 @@ const requiresReactionCost = (actionData) => {
 		options.length > 0 &&
 		options.every((option) => Number(option?.reaction ?? 0) > 0)
 	);
-};
-
-const consumeNalfaCost = async ({ actor, actionData, useOverload = false } = {}) => {
-	const requiredNalfa = getNalfaCost(actionData, { useOverload });
-	if (!(requiredNalfa > 0)) return true;
-
-	const availableNalfa = Number(actor?.system?.nalfa?.value ?? 0);
-	if (!Number.isFinite(availableNalfa) || availableNalfa < requiredNalfa) {
-		ui.notifications.warn(
-			`Nalfa insuffisant : ${Number.isFinite(availableNalfa) ? availableNalfa : 0}/${requiredNalfa}.`,
-		);
-		return false;
-	}
-
-	await actor.update({ "system.nalfa.value": availableNalfa - requiredNalfa });
-	return true;
 };
 
 const getUseOverloadValue = (dialog) => {
@@ -103,6 +81,41 @@ const renderActionExecutionContent = async ({
 		titleName,
 	});
 	return `${actionHtml}${renderNalfaOverloadContent(actionData)}`;
+};
+
+const postActionExecutionCard = async ({
+	actor,
+	titleName,
+	receipt,
+	concentrationReplaced = "",
+	chatContext,
+} = {}) => {
+	const actionLabels = {
+		main: "Action principale",
+		secondary: "Action secondaire",
+		reaction: "Reaction",
+		interaction: "Interaction simple",
+	};
+	const costs = Object.entries(receipt?.option ?? {})
+		.filter(([key, value]) => actionLabels[key] && Number(value) > 0)
+		.map(([key, value]) => ({ label: `${actionLabels[key]} x${value}` }));
+	if (Number(receipt?.movement) > 0) costs.push({ label: `Deplacement ${receipt.movement} m` });
+	if (Number(receipt?.nalfa) > 0) costs.push({ label: `Nalfa ${receipt.nalfa}` });
+	if (receipt?.uses) costs.push({ label: "1 utilisation" });
+	if (Number(receipt?.cooldown) > 0 && receipt.cooldownUnit !== "none") {
+		costs.push({ label: `Recharge ${receipt.cooldown} ${receipt.cooldownUnit}` });
+	}
+	const concentrationName = concentrationReplaced === null ? "" : titleName;
+	const content = await foundry.applications.handlebars.renderTemplate(
+		"systems/nalfa/templates/chat/roll/action-execution.hbs",
+		{ titleName, costs, concentrationName, concentrationReplaced },
+	);
+	return ChatMessage.create({
+		user: game.user.id,
+		speaker: ChatMessage.getSpeaker({ actor }),
+		content,
+		...withActionSheetFlag({}, chatContext),
+	});
 };
 
 const buildActionRollChoices = ({
@@ -274,8 +287,23 @@ export const executeActionPrompt = async ({
 		!forcePrompt &&
 		!String(actionAvailabilityWarning ?? "").trim()
 	) {
-		const canPayNalfa = await consumeNalfaCost({ actor, actionData });
-		if (!canPayNalfa) return null;
+		const receipt = await consumeActionResources({
+			actor,
+			actionData,
+			sourceItem,
+			actionIndex,
+		});
+		if (!receipt) return null;
+		const concentrationReplaced = actionData?.concentration?.enabled
+			? await startConcentration({ actor, actionData, sourceItem, actionIndex, titleName: resolvedTitle })
+			: null;
+		await postActionExecutionCard({
+			actor,
+			titleName: resolvedTitle,
+			receipt,
+			concentrationReplaced,
+			chatContext,
+		});
 		return choices[0].run();
 	}
 
@@ -328,12 +356,24 @@ export const executeActionPrompt = async ({
 	const selectedChoice = selectedExecution?.choice;
 	if (!selectedChoice) return null;
 
-	const canPayNalfa = await consumeNalfaCost({
+	const receipt = await consumeActionResources({
 		actor,
 		actionData,
+		sourceItem,
+		actionIndex,
 		useOverload: selectedExecution.useOverload === true,
 	});
-	if (!canPayNalfa) return null;
+	if (!receipt) return null;
+	const concentrationReplaced = actionData?.concentration?.enabled
+		? await startConcentration({ actor, actionData, sourceItem, actionIndex, titleName: resolvedTitle })
+		: null;
+	await postActionExecutionCard({
+		actor,
+		titleName: resolvedTitle,
+		receipt,
+		concentrationReplaced,
+		chatContext,
+	});
 
 	return selectedChoice.run({
 		promptAdjustments: selectedExecution.promptAdjustments,

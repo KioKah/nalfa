@@ -100,7 +100,19 @@ export const baseAttributesSchema = () => ({
 const baseActionsSchema = () => ({
 	main: actionResourceSchema(1),
 	secondary: actionResourceSchema(1),
-	concentration: actionResourceSchema(1),
+	concentration: schemaField({
+		value: numberField(0),
+		max: numberValueField(null),
+		base: numberField(1),
+		alt: numberField(0),
+		active: schemaField({
+			name: stringField(""),
+			stat: stringField("vig"),
+			dd: numberField(0),
+			source_item_uuid: stringField(""),
+			action_index: numberField(-1),
+		}),
+	}),
 	reaction: actionResourceSchema(1),
 	movement: movementSchema(),
 	interaction: actionResourceSchema(1),

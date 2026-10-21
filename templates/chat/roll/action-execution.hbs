@@ -1,0 +1,22 @@
+<div class="nalfa-chat-card nalfa-roll-card">
+  <header class="nalfa-roll-header">
+    <h3 class="nalfa-roll-title">
+      <span class="nalfa-roll-label">Action</span>
+      <span class="nalfa-roll-separator">·</span>
+      <span class="nalfa-roll-name">{{titleName}}</span>
+    </h3>
+  </header>
+  <div class="nalfa-roll-details">
+    {{#if costs.length}}
+      <span class="nalfa-roll-formula">Ressources : {{#each costs}}{{label}}{{#unless @last}} · {{/unless}}{{/each}}</span>
+    {{else}}
+      <span class="nalfa-roll-formula">Aucune ressource consommee.</span>
+    {{/if}}
+    {{#if concentrationName}}
+      <span class="nalfa-roll-formula">
+        Concentration : {{concentrationName}}
+        {{#if concentrationReplaced}}(remplace {{concentrationReplaced}}){{/if}}
+      </span>
+    {{/if}}
+  </div>
+</div>

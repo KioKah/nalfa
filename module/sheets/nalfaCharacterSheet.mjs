@@ -8,6 +8,7 @@ import {
 } from "../rolls/index.mjs";
 import { ACTION_REF_TYPES, HOTBAR_DROP_TYPE_EMBEDDED_ACTION } from "../actions/refs.mjs";
 import { getDefaultEmbeddedActionName } from "../actions/embedded.mjs";
+import { stopConcentration } from "../actions/turnResources.mjs";
 import {
 	executeActionConcentrationPrompt,
 	executeActionPrompt,
@@ -260,6 +261,8 @@ const buildCombatResources = (sysData) => {
 			step: meta.key === "movement" ? "any" : 1,
 			unit: meta.key === "movement" ? "m" : "",
 			isMovement: meta.key === "movement",
+			isAvailable: safeValue > 0,
+			statusLabel: safeValue > 0 ? "Disponible" : "Consommee",
 			valueLabel:
 				meta.key === "movement"
 					? formatCombatDecimal(safeValue)
@@ -1569,6 +1572,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 		this.element
 			?.querySelector("[data-action='roll-concentration']")
 			?.addEventListener("click", this._onRollConcentration.bind(this));
+		if (this.isEditable) {
+			this.element
+				?.querySelector("[data-action='stop-concentration']")
+				?.addEventListener("click", this._onStopConcentration.bind(this));
+		}
 		this.element
 			?.querySelectorAll("[data-action='use-embedded-action']")
 			.forEach((element) =>
@@ -2091,6 +2099,11 @@ export default class NalfaCharacterSheet extends HandlebarsApplicationMixin(Acto
 			...action,
 			forcePrompt: event.altKey,
 		});
+	}
+
+	async _onStopConcentration(event) {
+		event.preventDefault();
+		await stopConcentration(this.actor);
 	}
 
 	async _onUseActorActionConcentration(event) {

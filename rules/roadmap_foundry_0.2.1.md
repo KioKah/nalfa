@@ -66,9 +66,8 @@ Taches :
   notions de `StatArme` et `StatIncant`, devenues redondantes avec `Pui`.
 - [x] Retirer la formule d'initiative actuelle. L'initiative est WIP et ne doit
   pas etre automatisee tant que sa regle n'est pas definie.
-Contenus à reprendre après stabilisation : ils doivent être recréés sur le
-schéma stabilisé, sans migration automatique des données 0.1.x.
 
+Point reporté :
 - [ ] Mettre à jour tous les acteurs, actions, classes, races, bibelots et
   compendiums avec leurs profils.
 
@@ -100,8 +99,8 @@ conserver dans l'interface des controles de l'ancien systeme.
 Points reportes : ils necessitent les moteurs de ressources, de concentration,
 d'etats, de KO ou de repos des phases 4, 5 et 7.
 
-- [ ] Afficher l'effet concentre actif et une action pour l'interrompre.
-- [ ] Afficher lisiblement le cout, l'etat disponible/consomme et la remise a
+- [x] (Fait phase 4) Afficher l'effet concentre actif et une action pour l'interrompre.
+- [x] (Fait phase 4) Afficher lisiblement le cout, l'etat disponible/consomme et la remise a
   zero au prochain tour pour Principale, Secondaire, Reaction, Deplacement et
   Interaction Simple.
 - [ ] Ajouter aux panneaux d'etats `Menace` et `Cache`, la source de Charme ou
@@ -140,13 +139,13 @@ modele, les variantes et les apercus d'arme relevent de la phase 7.
 
 ### Chat, tokens et suivi de combat
 
-Points reportes : les cartes dependent du moteur de jets (phase 3), puis des
-ressources et de la concentration (phase 4), ainsi que des etats et du KO
+Points reportés : les cartes dependent du moteur de jets (phase 3), puis des
+ressources et de la concentration (phase 4), ainsi que des états et du KO
 (phase 5). La verification visuelle intervient apres ces ajouts.
 
-- [ ] Mettre a jour les cartes de JdC, JdT, JdD, JdS et JdF avec les nouvelles
+- [x] (Fait phase 4) Mettre a jour les cartes de JdC, JdT, JdD, JdS et JdF avec les nouvelles
   statistiques, DD et regles de critique.
-- [ ] Ajouter aux cartes d'action un recapitulatif des ressources effectivement
+- [x] (Fait phase 4) Ajouter aux cartes d'action un recapitulatif des ressources effectivement
   consommees, de l'effet de concentration cree ou interrompu et des etats
   appliques.
 - [ ] Exposer sur token et dans le suivi de combat les etats bloquants, les
@@ -154,32 +153,32 @@ ressources et de la concentration (phase 4), ainsi que des etats et du KO
 - [ ] Verifier les styles LESS de tous les panneaux ajoutes ou renommes sur
   bureau et mobile.
 
-Dependances : phase 1 pour la structure. Les affichages de disponibilite et le
+Dépendances : phase 1 pour la structure. Les affichages de disponibilité et le
 suivi de combat dependent aussi de la phase 3.
 
 ## 3. Moteur de jets commun
 
-But : rendre tous les workflows coherents avec les nouvelles statistiques et
-les regles globales de des.
+But : rendre tous les workflows cohérents avec les nouvelles statistiques et
+les règles globales de des.
 
 Taches :
 
 - [x] Centraliser l'application de 1 naturel et 20 naturel pour JdC, JdT et
-  JdS, sans confondre resultat naturel et total modifie.
-- [x] Conserver l'avantage/desavantage existant et verifier qu'il est
+  JdS, sans confondre résultat naturel et total modifie.
+- [x] Conserver l'avantage/désavantage existant et verifier qu'il est
   disponible sur JdC, JdT et JdS.
 - [x] Basculer JdT et JdD sur `Pui`; conserver un champ de bonus explicite
   d'action pour les bonus conditionnels.
-- [x] Appliquer effectivement `jdt.bonus`, deja edite mais ignore par le
+- [x] Appliquer effectivement `jdt.bonus`, déjà édité mais ignoré par le
   workflow d'attaque.
 - [x] Refaire le workflow JdS sur `Vig/Agi/Vol` et sur la DD de l'effet.
-- [x] Simplifier le JdF comme une JdS configuree par l'effet de concentration,
-  sans malus manuel de l'attaquant herite de l'ancien modele.
-- [x] Conserver les critiques de degats et soins : second lancer des des, sans
+- [x] Simplifier le JdF comme une JdS configurée par l'effet de concentration,
+  sans malus manuel de l'attaquant hérité de l'ancien modèle.
+- [x] Conserver les critiques de dégâts et soins : second lancer des des, sans
   doubler la statistique.
 - [x] Verifier que les JdD partages entre plusieurs cibles le restent.
 
-Dependances : phases 1 et 2.
+Dépendances : phases 1 et 2.
 
 ## 4. Ressources de tour et cycle de combat
 
@@ -187,25 +186,23 @@ But : rendre effective l'economie annoncee par la fiche : une Action
 Principale, une Action Secondaire, du Deplacement, une Interaction Simple et
 une Reaction par tour.
 
-Taches :
-
-- [ ] Renommer la ressource `bonus` en `secondary` dans le schema, les actions
+- [x] Renommer la ressource `bonus` en `secondary` dans le schema, les actions
   et les interfaces.
-- [ ] Faire consommer atomiquement les couts `main`, `secondary`, `reaction`
+- [x] Faire consommer atomiquement les couts `main`, `secondary`, `reaction`
   et `movement`, avec verification avant execution.
-- [ ] Faire consommer les utilisations et demarrer les cooldowns deja decrits
+- [x] Faire consommer les utilisations et demarrer les cooldowns deja decrits
   dans les actions.
-- [ ] Ajouter le rechargement au debut du tour : actions, reaction,
+- [x] Ajouter le rechargement au debut du tour : actions, reaction,
   deplacement et cooldowns en rounds/tours.
-- [ ] Definir une representation explicite de l'Interaction Simple : compteur
+- [x] Definir une representation explicite de l'Interaction Simple : compteur
   par tour ou categorie d'action gratuite limitee a une.
-- [ ] Ajouter une concentration active unique par acteur, son arret volontaire
+- [x] Ajouter une concentration active unique par acteur, son arret volontaire
   et son remplacement lors du lancement d'un nouvel effet.
-- [ ] Declencher le JdF lorsqu'un acteur concentre subit des degats.
-- [ ] Rendre les ecritures de ressource robustes quand une action est lancee
+- [x] Declencher le JdF lorsqu'un acteur concentre subit des degats.
+- [x] Rendre les ecritures de ressource robustes quand une action est lancee
   depuis hotbar, chat ou fiche.
 
-Dependances : phases 1 a 3. Cette phase est le prerequis des actions
+Dépendances : phases 1 à 3. Cette phase est le prérequis des actions
 principales, secondaires et reactions.
 
 ## 5. Etats, KO et fatigue

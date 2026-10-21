@@ -5,6 +5,7 @@ import {
 	isEquippedSlotLocked,
 } from "../../sheets/item/equipment.mjs";
 import { getActorStateProfile } from "../../rules/states.mjs";
+import { getActionCooldownRemaining } from "../../actions/turnResources.mjs";
 
 const ITEM_TYPE_PRIORITY = Object.freeze({
 	Weapon: 0,
@@ -178,12 +179,8 @@ export const getActionResourceAvailability = (actor, actionData = {}) => {
 	}
 
 	if (actionData?.concentration?.enabled) {
-		resourceKeys.add("concentration");
 		if (stateProfile.blocksConcentration) {
 			reasons.push("Un état empêche la concentration.");
-		}
-		if (toCostAmount(resources?.concentration?.value) < 1) {
-			reasons.push("Concentration insuffisante.");
 		}
 	}
 
@@ -212,6 +209,9 @@ export const getActionResourceAvailability = (actor, actionData = {}) => {
 	const usesMax = toCostAmount(uses.max);
 	if (usesMax > 0 && toCostAmount(uses.value) < 1) {
 		reasons.push("Aucune utilisation restante.");
+	}
+	if (getActionCooldownRemaining(actionData) > 0) {
+		reasons.push("Action en recharge.");
 	}
 
 	return {

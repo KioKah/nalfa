@@ -105,6 +105,7 @@ export const actionSchemaDefinition = () => {
 			cooldown: schemaField({
 				amount: numberField(defaults.cost.cooldown.amount),
 				unit: stringField(defaults.cost.cooldown.unit),
+				remaining: numberField(defaults.cost.cooldown.remaining),
 			}),
 		}),
 		selection: schemaField({

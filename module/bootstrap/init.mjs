@@ -25,6 +25,14 @@ import NalfaItem from "../sheets/nalfaItem.mjs";
 import NalfaItemSheet from "../sheets/nalfaItemSheet.mjs";
 import { registerFatigueStatus, syncActorFatigueState } from "../rules/fatigue.mjs";
 import { registerNalfaStateStatuses } from "../rules/states.mjs";
+import {
+	checkConcentrationAfterDamage,
+	getConcentrationDamageSnapshot,
+} from "../rules/concentration.mjs";
+import {
+	refreshActorTurnResources,
+	tickActorRoundCooldowns,
+} from "../actions/turnResources.mjs";
 import { registerHandlebarsHelpers } from "./handlebars.mjs";
 import { preloadHandlebarsTemplates } from "./templates.mjs";
 
@@ -95,6 +103,7 @@ const registerStatusEffects = () => {
 };
 
 const registerHotbarHook = () => {
+	const concentrationDamageSnapshots = new WeakMap();
 	const refreshHotbar = () => {
 		if (ui.hotbar?.rendered) void ui.hotbar.render();
 	};
@@ -142,6 +151,25 @@ const registerHotbarHook = () => {
 	Hooks.on("updateMacro", refreshHotbarGrids);
 	Hooks.on("deleteMacro", refreshHotbarGrids);
 	Hooks.on("updateCombat", refreshCombatSheets);
+	Hooks.on("updateCombat", (combat, changes) => {
+		if (!game.user?.isGM) return;
+		const changedTurn = Object.hasOwn(changes ?? {}, "turn");
+		const changedRound = Object.hasOwn(changes ?? {}, "round");
+		if (!changedTurn && !changedRound) return;
+
+		void (async () => {
+			if (changedRound) {
+				const actors = new Set(
+					[...(combat.combatants ?? [])]
+						.map((combatant) => combatant.actor)
+						.filter((actor) => actor instanceof Actor),
+				);
+				for (const actor of actors) await tickActorRoundCooldowns(actor);
+			}
+			const actor = combat.combatant?.actor;
+			if (actor) await refreshActorTurnResources(actor);
+		})();
+	});
 	Hooks.on("deleteCombat", refreshCombatSheets);
 	Hooks.on("createCombatant", (combatant) => {
 		refreshCombatSheets(combatant.parent);
@@ -165,10 +193,22 @@ const registerHotbarHook = () => {
 	Hooks.on("createActor", (actor, options, userId) => {
 		void syncActorFatigueState(actor, { options, userId });
 	});
+	Hooks.on("preUpdateActor", (actor, changes) => {
+		if (!game.user?.isGM) return;
+		const hpValue = foundry.utils.getProperty(changes, "system.attributes.hp.value");
+		const temporaryHp = foundry.utils.getProperty(changes, "system.attributes.hp.abso");
+		if (hpValue === undefined && temporaryHp === undefined) return;
+		concentrationDamageSnapshots.set(actor, getConcentrationDamageSnapshot(actor));
+	});
 	Hooks.on("updateActor", (actor, _changes, options, userId) => {
 		const activeActor =
 			game.user?.character ?? canvas?.tokens?.controlled?.[0]?.actor ?? null;
 		if (actor === activeActor) refreshHotbar();
+		const snapshot = concentrationDamageSnapshots.get(actor);
+		if (snapshot) {
+			concentrationDamageSnapshots.delete(actor);
+			void checkConcentrationAfterDamage(actor, snapshot);
+		}
 		void syncActorFatigueState(actor, { options, userId });
 	});
 	Hooks.on("updateItem", (item, _changes, options, userId) => {

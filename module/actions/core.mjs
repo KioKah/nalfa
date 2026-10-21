@@ -48,6 +48,7 @@ export const createDefaultActionData = () => ({
 		cooldown: {
 			amount: 0,
 			unit: "none",
+			remaining: 0,
 		},
 	},
 	selection: {
