@@ -1,15 +1,5 @@
-import {
-	getAttackName,
-	getCompareSymbol,
-	getD20RollDetail,
-	formatRollAdjustment,
-	getLabel,
-	getStatTotal,
-	postRollMessage,
-	promptEnemyAttackBonus,
-	rollD20WithModifier,
-	withActionSheetFlag,
-} from "../core/shared.mjs";
+import { getAttackName, getLabel, withActionSheetFlag } from "../core/shared.mjs";
+import { rollSaveTarget } from "./save.mjs";
 import { getActorStateProfile } from "../../rules/states.mjs";
 
 export const rollConcentrationFromAction = async (actor, actionData = {}, options = {}) => {
@@ -19,109 +9,30 @@ export const rollConcentrationFromAction = async (actor, actionData = {}, option
 		ui.notifications.warn("Un état empêche ce personnage de se concentrer.");
 		return null;
 	}
-	const messageOptions = withActionSheetFlag(
-		options.messageOptions ?? {},
-		options.chatContext,
-	);
 
 	const concentration = actionData?.concentration ?? {};
 	const requestedStatKey = options.statKey ?? concentration.stat ?? "vig";
-	const resolvedStatKey = CONFIG.nalfa.save_stats?.[requestedStatKey]
-		? requestedStatKey
-		: "vig";
-	const statName = getLabel(CONFIG.nalfa.stats, resolvedStatKey, resolvedStatKey);
-	const attackerStatValue = await promptEnemyAttackBonus(
-		options.enemyAttackBonus ?? concentration.enemy_attack_bonus ?? 0,
-	);
-	if (attackerStatValue === null) return null;
-
-	const actorStatValue = Number(
-		actor.system?.stats?.[resolvedStatKey]?.save?.value ??
-			getStatTotal(actor, resolvedStatKey),
-	);
-	const modifier = actorStatValue - Number(attackerStatValue ?? 0);
-	const rollResult = await rollD20WithModifier(modifier, {
-		promptAdjustments: options.promptAdjustments,
-		typeLabel: "JdF",
-	});
-	if (!rollResult) return null;
-	const { roll, dieResult, isCrit, isFumble } = rollResult;
-	const targetDc = Number(options.dc ?? concentration.dd ?? 0);
-	const isSuccess = isCrit
-		? true
-		: isFumble
-			? false
-			: Number(roll.total ?? 0) >= targetDc;
-	const titleLabel = "JdF";
+	const statKey = CONFIG.nalfa.save_stats?.[requestedStatKey] ? requestedStatKey : "vig";
 	const fallbackName = String(actionData?.name ?? "").trim() || "Action";
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
-	const naturalTitle = isCrit
-		? rollResult.rollMode === "disadvantage"
-			? "20 Naturel !!"
-			: "20 Naturel !"
-		: rollResult.rollMode === "advantage"
-			? "1 Naturel ?!"
-			: "1 Naturel...";
-	const titleValue = isCrit || isFumble ? naturalTitle : roll.total;
-	const compareSymbol = getCompareSymbol(isSuccess);
-	const attackerStatNumber = Math.max(0, Number(attackerStatValue ?? 0));
-	const statPart = resolvedStatKey ? `${statName} (${actorStatValue})` : "Stat (?)";
-	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
-	const formulaText =
-		`d20 [${dieResult ?? "-"}] - ${attackerStatNumber} + ${statPart}${adjustmentSuffix} ` +
-		`${compareSymbol} DD ${targetDc}`;
-	const rollDetail = getD20RollDetail(
-		roll,
-		`- ${attackerStatNumber} + ${statPart}${adjustmentSuffix}`,
-		{
-			isCrit,
-			isFumble,
-			modifier: rollResult.modifier,
-			comparison: `${compareSymbol} DD ${targetDc}`,
-		},
-	);
+	const dc = Number(options.dc ?? concentration.dd ?? 0);
 
-	const rollData = {
-		type: "concentration",
-		roll,
-		titleLabel,
-		titleName,
-		titleValue,
-		formulaText,
-		rollDetail,
-	};
-
-	await postRollMessage(
-		actor,
-		"save",
-		{
-			actor,
-			roll,
-			titleLabel,
-			titleName,
-			titleValue,
-			formulaText,
-			rollDetail,
-			hasTarget: true,
-			isSuccess,
-			isCrit,
-			isFumble,
-		},
-		messageOptions,
-	);
-
-	return rollData;
+	return rollSaveTarget(actor, statKey, dc, titleName, {
+		...options,
+		statName: getLabel(CONFIG.nalfa.stats, statKey, statKey),
+		titleLabel: "JdF",
+		messageOptions: withActionSheetFlag(options.messageOptions ?? {}, options.chatContext),
+	});
 };
 
 export const rollConcentration = async (actor, statKey, dc, options = {}) => {
 	if (!actor) return null;
 
 	const attack = actor.system?.attack ?? {};
-	const titleName = getAttackName(attack);
 	return rollConcentrationFromAction(actor, attack, {
 		statKey,
 		dc,
-		titleName,
-		promptAdjustments: options.promptAdjustments,
+		titleName: getAttackName(attack),
+		...options,
 	});
 };

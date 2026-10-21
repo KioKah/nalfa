@@ -164,20 +164,20 @@ les regles globales de des.
 
 Taches :
 
-- [ ] Centraliser l'application de 1 naturel et 20 naturel pour JdC, JdT et
+- [x] Centraliser l'application de 1 naturel et 20 naturel pour JdC, JdT et
   JdS, sans confondre resultat naturel et total modifie.
-- [ ] Conserver l'avantage/desavantage existant et verifier qu'il est
+- [x] Conserver l'avantage/desavantage existant et verifier qu'il est
   disponible sur JdC, JdT et JdS.
-- [ ] Basculer JdT et JdD sur `Pui`; conserver un champ de bonus explicite
+- [x] Basculer JdT et JdD sur `Pui`; conserver un champ de bonus explicite
   d'action pour les bonus conditionnels.
-- [ ] Appliquer effectivement `jdt.bonus`, deja edite mais ignore par le
+- [x] Appliquer effectivement `jdt.bonus`, deja edite mais ignore par le
   workflow d'attaque.
-- [ ] Refaire le workflow JdS sur `Vig/Agi/Vol` et sur la DD de l'effet.
-- [ ] Simplifier le JdF comme une JdS configuree par l'effet de concentration,
+- [x] Refaire le workflow JdS sur `Vig/Agi/Vol` et sur la DD de l'effet.
+- [x] Simplifier le JdF comme une JdS configuree par l'effet de concentration,
   sans malus manuel de l'attaquant herite de l'ancien modele.
-- [ ] Conserver les critiques de degats et soins : second lancer des des, sans
+- [x] Conserver les critiques de degats et soins : second lancer des des, sans
   doubler la statistique.
-- [ ] Verifier que les JdD partages entre plusieurs cibles le restent.
+- [x] Verifier que les JdD partages entre plusieurs cibles le restent.
 
 Dependances : phases 1 et 2.
 

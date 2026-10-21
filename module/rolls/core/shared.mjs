@@ -90,36 +90,6 @@ export const getCompareSymbol = (isGreaterOrEqualThan) => {
 	return isGreaterOrEqualThan ? "⩾" : "＜";
 };
 
-export const promptEnemyAttackBonus = async (defaultValue = 0) => {
-	return new Promise((resolve) => {
-		const inputId = foundry.utils.randomID();
-		new Dialog({
-			title: "JdF - Stat attaquant",
-			content: `
-				<div class="form-group">
-						<label for="${inputId}">Bonus / malus de l'effet</label>
-					<input id="${inputId}" type="number" value="${Number(defaultValue ?? 0)}" />
-				</div>
-			`,
-			buttons: {
-				confirm: {
-					label: "Lancer",
-					callback: (html) => {
-						const input = html[0]?.querySelector(`#${inputId}`);
-						resolve(Number(input?.value ?? defaultValue ?? 0));
-					},
-				},
-				cancel: {
-					label: "Annuler",
-					callback: () => resolve(null),
-				},
-			},
-			default: "confirm",
-			close: () => resolve(null),
-		}).render(true);
-	});
-};
-
 export const resolveDamageFormula = (formula = "", actor) => {
 	let missingVariable = "";
 	const formulaText = String(formula ?? "").replace(/\bdA[pPsS]?\b/g, (match) => {
@@ -241,6 +211,24 @@ export const formatRollAdjustment = (value) => {
 	if (!Number.isFinite(adjustment) || adjustment === 0) return "";
 	if (adjustment > 0) return ` + Bonus (${adjustment})`;
 	return ` - Malus (${Math.abs(adjustment)})`;
+};
+
+export const resolveD20Check = ({
+	roll,
+	isCrit = false,
+	isFumble = false,
+	target = null,
+	autoFail = false,
+} = {}) => {
+	if (target === null || target === undefined || !Number.isFinite(Number(target))) return null;
+	if (autoFail || isFumble) return false;
+	if (isCrit) return true;
+	return Number(roll?.total ?? 0) >= Number(target);
+};
+
+export const getNaturalTitle = ({ isCrit, rollMode }) => {
+	if (isCrit) return rollMode === "disadvantage" ? "20 Naturel !!" : "20 Naturel !";
+	return rollMode === "advantage" ? "1 Naturel ?!" : "1 Naturel...";
 };
 
 const getD20RollFormula = (mode) => {

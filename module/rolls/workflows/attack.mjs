@@ -5,8 +5,10 @@ import {
 	formatStatSuffix,
 	getAttackName,
 	getLabel,
+	getNaturalTitle,
 	getStatTotal,
 	postRollMessage,
+	resolveD20Check,
 	rollD20WithModifier,
 	withActionSheetFlag,
 } from "../core/shared.mjs";
@@ -45,21 +47,18 @@ export const rollAttackFromAction = async (actor, actionData = {}, options = {})
 	const titleName = String(options.titleName ?? fallbackName).trim() || "Action";
 	const targetDefense = Number(options.targetDefense ?? NaN);
 	const hasTarget = Number.isFinite(targetDefense);
-	const isSuccess = hasTarget
-		? isCrit || (!isFumble && Number(roll.total ?? 0) >= targetDefense)
-		: null;
+	const isSuccess = resolveD20Check({
+		roll,
+		isCrit,
+		isFumble,
+		target: hasTarget ? targetDefense : null,
+	});
 	const attackSuffix = formatStatSuffix(statKey, statName, modifier, bonusValue);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const isNatural = isCrit || isFumble;
 	const naturalOutcome = isCrit ? "Réussite automatique" : "Échec automatique";
 	const rollMode = rollResult.rollMode;
-	const naturalTitle = isCrit
-		? rollMode === "disadvantage"
-			? "20 Naturel !!"
-			: "20 Naturel !"
-		: rollMode === "advantage"
-			? "1 Naturel ?!"
-			: "1 Naturel...";
+	const naturalTitle = getNaturalTitle({ isCrit, rollMode });
 	const detailPrefix = `${attackSuffix}${adjustmentSuffix}`;
 	const comparison = hasTarget
 		? `${getCompareSymbol(isSuccess)} Défense ${targetDefense}`

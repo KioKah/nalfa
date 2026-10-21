@@ -18,15 +18,6 @@ import {
 } from "./targeting/index.mjs";
 import { getActorStateProfile } from "../../rules/states.mjs";
 
-const getConcentrationInputValue = (dialog, fallback = 0) => {
-	const input = dialog.element?.querySelector("[name='enemy-attack-bonus']");
-	return Number(input?.value ?? fallback ?? 0);
-};
-
-const renderConcentrationDialogContent = (defaultValue = 0) => {
-	return `<div class="field field--column"><label class="field__label" for="nalfa-concentration-malus">Malus</label><input id="nalfa-concentration-malus" name="enemy-attack-bonus" type="number" value="${Number(defaultValue ?? 0)}" data-dtype="Number" /></div>`;
-};
-
 const toCostAmount = (value) => {
 	const amount = Number(value ?? 0);
 	return Number.isFinite(amount) && amount > 0 ? amount : 0;
@@ -205,48 +196,10 @@ export const executeActionConcentrationPrompt = async ({
 		titleName: resolvedTitle,
 		actionIndex,
 	});
-	const defaultMalus = Number(actionData?.concentration?.enemy_attack_bonus ?? 0);
-	const malus = await waitForActionDialog(
-		{
-			window: {
-				title: `JdF - ${resolvedTitle}`,
-			},
-			content: renderConcentrationDialogContent(defaultMalus),
-			buttons: [
-				{
-					action: "roll",
-					label: "JdF",
-					default: true,
-					callback: (event, target, dialog) => {
-						void target;
-						return {
-							malus: getConcentrationInputValue(dialog, defaultMalus),
-							promptAdjustments: event.altKey,
-						};
-					},
-				},
-				{
-					action: "cancel",
-					label: "Annuler",
-					callback: () => null,
-				},
-			],
-		},
-		{
-			closeValue: null,
-			onRender: (dialog) => {
-				const input = dialog.element?.querySelector("#nalfa-concentration-malus");
-				if (input instanceof HTMLElement) input.focus();
-			},
-		},
-	);
-
-	if (!malus) return null;
 	return rollConcentrationFromAction(actor, actionData, {
 		titleName: resolvedTitle,
 		chatContext,
-		enemyAttackBonus: malus.malus,
-		promptAdjustments: malus.promptAdjustments,
+		promptAdjustments: false,
 	});
 };
 

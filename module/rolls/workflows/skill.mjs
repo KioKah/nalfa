@@ -1,5 +1,6 @@
 import {
 	getLabel,
+	getNaturalTitle,
 	getCompareSymbol,
 	getD20RollDetail,
 	formatRollAdjustment,
@@ -7,6 +8,7 @@ import {
 	getStatTotal,
 	hasStat,
 	postRollMessage,
+	resolveD20Check,
 	rollD20WithModifier,
 } from "../core/shared.mjs";
 
@@ -35,8 +37,14 @@ export const rollSkill = async (actor, skillKey, options = {}) => {
 		: options.difficulty;
 	const hasTarget = difficulty !== null && Number.isFinite(Number(difficulty));
 	const targetDifficulty = Number(difficulty);
-	const isSuccess = hasTarget ? Number(roll.total ?? 0) >= targetDifficulty : null;
-	const titleValue = roll.total;
+	const isSuccess = resolveD20Check({
+		roll,
+		isCrit,
+		isFumble,
+		target: hasTarget ? targetDifficulty : null,
+	});
+	const titleValue =
+		isCrit || isFumble ? getNaturalTitle({ isCrit, rollMode: rollResult.rollMode }) : roll.total;
 	const skillTotal = Number(skillObj.value ?? modifier);
 	const preparedStatTotal = Number(actor.system?.stats?.[statKey]?.value);
 	const statTotal = hasStat(statKey)
@@ -57,7 +65,7 @@ export const rollSkill = async (actor, skillKey, options = {}) => {
 	const rollDetail = getD20RollDetail(
 		roll,
 		skillSuffix,
-		{ modifier: rollResult.modifier, comparison },
+		{ isCrit, isFumble, modifier: rollResult.modifier, comparison },
 	);
 
 	const rollData = {
@@ -70,8 +78,8 @@ export const rollSkill = async (actor, skillKey, options = {}) => {
 		rollDetail,
 		hasTarget,
 		isSuccess,
-		isCrit: hasTarget ? false : isCrit,
-		isFumble: hasTarget ? false : isFumble,
+		isCrit,
+		isFumble,
 	};
 
 	await postRollMessage(actor, "skill", {
@@ -84,8 +92,8 @@ export const rollSkill = async (actor, skillKey, options = {}) => {
 		rollDetail,
 		hasTarget,
 		isSuccess,
-		isCrit: hasTarget ? false : isCrit,
-		isFumble: hasTarget ? false : isFumble,
+		isCrit,
+		isFumble,
 	});
 
 	return rollData;

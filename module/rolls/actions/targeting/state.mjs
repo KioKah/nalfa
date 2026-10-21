@@ -449,7 +449,6 @@ export const executeActionSavePromptRoll = async ({
 			titleName,
 			chatContext,
 			promptAdjustments,
-			autoNatural: true,
 		});
 	}
 	if (!applicableTargets.length) {
@@ -469,7 +468,6 @@ export const executeActionSavePromptRoll = async ({
 		titleName,
 		chatContext,
 		promptAdjustments,
-		autoNatural: true,
 		targets: applicableTargets,
 		sourceTokenUuid: String(sourceToken?.document?.uuid ?? sourceToken?.uuid ?? "").trim(),
 		sourceTokenName: String(sourceToken?.name ?? actor.name ?? "").trim(),

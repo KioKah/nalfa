@@ -151,7 +151,6 @@ export const actionSchemaDefinition = () => {
 			enabled: booleanField(defaults.concentration.enabled),
 			stat: stringField(defaults.concentration.stat),
 			dd: numberField(defaults.concentration.dd),
-			enemy_attack_bonus: numberField(defaults.concentration.enemy_attack_bonus),
 		}),
 	};
 };

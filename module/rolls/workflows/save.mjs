@@ -5,11 +5,13 @@ import {
 	getD20RollDetail,
 	formatRollAdjustment,
 	getLabel,
+	getNaturalTitle,
 	getStatBasedValue,
 	getStatTotal,
 	postRollMessage,
 	promptD20RollOptions,
 	rollD20WithModifier,
+	resolveD20Check,
 	withActionSheetFlag,
 } from "../core/shared.mjs";
 import { storeActionSaveResult } from "../actions/context.mjs";
@@ -61,7 +63,6 @@ export const rollSavePromptFromAction = async (actor, actionData = {}, options =
 			dc,
 			rollBonus: adjustments?.bonus ?? 0,
 			rollMode: adjustments?.mode ?? "normal",
-			autoNatural: options.autoNatural === true,
 		},
 	);
 
@@ -124,7 +125,6 @@ export const sendPrivateSavePromptsFromAction = async (
 				dc,
 				rollBonus: adjustments?.bonus ?? 0,
 				rollMode: adjustments?.mode ?? "normal",
-				autoNatural: options.autoNatural === true,
 				targetName,
 				sourceTokenName,
 				targetTokenUuid: String(
@@ -191,12 +191,13 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 	});
 	if (!rollResult) return null;
 	const { roll, dieResult, isCrit, isFumble } = rollResult;
-	const autoNatural = options.autoNatural === true;
-	const isSuccess = autoFail
-		? false
-		: autoNatural
-			? isCrit || (!isFumble && Number(roll.total ?? 0) >= targetDc)
-			: Number(roll.total ?? 0) >= targetDc;
+	const isSuccess = resolveD20Check({
+		roll,
+		isCrit,
+		isFumble,
+		target: targetDc,
+		autoFail,
+	});
 	const saveSuffix = formatStatSuffix(statKey, statName, statValue, statValue);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const compareSymbol = getCompareSymbol(isSuccess);
@@ -207,26 +208,15 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 	const rollDetail = getD20RollDetail(
 		roll,
 		`${saveSuffix}${adjustmentSuffix}`,
-		autoNatural
-			? {
-					isCrit,
-					isFumble,
-					modifier: rollResult.modifier,
-					comparison: `${compareSymbol} DD ${targetDc}`,
-				}
-			: {
-					modifier: rollResult.modifier,
-					comparison: `${compareSymbol} DD ${targetDc}`,
-				},
+		{
+			isCrit,
+			isFumble,
+			modifier: rollResult.modifier,
+			comparison: `${compareSymbol} DD ${targetDc}`,
+		},
 	);
-	const naturalTitle = isCrit
-		? rollResult.rollMode === "disadvantage"
-			? "20 Naturel !!"
-			: "20 Naturel !"
-		: rollResult.rollMode === "advantage"
-			? "1 Naturel ?!"
-			: "1 Naturel...";
-	const titleValue = autoNatural && (isCrit || isFumble) ? naturalTitle : roll.total;
+	const titleValue =
+		isCrit || isFumble ? getNaturalTitle({ isCrit, rollMode: rollResult.rollMode }) : roll.total;
 	const messageOptions = withActionSheetFlag(
 		options.messageOptions ?? {},
 		options.chatContext,
@@ -248,7 +238,7 @@ export const rollSaveTarget = async (actor, statKey, dc, titleName, options = {}
 		{
 			actor,
 			roll,
-			titleLabel: "JdS",
+			titleLabel: options.titleLabel ?? "JdS",
 			titleName: titleName ?? "",
 			titleValue,
 			formulaText,
@@ -295,12 +285,15 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 	const hasTarget = difficulty !== null && Number.isFinite(Number(difficulty));
 	const targetDifficulty = Number(difficulty);
 	const autoFail = doesStateAutoFailSave(actor, statKey);
-	const isSuccess = autoFail
-		? false
-		: hasTarget
-			? Number(roll.total ?? 0) >= targetDifficulty
-			: null;
-	const titleValue = roll.total;
+	const isSuccess = resolveD20Check({
+		roll,
+		isCrit,
+		isFumble,
+		target: hasTarget ? targetDifficulty : null,
+		autoFail,
+	});
+	const titleValue =
+		isCrit || isFumble ? getNaturalTitle({ isCrit, rollMode: rollResult.rollMode }) : roll.total;
 	const saveSuffix = formatStatSuffix(statKey, statName, modifier, modifier);
 	const adjustmentSuffix = formatRollAdjustment(rollResult.customBonus);
 	const comparison = hasTarget
@@ -311,6 +304,8 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 		`d20 [${dieResult ?? "-"}]${saveSuffix}${adjustmentSuffix}` +
 		(comparison ? ` ${comparison}${autoFailSuffix}` : "");
 	const rollDetail = getD20RollDetail(roll, `${saveSuffix}${adjustmentSuffix}`, {
+		isCrit,
+		isFumble,
 		modifier: rollResult.modifier,
 		comparison,
 	});
@@ -325,8 +320,8 @@ export const rollStatSave = async (actor, statKey, options = {}) => {
 		rollDetail,
 		hasTarget,
 		isSuccess,
-		isCrit: hasTarget ? false : isCrit,
-		isFumble: hasTarget ? false : isFumble,
+		isCrit,
+		isFumble,
 	});
 
 	return {

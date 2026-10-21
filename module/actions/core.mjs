@@ -94,6 +94,5 @@ export const createDefaultActionData = () => ({
 		enabled: false,
 		stat: "vig",
 		dd: 0,
-		enemy_attack_bonus: 0,
 	},
 });
