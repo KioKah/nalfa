@@ -66,8 +66,11 @@ Taches :
   notions de `StatArme` et `StatIncant`, devenues redondantes avec `Pui`.
 - [x] Retirer la formule d'initiative actuelle. L'initiative est WIP et ne doit
   pas etre automatisee tant que sa regle n'est pas definie.
-- [ ] Mettre a jour tous les acteurs, actions, classes, races, bibelots et
-  compendiums apres stabilisation du schema, avec leurs profils.
+Contenus à reprendre après stabilisation : ils doivent être recréés sur le
+schéma stabilisé, sans migration automatique des données 0.1.x.
+
+- [ ] Mettre à jour tous les acteurs, actions, classes, races, bibelots et
+  compendiums avec leurs profils.
 
 Dependances : aucune. Cette phase bloque toutes les suivantes qui manipulent
 statistiques, sauvegardes, modificateurs ou compendiums.
@@ -93,6 +96,10 @@ conserver dans l'interface des controles de l'ancien systeme.
   `roll_stats`; les jets directs doivent exposer `Pui` et les trois Sauv.
 - [x] Renommer `Action bonus` en `Action secondaire` partout sur la fiche,
   l'explorateur d'actions et les infobulles.
+
+Points reportes : ils necessitent les moteurs de ressources, de concentration,
+d'etats, de KO ou de repos des phases 4, 5 et 7.
+
 - [ ] Afficher l'effet concentre actif et une action pour l'interrompre.
 - [ ] Afficher lisiblement le cout, l'etat disponible/consomme et la remise a
   zero au prochain tour pour Principale, Secondaire, Reaction, Deplacement et
@@ -115,6 +122,12 @@ conserver dans l'interface des controles de l'ancien systeme.
   Deplacement, Interaction Simple, Nalfa, utilisations et cooldowns.
 - [x] Distinguer dans l'editeur de concentration le maintien d'un effet, son
   JdF et son unicite.
+- [x] Mettre a jour les filtres, regroupements et resumes de l'explorateur
+  d'actions apres renommage de `bonus` et retrait de `incant`.
+
+Points reportes : les champs d'actions generiques relevent de la phase 6 ; le
+modele, les variantes et les apercus d'arme relevent de la phase 7.
+
 - [ ] Ajouter dans l'editeur les champs necessaires aux actions generiques :
   duree jusqu'au prochain tour, cible source d'un etat, Charge et sort
   greffable.
@@ -124,10 +137,12 @@ conserver dans l'interface des controles de l'ancien systeme.
   Maniable, et l'usage du lancer improvise lorsqu'elle n'a pas `Lancer`.
 - [ ] Revoir les apercus d'arme et d'action pour qu'ils affichent JdT/JdD avec
   `Pui`, les Sauv avec leur statistique et les nouveaux couts de tour.
-- [x] Mettre a jour les filtres, regroupements et resumes de l'explorateur
-  d'actions apres renommage de `bonus` et retrait de `incant`.
 
 ### Chat, tokens et suivi de combat
+
+Points reportes : les cartes dependent du moteur de jets (phase 3), puis des
+ressources et de la concentration (phase 4), ainsi que des etats et du KO
+(phase 5). La verification visuelle intervient apres ces ajouts.
 
 - [ ] Mettre a jour les cartes de JdC, JdT, JdD, JdS et JdF avec les nouvelles
   statistiques, DD et regles de critique.

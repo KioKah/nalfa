@@ -2,13 +2,15 @@
 
 This repository is a V14 Foundry Virtual Tabletop game system named `nalfa`.
 
+## Agent instructions
+- If you write in french for comments or docs, avoid Unicode: do not omit the accents (é è à).
+
 ## Scope
 
 - Prefer current APIs (V14) and schemas in runtime code.
 - Development/testing project (no production compatibility requirements).
 - Do not add backward-compatibility migrations unless explicitly requested.
-- If Foundry behavior is uncertain, do not try to check the official docs online because you are not allowed there.
-  - You instead have to go read the code yourself at `D:\FoundryVTT\Foundry Virtual Tabletop\resources\app`.
+- If Foundry behavior is uncertain, do not try to check the official docs online because you are not allowed there. You instead have to go read the code yourself at `D:\FoundryVTT\Foundry Virtual Tabletop\resources\app`.
 
 ## Runtime Entry Points
 
@@ -46,7 +48,7 @@ This repository is a V14 Foundry Virtual Tabletop game system named `nalfa`.
 
 ## Glossary
 
-- `e-action` is discussion shorthand only for `embedded action` / action intégrée.
+- `e-action` is discussion shorthand only for `embedded action` / 'action intégrée'.
 - Use explicit names like `embeddedAction` in code, templates, and persisted data.
 
 ## Styling
@@ -61,11 +63,10 @@ This repository is a V14 Foundry Virtual Tabletop game system named `nalfa`.
 
 ## Formatting
 
-- Use Prettier formatting rules.
-- Max line width: 92.
-- Tabs:
-  - JS/MJS: tab width 4
-  - HBS/JSON/HTML/CSS/LESS: tab width 2
+The user will format the code with Prettier with max line width 92.
+You can replicate it but the most important thing for you is the tab size:
+- JS/MJS: tab width 4
+- HBS/JSON/HTML/CSS/LESS: tab width 2
 
 ## V2 Sheet Pitfalls And Patterns
 

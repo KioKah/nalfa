@@ -912,7 +912,7 @@
   color: var(--nalfa-color-attr-defence);
 }
 .nalfa.sheet.actor-sheet .combat-overview__metric-label--fatigue {
-  color: var(--nalfa-color-stat-int);
+  color: var(--nalfa-color-stat-vol);
 }
 .nalfa.sheet.actor-sheet .combat-overview__compact-field {
   display: inline-flex;
@@ -1102,8 +1102,8 @@
 .nalfa.sheet.actor-sheet .action-resources__item--main {
   color: var(--nalfa-color-action-main);
 }
-.nalfa.sheet.actor-sheet .action-resources__item--bonus {
-  color: var(--nalfa-color-action-bonus);
+.nalfa.sheet.actor-sheet .action-resources__item--secondary {
+  color: var(--nalfa-color-action-secondary);
 }
 .nalfa.sheet.actor-sheet .action-resources__item--reaction {
   color: var(--nalfa-color-action-reaction);
@@ -1113,6 +1113,9 @@
 }
 .nalfa.sheet.actor-sheet .action-resources__item--movement {
   color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.actor-sheet .action-resources__item--interaction {
+  color: var(--nalfa-color-action-interaction);
 }
 .nalfa.sheet.actor-sheet .action-resources__icon {
   font-size: 15px;
@@ -1482,23 +1485,20 @@
   margin-bottom: 0;
   padding: 12px;
 }
-.nalfa.sheet.actor-sheet .roll-stats .color-str {
-  color: var(--nalfa-color-stat-str);
+.nalfa.sheet.actor-sheet .roll-stats .color-pui {
+  color: var(--nalfa-color-stat-pui);
 }
-.nalfa.sheet.actor-sheet .roll-stats .color-dex {
-  color: var(--nalfa-color-stat-dex);
+.nalfa.sheet.actor-sheet .roll-stats .color-poly {
+  color: var(--nalfa-color-stat-poly);
 }
-.nalfa.sheet.actor-sheet .roll-stats .color-int {
-  color: var(--nalfa-color-stat-int);
+.nalfa.sheet.actor-sheet .roll-stats .color-vig {
+  color: var(--nalfa-color-stat-vig);
 }
-.nalfa.sheet.actor-sheet .roll-stats .color-wis {
-  color: var(--nalfa-color-stat-wis);
+.nalfa.sheet.actor-sheet .roll-stats .color-agi {
+  color: var(--nalfa-color-stat-agi);
 }
-.nalfa.sheet.actor-sheet .roll-stats .color-cha {
-  color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .roll-stats .color-con {
-  color: var(--nalfa-color-stat-con);
+.nalfa.sheet.actor-sheet .roll-stats .color-vol {
+  color: var(--nalfa-color-stat-vol);
 }
 .nalfa.sheet.actor-sheet .roll-stats__row {
   display: flex;
@@ -1592,23 +1592,20 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: var(--nalfa-padding);
 }
-.nalfa.sheet.actor-sheet .skills-by-stat .color-str {
-  color: var(--nalfa-color-stat-str);
+.nalfa.sheet.actor-sheet .skills-by-stat .color-pui {
+  color: var(--nalfa-color-stat-pui);
 }
-.nalfa.sheet.actor-sheet .skills-by-stat .color-dex {
-  color: var(--nalfa-color-stat-dex);
+.nalfa.sheet.actor-sheet .skills-by-stat .color-poly {
+  color: var(--nalfa-color-stat-poly);
 }
-.nalfa.sheet.actor-sheet .skills-by-stat .color-int {
-  color: var(--nalfa-color-stat-int);
+.nalfa.sheet.actor-sheet .skills-by-stat .color-vig {
+  color: var(--nalfa-color-stat-vig);
 }
-.nalfa.sheet.actor-sheet .skills-by-stat .color-wis {
-  color: var(--nalfa-color-stat-wis);
+.nalfa.sheet.actor-sheet .skills-by-stat .color-agi {
+  color: var(--nalfa-color-stat-agi);
 }
-.nalfa.sheet.actor-sheet .skills-by-stat .color-cha {
-  color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .skills-by-stat .color-con {
-  color: var(--nalfa-color-stat-con);
+.nalfa.sheet.actor-sheet .skills-by-stat .color-vol {
+  color: var(--nalfa-color-stat-vol);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat {
   display: flex;
@@ -1623,23 +1620,20 @@
   border-top: 2px solid var(--nalfa-stat-field-border-color);
   background: linear-gradient(145deg, color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 94%), color-mix(in srgb, var(--background), transparent 48%));
 }
-.nalfa.sheet.actor-sheet .skill-by-stat.color-str {
-  --nalfa-stat-field-border-color: var(--nalfa-color-stat-str);
+.nalfa.sheet.actor-sheet .skill-by-stat.color-pui {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-pui);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat.color-dex {
-  --nalfa-stat-field-border-color: var(--nalfa-color-stat-dex);
+.nalfa.sheet.actor-sheet .skill-by-stat.color-poly {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-poly);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat.color-int {
-  --nalfa-stat-field-border-color: var(--nalfa-color-stat-int);
+.nalfa.sheet.actor-sheet .skill-by-stat.color-vig {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-vig);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat.color-wis {
-  --nalfa-stat-field-border-color: var(--nalfa-color-stat-wis);
+.nalfa.sheet.actor-sheet .skill-by-stat.color-agi {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-agi);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat.color-cha {
-  --nalfa-stat-field-border-color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat.color-con {
-  --nalfa-stat-field-border-color: var(--nalfa-color-stat-con);
+.nalfa.sheet.actor-sheet .skill-by-stat.color-vol {
+  --nalfa-stat-field-border-color: var(--nalfa-color-stat-vol);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat {
   display: flex;
@@ -1652,23 +1646,20 @@
   gap: calc(var(--nalfa-padding) / 2);
   justify-content: space-between;
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-str {
-  border-color: var(--nalfa-color-stat-str);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-pui {
+  border-color: var(--nalfa-color-stat-pui);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-dex {
-  border-color: var(--nalfa-color-stat-dex);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-poly {
+  border-color: var(--nalfa-color-stat-poly);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-int {
-  border-color: var(--nalfa-color-stat-int);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-vig {
+  border-color: var(--nalfa-color-stat-vig);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-wis {
-  border-color: var(--nalfa-color-stat-wis);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-agi {
+  border-color: var(--nalfa-color-stat-agi);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-cha {
-  border-color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-con {
-  border-color: var(--nalfa-color-stat-con);
+.nalfa.sheet.actor-sheet .skill-by-stat .stat-info .border-color-vol {
+  border-color: var(--nalfa-color-stat-vol);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-left,
 .nalfa.sheet.actor-sheet .skill-by-stat .stat-right {
@@ -1793,23 +1784,20 @@
   padding: 1px 3px;
   border-radius: 4px;
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-str {
-  border-color: var(--nalfa-color-stat-str);
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-pui {
+  border-color: var(--nalfa-color-stat-pui);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-dex {
-  border-color: var(--nalfa-color-stat-dex);
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-poly {
+  border-color: var(--nalfa-color-stat-poly);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-int {
-  border-color: var(--nalfa-color-stat-int);
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-vig {
+  border-color: var(--nalfa-color-stat-vig);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-wis {
-  border-color: var(--nalfa-color-stat-wis);
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-agi {
+  border-color: var(--nalfa-color-stat-agi);
 }
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-cha {
-  border-color: var(--nalfa-color-stat-cha);
-}
-.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-con {
-  border-color: var(--nalfa-color-stat-con);
+.nalfa.sheet.actor-sheet .skill-by-stat .skill-info .border-color-vol {
+  border-color: var(--nalfa-color-stat-vol);
 }
 .nalfa.sheet.actor-sheet .skill-by-stat .skill-info:has([data-action="roll-skill"]):hover {
   background: color-mix(in srgb, var(--nalfa-stat-field-border-color), transparent 90%);
@@ -2355,8 +2343,8 @@
 .nalfa.sheet.actor-sheet .embedded-actions__cost-token--main {
   color: var(--nalfa-color-action-main);
 }
-.nalfa.sheet.actor-sheet .embedded-actions__cost-token--bonus {
-  color: var(--nalfa-color-action-bonus);
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--secondary {
+  color: var(--nalfa-color-action-secondary);
 }
 .nalfa.sheet.actor-sheet .embedded-actions__cost-token--reaction {
   color: var(--nalfa-color-action-reaction);
@@ -2366,6 +2354,9 @@
 }
 .nalfa.sheet.actor-sheet .embedded-actions__cost-token--movement {
   color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.actor-sheet .embedded-actions__cost-token--interaction {
+  color: var(--nalfa-color-action-interaction);
 }
 .nalfa.sheet.actor-sheet .embedded-actions__cost-token--nalfa {
   color: var(--nalfa-color-resource-nalfa);
@@ -3838,11 +3829,11 @@
 .nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--main {
   color: var(--nalfa-color-action-main);
 }
-.nalfa.sheet.item-sheet .embedded-actions__cost-token--bonus,
-.nalfa.sheet.item .embedded-actions__cost-token--bonus,
-.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--bonus,
-.nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--bonus {
-  color: var(--nalfa-color-action-bonus);
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--secondary,
+.nalfa.sheet.item .embedded-actions__cost-token--secondary,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--secondary,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--secondary {
+  color: var(--nalfa-color-action-secondary);
 }
 .nalfa.sheet.item-sheet .embedded-actions__cost-token--reaction,
 .nalfa.sheet.item .embedded-actions__cost-token--reaction,
@@ -3861,6 +3852,12 @@
 .nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--movement,
 .nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--movement {
   color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.item-sheet .embedded-actions__cost-token--interaction,
+.nalfa.sheet.item .embedded-actions__cost-token--interaction,
+.nalfa.sheet.embedded-action-editor .embedded-actions__cost-token--interaction,
+.nalfa.sheet.nalfa-action-dialog .embedded-actions__cost-token--interaction {
+  color: var(--nalfa-color-action-interaction);
 }
 .nalfa.sheet.item-sheet .embedded-actions__cost-token--nalfa,
 .nalfa.sheet.item .embedded-actions__cost-token--nalfa,
@@ -4519,11 +4516,11 @@
 .nalfa.sheet.nalfa-action-dialog .attack-config__action-cost-icon--main {
   color: var(--nalfa-color-action-main);
 }
-.nalfa.sheet.item-sheet .attack-config__action-cost-icon--bonus,
-.nalfa.sheet.item .attack-config__action-cost-icon--bonus,
-.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--bonus,
-.nalfa.sheet.nalfa-action-dialog .attack-config__action-cost-icon--bonus {
-  color: var(--nalfa-color-action-bonus);
+.nalfa.sheet.item-sheet .attack-config__action-cost-icon--secondary,
+.nalfa.sheet.item .attack-config__action-cost-icon--secondary,
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--secondary,
+.nalfa.sheet.nalfa-action-dialog .attack-config__action-cost-icon--secondary {
+  color: var(--nalfa-color-action-secondary);
 }
 .nalfa.sheet.item-sheet .attack-config__action-cost-icon--reaction,
 .nalfa.sheet.item .attack-config__action-cost-icon--reaction,
@@ -4542,6 +4539,12 @@
 .nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--movement,
 .nalfa.sheet.nalfa-action-dialog .attack-config__action-cost-icon--movement {
   color: var(--nalfa-color-action-movement);
+}
+.nalfa.sheet.item-sheet .attack-config__action-cost-icon--interaction,
+.nalfa.sheet.item .attack-config__action-cost-icon--interaction,
+.nalfa.sheet.embedded-action-editor .attack-config__action-cost-icon--interaction,
+.nalfa.sheet.nalfa-action-dialog .attack-config__action-cost-icon--interaction {
+  color: var(--nalfa-color-action-interaction);
 }
 .nalfa.sheet.item-sheet .attack-config__cost-label,
 .nalfa.sheet.item .attack-config__cost-label,
@@ -5209,18 +5212,16 @@
   --nalfa-font-primary: "Lexend";
   --nalfa-font-stats: "Cinzel Decorative";
   --nalfa-color-back-background: #131313;
-  --nalfa-color-stat-str: #e06666;
-  --nalfa-color-stat-dex: #93c47d;
-  --nalfa-color-stat-int: #ffd966;
-  --nalfa-color-stat-wis: #6d9eeb;
-  --nalfa-color-stat-cha: #ff9ae6;
-  --nalfa-color-stat-con: #ffa66f;
+  --nalfa-color-stat-pui: #e06666;
+  --nalfa-color-stat-poly: #93c47d;
+  --nalfa-color-stat-vig: #ffa66f;
+  --nalfa-color-stat-agi: #6d9eeb;
+  --nalfa-color-stat-vol: #ff9ae6;
   --nalfa-color-stat-major: #34a853;
   --nalfa-color-stat-powerful: #93c47d;
   --nalfa-color-stat-neutral: #ffd966;
   --nalfa-color-stat-weak: #e06666;
   --nalfa-color-attr-hp: #e06666;
-  --nalfa-color-attr-init: #93c47d;
   --nalfa-color-attr-defence: #b7b7b7;
   --nalfa-color-resource-nalfa: #3c78d8;
   --nalfa-color-rarity-common: #b7b7b7;
@@ -5252,10 +5253,11 @@
   --nalfa-color-type-spec-soin: #87ff9a;
   --nalfa-color-type-spec-abso: #ffd966;
   --nalfa-color-action-main: #34a853;
-  --nalfa-color-action-bonus: #ffa66f;
+  --nalfa-color-action-secondary: #ffa66f;
   --nalfa-color-action-reaction: #8e7cc3;
   --nalfa-color-action-concentration: #6d9eeb;
   --nalfa-color-action-movement: #e06666;
+  --nalfa-color-action-interaction: #ffd966;
   --nalfa-color-throw-jdt: #34a853;
   --nalfa-color-class-ombre: #2d2d2d;
   --nalfa-color-class-assassin: #434343;
